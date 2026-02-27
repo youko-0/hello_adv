@@ -1,20 +1,18 @@
 // 窗口
-let browser_width = 1280;
-let browser_height = 720;
-
-// 页面
-let page_width = 1200;
+let browserWidth = 1280;
+let browserHeight = 720;
 
 // 创建标题项
-async function createItemTopic(post, posY) {
-    let layer_name = `btn_topic_${post.id}`;
+async function createItemTopic(post, index, posY) {
+    let layerName = `btn_topic_${post.id}`;
+    let bgStyle = index % 1 == 0 ? ForumStyle.TOPIC.BG_NORMAL : ForumStyle.TOPIC.BG_HIGHLIGHT;
     await ac.createOption({
-        name: layer_name,
+        name: layerName,
         index: 0,
-        inlayer: 'sv_forum_main',
+        inlayer: 'sv_topic',
         visible: true,
-        nResId: '$183003987',
-        sResId: '$183003987',
+        nResId: bgStyle.resId,
+        sResId: bgStyle.resId,
         content: ``,
         pos: {
             x: 0,
@@ -25,8 +23,8 @@ async function createItemTopic(post, posY) {
             y: 0,
         },
         scale: {
-            x: page_width * 100 / 96,
-            y: 48 * 100 / 96,
+            x: ForumStyle.PAGE.WIDTH * 100 / bgStyle.width,
+            y: ForumStyle.TOPIC.HEIGHT * 100 / bgStyle.height,
         }
     });
     // await ac.createText({
@@ -46,67 +44,92 @@ async function createItemTopic(post, posY) {
     // })
 }
 
+// 全屏背景
+await ac.createImage({
+    name: 'img_browser_bg',
+    index: 0,
+    inlayer: 'window',
+    resId: '$182983354',
+    pos: {
+        x: 0,
+        y: 0,
+    },
+    anchor: {
+        x: 0,
+        y: 0,
+    },
+});
 
+// 网页
 await ac.createLayer({
-    name: 'layer_browser',
+    name: 'layer_page',
     index: 1,
     inlayer: 'window',
     visible: true,
+    // 左右居中底对齐
     pos: {
-        x: browser_width * 0.5,
-        y: browser_height * 0.5,
+        x: browserWidth / 2,
+        y: 32,
     },
     anchor: {
         x: 50,
-        y: 50,
+        y: 0,
     },
     size: {
-        width: browser_width,
-        height: browser_height,
+        width: ForumStyle.PAGE.WIDTH,
+        height: ForumStyle.PAGE.HEIGHT,
     },
     clipMode: true,
 });
 
+// 网页背景图
 await ac.createImage({
-    name: 'img_browser_bg',
+    name: 'img_page_bg',
     index: 0,
-    inlayer: 'layer_browser',
-    resId: '$182983354',
+    inlayer: 'layer_page',
+    resId: ForumStyle.PAGE.BG.resId,
     pos: {
-        x: browser_width * 0.5,
-        y: browser_height * 0.5,
+        x: 0,
+        y: 0,
     },
     anchor: {
-        x: 50,
-        y: 50,
+        x: 0,
+        y: 0,
     },
-});
+    scale: {
+        x: ForumStyle.PAGE.WIDTH * 100 / ForumStyle.PAGE.BG.width,
+        y: ForumStyle.PAGE.HEIGHT * 100 / ForumStyle.PAGE.BG.height,
+    }
+})
 
+// 帖子列表
 await ac.createScrollView({
-    name: 'sv_forum_main',
-    index: 0,
-    inlayer: 'layer_browser',
+    name: 'sv_topic',
+    index: 1,
+    inlayer: 'layer_page',
     visible: true,
     pos: {
-        x: 640,
-        y: 340,
+        x: 0,
+        y: 0,
     },
     anchor: {
-        x: 50,
-        y: 50,
+        x: 0,
+        y: 0,
     },
     size: {
-        width: page_width,
-        height: 300,
+        width: ForumStyle.PAGE.WIDTH,
+        height: ForumStyle.PAGE.HEIGHT,
     },
+    // 这里只有三条帖子, 超不过页面高度, innerSize 直接设置为页面高度
     innerSize: {
-        width: page_width,
-        height: 600,
+        width: ForumStyle.PAGE.WIDTH,
+        height: ForumStyle.PAGE.HEIGHT,
     },
     horizontalScroll: false,
     verticalScroll: true,
 });
 
 ForumSystem.posts.forEach((postData, index) => {
-    createItemTopic(postData, 300 - 50 * index);
+    let y = ForumStyle.PAGE.HEIGHT - (index + 1) * ForumStyle.TOPIC.HEIGHT;
+    createItemTopic(postData, index, y);
 });
