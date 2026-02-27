@@ -1,9 +1,9 @@
 var ForumStyle = {
     PAGE: {
         WIDTH: 1200,
-        HEIGHT: 600,
+        HEIGHT: 608,
         BG: {
-            resId: "page_bg",
+            resId: '$183071397',
             width: 32,
             height: 32,
         },
@@ -17,12 +17,12 @@ var ForumStyle = {
     TOPIC: {
         HEIGHT: 48,
         BG_NORMAL: {
-            resId: "topic_bg1",
+            resId: '$183003987',
             width: 32,
             height: 32,
         },
         BG_HIGHLIGHT: {
-            resId: "topic_bg2",
+            resId: '$183071397',
             width: 32,
             height: 32,
         },

@@ -5,7 +5,8 @@ let browserHeight = 720;
 // 创建标题项
 async function createItemTopic(post, index, posY) {
     let layerName = `btn_topic_${post.id}`;
-    let bgStyle = index % 1 == 0 ? ForumStyle.TOPIC.BG_NORMAL : ForumStyle.TOPIC.BG_HIGHLIGHT;
+    let bgStyle = index % 2 == 0 ? ForumStyle.TOPIC.BG_NORMAL : ForumStyle.TOPIC.BG_HIGHLIGHT;
+    console.log(index, bgStyle);
     await ac.createOption({
         name: layerName,
         index: 0,
@@ -82,7 +83,7 @@ await ac.createLayer({
     clipMode: true,
 });
 
-// 网页背景图
+// 网页背景图片
 await ac.createImage({
     name: 'img_page_bg',
     index: 0,
@@ -131,5 +132,6 @@ await ac.createScrollView({
 
 ForumSystem.posts.forEach((postData, index) => {
     let y = ForumStyle.PAGE.HEIGHT - (index + 1) * ForumStyle.TOPIC.HEIGHT;
+    console.log(index, y);
     createItemTopic(postData, index, y);
 });
