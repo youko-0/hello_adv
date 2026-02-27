@@ -1,18 +1,4 @@
 var ForumSystem = {
-    // 标题样式配置
-    titleStyle: {
-        contentStyle: "style_forum_title_content",
-        width: 580,
-        minHeight: 50,
-        resBg1: "res/title_bg.png",
-        resBg2: "res/title_bg.png",
-    },
-    // 内容样式配置
-    contentStyle: {
-        fontSize: 28,
-        color: "#000",
-        width: 580,
-    },
     posts: [
         {
             id: 1001,
