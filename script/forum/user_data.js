@@ -3,7 +3,7 @@ var UserSystem = {
     database: {
         "user_001": {
             id: "user_001",
-            name: "匿名用户001",
+            name: "匿名用户1",
             icon: ForumStyle.AVATAR.ICON_01,
         },
         "user_002": {
@@ -29,5 +29,13 @@ var UserSystem = {
     },
     getUserInfo: function (uid) {
         return this.database[uid];
-    }
+    },
+
+    getUserName: function (uid) {
+        return this.database[uid].name;
+    },
+
+    getUserIcon: function (uid) {
+        return this.database[uid].icon;
+    },
 };
