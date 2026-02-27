@@ -1,3 +1,4 @@
+// 帖子
 // 窗口
 let browserWidth = 1280;
 let browserHeight = 720;
@@ -20,28 +21,17 @@ ac.createStyle({
     color: '#888888',
 });
 
-// 创建标题项
-async function createItemTopic(post, index, posY) {
-    let layerName = `btn_topic_${post.id}`;
+// 创建回复
+async function createItemReply(reply, index, posY, contentHeight) {
+    let padding = 20;
+    let itemHeight = contentHeight + padding * 2;
     let bgStyle = index % 2 == 0 ? ForumUI.TOPIC.BG_NORMAL : ForumUI.TOPIC.BG_HIGHLIGHT;
-    console.log(index, bgStyle);
-
-    async function gotoPost() {
-        ForumSystem.currentPostId = post.id;
-        console.log('gotoPost', post.id, ForumSystem.currentPostId);
-        await ac.replaceUI({
-            name: 'replaceUI12',
-            uiId: 'dbjp9oun',
-        });
-    }
-    await ac.createOption({
-        name: layerName,
+    // 背景
+    await ac.createImage({
+        name: `img_bg_${index}`,
         index: 0,
         inlayer: 'sv_topic',
-        visible: true,
-        nResId: bgStyle.resId,
-        sResId: bgStyle.resId,
-        content: ``,
+        resId: bgStyle.resId,
         pos: {
             x: 0,
             y: posY,
@@ -52,45 +42,36 @@ async function createItemTopic(post, index, posY) {
         },
         scale: {
             x: ForumUI.PAGE.WIDTH * 100 / bgStyle.width,
-            y: ForumUI.TOPIC.HEIGHT * 100 / bgStyle.height,
+            y: itemHeight * 100 / bgStyle.height,
         },
-        onTouchEnded: gotoPost,
     });
 
-    // 帖子标题
-    // 上面的背景是缩放实现的，这里文字不能放在背景下面
-    await ac.createText({
-        name: `lbl_topic_${post.id}`,
-        index: 1,
+    // 头像
+    await ac.createImage({
+        name: `img_avatar_${index}`,
+        index: 0,
         inlayer: 'sv_topic',
-        visible: true,
-        content: post.topic,
-        // 左边空白
+        resId: UserSystem.getUserIcon(reply.authorId),
         pos: {
-            x: 80,
-            y: posY + ForumUI.TOPIC.HEIGHT / 2,
+            x: 100,
+            y: posY + itemHeight / 2,
         },
         anchor: {
-            x: 0,
+            x: 50,
             y: 50,
         },
-        size: {
-            width: 400,
-            height: ForumUI.TOPIC.HEIGHT,
-        },
-        style: 'style_topic',
     });
 
-    // 帖子作者
+    // 用户名
     await ac.createText({
-        name: `lbl_author_${post.id}`,
+        name: `lbl_username_${index}`,
         index: 1,
         inlayer: 'sv_topic',
         visible: true,
-        content: UserSystem.getUserName(post.authorId),
+        content: UserSystem.getUserName(reply.authorId),
         pos: {
-            x: 800,
-            y: posY + ForumUI.TOPIC.HEIGHT / 2,
+            x: 200,
+            y: posY + itemHeight / 2,
         },
         anchor: {
             x: 0,
@@ -103,28 +84,27 @@ async function createItemTopic(post, index, posY) {
         style: 'style_topic',
     });
 
-    // 帖子时间
+    // 回复内容
     await ac.createText({
-        name: `lbl_time_${post.id}`,
+        name: `lbl_reply_${index}`,
         index: 1,
         inlayer: 'sv_topic',
         visible: true,
-        content: ForumSystem.formatRelativeTime(post.timestamp),
+        content: reply.content,
         pos: {
-            x: 1000,
-            y: posY + ForumUI.TOPIC.HEIGHT / 2,
+            x: 400,
+            y: posY + padding,
         },
         anchor: {
             x: 0,
-            y: 50,
+            y: 0,
         },
         size: {
-            width: 200,
-            height: ForumUI.TOPIC.HEIGHT,
-        },
-        style: 'style_time',
+            width: 800,
+            height: contentHeight,
+        }
     });
-    
+
 }
 
 // 全屏背景
@@ -206,47 +186,30 @@ await ac.createScrollView({
     // 帖子数量不多, 超不过页面高度, innerSize 直接设置为页面高度
     innerSize: {
         width: ForumUI.PAGE.WIDTH,
-        height: ForumUI.PAGE.HEIGHT,
+        height: 1000,
     },
     horizontalScroll: false,
     verticalScroll: true,
 });
 
-async function initPostList() {
-    let postsList = Object.values(ForumSystem.postsMap);
-    // 根据时间戳排序, 最新的在前面
-    postsList.sort(function (a, b) {
-        return b.timestamp - a.timestamp;
-    });
+async function initReplyList(postId) {
+    let post = ForumSystem.postsMap[postId];
+    if (!post) {
+        console.log(`帖子 ${postId} 不存在！`);
+        return;
+    }
+    let replyList = post.reply;
 
-    for (var i = 0; i < postsList.length; i++) {
-        let post = postsList[i];
-        let y = ForumUI.PAGE.HEIGHT - (i + 1) * ForumUI.TOPIC.HEIGHT;
-        console.log(`正在创建第 ${i} 个帖子，时间戳：${post.timestamp}`);
-        await createItemTopic(post, i, y);
+    for (var i = 0; i < replyList.length; i++) {
+        let reply = replyList[i];
+        let y = ForumUI.PAGE.HEIGHT - (i + 1) * 200;
+        let h = 200;
+        // console.log(`正在创建第 ${i} 个帖子，时间戳：${post.timestamp}`);
+        await createItemReply(reply, i, y, h);
     }
 
-    console.log("所有帖子创建完毕！");
+    console.log("所有回复创建完毕！");
 }
 
 // 执行
-await initPostList();
-
-// // 关闭按钮
-// await ac.createOption({
-//     name: 'btn_close',
-//     index: 0,
-//     inlayer: 'window',
-//     visible: true,
-//     nResId: '$182983354',
-//     sResId: '$182983354',
-//     content: ``,
-//     pos: {
-//         x: 1200,
-//         y: 32,
-//     },
-//     anchor: {
-//         x: 100,
-//         y: 0,
-//     },
-// })
+await initReplyList(ForumSystem.currentPostId);
