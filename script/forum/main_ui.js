@@ -27,8 +27,8 @@ async function createItemTopic(post, index, posY) {
     console.log(index, bgStyle);
 
     async function gotoPost() {
-        ForumSystem.currentPostId = post.id;
-        console.log('gotoPost', post.id, ForumSystem.currentPostId);
+        ac.var.currentPostId = post.id;
+        console.log('gotoPost', post.id, ac.var.currentPostId);
         await ac.replaceUI({
             name: 'replaceUI12',
             uiId: 'dbjp9oun',
@@ -124,7 +124,7 @@ async function createItemTopic(post, index, posY) {
         },
         style: 'style_time',
     });
-    
+
 }
 
 // 全屏背景
@@ -232,21 +232,27 @@ async function initPostList() {
 // 执行
 await initPostList();
 
-// // 关闭按钮
-// await ac.createOption({
-//     name: 'btn_close',
-//     index: 0,
-//     inlayer: 'window',
-//     visible: true,
-//     nResId: '$182983354',
-//     sResId: '$182983354',
-//     content: ``,
-//     pos: {
-//         x: 1200,
-//         y: 32,
-//     },
-//     anchor: {
-//         x: 100,
-//         y: 0,
-//     },
-// })
+// 关闭按钮
+let flag = ForumSystem.isAllPostReaded();
+console.log(`是否看完了所有的帖子：${flag}`);
+if (flag) {
+    await ac.createOption({
+        name: 'btn_close',
+        index: 5,
+        inlayer: 'window',
+        visible: true,
+        nResId: ForumUI.BTN.CLOSE.resIdNormal,
+        sResId: ForumUI.BTN.CLOSE.resIdHighlight,
+        content: ``,
+        pos: {
+            x: browserWidth,
+            y: browserHeight,
+        },
+        anchor: {
+            x: 100,
+            y: 100,
+        },
+    });
+
+}
+

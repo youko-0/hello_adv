@@ -27,4 +27,14 @@ var ForumUI = {
             height: 32,
         },
     },
+    BTN:
+    {
+        CLOSE:
+        {
+            resIdNormal: '$183130998',
+            resIdHighlight: '$183130996',
+            width: 32,
+            height: 32,
+        }
+    }
 }

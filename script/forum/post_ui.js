@@ -204,7 +204,6 @@ async function initReplyList(postId) {
         let reply = replyList[i];
         let y = ForumUI.PAGE.HEIGHT - (i + 1) * 200;
         let h = 200;
-        // console.log(`正在创建第 ${i} 个帖子，时间戳：${post.timestamp}`);
         await createItemReply(reply, i, y, h);
     }
 
@@ -212,4 +211,36 @@ async function initReplyList(postId) {
 }
 
 // 执行
-await initReplyList(ForumSystem.currentPostId);
+await initReplyList(ac.var.currentPostId);
+var sss111 = ForumSystem.calcTextHeight('1111234234324');
+console.log('sss111', sss111);
+// 保存浏览记录
+ForumSystem.savePostReaded(ac.var.currentPostId);
+
+async function gotoMain() {
+    ac.var.currentPostId = "";
+    await ac.replaceUI({
+        name: 'replaceUI12',
+        uiId: 'nw48gnat',
+    });
+}
+
+// 关闭按钮
+await ac.createOption({
+    name: 'btn_close',
+    index: 5,
+    inlayer: 'window',
+    visible: true,
+    nResId: ForumUI.BTN.CLOSE.resIdNormal,
+    sResId: ForumUI.BTN.CLOSE.resIdHighlight,
+    content: ``,
+    pos: {
+        x: browserWidth,
+        y: browserHeight,
+    },
+    anchor: {
+        x: 100,
+        y: 100,
+    },
+    onTouchEnded: gotoMain,
+});
