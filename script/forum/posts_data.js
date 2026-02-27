@@ -1,9 +1,10 @@
 var ForumSystem = {
-    posts: [
-        {
-            id: 1001,
+    postsMap: {
+        "1001": {
+            id: "1001",
             authorId: "user_001",
             topic: "有人知道城北的哪吒庙发生大火是怎么回事吗？",
+            // 这个字段用来排序, 越大越靠前
             timestamp: 1772179271,
             reply: [
                 { userId: "user_001", content: "我家就在哪吒三太子庙马路对面的幸福小区，昨天半夜我熬夜玩手机，突然感觉窗外特别亮，起来一看庙里烧起来了，然后今天过去想看看，那里已经被zf工作人员封锁起来了。", timestamp: 1772179271 },
@@ -15,24 +16,25 @@ var ForumSystem = {
                 { userId: "user_003", content: "对啊对啊对啊！", timestamp: 1772179271 },
             ]
         },
-        {
-            id: 1002,
+        "1002": {
+            id: "1002",
             authorId: "user_002",
             topic: "谁能管管德兴大厦里那个夜哭的女鬼？",
-            content: "我奶今天给我讲她年轻的时候参加水神娶亲仪式的怪事，听完我都有点睡不着了，感觉唯物主义世界观被打破了……",
-            timestamp: 1772179271,
-            reply: [],
+            timestamp: 1772179260,
+            reply: [
+                { userId: "user_002", content: "我在德兴旁边那栋楼里上班，每天晚上加班都能听到对面那个女鬼哭。本来加班就怨气够大的，我恨不得跟她一起s。", timestamp: 1772179260 },
+            ],
         },
-        {
-            id: 1003,
+        "1003": {
+            id: "1003",
             authorId: "user_003",
             topic: "龙王庙那个水神娶亲仪式为什么这些年不举行了？",
-            content: "我奶今天给我讲她年轻的时候参加水神娶亲仪式的怪事，听完我都有点睡不着了，感觉唯物主义世界观被打破了……",
-            timestamp: 1772179271,
-            reply: [],
-        }
-    ],
-
+            timestamp: 1772179250,
+            reply: [
+                { userId: "user_002", content: "我奶今天给我讲她年轻的时候参加水神娶亲仪式的怪事，听完我都有点睡不着了，感觉唯物主义世界观被打破了……", timestamp: 1772179250 },
+            ],
+        },
+    },
     formatRelativeTime: function (timestamp) {
         if (!timestamp) return "";
 
@@ -123,21 +125,5 @@ var ForumSystem = {
         // 总行数 * 单行高度
         return totalLines * singleLineHeight;
     },
-
-    // 计算内页帖子高度
-    calcPostHeight: function (post) {
-
-    },
-
-    // 计算页面高度
-    calcPageHeight: function () {
-        let pageHeight = 0;
-        let posts = this.posts;
-        // 遍历帖子, 计算标题高度
-        posts.forEach((post, index) => {
-            let itemHeight = this.calcTextHeight(post.topic, 32, 580);
-        });
-    }
-
 
 };

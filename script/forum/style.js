@@ -1,4 +1,4 @@
-var ForumStyle = {
+var ForumUI = {
     PAGE: {
         WIDTH: 1200,
         HEIGHT: 608,
@@ -9,10 +9,10 @@ var ForumStyle = {
         },
     },
     AVATAR: {
-        ICON_01: "111",
-        ICON_02: "22",
-        ICON_03: "3",
-        ICON_04: "4",
+        ICON_01: '$183113921',
+        ICON_02: '$183114062',
+        ICON_03: '$183113921',
+        ICON_04: '$183114062',
     },
     TOPIC: {
         HEIGHT: 48,
