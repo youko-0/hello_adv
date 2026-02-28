@@ -139,6 +139,15 @@ async function createBrowserUI(onClose = null) {
     });
 }
 
+ac.createStyle({
+    name: 'style_alert',
+    font: '汉仪小隶书简',
+    bold: false,
+    italic: false,
+    fontSize: 24,
+    color: '#d1d3df',
+});
+
 
 async function showGameAlert(content, onConfirm = null) {
 
@@ -154,14 +163,6 @@ async function showGameAlert(content, onConfirm = null) {
         if (onConfirm) await onConfirm();
     }
 
-    ac.createStyle({
-        name: 'style_alert',
-        font: '汉仪小隶书简',
-        bold: false,
-        italic: false,
-        fontSize: 24,
-        color: '#d1d3df',
-    });
     // 容器
     await ac.createLayer({
         name: 'layer_alert',

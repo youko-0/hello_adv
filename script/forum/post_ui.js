@@ -111,6 +111,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
             height: contentHeight - ForumUI.POST.REPLY.padding * 2,
         },
         style: 'style_content',
+        valign: ac.VALIGN_TYPES.top,
     });
 
     // 层数
@@ -139,7 +140,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
         inlayer: ForumUI.SV.name,
         content: ForumUI.formatRelativeTime(reply.timestamp),
         pos: {
-            x: ForumUI.PAGE.width - 20,
+            x: ForumUI.PAGE.width - 24,
             y: posY + 10
         },
         anchor: { x: 100, y: 0 },
@@ -170,11 +171,31 @@ async function initReplyList(postId, pageIndex = 0) {
         return;
     }
     let pageHeight = ForumUI.calcPostPageHeight(post, pageIndex);
-    console.log('pageHeightpageHeight', pageHeight);
+    pageHeight = Math.max(ForumUI.PAGE.height, pageHeight);
     await createForumUI(pageHeight);
 
+    // 帖子内容初始坐标
+    let startY = pageHeight - ForumUI.HEAD.height - ForumUI.HEAD.marginBottom;
+    // 标题
+    await ac.createText({
+        name: "lbl_topic_title",
+        index: 1,
+        inlayer: ForumUI.SV.name,
+        content: post.topic,
+        pos: {
+            x: 42,
+            y: startY,
+        },
+        anchor: { x: 0, y: 100 },
+        size: {
+            width: ForumUI.POST.REPLY.width,
+            height: ForumUI.POST.TITLE.height,
+        },
+        style: 'style_title',
+        valign: ac.VALIGN_TYPES.top,
+    });
+
     let replyList = post.reply;
-    let startY = Math.max(ForumUI.PAGE.height, pageHeight) - ForumUI.HEAD.height - ForumUI.HEAD.marginBottom;
     startY -= ForumUI.POST.TITLE.height;
     for (var i = 0; i < replyList.length; i++) {
         let reply = replyList[i];

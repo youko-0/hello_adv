@@ -39,13 +39,7 @@ var ForumUI = {
     POST: {
         PAGE_SIZE: 10,
         TITLE: {
-            height: 40,
-            BG: {
-                resId: '$183071397',
-                width: 32,
-                height: 32,
-            },
-
+            height: 42,
         },
         REPLY: {
             padding: 20,        // 上下留边
