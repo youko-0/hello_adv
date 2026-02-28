@@ -48,7 +48,7 @@ async function createItemTopic(post, index, posY) {
     await ac.createImage({
         name: `btn_topic_${post.id}`,
         index: 0,
-        inlayer: 'sv_page',
+        inlayer: ForumUI.SV.name,
         visible: true,
         resId: bgStyle.resId,
         pos: {
@@ -69,7 +69,7 @@ async function createItemTopic(post, index, posY) {
     await ac.createText({
         name: `lbl_reply_count_${post.id}`,
         index: 1,
-        inlayer: 'sv_page',
+        inlayer: ForumUI.SV.name,
         visible: true,
         content: `【${post.reply.length}】`,
         // 左边空白
@@ -92,7 +92,7 @@ async function createItemTopic(post, index, posY) {
     await ac.createText({
         name: `lbl_topic_${post.id}`,
         index: 1,
-        inlayer: 'sv_page',
+        inlayer: ForumUI.SV.name,
         visible: true,
         content: post.topic,
         // 左边空白
@@ -115,7 +115,7 @@ async function createItemTopic(post, index, posY) {
     await ac.createText({
         name: `lbl_author_${post.id}`,
         index: 1,
-        inlayer: 'sv_page',
+        inlayer: ForumUI.SV.name,
         visible: true,
         content: UserSystem.getUserName(post.authorId),
         pos: {
@@ -137,7 +137,7 @@ async function createItemTopic(post, index, posY) {
     await ac.createText({
         name: `lbl_time_${post.id}`,
         index: 1,
-        inlayer: 'sv_page',
+        inlayer: ForumUI.SV.name,
         visible: true,
         content: ForumUI.formatRelativeTime(post.timestamp),
         pos: {
@@ -161,7 +161,7 @@ async function createItemTopic(post, index, posY) {
         await ac.createText({
             name: `lbl_last_reply_${post.id}`,
             index: 1,
-            inlayer: 'sv_page',
+            inlayer: ForumUI.SV.name,
             visible: true,
             content: UserSystem.getUserName(lastReply.authorId),
             pos: {
@@ -181,7 +181,7 @@ async function createItemTopic(post, index, posY) {
         await ac.createText({
             name: `lbl_last_reply_time_${post.id}`,
             index: 1,
-            inlayer: 'sv_page',
+            inlayer: ForumUI.SV.name,
             visible: true,
             content: ForumUI.formatRelativeTime(lastReply.timestamp),
             pos: {

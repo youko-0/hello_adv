@@ -31,7 +31,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
     await ac.createImage({
         name: `img_bg_${index}`,
         index: 0,
-        inlayer: 'sv_page',
+        inlayer: ForumUI.SV.name,
         resId: bgStyle.resId,
         pos: {
             x: 0,
@@ -51,7 +51,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
     await ac.createImage({
         name: `img_avatar_${index}`,
         index: 0,
-        inlayer: 'sv_page',
+        inlayer: ForumUI.SV.name,
         resId: UserSystem.getUserIcon(reply.authorId),
         pos: {
             x: 100,
@@ -67,7 +67,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
     await ac.createText({
         name: `lbl_username_${index}`,
         index: 1,
-        inlayer: 'sv_page',
+        inlayer: ForumUI.SV.name,
         visible: true,
         content: UserSystem.getUserName(reply.authorId),
         pos: {
@@ -89,7 +89,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
     await ac.createText({
         name: `lbl_reply_${index}`,
         index: 1,
-        inlayer: 'sv_page',
+        inlayer: ForumUI.SV.name,
         visible: true,
         content: reply.content,
         pos: {
@@ -122,13 +122,11 @@ await createBrowserUI(onClose);
 await createForumUI(1000);
 
 async function initReplyList(postId) {
-    let post = ForumSystem.postsMap[postId];
+    let post = ForumSystem.getPostData(postId);
     if (!post) {
-        console.log(`帖子 ${postId} 不存在！`);
         return;
     }
     let replyList = post.reply;
-
     for (var i = 0; i < replyList.length; i++) {
         let reply = replyList[i];
         let y = ForumUI.PAGE.height - (i + 1) * 200;

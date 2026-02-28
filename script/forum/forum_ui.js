@@ -10,6 +10,9 @@ var ForumUI = {
             resId: '$183071397',
         },
     },
+    SV: {
+        name: 'sv_page',
+    },
     HEAD: {
         width: 1200,
         height: 60,
@@ -19,7 +22,6 @@ var ForumUI = {
             resId: '$183003987',
         }
     },
-
     TOPIC: {
         height: 64,
         BG_NORMAL: {
@@ -32,9 +34,6 @@ var ForumUI = {
             width: 32,
             height: 32,
         },
-    },
-    BTN: {
-
     },
 
     AVATAR: {
@@ -98,7 +97,7 @@ var ForumUI = {
 // pageHeight: 页面高度, 带版头
 async function createForumUI(pageHeight = 0) {
     // 总高度不能小于页面高度
-    if(pageHeight < ForumUI.PAGE.height) {
+    if (pageHeight < ForumUI.PAGE.height) {
         pageHeight = ForumUI.PAGE.height;
     }
     // 容器
@@ -145,7 +144,7 @@ async function createForumUI(pageHeight = 0) {
 
     // 滚动层
     await ac.createScrollView({
-        name: 'sv_page',
+        name: ForumUI.SV.name,
         index: 1,
         inlayer: 'layer_forum_ui',
         visible: true,
@@ -173,7 +172,7 @@ async function createForumUI(pageHeight = 0) {
     await ac.createImage({
         name: 'img_page_head_bg',
         index: 0,
-        inlayer: 'sv_page',
+        inlayer: ForumUI.SV.name,
         resId: ForumUI.HEAD.BG.resId,
         pos: {
             x: ForumUI.PAGE.width / 2,
