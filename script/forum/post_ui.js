@@ -79,7 +79,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
             width: 200,
             height: ForumUI.TOPIC.height,
         },
-        style: 'style_topic',
+        style: 'style_content',
     });
 
     // 回复内容
@@ -101,7 +101,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
             width: 800,
             height: contentHeight,
         },
-        style: 'style_topic',
+        style: 'style_content',
     });
 
 }
@@ -116,16 +116,16 @@ async function onClose() {
 
 await createBrowserUI(onClose);
 
-let postId = ForumSystem.getCurrentPostId();
-let pageHeight = ForumUI.calcPostPageHeight(postId, 0);
-console.log('pageHeightpageHeight', pageHeight);
-await createForumUI(pageHeight);
 
-async function initReplyList(postId) {
+async function initReplyList(postId, pageIndex=0) {
     let post = ForumSystem.getPostData(postId);
     if (!post) {
         return;
     }
+    let pageHeight = ForumUI.calcPostPageHeight(post, pageIndex);
+    console.log('pageHeightpageHeight', pageHeight);
+    await createForumUI(pageHeight);
+
     let replyList = post.reply;
     let startY = Math.max(ForumUI.PAGE.height, pageHeight) - ForumUI.HEAD.height - ForumUI.HEAD.marginBottom;
     startY -= ForumUI.POST.TITLE.height;
@@ -140,7 +140,7 @@ async function initReplyList(postId) {
 }
 
 // 执行
-
-await initReplyList(postId);
+let postId = ForumSystem.getCurrentPostId();
+await initReplyList(postId, 0);
 // 保存浏览记录
 ForumSystem.savePostVisited(postId);

@@ -37,6 +37,7 @@ var ForumUI = {
         },
     },
     POST: {
+        PAGE_SIZE: 10,
         TITLE: {
             height: 40,
             BG: {
@@ -114,13 +115,9 @@ var ForumUI = {
     },
 
     // 回复列表的高度
-    calcRepliesHeight: function (postId, pageIndex) {
-        let post = ForumSystem.getPostData(postId);
-        if (!post) {
-            return 0;
-        }
-        let replyList = post.reply;
+    calcRepliesHeight: function (post, pageIndex) {
         let totalHeight = 0;
+        let replyList = post.reply;
         for (let i = 0; i < replyList.length; i++) {
             let reply = replyList[i];
             let contentHeight = this.calcTextHeight(reply.content);
@@ -133,8 +130,8 @@ var ForumUI = {
     },
 
     // 帖子页面的高度
-    calcPostPageHeight: function (postId, pageIndex = 0) {
-        let contentHeight = this.calcRepliesHeight(postId, pageIndex);
+    calcPostPageHeight: function (post, pageIndex = 0) {
+        let contentHeight = this.calcRepliesHeight(post, pageIndex);
         contentHeight += this.HEAD.height + this.HEAD.marginBottom;
         contentHeight += this.POST.TITLE.height;
         return contentHeight;
