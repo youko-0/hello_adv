@@ -8,7 +8,7 @@ ac.createStyle({
     font: '思源黑体',
     bold: false,
     italic: false,
-    fontSize: ForumUI.TOPIC.HEIGHT / 4,
+    fontSize: ForumUI.TOPIC.height / 4,
     color: '#1a3959',
 });
 
@@ -17,7 +17,7 @@ ac.createStyle({
     font: '思源黑体',
     bold: false,
     italic: false,
-    fontSize: ForumUI.TOPIC.HEIGHT / 4,
+    fontSize: ForumUI.TOPIC.height / 4,
     color: '#888888',
 });
 
@@ -31,7 +31,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
     await ac.createImage({
         name: `img_bg_${index}`,
         index: 0,
-        inlayer: 'sv_topic',
+        inlayer: 'sv_page',
         resId: bgStyle.resId,
         pos: {
             x: 0,
@@ -42,7 +42,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
             y: 0,
         },
         scale: {
-            x: ForumUI.PAGE.WIDTH * 100 / bgStyle.width,
+            x: ForumUI.PAGE.width * 100 / bgStyle.width,
             y: itemHeight * 100 / bgStyle.height,
         },
     });
@@ -51,7 +51,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
     await ac.createImage({
         name: `img_avatar_${index}`,
         index: 0,
-        inlayer: 'sv_topic',
+        inlayer: 'sv_page',
         resId: UserSystem.getUserIcon(reply.authorId),
         pos: {
             x: 100,
@@ -67,7 +67,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
     await ac.createText({
         name: `lbl_username_${index}`,
         index: 1,
-        inlayer: 'sv_topic',
+        inlayer: 'sv_page',
         visible: true,
         content: UserSystem.getUserName(reply.authorId),
         pos: {
@@ -80,7 +80,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
         },
         size: {
             width: 200,
-            height: ForumUI.TOPIC.HEIGHT,
+            height: ForumUI.TOPIC.height,
         },
         style: 'style_topic',
     });
@@ -89,7 +89,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
     await ac.createText({
         name: `lbl_reply_${index}`,
         index: 1,
-        inlayer: 'sv_topic',
+        inlayer: 'sv_page',
         visible: true,
         content: reply.content,
         pos: {
@@ -119,74 +119,7 @@ async function onClose() {
 
 await createBrowserUI(onClose);
 
-// 网页
-await ac.createLayer({
-    name: 'layer_page',
-    index: 1,
-    inlayer: 'window',
-    visible: true,
-    // 左右居中底对齐
-    pos: {
-        x: browserWidth / 2,
-        y: 32,
-    },
-    anchor: {
-        x: 50,
-        y: 0,
-    },
-    size: {
-        width: ForumUI.PAGE.WIDTH,
-        height: ForumUI.PAGE.HEIGHT,
-    },
-    clipMode: true,
-});
-
-// 网页背景图片
-await ac.createImage({
-    name: 'img_page_bg',
-    index: 0,
-    inlayer: 'layer_page',
-    resId: ForumUI.PAGE.BG.resId,
-    pos: {
-        x: 0,
-        y: 0,
-    },
-    anchor: {
-        x: 0,
-        y: 0,
-    },
-    scale: {
-        x: ForumUI.PAGE.WIDTH * 100 / ForumUI.PAGE.BG.width,
-        y: ForumUI.PAGE.HEIGHT * 100 / ForumUI.PAGE.BG.height,
-    }
-})
-
-// 帖子列表
-await ac.createScrollView({
-    name: 'sv_topic',
-    index: 1,
-    inlayer: 'layer_page',
-    visible: true,
-    pos: {
-        x: 0,
-        y: 0,
-    },
-    anchor: {
-        x: 0,
-        y: 0,
-    },
-    size: {
-        width: ForumUI.PAGE.WIDTH,
-        height: ForumUI.PAGE.HEIGHT,
-    },
-    // 帖子数量不多, 超不过页面高度, innerSize 直接设置为页面高度
-    innerSize: {
-        width: ForumUI.PAGE.WIDTH,
-        height: 1000,
-    },
-    horizontalScroll: false,
-    verticalScroll: true,
-});
+await createForumUI(1000);
 
 async function initReplyList(postId) {
     let post = ForumSystem.postsMap[postId];
@@ -198,7 +131,7 @@ async function initReplyList(postId) {
 
     for (var i = 0; i < replyList.length; i++) {
         let reply = replyList[i];
-        let y = ForumUI.PAGE.HEIGHT - (i + 1) * 200;
+        let y = ForumUI.PAGE.height - (i + 1) * 200;
         let h = 200;
         await createItemReply(reply, i, y, h);
     }

@@ -35,11 +35,10 @@ async function createBrowserUI(onClose=null) {
 
     // 容器
     await ac.createLayer({
-        name: 'layer_browser',
-        index: 1,
+        name: 'layer_browser_ui',
+        index: 0,
         inlayer: 'window',
         visible: true,
-        // 左右居中底对齐
         pos: {
             x: BrowserUI.WINDOW.width / 2,
             y: BrowserUI.WINDOW.height / 2,
@@ -59,7 +58,7 @@ async function createBrowserUI(onClose=null) {
     await ac.createImage({
         name: 'img_browser_bg',
         index: 0,
-        inlayer: 'layer_browser',
+        inlayer: 'layer_browser_ui',
         resId: BrowserUI.BG.resId,
         pos: {
             x: BrowserUI.WINDOW.width / 2,
@@ -79,7 +78,7 @@ async function createBrowserUI(onClose=null) {
     await ac.createText({
         name: 'lbl_site_title',
         index: 1,
-        inlayer: 'layer_browser',
+        inlayer: 'layer_browser_ui',
         visible: true,
         content: ForumSystem.getCurrentTitle(),
         pos: {
@@ -101,7 +100,7 @@ async function createBrowserUI(onClose=null) {
     await ac.createText({
         name: 'lbl_site_url',
         index: 1,
-        inlayer: 'layer_browser',
+        inlayer: 'layer_browser_ui',
         visible: true,
         content: ForumSystem.getCurrentUrl(),
         pos: {
@@ -123,7 +122,7 @@ async function createBrowserUI(onClose=null) {
     await ac.createOption({
         name: 'btn_close_browser',
         index: 5,
-        inlayer: 'layer_browser',
+        inlayer: 'layer_browser_ui',
         visible: true,
         nResId: BrowserUI.BTN.CLOSE.resIdNormal,
         sResId: BrowserUI.BTN.CLOSE.resIdHighlight,

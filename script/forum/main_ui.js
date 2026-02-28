@@ -1,23 +1,24 @@
 // 窗口
 let browserWidth = 1280;
 let browserHeight = 720;
+let innerMargin = 10;       // 和版头的距离
 
 ac.createStyle({
     name: 'style_topic',
-    font: '思源黑体',
+    font: '汉仪小隶书简',
     bold: false,
     italic: false,
-    fontSize: ForumUI.TOPIC.HEIGHT / 4,
-    color: '#1a3959',
+    fontSize: 24,
+    color: '#d1d3df',
 });
 
 ac.createStyle({
     name: 'style_time',
-    font: '思源黑体',
+    font: '汉仪小隶书简',
     bold: false,
     italic: false,
-    fontSize: ForumUI.TOPIC.HEIGHT / 4,
-    color: '#888888',
+    fontSize: 24,
+    color: '#cbd6dc',
 });
 
 // 创建标题项
@@ -38,7 +39,7 @@ async function createItemTopic(post, index, posY) {
     await ac.createImage({
         name: layerName,
         index: 0,
-        inlayer: 'sv_topic',
+        inlayer: 'sv_page',
         visible: true,
         resId: bgStyle.resId,
         pos: {
@@ -50,8 +51,8 @@ async function createItemTopic(post, index, posY) {
             y: 0,
         },
         scale: {
-            x: ForumUI.PAGE.WIDTH * 100 / bgStyle.width,
-            y: ForumUI.TOPIC.HEIGHT * 100 / bgStyle.height,
+            x: ForumUI.PAGE.width * 100 / bgStyle.width,
+            y: ForumUI.TOPIC.height * 100 / bgStyle.height,
         },
     });
 
@@ -60,21 +61,21 @@ async function createItemTopic(post, index, posY) {
     await ac.createText({
         name: `lbl_topic_${post.id}`,
         index: 1,
-        inlayer: 'sv_topic',
+        inlayer: 'sv_page',
         visible: true,
         content: post.topic,
         // 左边空白
         pos: {
             x: 80,
-            y: posY + ForumUI.TOPIC.HEIGHT / 2,
+            y: posY + ForumUI.TOPIC.height / 2,
         },
         anchor: {
             x: 0,
             y: 50,
         },
         size: {
-            width: 400,
-            height: ForumUI.TOPIC.HEIGHT,
+            width: 600,
+            height: ForumUI.TOPIC.height,
         },
         style: 'style_topic',
     });
@@ -83,12 +84,12 @@ async function createItemTopic(post, index, posY) {
     await ac.createText({
         name: `lbl_author_${post.id}`,
         index: 1,
-        inlayer: 'sv_topic',
+        inlayer: 'sv_page',
         visible: true,
         content: UserSystem.getUserName(post.authorId),
         pos: {
             x: 800,
-            y: posY + ForumUI.TOPIC.HEIGHT / 2,
+            y: posY + ForumUI.TOPIC.height / 2,
         },
         anchor: {
             x: 0,
@@ -96,7 +97,7 @@ async function createItemTopic(post, index, posY) {
         },
         size: {
             width: 200,
-            height: ForumUI.TOPIC.HEIGHT,
+            height: ForumUI.TOPIC.height,
         },
         style: 'style_topic',
     });
@@ -105,12 +106,12 @@ async function createItemTopic(post, index, posY) {
     await ac.createText({
         name: `lbl_time_${post.id}`,
         index: 1,
-        inlayer: 'sv_topic',
+        inlayer: 'sv_page',
         visible: true,
         content: ForumUI.formatRelativeTime(post.timestamp),
         pos: {
             x: 1000,
-            y: posY + ForumUI.TOPIC.HEIGHT / 2,
+            y: posY + ForumUI.TOPIC.height / 2,
         },
         anchor: {
             x: 0,
@@ -118,7 +119,7 @@ async function createItemTopic(post, index, posY) {
         },
         size: {
             width: 200,
-            height: ForumUI.TOPIC.HEIGHT,
+            height: ForumUI.TOPIC.height,
         },
         style: 'style_time',
     });
@@ -137,74 +138,10 @@ async function onClose() {
 
 await createBrowserUI(onClose);
 
-// 网页
-await ac.createLayer({
-    name: 'layer_page',
-    index: 1,
-    inlayer: 'window',
-    visible: true,
-    // 左右居中底对齐
-    pos: {
-        x: browserWidth / 2,
-        y: 32,
-    },
-    anchor: {
-        x: 50,
-        y: 0,
-    },
-    size: {
-        width: ForumUI.PAGE.WIDTH,
-        height: ForumUI.PAGE.HEIGHT,
-    },
-    clipMode: true,
-});
-
-// 网页背景图片
-await ac.createImage({
-    name: 'img_page_bg',
-    index: 0,
-    inlayer: 'layer_page',
-    resId: ForumUI.PAGE.BG.resId,
-    pos: {
-        x: 0,
-        y: 0,
-    },
-    anchor: {
-        x: 0,
-        y: 0,
-    },
-    scale: {
-        x: ForumUI.PAGE.WIDTH * 100 / ForumUI.PAGE.BG.width,
-        y: ForumUI.PAGE.HEIGHT * 100 / ForumUI.PAGE.BG.height,
-    }
-})
-
-// 帖子列表
-await ac.createScrollView({
-    name: 'sv_topic',
-    index: 1,
-    inlayer: 'layer_page',
-    visible: true,
-    pos: {
-        x: 0,
-        y: 0,
-    },
-    anchor: {
-        x: 0,
-        y: 0,
-    },
-    size: {
-        width: ForumUI.PAGE.WIDTH,
-        height: ForumUI.PAGE.HEIGHT,
-    },
-    // 帖子数量不多, 超不过页面高度, innerSize 直接设置为页面高度
-    innerSize: {
-        width: ForumUI.PAGE.WIDTH,
-        height: ForumUI.PAGE.HEIGHT,
-    },
-    horizontalScroll: false,
-    verticalScroll: true,
-});
+// 创建论坛 UI
+// 帖子数量不多不会翻页且高度固定，直接相乘计算高度
+let pageHeight = ForumUI.TOPIC.height * Object.keys(ForumSystem.postsMap).length + ForumUI.HEAD.height + innerMargin;
+await createForumUI(pageHeight);
 
 async function initPostList() {
     let postsList = Object.values(ForumSystem.postsMap);
@@ -213,9 +150,11 @@ async function initPostList() {
         return b.timestamp - a.timestamp;
     });
 
+    let startY = Math.max(ForumUI.PAGE.height, pageHeight)- ForumUI.HEAD.height - innerMargin 
+
     for (var i = 0; i < postsList.length; i++) {
         let post = postsList[i];
-        let y = ForumUI.PAGE.HEIGHT - (i + 1) * ForumUI.TOPIC.HEIGHT;
+        let y = startY - (i + 1) * ForumUI.TOPIC.height ;
         console.log(`正在创建第 ${i} 个帖子，时间戳：${post.timestamp}`);
         await createItemTopic(post, i, y);
     }
