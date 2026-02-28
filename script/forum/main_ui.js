@@ -13,6 +13,15 @@ ac.createStyle({
 });
 
 ac.createStyle({
+    name: 'style_topic_visited',
+    font: '汉仪小隶书简',
+    bold: false,
+    italic: false,
+    fontSize: 24,
+    color: '#b33411',
+});
+
+ac.createStyle({
     name: 'style_time',
     // font: '思源黑体',
     font: '汉仪小隶书简',
@@ -33,12 +42,11 @@ async function createItemTopic(post, index, posY) {
         });
     }
 
-    let layerName = `btn_topic_${post.id}`;
     let bgStyle = index % 2 == 0 ? ForumUI.TOPIC.BG_NORMAL : ForumUI.TOPIC.BG_HIGHLIGHT;
-    console.log(index, bgStyle);
+    let visited = ForumSystem.isPostVisited(post.id);
 
     await ac.createImage({
-        name: layerName,
+        name: `btn_topic_${post.id}`,
         index: 0,
         inlayer: 'sv_page',
         visible: true,
@@ -100,7 +108,7 @@ async function createItemTopic(post, index, posY) {
             width: 600,
             height: ForumUI.TOPIC.height,
         },
-        style: 'style_topic',
+        style: visited? 'style_topic_visited' : 'style_topic',
     });
 
     // 帖子作者
@@ -233,7 +241,7 @@ async function initPostList() {
 // 执行
 await initPostList();
 
-let flag = ForumSystem.isAllPostReaded();
+let flag = ForumSystem.isAllPostVisited();
 console.log(`是否看完了所有的帖子：${flag}`);
 if (!flag) {
     // 隐藏关闭按钮

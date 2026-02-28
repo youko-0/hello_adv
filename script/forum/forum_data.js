@@ -102,23 +102,23 @@ var ForumSystem = {
         return prefix + postId;
     },
 
-    isPostReaded: function (postId) {
-        let readedPosts = ac.var.readedPosts.split("|");
-        return readedPosts.includes(postId);
+    isPostVisited: function (postId) {
+        let visitedPosts = ac.var.visitedPosts.split("|");
+        return visitedPosts.includes(postId);
     },
 
-    savePostReaded: function (postId) {
-        let readedPosts = ac.var.readedPosts.split("|");
-        if (!readedPosts.includes(postId)) {
-            readedPosts.push(postId);
-            ac.var.readedPosts = readedPosts.join("|");
+    savePostVisited: function (postId) {
+        let visitedPosts = ac.var.visitedPosts.split("|");
+        if (!visitedPosts.includes(postId)) {
+            visitedPosts.push(postId);
+            ac.var.visitedPosts = visitedPosts.join("|");
         }
     },
 
     // 是否看完了所有的帖子
-    isAllPostReaded: function () {
+    isAllPostVisited: function () {
         for (let post of Object.values(this.postsMap)) {
-            if (!this.isPostReaded(post.id)) {
+            if (!this.isPostVisited(post.id)) {
                 return false;
             }
         }

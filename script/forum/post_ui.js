@@ -143,4 +143,4 @@ async function initReplyList(postId) {
 let postId = ForumSystem.getCurrentPostId();
 await initReplyList(postId);
 // 保存浏览记录
-ForumSystem.savePostReaded(postId);
+ForumSystem.savePostVisited(postId);
