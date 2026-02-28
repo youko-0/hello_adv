@@ -81,7 +81,7 @@ async function createBrowserUI(onClose=null) {
         index: 1,
         inlayer: 'layer_browser',
         visible: true,
-        content: ForumSystem.getSiteTitle(),
+        content: ForumSystem.getCurrentTitle(),
         pos: {
             x: 48,
             y: BrowserUI.WINDOW.height - 13,
@@ -103,7 +103,7 @@ async function createBrowserUI(onClose=null) {
         index: 1,
         inlayer: 'layer_browser',
         visible: true,
-        content: ForumSystem.getSiteUrl(),
+        content: ForumSystem.getCurrentUrl(),
         pos: {
             x: 98,
             y: BrowserUI.WINDOW.height - 40,
@@ -129,8 +129,8 @@ async function createBrowserUI(onClose=null) {
         sResId: BrowserUI.BTN.CLOSE.resIdHighlight,
         content: ``,
         pos: {
-            x: browserWidth,
-            y: browserHeight,
+            x: BrowserUI.WINDOW.width,
+            y: BrowserUI.WINDOW.height,
         },
         anchor: {
             x: 100,

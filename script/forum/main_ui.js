@@ -22,25 +22,25 @@ ac.createStyle({
 
 // 创建标题项
 async function createItemTopic(post, index, posY) {
-    let layerName = `btn_topic_${post.id}`;
-    let bgStyle = index % 2 == 0 ? ForumUI.TOPIC.BG_NORMAL : ForumUI.TOPIC.BG_HIGHLIGHT;
-    console.log(index, bgStyle);
 
-    async function gotoPost() {
-        ForumSystem.setCurrentPostId(post.id);        
+    async function viewPost() {
+        ForumSystem.setCurrentPostId(post.id);
         await ac.replaceUI({
             name: 'replaceUI12',
             uiId: 'dbjp9oun',
         });
     }
-    await ac.createOption({
+
+    let layerName = `btn_topic_${post.id}`;
+    let bgStyle = index % 2 == 0 ? ForumUI.TOPIC.BG_NORMAL : ForumUI.TOPIC.BG_HIGHLIGHT;
+    console.log(index, bgStyle);
+
+    await ac.createImage({
         name: layerName,
         index: 0,
         inlayer: 'sv_topic',
         visible: true,
-        nResId: bgStyle.resId,
-        sResId: bgStyle.resId,
-        content: ``,
+        resId: bgStyle.resId,
         pos: {
             x: 0,
             y: posY,
@@ -53,7 +53,6 @@ async function createItemTopic(post, index, posY) {
             x: ForumUI.PAGE.WIDTH * 100 / bgStyle.width,
             y: ForumUI.TOPIC.HEIGHT * 100 / bgStyle.height,
         },
-        onTouchEnded: gotoPost,
     });
 
     // 帖子标题
@@ -108,7 +107,7 @@ async function createItemTopic(post, index, posY) {
         index: 1,
         inlayer: 'sv_topic',
         visible: true,
-        content: ForumSystem.formatRelativeTime(post.timestamp),
+        content: ForumUI.formatRelativeTime(post.timestamp),
         pos: {
             x: 1000,
             y: posY + ForumUI.TOPIC.HEIGHT / 2,
@@ -124,9 +123,15 @@ async function createItemTopic(post, index, posY) {
         style: 'style_time',
     });
 
+    ac.addEventListener({
+        type: ac.EVENT_TYPES.onTouchEnded,
+        listener: viewPost,
+        target: `lbl_topic_${post.id}`,
+    });
+
 }
 
-async function onClose(){
+async function onClose() {
     alert("TODO: 进入下一个剧情")
 }
 
@@ -221,27 +226,14 @@ async function initPostList() {
 // 执行
 await initPostList();
 
-// 关闭按钮
 let flag = ForumSystem.isAllPostReaded();
 console.log(`是否看完了所有的帖子：${flag}`);
-if (flag) {
-    await ac.createOption({
-        name: 'btn_close',
-        index: 5,
-        inlayer: 'window',
-        visible: true,
-        nResId: ForumUI.BTN.CLOSE.resIdNormal,
-        sResId: ForumUI.BTN.CLOSE.resIdHighlight,
-        content: ``,
-        pos: {
-            x: browserWidth,
-            y: browserHeight,
-        },
-        anchor: {
-            x: 100,
-            y: 100,
-        },
+if (!flag) {
+    // 隐藏关闭按钮
+    ac.hide({
+        name: 'btn_close_browser',
+        effect: 'normal',
+        duration: 0,
+        canskip: false,
     });
-
 }
-
