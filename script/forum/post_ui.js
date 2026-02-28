@@ -18,11 +18,18 @@ ac.createStyle({
     color: '#d1d3df',
 });
 
+ac.createStyle({
+    name: 'style_info',
+    font: '汉仪小隶书简',
+    bold: false,
+    italic: false,
+    fontSize: 22,
+    color: '#cbd6dc',
+});
+
 
 // 创建回复
 async function createItemReply(reply, index, posY, contentHeight) {
-    let padding = 20;
-    let itemHeight = contentHeight + padding * 2;
     let bgStyle = index % 2 == 0 ? ForumUI.TOPIC.BG_NORMAL : ForumUI.TOPIC.BG_HIGHLIGHT;
     // 背景
     await ac.createImage({
@@ -40,7 +47,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
         },
         scale: {
             x: ForumUI.PAGE.width * 100 / bgStyle.width,
-            y: itemHeight * 100 / bgStyle.height,
+            y: contentHeight * 100 / bgStyle.height,
         },
     });
 
@@ -52,7 +59,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
         resId: UserSystem.getUserIcon(reply.authorId),
         pos: {
             x: 100,
-            y: posY + itemHeight / 2,
+            y: posY + contentHeight / 2,
         },
         anchor: {
             x: 50,
@@ -69,17 +76,15 @@ async function createItemReply(reply, index, posY, contentHeight) {
         content: UserSystem.getUserName(reply.authorId),
         pos: {
             x: 200,
-            y: posY + itemHeight / 2,
+            y: posY + contentHeight / 2,
         },
-        anchor: {
-            x: 0,
-            y: 50,
-        },
+        anchor: { x: 50, y: 50},
         size: {
             width: 200,
             height: ForumUI.TOPIC.height,
         },
-        style: 'style_content',
+        style: 'style_info',
+        halign: ac.HALIGN_TYPES.middle,
     });
 
     // 回复内容
@@ -91,14 +96,11 @@ async function createItemReply(reply, index, posY, contentHeight) {
         content: reply.content,
         pos: {
             x: 400,
-            y: posY + padding,
+            y: posY + contentHeight - ForumUI.POST.REPLY.padding
         },
-        anchor: {
-            x: 0,
-            y: 0,
-        },
+        anchor: { x: 0, y: 0},
         size: {
-            width: 800,
+            width: ForumUI.POST.REPLY.width,
             height: contentHeight,
         },
         style: 'style_content',
@@ -140,7 +142,7 @@ async function initReplyList(postId, pageIndex=0) {
 }
 
 // 执行
-let postId = ForumSystem.getCurrentPostId();
-await initReplyList(postId, 0);
+let currentPostId = ForumSystem.getCurrentPostId();
+await initReplyList(currentPostId, 0);
 // 保存浏览记录
-ForumSystem.savePostVisited(postId);
+ForumSystem.savePostVisited(currentPostId);

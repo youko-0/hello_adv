@@ -49,6 +49,9 @@ var ForumUI = {
         },
         REPLY: {
             padding: 20,
+            width: 800,        // 文本宽度
+            height : 100,       // 文本最小高度
+            fontSize: 24,
         },
     },
 
@@ -120,10 +123,11 @@ var ForumUI = {
         let replyList = post.reply;
         for (let i = 0; i < replyList.length; i++) {
             let reply = replyList[i];
-            let contentHeight = this.calcTextHeight(reply.content);
+            let contentHeight = this.calcTextHeight(reply.content, this.POST.REPLY.fontSize, this.POST.REPLY.width);
             contentHeight += this.POST.REPLY.padding * 2;
             // 记录高度
             reply.height = contentHeight;
+            console.log('contentHeight', contentHeight, reply.content);
             totalHeight += contentHeight;
         }
         return totalHeight;
