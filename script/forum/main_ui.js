@@ -108,7 +108,7 @@ async function createItemTopic(post, index, posY) {
             width: 600,
             height: ForumUI.TOPIC.height,
         },
-        style: visited? 'style_topic_visited' : 'style_topic',
+        style: visited ? 'style_topic_visited' : 'style_topic',
     });
 
     // 帖子作者
@@ -209,7 +209,13 @@ async function createItemTopic(post, index, posY) {
 }
 
 async function onClose() {
-    alert("TODO: 进入下一个剧情")
+    let flag = ForumSystem.isAllPostVisited();
+    console.log(`是否看完了所有的帖子：${flag}`);
+    if (!flag) {
+        await showGameAlert("请先看完所有的帖子！");
+    } else {
+        await showGameAlert("TODO: 进入下一个剧情");
+    }
 }
 
 await createBrowserUI(onClose);
@@ -240,15 +246,3 @@ async function initPostList() {
 
 // 执行
 await initPostList();
-
-let flag = ForumSystem.isAllPostVisited();
-console.log(`是否看完了所有的帖子：${flag}`);
-if (!flag) {
-    // 隐藏关闭按钮
-    ac.hide({
-        name: 'btn_close_browser',
-        effect: 'normal',
-        duration: 0,
-        canskip: false,
-    });
-}

@@ -23,7 +23,7 @@ var BrowserUI = {
 
 // 创建浏览器 UI
 // onClose: 页面关闭回调
-async function createBrowserUI(onClose=null) {
+async function createBrowserUI(onClose = null) {
     ac.createStyle({
         name: 'style_status_bar',
         font: '微软雅黑',
@@ -136,5 +136,97 @@ async function createBrowserUI(onClose=null) {
             y: 100,
         },
         onTouchEnded: onClose,
+    });
+}
+
+
+async function showGameAlert(content, onConfirm = null) {
+
+    async function closeAlert() {
+        ac.remove({
+            name: 'layer_alert',
+            effect: 'normal',
+            duration: 0,
+            canskip: false,
+        });
+
+        // 如果传了回调函数，就执行它
+        if (onConfirm) await onConfirm();
+    }
+
+    ac.createStyle({
+        name: 'style_alert',
+        font: '汉仪小隶书简',
+        bold: false,
+        italic: false,
+        fontSize: 24,
+        color: '#d1d3df',
+    });
+    // 容器
+    await ac.createLayer({
+        name: 'layer_alert',
+        index: 500,     // 置顶
+        inlayer: 'window',
+        visible: true,
+        pos: {
+            x: BrowserUI.WINDOW.width / 2,
+            y: BrowserUI.WINDOW.height / 2,
+        },
+        anchor: {
+            x: 50,
+            y: 50,
+        },
+        size: {
+            width: 400,
+            height: 360,
+        },
+        clipMode: true,
+    });
+
+    await ac.createImage({
+        name: "img_alert_bg",
+        inlayer: "layer_alert",
+        resId: '$183071397',
+        visible: true,
+        pos: { x: 200, y: 180},
+        anchor: { x: 50, y: 50 },
+        scale: { x: 2000, y: 1600 },
+        opacity: 180,
+
+    });
+
+    await ac.createText({
+        name: "alert_content",
+        inlayer: "layer_alert",
+        content: content,
+        pos: {
+            x: 200,
+            y: 200,
+        },
+        anchor: { x: 50, y: 50 },
+        size: { width: 400, height: 360 },
+        style: "style_alert",
+        visible: true
+    });
+
+    await ac.createText({
+        name: "alert_confirm_btn",
+        inlayer: "layer_alert",
+        content: "确定",
+        pos: {
+            x: 200,
+            y: 100,
+        },
+        anchor: { x: 50, y: 50 },
+        size: { width: 100, height: 60 },
+        style: "style_alert",
+        visible: true
+    });
+
+    // 确定按钮
+    ac.addEventListener({
+        type: ac.EVENT_TYPES.onTouchEnded,
+        listener: closeAlert,
+        target: "alert_confirm_btn",
     });
 }
