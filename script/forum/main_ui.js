@@ -231,9 +231,9 @@ await createForumUI(pageHeight);
 
 async function initPostList() {
     let postsList = Object.values(ForumSystem.postsMap);
-    // 根据时间戳排序, 最新的在前面
+    // 根据最后回帖的时间戳排序, 最新的在前面
     postsList.sort(function (a, b) {
-        return b.timestamp - a.timestamp;
+        return b.reply[b.reply.length - 1].timestamp - a.reply[a.reply.length - 1].timestamp;
     });
 
     let startY = Math.max(ForumUI.PAGE.height, pageHeight) - ForumUI.HEAD.height - ForumUI.HEAD.marginBottom;

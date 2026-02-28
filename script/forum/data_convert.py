@@ -26,11 +26,6 @@ def parse_forum_data():
     current_post = None
     current_reply_list = []
     
-    # 时间控制变量
-    # 设定脚本运行时间前2小时为基准发帖时间
-    base_timestamp = int(time.time()) - (2 * 60 * 60) 
-    current_timestamp = base_timestamp
-    
     post_id_counter = START_ID
 
     # 正则表达式预编译
@@ -65,8 +60,11 @@ def parse_forum_data():
             # 为楼主随机分配一个ID
             topic_author = random.choice(AUTHOR_IDS)
             
-            # 重置时间：每个新帖子的发帖时间都视为基准时间（或者你可以让帖子之间也有时间间隔）
-            # 这里设定为所有帖子都是2小时前发的
+            # 时间控制变量
+            # 设定脚本运行时间前 2 ~ 10 小时为基准发帖时间
+            base_timestamp = int(time.time()) - (random.randint(2, 10) * 60 * 60)
+            print(f"基准时间：{base_timestamp}")
+            # 重置时间：每个新帖子的发帖时间都视为基准时间
             current_timestamp = base_timestamp
 
             current_post = {
@@ -91,7 +89,7 @@ def parse_forum_data():
                 # 1楼通常是楼主自己，保持ID一致
                 r_author = current_post['authorId']
                 r_time = current_post['timestamp']
-                # 1楼的时间通常和发帖时间一致，或者极短时间内
+                # 1楼的时间就是发帖时间
                 current_timestamp = r_time 
             else:
                 # 其他楼层随机分配
@@ -114,10 +112,7 @@ def parse_forum_data():
         current_post['reply'] = current_reply_list
         posts_map[str(current_post['id'])] = current_post
 
-    # 3. 输出到文件
-    # 这里我们按照你要求的格式输出，虽然通常是 JSON 数组，但你的例子是一个对象 Key-Value 结构
-    # 为了通用性，我将其包裹在一个名为 postsMap 的 JSON 对象中
-    
+    # 3. 输出 JSON 格式到文件
     output_data = {
         "postsMap": posts_map
     }

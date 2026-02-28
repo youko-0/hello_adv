@@ -120,7 +120,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
         inlayer: ForumUI.SV.name,
         content: `${reply.index}楼`,
         pos: {
-            x: ForumUI.PAGE.width - 140,
+            x: ForumUI.PAGE.width - 130,
             y: posY + 10
         },
         anchor: { x: 100, y: 0 },
