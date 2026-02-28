@@ -1,5 +1,5 @@
 // 帖子
-// 窗口
+// 通用部分
 let browserWidth = 1280;
 let browserHeight = 720;
 
@@ -20,6 +20,7 @@ ac.createStyle({
     fontSize: ForumUI.TOPIC.HEIGHT / 4,
     color: '#888888',
 });
+
 
 // 创建回复
 async function createItemReply(reply, index, posY, contentHeight) {
@@ -102,26 +103,13 @@ async function createItemReply(reply, index, posY, contentHeight) {
         size: {
             width: 800,
             height: contentHeight,
-        }
+        },
+        style: 'style_topic',
     });
 
 }
 
-// 全屏背景
-await ac.createImage({
-    name: 'img_browser_bg',
-    index: 0,
-    inlayer: 'window',
-    resId: '$182983354',
-    pos: {
-        x: 0,
-        y: 0,
-    },
-    anchor: {
-        x: 0,
-        y: 0,
-    },
-});
+await BrowserUI.createBrowserUI();
 
 // 网页
 await ac.createLayer({

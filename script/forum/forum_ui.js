@@ -1,3 +1,5 @@
+// 论坛UI
+
 var ForumUI = {
     PAGE: {
         WIDTH: 1200,

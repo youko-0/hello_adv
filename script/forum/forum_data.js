@@ -148,4 +148,26 @@ var ForumSystem = {
         }
         return true;
     },
+
+    getPostData: function (postId) {
+        let post = this.postsMap[postId];
+        if (!post) {
+            console.log(`帖子 ${postId} 不存在！`);
+            return null;
+        }
+        return post;
+    },
+
+    getSiteTitle: function () {
+        let postId = ac.var.currentPostId;
+        let post = this.getPostData(postId);
+        if (!post) return "首页";
+        return post.topic;
+    },
+
+    getSiteUrl: function () {
+        let prefix = "donghaiguaitan.topic.com/";
+        let postId = ac.var.currentPostId;
+        return prefix + postId;
+    },
 };

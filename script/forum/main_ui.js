@@ -127,21 +127,7 @@ async function createItemTopic(post, index, posY) {
 
 }
 
-// 全屏背景
-await ac.createImage({
-    name: 'img_browser_bg',
-    index: 0,
-    inlayer: 'window',
-    resId: '$182983354',
-    pos: {
-        x: 0,
-        y: 0,
-    },
-    anchor: {
-        x: 0,
-        y: 0,
-    },
-});
+await BrowserUI.createBrowserUI();
 
 // 网页
 await ac.createLayer({
