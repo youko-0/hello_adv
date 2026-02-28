@@ -1,24 +1,21 @@
 // 帖子
-// 通用部分
-let browserWidth = 1280;
-let browserHeight = 720;
 
 ac.createStyle({
-    name: 'style_topic',
-    font: '思源黑体',
+    name: 'style_title',
+    font: '汉仪小隶书简',
     bold: false,
     italic: false,
-    fontSize: ForumUI.TOPIC.height / 4,
-    color: '#1a3959',
+    fontSize: 28,
+    color: '#cbd6dc',
 });
 
 ac.createStyle({
-    name: 'style_time',
-    font: '思源黑体',
+    name: 'style_content',
+    font: '汉仪小隶书简',
     bold: false,
     italic: false,
-    fontSize: ForumUI.TOPIC.height / 4,
-    color: '#888888',
+    fontSize: 24,
+    color: '#d1d3df',
 });
 
 
@@ -119,7 +116,10 @@ async function onClose() {
 
 await createBrowserUI(onClose);
 
-await createForumUI(1000);
+let postId = ForumSystem.getCurrentPostId();
+let pageHeight = ForumUI.calcPostPageHeight(postId, 0);
+console.log('pageHeightpageHeight', pageHeight);
+await createForumUI(pageHeight);
 
 async function initReplyList(postId) {
     let post = ForumSystem.getPostData(postId);
@@ -127,18 +127,20 @@ async function initReplyList(postId) {
         return;
     }
     let replyList = post.reply;
+    let startY = Math.max(ForumUI.PAGE.height, pageHeight) - ForumUI.HEAD.height - ForumUI.HEAD.marginBottom;
+    startY -= ForumUI.POST.TITLE.height;
     for (var i = 0; i < replyList.length; i++) {
         let reply = replyList[i];
-        let y = ForumUI.PAGE.height - (i + 1) * 200;
-        let h = 200;
-        await createItemReply(reply, i, y, h);
+        let h = reply.height;
+        startY -= h;
+        await createItemReply(reply, i, startY, h);
     }
 
     console.log("所有回复创建完毕！");
 }
 
 // 执行
-let postId = ForumSystem.getCurrentPostId();
+
 await initReplyList(postId);
 // 保存浏览记录
 ForumSystem.savePostVisited(postId);

@@ -1,7 +1,4 @@
-// 窗口
-let browserWidth = 1280;
-let browserHeight = 720;
-let innerMargin = 10;       // 和版头的距离
+// 主页
 
 ac.createStyle({
     name: 'style_topic',
@@ -220,8 +217,7 @@ async function onClose() {
 await createBrowserUI(onClose);
 
 // 创建论坛 UI
-// 帖子数量不多不会翻页且高度固定，直接相乘计算高度
-let pageHeight = ForumUI.TOPIC.height * Object.keys(ForumSystem.postsMap).length + ForumUI.HEAD.height + innerMargin;
+let pageHeight = ForumUI.calcMainPageHeight(0);
 await createForumUI(pageHeight);
 
 async function initPostList() {
@@ -231,7 +227,7 @@ async function initPostList() {
         return b.timestamp - a.timestamp;
     });
 
-    let startY = Math.max(ForumUI.PAGE.height, pageHeight) - ForumUI.HEAD.height - innerMargin
+    let startY = Math.max(ForumUI.PAGE.height, pageHeight) - ForumUI.HEAD.height - ForumUI.HEAD.marginBottom;
 
     for (var i = 0; i < postsList.length; i++) {
         let post = postsList[i];

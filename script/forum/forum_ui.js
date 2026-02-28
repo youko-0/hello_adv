@@ -16,6 +16,7 @@ var ForumUI = {
     HEAD: {
         width: 1200,
         height: 120,
+        marginBottom: 10,       // 和下面内容的距离
         BG: {
             width: 32,
             height: 32,
@@ -35,12 +36,108 @@ var ForumUI = {
             height: 32,
         },
     },
+    POST: {
+        TITLE: {
+            height: 40,
+            BG: {
+                resId: '$183071397',
+                width: 32,
+                height: 32,
+            },
+
+        },
+        REPLY: {
+            padding: 20,
+        },
+    },
+
 
     AVATAR: {
         ICON_01: '$183113921',
         ICON_02: '$183114062',
         ICON_03: '$183113921',
         ICON_04: '$183114062',
+    },
+
+    // 计算文本高度
+    calcTextHeight: function (content, fontSize = 28, containerWidth = 580) {
+        if (!content) return 0;
+
+        const lineHeightMultiplier = 1.5;
+        const singleLineHeight = fontSize * lineHeightMultiplier;
+
+        let paragraphs = content.toString().split('\n');
+        let totalLines = 0;
+
+        paragraphs.forEach(para => {
+            if (para.length === 0) {
+                totalLines += 1; // 空行也算一行
+                return;
+            }
+
+            let currentLineWidth = 0;
+
+            // 遍历每个字符计算虚拟像素宽度
+            for (let i = 0; i < para.length; i++) {
+                let charCode = para.charCodeAt(i);
+
+                // charCode > 255 通常是中日韩文字，算 1 个字宽
+                if (charCode > 255) {
+                    currentLineWidth += fontSize;
+                }
+                // 英文、数字、标点，大约算 0.6 个字宽
+                else {
+                    currentLineWidth += (fontSize * 0.6);
+                }
+            }
+
+            // 向上取整
+            let linesInPara = Math.ceil(currentLineWidth / containerWidth);
+            totalLines += Math.max(1, linesInPara);
+        });
+
+        // 总行数 * 单行高度
+        return totalLines * singleLineHeight;
+    },
+
+    // 帖子列表的高度
+    calcTopicsHeight: function (pageIndex = 0) {
+        // 帖子数量不多不会翻页且高度固定，直接相乘计算高度
+        let totalHeight = this.TOPIC.height * Object.keys(ForumSystem.postsMap).length
+        return totalHeight;
+    },
+
+    // 主页高度
+    calcMainPageHeight: function (pageIndex = 0) {
+        let pageHeight = this.calcTopicsHeight(pageIndex) + this.HEAD.height + this.HEAD.marginBottom;
+        return pageHeight;
+    },
+
+    // 回复列表的高度
+    calcRepliesHeight: function (postId, pageIndex) {
+        let post = ForumSystem.getPostData(postId);
+        if (!post) {
+            return 0;
+        }
+        let replyList = post.reply;
+        let totalHeight = 0;
+        for (let i = 0; i < replyList.length; i++) {
+            let reply = replyList[i];
+            let contentHeight = this.calcTextHeight(reply.content);
+            contentHeight += this.POST.REPLY.padding * 2;
+            // 记录高度
+            reply.height = contentHeight;
+            totalHeight += contentHeight;
+        }
+        return totalHeight;
+    },
+
+    // 帖子页面的高度
+    calcPostPageHeight: function (postId, pageIndex = 0) {
+        let contentHeight = this.calcRepliesHeight(postId, pageIndex);
+        contentHeight += this.HEAD.height + this.HEAD.marginBottom;
+        contentHeight += this.POST.TITLE.height;
+        return contentHeight;
     },
 
     formatRelativeTime: function (timestamp) {

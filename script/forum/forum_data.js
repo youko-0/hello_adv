@@ -50,49 +50,6 @@ var ForumSystem = {
     },
 
 
-    // 计算文本高度
-    calcTextHeight: function (content, fontSize = 28, containerWidth = 580) {
-        if (!content) return 0;
-
-        const lineHeightMultiplier = 1.5;
-        const singleLineHeight = fontSize * lineHeightMultiplier;
-
-        let paragraphs = content.toString().split('\n');
-        let totalLines = 0;
-
-        paragraphs.forEach(para => {
-            if (para.length === 0) {
-                totalLines += 1; // 空行也算一行
-                return;
-            }
-
-            let currentLineWidth = 0;
-
-            // 遍历每个字符计算虚拟像素宽度
-            for (let i = 0; i < para.length; i++) {
-                let charCode = para.charCodeAt(i);
-
-                // charCode > 255 通常是中日韩文字，算 1 个字宽
-                if (charCode > 255) {
-                    currentLineWidth += fontSize;
-                }
-                // 英文、数字、标点，大约算 0.6 个字宽
-                else {
-                    currentLineWidth += (fontSize * 0.6);
-                }
-            }
-
-            // 计算行数(向上取整)
-            // Math.max(1, ...) 确保即使内容很少也至少算一行
-            let linesInPara = Math.ceil(currentLineWidth / containerWidth);
-            totalLines += Math.max(1, linesInPara);
-        });
-
-        // 总行数 * 单行高度
-        return totalLines * singleLineHeight;
-    },
-
-
     // 当前帖子id
     getCurrentPostId: function () {
         return ac.var.currentPostId;
@@ -147,6 +104,8 @@ var ForumSystem = {
         }
         return post;
     },
+
+
 
 
 };
