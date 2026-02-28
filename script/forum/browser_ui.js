@@ -9,18 +9,27 @@ var BrowserUI = {
         resId: '$182983354',
         width: 1280,
         height: 720,
+    },
+    BTN: {
+        CLOSE: {
+            resIdNormal: '$183130998',
+            resIdHighlight: '$183130996',
+            width: 30,
+            height: 26,
+        },
     }
 
 };
 
 // 创建浏览器 UI
-async function createBrowserUI() {
+// onClose: 页面关闭回调
+async function createBrowserUI(onClose=null) {
     ac.createStyle({
         name: 'style_status_bar',
         font: '微软雅黑',
         bold: false,
         italic: false,
-        fontSize: 12,
+        fontSize: 10,
         color: '#d1d3df',
     });
 
@@ -83,7 +92,7 @@ async function createBrowserUI() {
         },
         size: {
             width: 100,
-            height: 12,
+            height: 10,
         },
         style: 'style_status_bar',
     });
@@ -104,11 +113,29 @@ async function createBrowserUI() {
             y: 50,
         },
         size: {
-            width: 100,
+            width: 400,
             height: 12,
         },
         style: 'style_status_bar',
     });
 
-};
-
+    // 关闭按钮
+    await ac.createOption({
+        name: 'btn_close_browser',
+        index: 5,
+        inlayer: 'layer_browser',
+        visible: true,
+        nResId: BrowserUI.BTN.CLOSE.resIdNormal,
+        sResId: BrowserUI.BTN.CLOSE.resIdHighlight,
+        content: ``,
+        pos: {
+            x: browserWidth,
+            y: browserHeight,
+        },
+        anchor: {
+            x: 100,
+            y: 100,
+        },
+        onTouchEnded: onClose,
+    });
+}

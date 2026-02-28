@@ -109,7 +109,15 @@ async function createItemReply(reply, index, posY, contentHeight) {
 
 }
 
-await BrowserUI.createBrowserUI();
+async function onClose() {
+    ForumSystem.setCurrentPostId("")
+    await ac.replaceUI({
+        name: 'replaceUI12',
+        uiId: 'nw48gnat',
+    });
+}
+
+await createBrowserUI(onClose);
 
 // 网页
 await ac.createLayer({
@@ -199,36 +207,7 @@ async function initReplyList(postId) {
 }
 
 // 执行
-await initReplyList(ac.var.currentPostId);
-var sss111 = ForumSystem.calcTextHeight('1111234234324');
-console.log('sss111', sss111);
+let postId = ForumSystem.getCurrentPostId();
+await initReplyList(postId);
 // 保存浏览记录
-ForumSystem.savePostReaded(ac.var.currentPostId);
-
-async function gotoMain() {
-    ac.var.currentPostId = "";
-    await ac.replaceUI({
-        name: 'replaceUI12',
-        uiId: 'nw48gnat',
-    });
-}
-
-// 关闭按钮
-await ac.createOption({
-    name: 'btn_close',
-    index: 5,
-    inlayer: 'window',
-    visible: true,
-    nResId: ForumUI.BTN.CLOSE.resIdNormal,
-    sResId: ForumUI.BTN.CLOSE.resIdHighlight,
-    content: ``,
-    pos: {
-        x: browserWidth,
-        y: browserHeight,
-    },
-    anchor: {
-        x: 100,
-        y: 100,
-    },
-    onTouchEnded: gotoMain,
-});
+ForumSystem.savePostReaded(postId);

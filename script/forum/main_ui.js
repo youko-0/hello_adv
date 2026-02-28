@@ -27,8 +27,7 @@ async function createItemTopic(post, index, posY) {
     console.log(index, bgStyle);
 
     async function gotoPost() {
-        ac.var.currentPostId = post.id;
-        console.log('gotoPost', post.id, ac.var.currentPostId);
+        ForumSystem.setCurrentPostId(post.id);        
         await ac.replaceUI({
             name: 'replaceUI12',
             uiId: 'dbjp9oun',
@@ -127,7 +126,11 @@ async function createItemTopic(post, index, posY) {
 
 }
 
-await BrowserUI.createBrowserUI();
+async function onClose(){
+    alert("TODO: 进入下一个剧情")
+}
+
+await createBrowserUI(onClose);
 
 // 网页
 await ac.createLayer({

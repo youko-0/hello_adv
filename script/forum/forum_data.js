@@ -126,6 +126,30 @@ var ForumSystem = {
         return totalLines * singleLineHeight;
     },
 
+
+    // 当前帖子id
+    getCurrentPostId: function () {
+        return ac.var.currentPostId;
+    },
+
+    setCurrentPostId: function (postId) {
+        console.log("setCurrentPostId old: ", ac.var.currentPostId, "new: ", postId)
+        ac.var.currentPostId = postId;
+    },
+
+    getCurrentTitle: function () {
+        let postId = this.getCurrentPostId();
+        let post = this.getPostData(postId);
+        if (!post) return "首页";
+        return post.topic;
+    },
+
+    getCurrentUrl: function () {
+        let prefix = "donghaiguaitan.topic.com/";
+        let postId = this.getCurrentPostId();
+        return prefix + postId;
+    },
+
     isPostReaded: function (postId) {
         let readedPosts = ac.var.readedPosts.split("|");
         return readedPosts.includes(postId);
@@ -158,16 +182,5 @@ var ForumSystem = {
         return post;
     },
 
-    getSiteTitle: function () {
-        let postId = ac.var.currentPostId;
-        let post = this.getPostData(postId);
-        if (!post) return "首页";
-        return post.topic;
-    },
 
-    getSiteUrl: function () {
-        let prefix = "donghaiguaitan.topic.com/";
-        let postId = ac.var.currentPostId;
-        return prefix + postId;
-    },
 };
