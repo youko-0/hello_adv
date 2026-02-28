@@ -32,7 +32,7 @@ ac.createStyle({
     font: '汉仪小隶书简',
     bold: false,
     italic: false,
-    fontSize: 20,
+    fontSize: 18,
     color: '#c6cbce',
 });
 
@@ -81,16 +81,15 @@ async function createItemReply(reply, index, posY, contentHeight) {
         name: `lbl_username_${index}`,
         index: 1,
         inlayer: ForumUI.SV.name,
-        visible: true,
         content: UserSystem.getUserName(reply.authorId),
         pos: {
             x: 100,
             y: posY + contentHeight - 76,
         },
-        anchor: { x: 50, y: 50},
+        anchor: { x: 50, y: 50 },
         size: {
             width: 200,
-            height: ForumUI.TOPIC.height,
+            height: ForumUI.POST.REPLY.fontSize,
         },
         style: 'style_name',
         halign: ac.HALIGN_TYPES.middle,
@@ -101,18 +100,55 @@ async function createItemReply(reply, index, posY, contentHeight) {
         name: `lbl_reply_${index}`,
         index: 1,
         inlayer: ForumUI.SV.name,
-        visible: true,
         content: reply.content,
         pos: {
             x: 200,
             y: posY + contentHeight - ForumUI.POST.REPLY.padding
         },
-        anchor: { x: 0, y: 100},
+        anchor: { x: 0, y: 100 },
         size: {
             width: ForumUI.POST.REPLY.width,
             height: contentHeight - ForumUI.POST.REPLY.padding * 2,
         },
         style: 'style_content',
+    });
+
+    // 层数
+    await ac.createText({
+        name: `lbl_index_${index}`,
+        index: 1,
+        inlayer: ForumUI.SV.name,
+        content: `${reply.index}楼`,
+        pos: {
+            x: ForumUI.PAGE.width - 140,
+            y: posY + 10
+        },
+        anchor: { x: 100, y: 0 },
+        size: {
+            width: 40,
+            height: ForumUI.POST.REPLY.fontSize,
+        },
+        style: 'style_time',
+        halign: ac.HALIGN_TYPES.right,
+    });
+
+    // 时间
+    await ac.createText({
+        name: `lbl_reply_time_${index}`,
+        index: 1,
+        inlayer: ForumUI.SV.name,
+        content: ForumUI.formatRelativeTime(reply.timestamp),
+        pos: {
+            x: ForumUI.PAGE.width - 20,
+            y: posY + 10
+        },
+        anchor: { x: 100, y: 0 },
+        size: {
+            width: 100,
+            height: ForumUI.POST.REPLY.fontSize,
+        },
+        style: 'style_time',
+        halign: ac.HALIGN_TYPES.right,
     });
 
 }
@@ -128,7 +164,7 @@ async function onClose() {
 await createBrowserUI(onClose);
 
 
-async function initReplyList(postId, pageIndex=0) {
+async function initReplyList(postId, pageIndex = 0) {
     let post = ForumSystem.getPostData(postId);
     if (!post) {
         return;
