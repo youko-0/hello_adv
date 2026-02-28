@@ -19,13 +19,22 @@ ac.createStyle({
 });
 
 ac.createStyle({
-    name: 'style_time',
+    name: 'style_name',
     // font: '思源黑体',
     font: '汉仪小隶书简',
     bold: false,
     italic: false,
     fontSize: 18,
     color: '#cbd6dc',
+});
+
+ac.createStyle({
+    name: 'style_time',
+    font: '汉仪小隶书简',
+    bold: false,
+    italic: false,
+    fontSize: 18,
+    color: '#c6cbce',
 });
 
 // 创建标题项
@@ -126,7 +135,7 @@ async function createItemTopic(post, index, posY) {
             width: 200,
             height: ForumUI.TOPIC.height,
         },
-        style: 'style_time',
+        style: 'style_name',
     });
 
     // 发帖时间
@@ -172,7 +181,7 @@ async function createItemTopic(post, index, posY) {
                 width: 200,
                 height: ForumUI.TOPIC.height,
             },
-            style: 'style_time',
+            style: 'style_name',
         });
         await ac.createText({
             name: `lbl_last_reply_time_${post.id}`,

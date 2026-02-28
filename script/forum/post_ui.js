@@ -19,12 +19,21 @@ ac.createStyle({
 });
 
 ac.createStyle({
-    name: 'style_info',
+    name: 'style_name',
     font: '汉仪小隶书简',
     bold: false,
     italic: false,
-    fontSize: 22,
+    fontSize: 20,
     color: '#cbd6dc',
+});
+
+ac.createStyle({
+    name: 'style_time',
+    font: '汉仪小隶书简',
+    bold: false,
+    italic: false,
+    fontSize: 20,
+    color: '#c6cbce',
 });
 
 
@@ -59,7 +68,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
         resId: UserSystem.getUserIcon(reply.authorId),
         pos: {
             x: 100,
-            y: posY + contentHeight / 2,
+            y: posY + contentHeight - 42,
         },
         anchor: {
             x: 50,
@@ -75,15 +84,15 @@ async function createItemReply(reply, index, posY, contentHeight) {
         visible: true,
         content: UserSystem.getUserName(reply.authorId),
         pos: {
-            x: 200,
-            y: posY + contentHeight / 2,
+            x: 100,
+            y: posY + contentHeight - 76,
         },
         anchor: { x: 50, y: 50},
         size: {
             width: 200,
             height: ForumUI.TOPIC.height,
         },
-        style: 'style_info',
+        style: 'style_name',
         halign: ac.HALIGN_TYPES.middle,
     });
 
@@ -95,13 +104,13 @@ async function createItemReply(reply, index, posY, contentHeight) {
         visible: true,
         content: reply.content,
         pos: {
-            x: 400,
+            x: 200,
             y: posY + contentHeight - ForumUI.POST.REPLY.padding
         },
-        anchor: { x: 0, y: 0},
+        anchor: { x: 0, y: 100},
         size: {
             width: ForumUI.POST.REPLY.width,
-            height: contentHeight,
+            height: contentHeight - ForumUI.POST.REPLY.padding * 2,
         },
         style: 'style_content',
     });
