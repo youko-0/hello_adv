@@ -90,7 +90,7 @@ async function createBrowserUI(onClose = null) {
             y: 50,
         },
         size: {
-            width: 100,
+            width: 110,
             height: 10,
         },
         style: 'style_status_bar',
