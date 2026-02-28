@@ -42,6 +42,7 @@ async function createItemTopic(post, index, posY) {
 
     async function viewPost() {
         ForumSystem.setCurrentPostId(post.id);
+        ForumSystem.setCurrentPageIndex(1);
         await ac.replaceUI({
             name: 'replaceUI12',
             uiId: 'dbjp9oun',
@@ -55,7 +56,6 @@ async function createItemTopic(post, index, posY) {
         name: `btn_topic_${post.id}`,
         index: 0,
         inlayer: ForumUI.SV.name,
-        visible: true,
         resId: bgStyle.resId,
         pos: {
             x: 0,
@@ -76,7 +76,6 @@ async function createItemTopic(post, index, posY) {
         name: `lbl_reply_count_${post.id}`,
         index: 1,
         inlayer: ForumUI.SV.name,
-        visible: true,
         content: `【${post.reply.length}】`,
         pos: {
             x: 60,
@@ -99,7 +98,6 @@ async function createItemTopic(post, index, posY) {
         name: `lbl_topic_${post.id}`,
         index: 1,
         inlayer: ForumUI.SV.name,
-        visible: true,
         content: post.topic,
         pos: {
             x: 100,
@@ -121,7 +119,6 @@ async function createItemTopic(post, index, posY) {
         name: `lbl_author_${post.id}`,
         index: 1,
         inlayer: ForumUI.SV.name,
-        visible: true,
         content: UserSystem.getUserName(post.authorId),
         pos: {
             x: 800,
@@ -143,7 +140,6 @@ async function createItemTopic(post, index, posY) {
         name: `lbl_time_${post.id}`,
         index: 1,
         inlayer: ForumUI.SV.name,
-        visible: true,
         content: ForumUI.formatRelativeTime(post.timestamp),
         pos: {
             x: 800,
@@ -167,7 +163,6 @@ async function createItemTopic(post, index, posY) {
             name: `lbl_last_reply_${post.id}`,
             index: 1,
             inlayer: ForumUI.SV.name,
-            visible: true,
             content: UserSystem.getUserName(lastReply.authorId),
             pos: {
                 x: 1000,
@@ -187,7 +182,6 @@ async function createItemTopic(post, index, posY) {
             name: `lbl_last_reply_time_${post.id}`,
             index: 1,
             inlayer: ForumUI.SV.name,
-            visible: true,
             content: ForumUI.formatRelativeTime(lastReply.timestamp),
             pos: {
                 x: 1000,

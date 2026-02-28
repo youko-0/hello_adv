@@ -47,6 +47,10 @@ var ForumUI = {
             height : 72,       // 文本最小高度, 2行
             fontSize: 24,
         },
+        REPLY_PER_PAGE : 10,    // 每页显示的回复数量,
+        PAGINATION: {
+            height: 40,
+        },
     },
 
 
@@ -133,6 +137,7 @@ var ForumUI = {
         let contentHeight = this.calcRepliesHeight(post, pageIndex);
         contentHeight += this.HEAD.height + this.HEAD.marginBottom;
         contentHeight += this.POST.TITLE.height;
+        contentHeight += this.POST.PAGINATION.height;
         return contentHeight;
     },
 

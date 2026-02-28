@@ -36,6 +36,24 @@ ac.createStyle({
     color: '#c6cbce',
 });
 
+ac.createStyle({
+    name: 'style_pagination',
+    font: '汉仪小隶书简',
+    bold: true,
+    italic: false,
+    fontSize: 20,
+    color: '#cbd6dc',
+});
+
+ac.createStyle({
+    name: 'style_pagination_active',
+    font: '汉仪小隶书简',
+    bold: true,
+    italic: false,
+    fontSize: 20,
+    color: '#b33411',
+});
+
 
 // 创建回复
 async function createItemReply(reply, index, posY, contentHeight) {
@@ -156,6 +174,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
 
 async function onClose() {
     ForumSystem.setCurrentPostId("")
+    ForumSystem.setCurrentPageIndex(1);
     await ac.replaceUI({
         name: 'replaceUI12',
         uiId: 'nw48gnat',
@@ -165,7 +184,58 @@ async function onClose() {
 await createBrowserUI(onClose);
 
 
+// 导航条
+async function createPagination(pageCount, currentPage) {
+    async function viewPage(pageIndex) {
+        ForumSystem.setCurrentPageIndex(pageIndex);
+        await ac.replaceUI({
+            name: 'replaceUI12',
+            uiId: 'dbjp9oun',
+        });
+    }
+
+    for (let i = 1; i <= pageCount; i++) {
+        let x = 100 + (i - 1) * 60;
+        // 判断是否是当前页
+        let isCurrent = (i === currentPage);
+        let content = isCurrent ? `${i}` : `[${i}]`;    // 按钮上显示的数字
+
+        await ac.createText({
+            name: `btn_page_${i}`,
+            index: 1,
+            inlayer: ForumUI.SV.name,
+            content: content,
+            pos: {
+                x: x,
+                y: 10,
+            },
+            anchor: {
+                x: 50,
+                y: 0,
+            },
+            size: {
+                width: 32,
+                height: 32,
+            },
+            style: isCurrent ? 'style_pagination_active' : 'style_pagination',
+        });
+
+        ac.addEventListener({
+            type: ac.EVENT_TYPES.onTouchEnded,
+            listener: async function () {
+                if (isCurrent) return; // 如果是当前页，点击无效
+                await viewPage(i);     // 传递参数
+            },
+            target: `btn_page_${i}`,
+        });
+    }
+
+
+}
+
+// 回复列表
 async function initReplyList(postId, pageIndex = 0) {
+    console.log(`正在创建帖子 ${postId} 的回复列表，第 ${pageIndex} 页`);
     let post = ForumSystem.getPostData(postId);
     if (!post) {
         return;
@@ -204,11 +274,14 @@ async function initReplyList(postId, pageIndex = 0) {
         await createItemReply(reply, i, startY, h);
     }
 
-    console.log("所有回复创建完毕！");
+    let pageCount = Math.ceil(replyList.length / ForumUI.POST.REPLY_PER_PAGE);
+    await createPagination(pageCount, pageIndex);
 }
+
 
 // 执行
 let currentPostId = ForumSystem.getCurrentPostId();
-await initReplyList(currentPostId, 0);
+let currentPageIndex = ForumSystem.getCurrentPageIndex();
+await initReplyList(currentPostId, currentPageIndex);
 // 保存浏览记录
 ForumSystem.savePostVisited(currentPostId);

@@ -1,4 +1,5 @@
 var ForumSystem = {
+    Host: "donghaiguaitan.topic.com/",      // 域名
     "postsMap": {
         "1001": {
             "id": "1001",
@@ -560,8 +561,17 @@ var ForumSystem = {
     },
 
     setCurrentPostId: function (postId) {
-        console.log("setCurrentPostId old: ", ac.var.currentPostId, "new: ", postId)
+        console.log("setCurrentPostId old: ", ac.var.currentPostId, ", new: ", postId)
         ac.var.currentPostId = postId;
+    },
+
+    getCurrentPageIndex: function () {
+        return ac.var.currentPageIndex;
+    },
+
+    setCurrentPageIndex: function (pageIndex) {
+        console.log("setCurrentPageIndex old: ", ac.var.currentPageIndex, ", new: ", pageIndex)
+        ac.var.currentPageIndex = pageIndex;
     },
 
     getCurrentTitle: function () {
@@ -572,9 +582,9 @@ var ForumSystem = {
     },
 
     getCurrentUrl: function () {
-        let prefix = "donghaiguaitan.topic.com/";
         let postId = this.getCurrentPostId();
-        return prefix + postId;
+        let suffix = this.getCurrentPageIndex() > 1 ? `?page=${this.getCurrentPageIndex()}` : "";
+        return this.Host + postId + suffix;
     },
 
     isPostVisited: function (postId) {
