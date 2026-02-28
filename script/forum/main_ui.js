@@ -14,10 +14,11 @@ ac.createStyle({
 
 ac.createStyle({
     name: 'style_time',
+    // font: '思源黑体',
     font: '汉仪小隶书简',
     bold: false,
     italic: false,
-    fontSize: 24,
+    fontSize: 18,
     color: '#cbd6dc',
 });
 
@@ -56,8 +57,30 @@ async function createItemTopic(post, index, posY) {
         },
     });
 
+    // 回复数量
+    await ac.createText({
+        name: `lbl_reply_count_${post.id}`,
+        index: 1,
+        inlayer: 'sv_page',
+        visible: true,
+        content: `【${post.reply.length}】`,
+        // 左边空白
+        pos: {
+            x: 16,
+            y: posY + ForumUI.TOPIC.height / 2,
+        },
+        anchor: {
+            x: 0,
+            y: 50,
+        },
+        size: {
+            width: 80,
+            height: ForumUI.TOPIC.height,
+        },
+        style: 'style_topic',
+    });
+
     // 帖子标题
-    // 上面的背景是缩放实现的，这里文字不能放在背景下面
     await ac.createText({
         name: `lbl_topic_${post.id}`,
         index: 1,
@@ -89,29 +112,7 @@ async function createItemTopic(post, index, posY) {
         content: UserSystem.getUserName(post.authorId),
         pos: {
             x: 800,
-            y: posY + ForumUI.TOPIC.height / 2,
-        },
-        anchor: {
-            x: 0,
-            y: 50,
-        },
-        size: {
-            width: 200,
-            height: ForumUI.TOPIC.height,
-        },
-        style: 'style_topic',
-    });
-
-    // 帖子时间
-    await ac.createText({
-        name: `lbl_time_${post.id}`,
-        index: 1,
-        inlayer: 'sv_page',
-        visible: true,
-        content: ForumUI.formatRelativeTime(post.timestamp),
-        pos: {
-            x: 1000,
-            y: posY + ForumUI.TOPIC.height / 2,
+            y: posY + ForumUI.TOPIC.height / 2 + 10,
         },
         anchor: {
             x: 0,
@@ -123,6 +124,73 @@ async function createItemTopic(post, index, posY) {
         },
         style: 'style_time',
     });
+
+    // 发帖时间
+    await ac.createText({
+        name: `lbl_time_${post.id}`,
+        index: 1,
+        inlayer: 'sv_page',
+        visible: true,
+        content: ForumUI.formatRelativeTime(post.timestamp),
+        pos: {
+            x: 800,
+            y: posY + ForumUI.TOPIC.height / 2 - 10,
+        },
+        anchor: {
+            x: 0,
+            y: 50,
+        },
+        size: {
+            width: 200,
+            height: ForumUI.TOPIC.height,
+        },
+        style: 'style_time',
+    });
+
+    // 最后回复
+    let lastReply = post.reply[post.reply.length - 1];
+    if (lastReply) {
+        await ac.createText({
+            name: `lbl_last_reply_${post.id}`,
+            index: 1,
+            inlayer: 'sv_page',
+            visible: true,
+            content: UserSystem.getUserName(lastReply.authorId),
+            pos: {
+                x: 1000,
+                y: posY + ForumUI.TOPIC.height / 2 + 10,
+            },
+            anchor: {
+                x: 0,
+                y: 50,
+            },
+            size: {
+                width: 200,
+                height: ForumUI.TOPIC.height,
+            },
+            style: 'style_time',
+        });
+        await ac.createText({
+            name: `lbl_last_reply_time_${post.id}`,
+            index: 1,
+            inlayer: 'sv_page',
+            visible: true,
+            content: ForumUI.formatRelativeTime(lastReply.timestamp),
+            pos: {
+                x: 1000,
+                y: posY + ForumUI.TOPIC.height / 2 - 10,
+            },
+            anchor: {
+                x: 0,
+                y: 50,
+            },
+            size: {
+                width: 200,
+                height: ForumUI.TOPIC.height,
+            },
+            style: 'style_time',
+        });
+    }
 
     ac.addEventListener({
         type: ac.EVENT_TYPES.onTouchEnded,
@@ -150,11 +218,11 @@ async function initPostList() {
         return b.timestamp - a.timestamp;
     });
 
-    let startY = Math.max(ForumUI.PAGE.height, pageHeight)- ForumUI.HEAD.height - innerMargin 
+    let startY = Math.max(ForumUI.PAGE.height, pageHeight) - ForumUI.HEAD.height - innerMargin
 
     for (var i = 0; i < postsList.length; i++) {
         let post = postsList[i];
-        let y = startY - (i + 1) * ForumUI.TOPIC.height ;
+        let y = startY - (i + 1) * ForumUI.TOPIC.height;
         console.log(`正在创建第 ${i} 个帖子，时间戳：${post.timestamp}`);
         await createItemTopic(post, i, y);
     }
