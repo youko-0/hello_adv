@@ -15,7 +15,7 @@ var ForumUI = {
     },
     HEAD: {
         width: 1200,
-        height: 60,
+        height: 120,
         BG: {
             width: 32,
             height: 32,

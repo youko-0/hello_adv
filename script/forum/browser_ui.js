@@ -188,7 +188,7 @@ async function showGameAlert(content, onConfirm = null) {
         inlayer: "layer_alert",
         resId: '$183071397',
         visible: true,
-        pos: { x: 200, y: 180},
+        pos: { x: 200, y: 180 },
         anchor: { x: 50, y: 50 },
         scale: { x: 2000, y: 1600 },
         opacity: 180,
@@ -206,7 +206,7 @@ async function showGameAlert(content, onConfirm = null) {
         anchor: { x: 50, y: 50 },
         size: { width: 400, height: 360 },
         style: "style_alert",
-        visible: true
+        halign: ac.HALIGN_TYPES.middle,
     });
 
     await ac.createText({
@@ -220,7 +220,7 @@ async function showGameAlert(content, onConfirm = null) {
         anchor: { x: 50, y: 50 },
         size: { width: 100, height: 60 },
         style: "style_alert",
-        visible: true
+        halign: ac.HALIGN_TYPES.middle,
     });
 
     // 确定按钮

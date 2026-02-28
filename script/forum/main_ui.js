@@ -72,13 +72,12 @@ async function createItemTopic(post, index, posY) {
         inlayer: ForumUI.SV.name,
         visible: true,
         content: `【${post.reply.length}】`,
-        // 左边空白
         pos: {
-            x: 16,
+            x: 60,
             y: posY + ForumUI.TOPIC.height / 2,
         },
         anchor: {
-            x: 0,
+            x: 50,
             y: 50,
         },
         size: {
@@ -86,6 +85,7 @@ async function createItemTopic(post, index, posY) {
             height: ForumUI.TOPIC.height,
         },
         style: 'style_topic',
+        halign: ac.HALIGN_TYPES.middle,
     });
 
     // 帖子标题
@@ -95,9 +95,8 @@ async function createItemTopic(post, index, posY) {
         inlayer: ForumUI.SV.name,
         visible: true,
         content: post.topic,
-        // 左边空白
         pos: {
-            x: 80,
+            x: 100,
             y: posY + ForumUI.TOPIC.height / 2,
         },
         anchor: {
