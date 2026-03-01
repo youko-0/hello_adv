@@ -200,8 +200,8 @@ async function onClose() {
     ForumSystem.setCurrentPostId("")
     ForumSystem.setCurrentPageIndex(1);
     await ac.replaceUI({
-        name: 'replaceUI_forum',
-        uiId: ResMap.ui_main_page,
+        name: 'replaceUI_main_page',
+        uiId: ResMap.ui_main_page
     });
 }
 

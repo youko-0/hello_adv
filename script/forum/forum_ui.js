@@ -8,7 +8,7 @@ var ForumUI = {
         BG: {
             width: 32,
             height: 32,
-            resId: ResMap.img_forum_topic_bg_normal,
+            resId: ResMap.img_forum_topic_bg_highlight,
         },
     },
     SV: {
@@ -21,7 +21,7 @@ var ForumUI = {
         BG: {
             width: 32,
             height: 32,
-            resId: ResMap.img_forum_topic_bg_highlight,
+            resId: ResMap.img_forum_topic_bg_normal,
         }
     },
     TOPIC: {

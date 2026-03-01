@@ -42,8 +42,8 @@ await ac.createImage({
 
 async function func_open_forum() {
     await ac.replaceUI({
-        name: 'replaceUI_forum',
-        uiId: ResMap.ui_main_page,
+        name: 'replaceUI_main_page',
+        uiId: ResMap.ui_main_page
     });
 }
 
