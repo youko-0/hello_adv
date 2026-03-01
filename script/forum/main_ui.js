@@ -218,7 +218,6 @@ async function onClose() {
 }
 
 await createBrowserUI(onClose);
-await startTimeLoop();
 
 // 创建论坛 UI
 let pageHeight = ForumUI.calcMainPageHeight(0);
@@ -241,3 +240,5 @@ async function initPostList() {
 
 // 执行
 await initPostList();
+
+await startTimeLoop();
