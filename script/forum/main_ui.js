@@ -45,7 +45,7 @@ async function createItemTopic(post, index, posY) {
         ForumSystem.setCurrentPageIndex(1);
         await ac.replaceUI({
             name: 'replaceUI_post',
-            uiId: 'dbjp9oun',
+            uiId: '1af34c5623d74b82aa12ff9259621b91',
         });
     }
 
@@ -205,7 +205,10 @@ async function onClose() {
     if (!flag) {
         await showGameAlert("请先看完所有的帖子！");
     } else {
-        await showGameAlert("TODO: 进入下一个剧情");
+        await ac.jump({
+            plotID: 13969471,
+            transition: ac.SCENE_TRANSITION_TYPES.normal,
+        });
     }
 }
 
