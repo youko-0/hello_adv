@@ -344,3 +344,19 @@ function calcTextHeight(content, fontSize = 28, containerWidth = 580) {
     // 总行数 * 单行高度
     return totalLines * singleLineHeight;
 }
+
+// 每分钟刷新一次系统时间
+async function startTimeLoop() {
+    // 先执行一次
+    await createSystemTime();
+    // 计算距离下一分钟还差多少毫秒
+        let now = new Date();
+        let delayMs = (60 - now.getSeconds()) * 1000;
+        // 至少等待 1 秒，防止计算出 0 导致死循环
+        delayMs = Math.max(1000, delayMs);
+        // 等待直到下一分钟
+        await ac.delay({
+            time: delayMs
+        });
+    await startTimeLoop();
+}
