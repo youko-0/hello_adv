@@ -3,6 +3,7 @@ import json
 import time
 import random
 import os
+import datetime
 
 # ================= 配置区域 =================
 INPUT_FILE = 'data.txt'
@@ -14,7 +15,30 @@ AUTHOR_IDS = ["user_001", "user_002", "user_003", "user_004", "user_010"]
 
 # 起始帖子ID
 START_ID = 1001
+
+# 当前年份
+NOW_YEAR = 2034
 # ===========================================
+
+
+def change_timestamp_year(timestamp, target_year):
+    """
+    将时间戳的年份修改为 target_year
+    """
+    # 转换为 datetime 对象
+    dt = datetime.datetime.fromtimestamp(timestamp)
+    
+    try:
+        # 尝试直接替换年份
+        new_dt = dt.replace(year=target_year)
+    except ValueError:
+        # 如果报错，说明是 2月29日 变到了非闰年
+        # 策略：改为 2月28日 或者 3月1日，这里改为 2月28日
+        new_dt = dt.replace(year=target_year, month=2, day=28)
+    
+    # 转回时间戳并取整
+    return int(new_dt.timestamp())
+
 
 def find_matching_brace(text, start_index):
     """
@@ -102,7 +126,8 @@ def parse_forum_data():
         print(f"错误：找不到文件 {INPUT_FILE}，请确保文件在当前目录下。")
         return
 
-    static_timestamp = int(time.time())      # 运行时间戳
+    # 当作 2034 年运行
+    static_timestamp = change_timestamp_year(time.time(), NOW_YEAR)
     posts_map = {} # 使用字典存储，key为id
     current_post = None
     current_reply_list = []
@@ -146,6 +171,10 @@ def parse_forum_data():
             # 设定脚本运行时间前 120 ~ 180 分钟的时间戳作为基准时间
             base_timestamp = static_timestamp - (random.randint(120, 180) * 60)
 
+            # 特殊处理: 1001 帖子 1~6 楼为2021年, 其余为 2022 年
+            if p_id == '1001':
+                base_timestamp = change_timestamp_year(base_timestamp, 2021)
+
             current_post = {
                 "id": p_id,
                 "authorId": topic_author,
@@ -169,9 +198,8 @@ def parse_forum_data():
             if floor_index == 1:
                 # 1楼是楼主自己，保持ID一致
                 r_author = current_post['authorId']
-                r_time = current_post['timestamp']
                 # 1楼的时间就是发帖时间
-                current_timestamp = r_time
+                current_timestamp = current_post['timestamp']
             else:
                 # 楼主的回复，保持ID一致
                 if is_author:
@@ -182,13 +210,19 @@ def parse_forum_data():
                 # 时间递增 30s ~ 600s
                 add_seconds = random.randint(30, 600)
                 current_timestamp += add_seconds
-                r_time = current_timestamp
+
+            r_time = current_timestamp
+
+            # 特殊处理: 1001 帖子 1~6 楼为2021年, 其余为 2022 年
+            if p_id == '1001':
+                if floor_index > 6:
+                    r_time = change_timestamp_year(r_time, 2022)
 
             reply_obj = {
                 "index": floor_index,
                 "authorId": r_author,
                 "content": content,
-                "timestamp": r_time
+                "timestamp": r_time,
             }
             current_reply_list.append(reply_obj)
 

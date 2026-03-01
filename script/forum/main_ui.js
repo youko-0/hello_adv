@@ -122,17 +122,15 @@ async function createItemTopic(post, index, posY) {
         content: UserSystem.getUserName(post.authorId),
         pos: {
             x: 800,
-            y: posY + ForumUI.TOPIC.height / 2 + 10,
+            y: posY + ForumUI.TOPIC.height / 2 + 2,
         },
-        anchor: {
-            x: 0,
-            y: 50,
-        },
+        anchor: { x: 0, y: 0 },
         size: {
             width: 200,
             height: ForumUI.TOPIC.height,
         },
         style: 'style_name',
+        valign: ac.VALIGN_TYPES.bottom,
     });
 
     // 发帖时间
@@ -143,17 +141,15 @@ async function createItemTopic(post, index, posY) {
         content: ForumUI.formatRelativeTime(post.timestamp),
         pos: {
             x: 800,
-            y: posY + ForumUI.TOPIC.height / 2 - 10,
+            y: posY + ForumUI.TOPIC.height / 2 - 2,
         },
-        anchor: {
-            x: 0,
-            y: 50,
-        },
+        anchor: { x: 0, y: 100 },
         size: {
             width: 200,
             height: ForumUI.TOPIC.height,
         },
         style: 'style_time',
+        valign: ac.VALIGN_TYPES.top,
     });
 
     // 最后回复
@@ -166,17 +162,15 @@ async function createItemTopic(post, index, posY) {
             content: UserSystem.getUserName(lastReply.authorId),
             pos: {
                 x: 1000,
-                y: posY + ForumUI.TOPIC.height / 2 + 10,
+                y: posY + ForumUI.TOPIC.height / 2 + 2,
             },
-            anchor: {
-                x: 0,
-                y: 50,
-            },
+            anchor: { x: 0, y: 0 },
             size: {
                 width: 200,
                 height: ForumUI.TOPIC.height,
             },
             style: 'style_name',
+            valign: ac.VALIGN_TYPES.bottom,
         });
         await ac.createText({
             name: `lbl_last_reply_time_${post.id}`,
@@ -185,17 +179,15 @@ async function createItemTopic(post, index, posY) {
             content: ForumUI.formatRelativeTime(lastReply.timestamp),
             pos: {
                 x: 1000,
-                y: posY + ForumUI.TOPIC.height / 2 - 10,
+                y: posY + ForumUI.TOPIC.height / 2 - 2,
             },
-            anchor: {
-                x: 0,
-                y: 50,
-            },
+            anchor: { x: 0, y: 100 },
             size: {
                 width: 200,
                 height: ForumUI.TOPIC.height,
             },
             style: 'style_time',
+            valign: ac.VALIGN_TYPES.top,
         });
     }
 
