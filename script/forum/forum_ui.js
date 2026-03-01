@@ -44,7 +44,7 @@ var ForumUI = {
         REPLY: {
             padding: 20,        // 上下留边
             width: 800,        // 文本宽度
-            height : 72,       // 文本最小高度, 2行
+            height: 72,       // 文本最小高度, 2行
             fontSize: 24,
         },
         PAGINATION: {
@@ -149,8 +149,9 @@ var ForumUI = {
         }
 
         var date = new Date(timestamp);
-        // TODO: now 可以指定时间戳, 注意要转成毫秒
         var now = new Date();
+        // 修改年份
+        now.setFullYear(ForumSystem.NOW_YEAR);
 
         var diff = now.getTime() - date.getTime();
 
@@ -284,5 +285,4 @@ async function createForumUI(pageHeight = 0) {
             y: ForumUI.HEADER.height * 100 / ForumUI.HEADER.BG.height,
         },
     });
-
 }

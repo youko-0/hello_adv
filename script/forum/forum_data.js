@@ -2,6 +2,7 @@ var ForumSystem = {
     HOST: "donghaiguaitan.topic.com/",      // 域名
     NAME: "东海论坛",
     PAGE_SIZE: 10,                          // 分页大小
+    NOW_YEAR: 2034,                         // 当前年份
     STATIC_TIMESTAMP: 1772339006,             // 基准时间戳
     // 帖子数据
     postsMap: {

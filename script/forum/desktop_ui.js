@@ -62,3 +62,5 @@ await ac.createOption({
     },
     onTouchEnded: func_open_forum,
 });
+
+await createSystemTime();

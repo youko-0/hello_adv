@@ -205,7 +205,7 @@ async function onClose() {
 }
 
 await createBrowserUI(onClose);
-
+await createSystemTime();
 
 // 导航条
 async function createPagination(pageCount, currentPage) {
