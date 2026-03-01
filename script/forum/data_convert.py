@@ -25,6 +25,7 @@ def parse_forum_data():
     posts_map = {} # 使用字典存储，key为id
     current_post = None
     current_reply_list = []
+    random_author_list = []
     
     post_id_counter = START_ID
 
@@ -32,12 +33,10 @@ def parse_forum_data():
     # 匹配标题：[标题内容]
     re_topic = re.compile(r'^\[(.*?)\]\s*$')
     # 匹配回复：1L（楼主）：内容 或 30l: 内容
-    # 说明：^(\d+) 捕获楼层数字
-    # [Ll] 匹配大小写L
-    # (?:[（(].*?[）)])? 非捕获组，匹配可选的 (楼主) 或 （楼主）
-    # \s*[:：]\s* 匹配冒号(中英文)及周围空格
-    # (.*) 捕获内容
-    re_reply = re.compile(r'^(\d+)[Ll](?:[（(].*?[）)])?\s*[:：]\s*(.*)')
+    # group(1): 楼层数字
+    # group(2): 身份标识，例如 "(楼主)" 或 None
+    # group(3): 回复内容
+    re_reply = re.compile(r'^(\d+)[Ll]([（(].*?[）)])?\s*[:：]\s*(.*)')
 
     for line in lines:
         line = line.strip()
@@ -59,6 +58,8 @@ def parse_forum_data():
             
             # 为楼主随机分配一个ID
             topic_author = random.choice(AUTHOR_IDS)
+            # 随机列表里剔除楼主
+            random_author_list = [id for id in AUTHOR_IDS if id != topic_author] or AUTHOR_IDS
             
             # 时间控制变量
             # 设定脚本运行时间前 120 ~ 180 分钟的时间戳作为基准时间
@@ -80,7 +81,9 @@ def parse_forum_data():
         reply_match = re_reply.match(line)
         if reply_match and current_post:
             floor_index = int(reply_match.group(1))
-            content = reply_match.group(2).strip()
+            tag = reply_match.group(2) # 捕获到的身份标识，如 "(楼主)"
+            content = reply_match.group(3).strip()
+            is_author = tag and "楼主" in tag
             
             # 逻辑：分配作者
             if floor_index == 1:
@@ -88,10 +91,14 @@ def parse_forum_data():
                 r_author = current_post['authorId']
                 r_time = current_post['timestamp']
                 # 1楼的时间就是发帖时间
-                current_timestamp = r_time 
+                current_timestamp = r_time
             else:
-                # 其他楼层随机分配
-                r_author = random.choice(AUTHOR_IDS)
+                # 楼主的回复，保持ID一致
+                if is_author:
+                    r_author = current_post['authorId']
+                else:
+                    # 其他楼层随机分配
+                    r_author = random.choice(random_author_list)
                 # 时间递增 30s ~ 600s
                 add_seconds = random.randint(30, 600)
                 current_timestamp += add_seconds
