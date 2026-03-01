@@ -1,3 +1,5 @@
+// 电脑桌面
+console.log('[LOAD] ui_desktop');
 
 await ac.createLayer({
     name: 'layer_desktop',
@@ -22,7 +24,7 @@ await ac.createImage({
     name: 'img_desktop',
     index: 0,
     inlayer: 'layer_desktop',
-    resId: ForumResMap.pic_desktop_bg,
+    resId: ResMap.pic_desktop_bg,
     pos: {
         x: 640,
         y: 360,
@@ -41,7 +43,7 @@ await ac.createImage({
 async function func_open_forum() {
     await ac.replaceUI({
         name: 'replaceUI_forum',
-        uiId: ForumResMap.ui_forum_main,
+        uiId: ResMap.ui_main_page,
     });
 }
 
@@ -50,8 +52,8 @@ await ac.createOption({
     index: 1,
     inlayer: 'layer_desktop',
     visible: true,
-    nResId: ForumResMap.btn_browser,
-    sResId: ForumResMap.btn_browser,
+    nResId: ResMap.btn_browser,
+    sResId: ResMap.btn_browser,
     content: ``,
     pos: {
         x: 78,

@@ -1,5 +1,5 @@
-console.log('ENTER MAINUI');
-// 主页
+// 论坛主页
+console.log('[LOAD] ui_main_page');
 
 ac.createStyle({
     name: 'style_topic',
@@ -46,7 +46,7 @@ async function createItemTopic(post, index, posY) {
         ForumSystem.setCurrentPageIndex(1);
         await ac.replaceUI({
             name: 'replaceUI_post',
-            uiId: ForumResMap.ui_post_detail,
+            uiId: ResMap.ui_post_detail,
         });
     }
 

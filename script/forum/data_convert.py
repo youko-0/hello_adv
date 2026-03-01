@@ -8,7 +8,7 @@ import datetime
 # ================= 配置区域 =================
 INPUT_FILE = 'data.txt'
 # 目标 JS 文件名
-JS_TARGET_FILE = 'forum_data.js'
+JS_TARGET_FILE = 'forum_system.js'
 
 # 可用的用户ID列表
 AUTHOR_IDS = ["user_001", "user_002", "user_003", "user_004", "user_010"]
@@ -69,7 +69,7 @@ def find_matching_brace(text, start_index):
                     return i # 找到最外层的闭合括号
     return -1
 
-def update_forum_data_js(posts_map, timestamp):
+def update_forum_system_js(posts_map, timestamp):
     """
     针对 var ForumSystem = { ... } 结构的专用更新函数
     """
@@ -118,7 +118,7 @@ def update_forum_data_js(posts_map, timestamp):
         print("错误：JS 文件中找不到 'postsMap:' 字段")
 
 
-def parse_forum_data():
+def parse_forum_system():
     try:
         with open(INPUT_FILE, 'r', encoding='utf-8') as f:
             lines = f.readlines()
@@ -232,7 +232,7 @@ def parse_forum_data():
         posts_map[str(current_post['id'])] = current_post
 
     # 3. 直接更新 JS 文件
-    update_forum_data_js(posts_map, static_timestamp)
+    update_forum_system_js(posts_map, static_timestamp)
 
 if __name__ == '__main__':
-    parse_forum_data()
+    parse_forum_system()

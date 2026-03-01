@@ -1,7 +1,8 @@
 // 资源常量
+console.log('[LOAD] res_map');
 
 // for HelloADV
-var ForumResMap = {
+var ResMap = {
     btn_browser: '$182972526',
     pic_desktop_bg: '$182982547',
 
@@ -15,8 +16,8 @@ var ForumResMap = {
     img_forum_head_01: '$183114062',
     img_forum_head_02: '$183113921',
 
-    // ui 唯一id
+    // UI 唯一 ID
     ui_desktop: 'cawn43cd',
-    ui_forum_main: 'nw48gnat',
+    ui_main_page: 'nw48gnat',
     ui_post_detail: 'dbjp9oun',
 }

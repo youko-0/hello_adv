@@ -1,4 +1,5 @@
-// 论坛UI
+// 论坛UI配置
+console.log('[LOAD] forum_ui');
 
 var ForumUI = {
     PAGE: {
@@ -7,7 +8,7 @@ var ForumUI = {
         BG: {
             width: 32,
             height: 32,
-            resId: ForumResMap.img_forum_topic_bg_normal,
+            resId: ResMap.img_forum_topic_bg_normal,
         },
     },
     SV: {
@@ -20,18 +21,18 @@ var ForumUI = {
         BG: {
             width: 32,
             height: 32,
-            resId: ForumResMap.img_forum_topic_bg_highlight,
+            resId: ResMap.img_forum_topic_bg_highlight,
         }
     },
     TOPIC: {
         height: 64,
         BG_NORMAL: {
-            resId: ForumResMap.img_forum_topic_bg_normal,
+            resId: ResMap.img_forum_topic_bg_normal,
             width: 32,
             height: 32,
         },
         BG_HIGHLIGHT: {
-            resId: ForumResMap.img_forum_topic_bg_highlight,
+            resId: ResMap.img_forum_topic_bg_highlight,
             width: 32,
             height: 32,
         },

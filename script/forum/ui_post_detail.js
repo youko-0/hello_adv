@@ -1,5 +1,5 @@
-console.log('ENTER POSTUI');
-// 帖子
+// 帖子详情页
+console.log('[LOAD] ui_post_detail');
 
 ac.createStyle({
     name: 'style_title',
@@ -201,7 +201,7 @@ async function onClose() {
     ForumSystem.setCurrentPageIndex(1);
     await ac.replaceUI({
         name: 'replaceUI_forum',
-        uiId: ForumResMap.ui_forum_main,
+        uiId: ResMap.ui_main_page,
     });
 }
 
@@ -213,7 +213,7 @@ async function createPagination(pageCount, currentPage) {
         ForumSystem.setCurrentPageIndex(pageIndex);
         await ac.replaceUI({
             name: 'replaceUI_post',
-            uiId: ForumResMap.ui_post_detail,
+            uiId: ResMap.ui_post_detail,
         });
     }
 

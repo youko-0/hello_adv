@@ -1,4 +1,5 @@
 // 浏览器UI
+console.log('[LOAD] browser_ui');
 
 var BrowserUI = {
     WINDOW: {
@@ -6,14 +7,14 @@ var BrowserUI = {
         height: 720,
     },
     BG: {
-        resId: ForumResMap.pic_browser_bg,
+        resId: ResMap.pic_browser_bg,
         width: 1280,
         height: 720,
     },
     BTN: {
         CLOSE: {
-            resIdNormal: ForumResMap.btn_web_close_normal,
-            resIdHighlight: ForumResMap.btn_web_close_highlight,
+            resIdNormal: ResMap.btn_web_close_normal,
+            resIdHighlight: ResMap.btn_web_close_highlight,
         },
     },
 
@@ -231,7 +232,7 @@ async function showGameAlert(content, onConfirm = null) {
     await ac.createImage({
         name: "img_alert_bg",
         inlayer: "layer_alert",
-        resId: ForumResMap.img_forum_topic_bg_normal,
+        resId: ResMap.img_forum_topic_bg_normal,
         visible: true,
         pos: { x: 200, y: 180 },
         anchor: { x: 50, y: 50 },
