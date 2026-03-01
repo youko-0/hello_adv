@@ -5,29 +5,30 @@ var UserSystem = {
         "user_001": {
             id: "user_001",
             name: "匿名用户1",
-            icon: ForumUI.AVATAR.ICON_01,
+            icon: ForumResMap.img_forum_head_01,
         },
         "user_002": {
             id: "user_002",
             name: "匿名用户002",
-            icon: ForumUI.AVATAR.ICON_02,
+            icon: ForumResMap.img_forum_head_02,
         },
         "user_003": {
             id: "user_003",
             name: "匿名用户003",
-            icon: ForumUI.AVATAR.ICON_03,
+            icon: ForumResMap.img_forum_head_01,
         },
         "user_004": {
             id: "user_004",
             name: "匿名用户004",
-            icon: ForumUI.AVATAR.ICON_01,
+            icon: ForumResMap.img_forum_head_02,
         },
         "user_010": {
             id: "user_010",
             name: "实名用户010",
-            icon: ForumUI.AVATAR.ICON_04,
+            icon: ForumResMap.img_forum_head_01,
         },
     },
+
     getUserInfo: function (uid) {
         return this.database[uid];
     },

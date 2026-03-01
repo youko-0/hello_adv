@@ -46,7 +46,7 @@ async function createItemTopic(post, index, posY) {
         ForumSystem.setCurrentPageIndex(1);
         await ac.replaceUI({
             name: 'replaceUI_post',
-            uiId: '1af34c5623d74b82aa12ff9259621b91',
+            uiId: ForumResMap.ui_post_detail,
         });
     }
 

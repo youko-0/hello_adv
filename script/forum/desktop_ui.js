@@ -22,7 +22,7 @@ await ac.createImage({
     name: 'img_desktop',
     index: 0,
     inlayer: 'layer_desktop',
-    resId: '$183358116',
+    resId: ForumResMap.pic_desktop_bg,
     pos: {
         x: 640,
         y: 360,
@@ -41,7 +41,7 @@ await ac.createImage({
 async function func_open_forum() {
     await ac.replaceUI({
         name: 'replaceUI_forum',
-        uiId: 'dacbc56e73a94b3daa268f1a0616d8e2',
+        uiId: ForumResMap.ui_forum_main,
     });
 }
 
@@ -50,8 +50,8 @@ await ac.createOption({
     index: 1,
     inlayer: 'layer_desktop',
     visible: true,
-    nResId: '$183358123',
-    sResId: '$183358123',
+    nResId: ForumResMap.btn_browser,
+    sResId: ForumResMap.btn_browser,
     content: ``,
     pos: {
         x: 78,

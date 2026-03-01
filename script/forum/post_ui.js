@@ -201,7 +201,7 @@ async function onClose() {
     ForumSystem.setCurrentPageIndex(1);
     await ac.replaceUI({
         name: 'replaceUI_forum',
-        uiId: 'dacbc56e73a94b3daa268f1a0616d8e2',
+        uiId: ForumResMap.ui_forum_main,
     });
 }
 
@@ -213,7 +213,7 @@ async function createPagination(pageCount, currentPage) {
         ForumSystem.setCurrentPageIndex(pageIndex);
         await ac.replaceUI({
             name: 'replaceUI_post',
-            uiId: '1af34c5623d74b82aa12ff9259621b91',
+            uiId: ForumResMap.ui_post_detail,
         });
     }
 

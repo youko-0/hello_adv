@@ -6,16 +6,14 @@ var BrowserUI = {
         height: 720,
     },
     BG: {
-        resId: '$183358115',
+        resId: ForumResMap.pic_browser_bg,
         width: 1280,
         height: 720,
     },
     BTN: {
         CLOSE: {
-            resIdNormal: '$183358117',
-            resIdHighlight: '$183358118',
-            width: 30,
-            height: 26,
+            resIdNormal: ForumResMap.btn_web_close_normal,
+            resIdHighlight: ForumResMap.btn_web_close_highlight,
         },
     },
 
@@ -233,7 +231,7 @@ async function showGameAlert(content, onConfirm = null) {
     await ac.createImage({
         name: "img_alert_bg",
         inlayer: "layer_alert",
-        resId: '$183358121',
+        resId: ForumResMap.img_forum_topic_bg_normal,
         visible: true,
         pos: { x: 200, y: 180 },
         anchor: { x: 50, y: 50 },
