@@ -2,10 +2,12 @@ import re
 import json
 import time
 import random
+import os
 
 # ================= 配置区域 =================
 INPUT_FILE = 'data.txt'
-OUTPUT_FILE = 'data_output.txt'
+# 目标 JS 文件名
+JS_TARGET_FILE = 'forum_data.js'
 
 # 可用的用户ID列表
 AUTHOR_IDS = ["user_001", "user_002", "user_003", "user_004", "user_010"]
@@ -13,6 +15,84 @@ AUTHOR_IDS = ["user_001", "user_002", "user_003", "user_004", "user_010"]
 # 起始帖子ID
 START_ID = 1001
 # ===========================================
+
+def find_matching_brace(text, start_index):
+    """
+    查找匹配的闭合大括号位置，支持嵌套和跳过字符串
+    """
+    stack = 0
+    in_string = False
+    quote_char = ''
+    
+    for i in range(start_index, len(text)):
+        char = text[i]
+        
+        # 处理字符串内的字符 (忽略字符串内的大括号)
+        if in_string:
+            if char == '\\': # 转义字符跳过下一个
+                continue 
+            if char == quote_char:
+                in_string = False
+        else:
+            if char == '"' or char == "'":
+                in_string = True
+                quote_char = char
+            elif char == '{':
+                stack += 1
+            elif char == '}':
+                stack -= 1
+                if stack == 0:
+                    return i # 找到最外层的闭合括号
+    return -1
+
+def update_forum_data_js(posts_map, timestamp):
+    """
+    针对 var ForumSystem = { ... } 结构的专用更新函数
+    """
+    if not os.path.exists(JS_TARGET_FILE):
+        print(f"错误：找不到目标 JS 文件 {JS_TARGET_FILE}")
+        return
+
+    with open(JS_TARGET_FILE, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    # 1. 更新 STATIC_TIMESTAMP
+    # 查找格式: STATIC_TIMESTAMP: 123456,
+    ts_pattern = r'(STATIC_TIMESTAMP:\s*)(\d+)'
+    if re.search(ts_pattern, content):
+        content = re.sub(ts_pattern, f'\\g<1>{timestamp}', content)
+        print(f"已更新 JS 时间戳为: {timestamp}")
+    else:
+        print("警告：未找到 STATIC_TIMESTAMP 字段，跳过时间更新。")
+
+    # 2. 更新 postsMap
+    # 查找 postsMap: { 的位置
+    map_start_match = re.search(r'(postsMap:\s*\{)', content)
+    
+    if map_start_match:
+        start_index = map_start_match.end() - 1 # 获取 '{' 的索引位置
+        end_index = find_matching_brace(content, start_index)
+        
+        if end_index != -1:
+            # 把 Python 字典转成 JSON 字符串
+            # ensure_ascii=False 保证中文正常显示
+            json_str = json.dumps(posts_map, ensure_ascii=False, indent=4)
+            
+            # 【美化】去掉 JSON key 的双引号，使其符合 JS 对象字面量风格 (id: "1" 而不是 "id": "1")
+            # 只匹配由字母数字下划线组成的key
+            json_str = re.sub(r'"([a-zA-Z0-9_]+)":', r'\1:', json_str)
+            
+            # 拼接新文件内容：头部 + 新数据 + 尾部
+            new_content = content[:start_index] + json_str + content[end_index+1:]
+            
+            with open(JS_TARGET_FILE, 'w', encoding='utf-8') as f:
+                f.write(new_content)
+            print(f"成功！已将 {len(posts_map)} 个帖子写入 {JS_TARGET_FILE}")
+        else:
+            print("错误：JS 文件结构异常，找不到 postsMap 对应的闭合括号 '}'")
+    else:
+        print("错误：JS 文件中找不到 'postsMap:' 字段")
+
 
 def parse_forum_data():
     try:
@@ -65,7 +145,6 @@ def parse_forum_data():
             # 时间控制变量
             # 设定脚本运行时间前 120 ~ 180 分钟的时间戳作为基准时间
             base_timestamp = static_timestamp - (random.randint(120, 180) * 60)
-            print(f"基准时间：{base_timestamp}")
 
             current_post = {
                 "id": p_id,
@@ -75,7 +154,7 @@ def parse_forum_data():
                 "reply": [] # 稍后填充
             }
             current_reply_list = []
-            print(f"正在解析帖子 ID: {p_id}, 标题: {topic_content}")
+            print(f"正在解析帖子 ID: {p_id}, 标题: {topic_content}, 发帖时间：{base_timestamp}")
             continue
 
         # 2. 检查是否是回复行 1L: Content
@@ -118,17 +197,8 @@ def parse_forum_data():
         current_post['reply'] = current_reply_list
         posts_map[str(current_post['id'])] = current_post
 
-    # 3. 输出 JSON 格式到文件
-    output_data = {
-        "postsMap": posts_map
-    }
-
-    with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-        # 使用 json.dump 格式化输出，ensure_ascii=False 保证中文正常显示
-        f.write(json.dumps(output_data, indent=4, ensure_ascii=False))
-        
-    print(f"\n转换完成！数据已保存至 {OUTPUT_FILE}")
-    print(f"共处理 {len(posts_map)} 个帖子。")
+    # 3. 直接更新 JS 文件
+    update_forum_data_js(posts_map, static_timestamp)
 
 if __name__ == '__main__':
     parse_forum_data()
