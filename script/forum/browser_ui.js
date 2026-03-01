@@ -287,24 +287,16 @@ function measureCharWidth(char, fontSize) {
     if (code > 255) {
         return fontSize;
     }
-    // // 2. 空格 (空格通常比普通字母窄)
-    // if (char === ' ') {
-    //     return fontSize * 0.35;
-    // }
+    // 2. 空格 (空格通常比普通字母窄)
+    if (char === ' ') {
+        return fontSize * 0.35;
+    }
     // 3. 大写字母 (比小写稍微宽一点，约 0.7)
     if (code >= 65 && code <= 90) {
         return fontSize * 0.7;
     }
     // 4. 其他 ASCII (小写字母、数字、半角标点，约 0.55~0.6)
     return fontSize * 0.6;
-    // // code > 255 通常是中日韩文字，算 1 个字宽
-    // if (code > 255) {
-    //     return fontSize;
-    // }
-    // // 英文、数字、标点，大约算 0.6 个字宽
-    // else {
-    //    return (fontSize * 0.6);
-    // }
 }
 
 // 计算文本宽度
@@ -350,13 +342,13 @@ async function startTimeLoop() {
     // 先执行一次
     await createSystemTime();
     // 计算距离下一分钟还差多少毫秒
-        let now = new Date();
-        let delayMs = (60 - now.getSeconds()) * 1000;
-        // 至少等待 1 秒，防止计算出 0 导致死循环
-        delayMs = Math.max(1000, delayMs);
-        // 等待直到下一分钟
-        await ac.delay({
-            time: delayMs
-        });
+    let now = new Date();
+    let delayMs = (60 - now.getSeconds()) * 1000;
+    // 至少等待 1 秒，防止计算出 0 导致死循环
+    delayMs = Math.max(1000, delayMs);
+    // 等待直到下一分钟
+    await ac.delay({
+        time: delayMs
+    });
     await startTimeLoop();
 }
