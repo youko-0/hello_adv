@@ -116,7 +116,7 @@ async function createBrowserUI(onClose = null) {
         visible: true,
         content: ForumSystem.getCurrentTitle(),
         pos: {
-            x: 90,
+            x: 94,
             y: BrowserUI.WINDOW.height - 24,
         },
         anchor: {x: 0, y: 50},
@@ -147,7 +147,7 @@ async function createBrowserUI(onClose = null) {
         },
         style: 'style_status_bar',
         halign: ac.HALIGN_TYPES.left,
-        valign: ac.VALIGN_TYPES.center,
+        valign: ac.VALIGN_TYPES.top,
     });
 
     // 关闭按钮
