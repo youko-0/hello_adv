@@ -20,7 +20,7 @@ var BrowserUI = {
     },
 
     // 系统时间
-    formatSystemTimeStr: function (fontSize = 10) {
+    formatSystemTimeStr: function () {
         var now = new Date();
         // 修改年份
         now.setFullYear(ForumSystem.NOW_YEAR);
@@ -30,23 +30,10 @@ var BrowserUI = {
         var day = now.getDate();
         var hours = now.getHours().toString().padStart(2, '0');
         var minutes = now.getMinutes().toString().padStart(2, '0');
-        // 不支持 \n, 用空格填充
-        var timePart = `${hours}:${minutes}`;
-        var datePart = `${year}/${month}/${day}`;
-        let timeWidth = calcTextWidth(timePart, fontSize);
-        let dateWidth = calcTextWidth(datePart, fontSize); ``
-        let spaceWidth = calcTextWidth(' ', fontSize);
-        let spaceCount = Math.max(0, Math.ceil((dateWidth - timeWidth) / spaceWidth));
-        console.log('spaceCount', spaceCount, timeWidth, dateWidth, spaceWidth);
-        // 补全空格
-        let spaceStr = ' '.repeat(spaceCount);
-        spaceStr = '';
-        var timeStr = `${spaceStr}${hours}:${minutes}${year}/${month}/${day}`;
-        console.log('timeStr', timeStr);
-        return {
-            content: timeStr,
-            width: dateWidth
-        };
+        // 换行
+        var timeStr = `${hours}:${minutes}
+        ${year}/${month}/${day}`;
+        return timeStr
     },
 };
 
@@ -64,7 +51,7 @@ ac.createStyle({
     font: '微软雅黑',
     bold: false,
     italic: false,
-    fontSize: 20,
+    fontSize: 8,
     color: '#d1d3df',
 });
 
@@ -188,20 +175,20 @@ async function createBrowserUI(onClose = null) {
 
 // 创建系统时间
 async function createSystemTime() {
-    let result = BrowserUI.formatSystemTimeStr(20);
+    let timeStr = BrowserUI.formatSystemTimeStr();
     await ac.createText({
         name: 'lbl_system_time',
         index: 10,
         inlayer: 'window',
-        content: result.content,
+        content: timeStr,
         pos: {
-            x: 600,
-            y: 300
+            x: BrowserUI.WINDOW.width - 10,
+            y: 4
         },
-        anchor: { x: 50, y: 50 },
+        anchor: { x: 100, y: 0 },
         size: {
-            width: result.width,
-            height: 200,
+            width: 100,
+            height: 32,
         },
         style: 'style_system_time',
         halign: ac.HALIGN_TYPES.right,
@@ -300,16 +287,16 @@ function measureCharWidth(char, fontSize) {
     if (code > 255) {
         return fontSize;
     }
-    // 2. 空格 (空格通常比普通字母窄)
-    if (char === ' ') {
-        return fontSize * 0.35;
-    }
+    // // 2. 空格 (空格通常比普通字母窄)
+    // if (char === ' ') {
+    //     return fontSize * 0.35;
+    // }
     // 3. 大写字母 (比小写稍微宽一点，约 0.7)
     if (code >= 65 && code <= 90) {
         return fontSize * 0.7;
     }
     // 4. 其他 ASCII (小写字母、数字、半角标点，约 0.55~0.6)
-    return fontSize * 0.58;
+    return fontSize * 0.6;
     // // code > 255 通常是中日韩文字，算 1 个字宽
     // if (code > 255) {
     //     return fontSize;
