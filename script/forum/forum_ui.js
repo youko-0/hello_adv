@@ -60,47 +60,6 @@ var ForumUI = {
         ICON_04: '$183114062',
     },
 
-    // 计算文本高度
-    calcTextHeight: function (content, fontSize = 28, containerWidth = 580) {
-        if (!content) return 0;
-
-        const lineHeightMultiplier = 1.5;
-        const singleLineHeight = fontSize * lineHeightMultiplier;
-
-        let paragraphs = content.toString().split('\n');
-        let totalLines = 0;
-
-        paragraphs.forEach(para => {
-            if (para.length === 0) {
-                totalLines += 1; // 空行也算一行
-                return;
-            }
-
-            let currentLineWidth = 0;
-
-            // 遍历每个字符计算虚拟像素宽度
-            for (let i = 0; i < para.length; i++) {
-                let charCode = para.charCodeAt(i);
-
-                // charCode > 255 通常是中日韩文字，算 1 个字宽
-                if (charCode > 255) {
-                    currentLineWidth += fontSize;
-                }
-                // 英文、数字、标点，大约算 0.6 个字宽
-                else {
-                    currentLineWidth += (fontSize * 0.6);
-                }
-            }
-
-            // 向上取整
-            let linesInPara = Math.ceil(currentLineWidth / containerWidth);
-            totalLines += Math.max(1, linesInPara);
-        });
-
-        // 总行数 * 单行高度
-        return totalLines * singleLineHeight;
-    },
-
     // 话题列表的高度
     calcTopicListHeight: function (topicList) {
         // 每个话题的高度固定
@@ -120,7 +79,7 @@ var ForumUI = {
         let totalHeight = 0;
         for (let i = 0; i < replyList.length; i++) {
             let reply = replyList[i];
-            let contentHeight = this.calcTextHeight(reply.content, this.POST.REPLY.fontSize, this.POST.REPLY.width);
+            let contentHeight = calcTextHeight(reply.content, this.POST.REPLY.fontSize, this.POST.REPLY.width);
             console.log('contentHeight', contentHeight, reply.content);
             contentHeight = Math.max(contentHeight, this.POST.REPLY.height);
             contentHeight += this.POST.REPLY.padding * 2;

@@ -1,5 +1,5 @@
 // 浏览器UI
-
+console.log('browser_ui.js')
 var BrowserUI = {
     WINDOW: {
         width: 1280,
@@ -26,14 +26,16 @@ var BrowserUI = {
         now.setFullYear(ForumSystem.NOW_YEAR);
         var year = now.getFullYear();
         // 月份 + 1
-        var month = date.getMonth() + 1;
-        var day = date.getDate();
-        var hours = date.getHours()
-        var minutes = date.getMinutes();
-        var timeStr = `${hours}:${minutes}\n${year}/${month}/${day}`;
+        var month = now.getMonth() + 1;
+        var day = now.getDate();
+        var hours = now.getHours().toString().padStart(2, '0');
+        var minutes = now.getMinutes().toString().padStart(2, '0');
+        // 不支持 \n, 用空格填充
+        var timePart = `${hours}:${minutes}`;
+        var datePart = `${year}/${month}/${day}`;
+        var timeStr = `    ${hours}:${minutes} ${year}/${month}/${day}`;
         return timeStr;
     },
-
 };
 
 ac.createStyle({
@@ -167,24 +169,24 @@ async function createBrowserUI(onClose = null) {
 async function createSystemTime() {
     let timeStr = BrowserUI.formatSystemTimeStr();
     await ac.createText({
-        name: "lbl_system_time",
+        name: 'lbl_system_time',
         index: 10,
-        inlayer: "window",
+        inlayer: 'window',
         content: timeStr,
         pos: {
-            x: BrowserUI.WINDOW.width - 4,
-            y: 4
+            x: 300,
+            y: 300
         },
         anchor: { x: 100, y: 100 },
         size: {
-            width: 100,
-            height: 32,
+            width: 500,
+            height: 500,
         },
-        style: 'style_status_bar',
+        // style: 'style_status_bar',
         halign: ac.HALIGN_TYPES.right,
         valign: ac.VALIGN_TYPES.bottom,
     });
-};
+}
 
 
 async function showGameAlert(content, onConfirm = null) {
@@ -268,4 +270,69 @@ async function showGameAlert(content, onConfirm = null) {
         listener: closeAlert,
         target: "alert_confirm_btn",
     });
+}
+
+// 估算字符宽度
+function measureCharWidth(char, fontSize) {
+    var code = char.charCodeAt(0);
+    // 1. 汉字和全角字符 (Unicode > 255)
+    if (code > 255) {
+        return fontSize;
+    }
+    // 2. 空格 (空格通常比普通字母窄)
+    if (char === ' ') {
+        return fontSize * 0.35;
+    }
+    // 3. 大写字母 (比小写稍微宽一点，约 0.7)
+    if (code >= 65 && code <= 90) {
+        return fontSize * 0.7;
+    }
+    // 4. 其他 ASCII (小写字母、数字、半角标点，约 0.55~0.6)
+    return fontSize * 0.58;
+    // // code > 255 通常是中日韩文字，算 1 个字宽
+    // if (code > 255) {
+    //     return fontSize;
+    // }
+    // // 英文、数字、标点，大约算 0.6 个字宽
+    // else {
+    //    return (fontSize * 0.6);
+    // }
+}
+
+// 计算文本宽度
+function calcTextWidth(text, fontSize) {
+    var width = 0;
+    for (var i = 0; i < text.length; i++) {
+        width += measureCharWidth(text[i], fontSize);
+    }
+    return width;
+}
+
+
+// 计算文本高度
+function calcTextHeight(content, fontSize = 28, containerWidth = 580) {
+    if (!content) return 0;
+
+    const lineHeightMultiplier = 1.5;
+    const singleLineHeight = fontSize * lineHeightMultiplier;
+
+    let paragraphs = content.toString().split('\n');
+    let totalLines = 0;
+
+    paragraphs.forEach(para => {
+        if (para.length === 0) {
+            totalLines += 1; // 空行也算一行
+            return;
+        }
+
+        let currentLineWidth = 0;
+        currentLineWidth += calcTextWidth(para, fontSize);
+
+        // 向上取整
+        let linesInPara = Math.ceil(currentLineWidth / containerWidth);
+        totalLines += Math.max(1, linesInPara);
+    });
+
+    // 总行数 * 单行高度
+    return totalLines * singleLineHeight;
 }
