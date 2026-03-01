@@ -205,7 +205,6 @@ async function onClose() {
 }
 
 await createBrowserUI(onClose);
-await startTimeLoop();
 
 // 导航条
 async function createPagination(pageCount, currentPage) {
@@ -318,3 +317,5 @@ let currentPageIndex = ForumSystem.getCurrentPageIndex();
 await initReplyList(currentPostId, currentPageIndex);
 // 保存浏览记录
 ForumSystem.savePostVisited(currentPostId);
+
+await startTimeLoop();
