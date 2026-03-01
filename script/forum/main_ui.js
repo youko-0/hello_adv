@@ -44,7 +44,7 @@ async function createItemTopic(post, index, posY) {
         ForumSystem.setCurrentPostId(post.id);
         ForumSystem.setCurrentPageIndex(1);
         await ac.replaceUI({
-            name: 'replaceUI12',
+            name: 'replaceUI_post',
             uiId: 'dbjp9oun',
         });
     }

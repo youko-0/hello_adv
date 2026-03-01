@@ -176,7 +176,7 @@ async function onClose() {
     ForumSystem.setCurrentPostId("")
     ForumSystem.setCurrentPageIndex(1);
     await ac.replaceUI({
-        name: 'replaceUI12',
+        name: 'replaceUI_forum',
         uiId: 'nw48gnat',
     });
 }
@@ -189,7 +189,7 @@ async function createPagination(pageCount, currentPage) {
     async function viewPage(pageIndex) {
         ForumSystem.setCurrentPageIndex(pageIndex);
         await ac.replaceUI({
-            name: 'replaceUI12',
+            name: 'replaceUI_post',
             uiId: 'dbjp9oun',
         });
     }
