@@ -20,7 +20,7 @@ var BrowserUI = {
     },
 
     // 系统时间
-    formatSystemTimeStr: function () {
+    formatSystemTimeStr: function (fontSize = 10) {
         var now = new Date();
         // 修改年份
         now.setFullYear(ForumSystem.NOW_YEAR);
@@ -33,8 +33,20 @@ var BrowserUI = {
         // 不支持 \n, 用空格填充
         var timePart = `${hours}:${minutes}`;
         var datePart = `${year}/${month}/${day}`;
-        var timeStr = `    ${hours}:${minutes} ${year}/${month}/${day}`;
-        return timeStr;
+        let timeWidth = calcTextWidth(timePart, fontSize);
+        let dateWidth = calcTextWidth(datePart, fontSize); ``
+        let spaceWidth = calcTextWidth(' ', fontSize);
+        let spaceCount = Math.max(0, Math.ceil((dateWidth - timeWidth) / spaceWidth));
+        console.log('spaceCount', spaceCount, timeWidth, dateWidth, spaceWidth);
+        // 补全空格
+        let spaceStr = ' '.repeat(spaceCount);
+        spaceStr = '';
+        var timeStr = `${spaceStr}${hours}:${minutes}${year}/${month}/${day}`;
+        console.log('timeStr', timeStr);
+        return {
+            content: timeStr,
+            width: dateWidth
+        };
     },
 };
 
@@ -44,6 +56,15 @@ ac.createStyle({
     bold: false,
     italic: false,
     fontSize: 10,
+    color: '#d1d3df',
+});
+
+ac.createStyle({
+    name: 'style_system_time',
+    font: '微软雅黑',
+    bold: false,
+    italic: false,
+    fontSize: 20,
     color: '#d1d3df',
 });
 
@@ -167,22 +188,22 @@ async function createBrowserUI(onClose = null) {
 
 // 创建系统时间
 async function createSystemTime() {
-    let timeStr = BrowserUI.formatSystemTimeStr();
+    let result = BrowserUI.formatSystemTimeStr(20);
     await ac.createText({
         name: 'lbl_system_time',
         index: 10,
         inlayer: 'window',
-        content: timeStr,
+        content: result.content,
         pos: {
-            x: 300,
+            x: 600,
             y: 300
         },
-        anchor: { x: 100, y: 100 },
+        anchor: { x: 50, y: 50 },
         size: {
-            width: 500,
-            height: 500,
+            width: result.width,
+            height: 200,
         },
-        // style: 'style_status_bar',
+        style: 'style_system_time',
         halign: ac.HALIGN_TYPES.right,
         valign: ac.VALIGN_TYPES.bottom,
     });
