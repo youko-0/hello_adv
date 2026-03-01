@@ -42,8 +42,8 @@ ac.createStyle({
     font: '微软雅黑',
     bold: false,
     italic: false,
-    fontSize: 10,
-    color: '#d1d3df',
+    fontSize: 18,
+    color: '#fefefe',
 });
 
 ac.createStyle({
@@ -51,8 +51,8 @@ ac.createStyle({
     font: '微软雅黑',
     bold: false,
     italic: false,
-    fontSize: 8,
-    color: '#d1d3df',
+    fontSize: 14,
+    color: '#fdf4f4',
 });
 
 ac.createStyle({
@@ -116,18 +116,17 @@ async function createBrowserUI(onClose = null) {
         visible: true,
         content: ForumSystem.getCurrentTitle(),
         pos: {
-            x: 48,
-            y: BrowserUI.WINDOW.height - 13,
+            x: 90,
+            y: BrowserUI.WINDOW.height - 24,
         },
-        anchor: {
-            x: 0,
-            y: 50,
-        },
+        anchor: {x: 0, y: 50},
         size: {
-            width: 110,
-            height: 10,
+            width: 220,
+            height: 26,
         },
         style: 'style_status_bar',
+        halign: ac.HALIGN_TYPES.left,
+        valign: ac.VALIGN_TYPES.top,
     });
 
     // 地址栏
@@ -138,18 +137,17 @@ async function createBrowserUI(onClose = null) {
         visible: true,
         content: ForumSystem.getCurrentUrl(),
         pos: {
-            x: 98,
-            y: BrowserUI.WINDOW.height - 40,
+            x: 200,
+            y: BrowserUI.WINDOW.height - 78,
         },
-        anchor: {
-            x: 0,
-            y: 50,
-        },
+        anchor: {x: 0, y: 50},
         size: {
-            width: 400,
-            height: 12,
+            width: 480,
+            height: 26,
         },
         style: 'style_status_bar',
+        halign: ac.HALIGN_TYPES.left,
+        valign: ac.VALIGN_TYPES.center,
     });
 
     // 关闭按钮
@@ -182,13 +180,13 @@ async function createSystemTime() {
         inlayer: 'window',
         content: timeStr,
         pos: {
-            x: BrowserUI.WINDOW.width - 10,
-            y: 4
+            x: BrowserUI.WINDOW.width - 20,
+            y: 12
         },
         anchor: { x: 100, y: 0 },
         size: {
-            width: 100,
-            height: 32,
+            width: 120,
+            height: 64,
         },
         style: 'style_system_time',
         halign: ac.HALIGN_TYPES.right,

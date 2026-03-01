@@ -3,7 +3,7 @@
 var ForumUI = {
     PAGE: {
         width: 1200,
-        height: 636,
+        height: 552,
         BG: {
             width: 32,
             height: 32,
@@ -166,7 +166,7 @@ async function createForumUI(pageHeight = 0) {
         // 左右居中底对齐
         pos: {
             x: BrowserUI.WINDOW.width / 2,
-            y: 30,
+            y: 60,
         },
         anchor: {
             x: 50,
