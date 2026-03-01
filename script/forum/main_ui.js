@@ -226,7 +226,7 @@ await createForumUI(pageHeight);
 async function initPostList() {
     let postsList = ForumSystem.getTopicListByPageIndex(0);
 
-    let startY = Math.max(ForumUI.PAGE.height, pageHeight) - ForumUI.HEAD.height - ForumUI.HEAD.marginBottom;
+    let startY = Math.max(ForumUI.PAGE.height, pageHeight) - ForumUI.HEADER.height - ForumUI.HEADER.marginBottom;
 
     for (var i = 0; i < postsList.length; i++) {
         let post = postsList[i];

@@ -50,7 +50,7 @@ ac.createStyle({
     font: '汉仪小隶书简',
     bold: true,
     italic: false,
-    fontSize: 20,
+    fontSize: 22,
     color: '#b33411',
 });
 
@@ -195,7 +195,7 @@ async function createPagination(pageCount, currentPage) {
     }
 
     for (let i = 1; i <= pageCount; i++) {
-        let x = 100 + (i - 1) * 60;
+        let x = 100 + (i - 1) * 56;
         // 判断是否是当前页
         let isCurrent = (i === currentPage);
         let content = isCurrent ? `${i}` : `[${i}]`;    // 按钮上显示的数字
@@ -218,6 +218,8 @@ async function createPagination(pageCount, currentPage) {
                 height: 32,
             },
             style: isCurrent ? 'style_pagination_active' : 'style_pagination',
+            halign: ac.HALIGN_TYPES.middle,
+            valign: ac.VALIGN_TYPES.center,
         });
 
         ac.addEventListener({
@@ -240,32 +242,40 @@ async function initReplyList(postId, pageIndex = 0) {
     if (!post) {
         return;
     }
+
+    // 第一页要显示标题
+    let isFirstPage = pageIndex <= 1;
+    let extraHeight = isFirstPage ? ForumUI.POST.TITLE.height : 0;
     let pageHeight = ForumUI.calcPostPageHeight(post, pageIndex);
+    pageHeight += extraHeight;
     pageHeight = Math.max(ForumUI.PAGE.height, pageHeight);
     await createForumUI(pageHeight);
 
     // 帖子内容初始坐标
-    let startY = pageHeight - ForumUI.HEAD.height - ForumUI.HEAD.marginBottom;
-    // 标题
-    await ac.createText({
-        name: "lbl_topic_title",
-        index: 1,
-        inlayer: ForumUI.SV.name,
-        content: post.topic,
-        pos: {
-            x: 42,
-            y: startY,
-        },
-        anchor: { x: 0, y: 100 },
-        size: {
-            width: ForumUI.POST.REPLY.width,
-            height: ForumUI.POST.TITLE.height,
-        },
-        style: 'style_title',
-        valign: ac.VALIGN_TYPES.top,
-    });
+    let startY = pageHeight - ForumUI.HEADER.height - ForumUI.HEADER.marginBottom;
 
-    startY -= ForumUI.POST.TITLE.height;
+    if (isFirstPage) {
+        // 标题
+        await ac.createText({
+            name: "lbl_topic_title",
+            index: 1,
+            inlayer: ForumUI.SV.name,
+            content: post.topic,
+            pos: {
+                x: 42,
+                y: startY,
+            },
+            anchor: { x: 0, y: 100 },
+            size: {
+                width: ForumUI.POST.REPLY.width,
+                height: ForumUI.POST.TITLE.height,
+            },
+            style: 'style_title',
+            valign: ac.VALIGN_TYPES.top,
+        });
+
+        startY -= ForumUI.POST.TITLE.height;
+    }
 
     let replyList = ForumSystem.getReplyListByPageIndex(post, pageIndex);
     for (var i = 0; i < replyList.length; i++) {
@@ -275,7 +285,7 @@ async function initReplyList(postId, pageIndex = 0) {
         await createItemReply(reply, i, startY, h);
     }
 
-    let pageCount = Math.ceil(replyList.length / ForumSystem.PAGE_SIZE);
+    let pageCount = ForumSystem.calcPostPageCount(post);
     await createPagination(pageCount, pageIndex);
 }
 

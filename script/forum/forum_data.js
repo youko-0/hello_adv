@@ -1,5 +1,6 @@
 var ForumSystem = {
-    Host: "donghaiguaitan.topic.com/",      // 域名
+    HOST: "donghaiguaitan.topic.com/",      // 域名
+    NAME: "东海论坛",
     PAGE_SIZE: 10,                          // 分页大小
     "postsMap": {
         "1001": {
@@ -578,20 +579,20 @@ var ForumSystem = {
     getCurrentTitle: function () {
         let postId = this.getCurrentPostId();
         let post = this.getPostData(postId);
-        if (!post) return "首页";
+        if (!post) return this.NAME;
         return post.topic;
     },
 
     getCurrentUrl: function () {
         let postId = this.getCurrentPostId();
         let suffix = this.getCurrentPageIndex() > 1 ? `?page=${this.getCurrentPageIndex()}` : "";
-        return this.Host + postId + suffix;
+        return this.HOST + postId + suffix;
     },
 
     getPostData: function (postId) {
         let post = this.postsMap[postId];
         if (!post) {
-            console.log(`帖子 ${postId} 不存在！`);
+            console.trace(`帖子 ${postId} 不存在！`);
             return null;
         }
         return post;
@@ -614,6 +615,11 @@ var ForumSystem = {
         let replyList = post.reply.slice(startIndex, endIndex);
         console.log(`当前页: ${currentPage}, 截取范围: ${startIndex} - ${endIndex}, 本页数据条数: ${replyList.length}`);
         return replyList;
+    },
+
+    calcPostPageCount: function (post) {
+        let pageCount = Math.ceil(post.reply.length / this.PAGE_SIZE);
+        return pageCount;
     },
 
     isPostVisited: function (postId) {

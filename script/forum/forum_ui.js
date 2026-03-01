@@ -13,7 +13,7 @@ var ForumUI = {
     SV: {
         name: 'sv_page',
     },
-    HEAD: {
+    HEADER: {
         width: 1200,
         height: 120,
         marginBottom: 10,       // 和下面内容的距离
@@ -111,7 +111,7 @@ var ForumUI = {
     // 主页高度
     calcMainPageHeight: function (pageIndex = 0) {
         let topicList = ForumSystem.getTopicListByPageIndex(pageIndex);
-        let pageHeight = this.calcTopicListHeight(topicList) + this.HEAD.height + this.HEAD.marginBottom;
+        let pageHeight = this.calcTopicListHeight(topicList) + this.HEADER.height + this.HEADER.marginBottom;
         return pageHeight;
     },
 
@@ -135,8 +135,7 @@ var ForumUI = {
     calcPostPageHeight: function (post, pageIndex = 0) {
         let replyList = ForumSystem.getReplyListByPageIndex(post, pageIndex);
         let contentHeight = this.calcReplyListHeight(replyList);
-        contentHeight += this.HEAD.height + this.HEAD.marginBottom;
-        contentHeight += this.POST.TITLE.height;
+        contentHeight += this.HEADER.height + this.HEADER.marginBottom;
         contentHeight += this.POST.PAGINATION.height;
         return contentHeight;
     },
@@ -268,10 +267,10 @@ async function createForumUI(pageHeight = 0) {
 
     // 版头
     await ac.createImage({
-        name: 'img_page_head_bg',
+        name: 'img_header_bg',
         index: 0,
         inlayer: ForumUI.SV.name,
-        resId: ForumUI.HEAD.BG.resId,
+        resId: ForumUI.HEADER.BG.resId,
         pos: {
             x: ForumUI.PAGE.width / 2,
             y: pageHeight,
@@ -281,8 +280,8 @@ async function createForumUI(pageHeight = 0) {
             y: 100,
         },
         scale: {
-            x: ForumUI.HEAD.width * 100 / ForumUI.HEAD.BG.width,
-            y: ForumUI.HEAD.height * 100 / ForumUI.HEAD.BG.height,
+            x: ForumUI.HEADER.width * 100 / ForumUI.HEADER.BG.width,
+            y: ForumUI.HEADER.height * 100 / ForumUI.HEADER.BG.height,
         },
     });
 
