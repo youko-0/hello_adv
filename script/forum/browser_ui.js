@@ -17,22 +17,46 @@ var BrowserUI = {
             width: 30,
             height: 26,
         },
-    }
+    },
+
+    // 系统时间
+    formatSystemTimeStr: function () {
+        var now = new Date();
+        // 修改年份
+        now.setFullYear(ForumSystem.NOW_YEAR);
+        var year = now.getFullYear();
+        // 月份 + 1
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var hours = date.getHours()
+        var minutes = date.getMinutes();
+        var timeStr = `${hours}:${minutes}\n${year}/${month}/${day}`;
+        return timeStr;
+    },
 
 };
+
+ac.createStyle({
+    name: 'style_status_bar',
+    font: '微软雅黑',
+    bold: false,
+    italic: false,
+    fontSize: 10,
+    color: '#d1d3df',
+});
+
+ac.createStyle({
+    name: 'style_alert',
+    font: '汉仪小隶书简',
+    bold: false,
+    italic: false,
+    fontSize: 24,
+    color: '#d1d3df',
+});
 
 // 创建浏览器 UI
 // onClose: 页面关闭回调
 async function createBrowserUI(onClose = null) {
-    ac.createStyle({
-        name: 'style_status_bar',
-        font: '微软雅黑',
-        bold: false,
-        italic: false,
-        fontSize: 10,
-        color: '#d1d3df',
-    });
-
     // 容器
     await ac.createLayer({
         name: 'layer_browser_ui',
@@ -139,14 +163,28 @@ async function createBrowserUI(onClose = null) {
     });
 }
 
-ac.createStyle({
-    name: 'style_alert',
-    font: '汉仪小隶书简',
-    bold: false,
-    italic: false,
-    fontSize: 24,
-    color: '#d1d3df',
-});
+// 创建系统时间
+async function createSystemTime() {
+    let timeStr = BrowserUI.formatSystemTimeStr();
+    await ac.createText({
+        name: "lbl_system_time",
+        index: 10,
+        inlayer: "window",
+        content: timeStr,
+        pos: {
+            x: BrowserUI.WINDOW.width - 4,
+            y: 4
+        },
+        anchor: { x: 100, y: 100 },
+        size: {
+            width: 100,
+            height: 32,
+        },
+        style: 'style_status_bar',
+        halign: ac.HALIGN_TYPES.right,
+        valign: ac.VALIGN_TYPES.bottom,
+    });
+};
 
 
 async function showGameAlert(content, onConfirm = null) {
