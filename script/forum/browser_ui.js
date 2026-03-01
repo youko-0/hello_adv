@@ -1,5 +1,5 @@
 // 浏览器UI
-console.log('browser_ui.js')
+
 var BrowserUI = {
     WINDOW: {
         width: 1280,
