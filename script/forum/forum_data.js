@@ -2,6 +2,7 @@ var ForumSystem = {
     HOST: "donghaiguaitan.topic.com/",      // 域名
     NAME: "东海论坛",
     PAGE_SIZE: 10,                          // 分页大小
+    STATIC_TIMESTAMP: 1772325641,             // 基准时间戳
     "postsMap": {
         "1001": {
             "id": "1001",

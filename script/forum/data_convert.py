@@ -22,6 +22,7 @@ def parse_forum_data():
         print(f"错误：找不到文件 {INPUT_FILE}，请确保文件在当前目录下。")
         return
 
+    static_timestamp = int(time.time())      # 运行时间戳
     posts_map = {} # 使用字典存储，key为id
     current_post = None
     current_reply_list = []
@@ -63,7 +64,7 @@ def parse_forum_data():
             
             # 时间控制变量
             # 设定脚本运行时间前 120 ~ 180 分钟的时间戳作为基准时间
-            base_timestamp = int(time.time()) - (random.randint(120, 180) * 60)
+            base_timestamp = static_timestamp - (random.randint(120, 180) * 60)
             print(f"基准时间：{base_timestamp}")
 
             current_post = {
