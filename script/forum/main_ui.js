@@ -224,18 +224,14 @@ let pageHeight = ForumUI.calcMainPageHeight(0);
 await createForumUI(pageHeight);
 
 async function initPostList() {
-    let postsList = Object.values(ForumSystem.postsMap);
-    // 根据最后回帖的时间戳排序, 最新的在前面
-    postsList.sort(function (a, b) {
-        return b.reply[b.reply.length - 1].timestamp - a.reply[a.reply.length - 1].timestamp;
-    });
+    let postsList = ForumSystem.getTopicListByPageIndex(0);
 
     let startY = Math.max(ForumUI.PAGE.height, pageHeight) - ForumUI.HEAD.height - ForumUI.HEAD.marginBottom;
 
     for (var i = 0; i < postsList.length; i++) {
         let post = postsList[i];
         let y = startY - (i + 1) * ForumUI.TOPIC.height;
-        console.log(`正在创建第 ${i} 个帖子，时间戳：${post.timestamp}`);
+        console.log(`正在创建第 ${i} 个帖子 ${post.id}`);
         await createItemTopic(post, i, y);
     }
 

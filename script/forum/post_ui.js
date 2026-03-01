@@ -265,8 +265,9 @@ async function initReplyList(postId, pageIndex = 0) {
         valign: ac.VALIGN_TYPES.top,
     });
 
-    let replyList = post.reply;
     startY -= ForumUI.POST.TITLE.height;
+
+    let replyList = ForumSystem.getReplyListByPageIndex(post, pageIndex);
     for (var i = 0; i < replyList.length; i++) {
         let reply = replyList[i];
         let h = reply.height;
@@ -274,7 +275,7 @@ async function initReplyList(postId, pageIndex = 0) {
         await createItemReply(reply, i, startY, h);
     }
 
-    let pageCount = Math.ceil(replyList.length / ForumUI.POST.REPLY_PER_PAGE);
+    let pageCount = Math.ceil(replyList.length / ForumSystem.PAGE_SIZE);
     await createPagination(pageCount, pageIndex);
 }
 

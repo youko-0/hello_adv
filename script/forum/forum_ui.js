@@ -47,7 +47,6 @@ var ForumUI = {
             height : 72,       // 文本最小高度, 2行
             fontSize: 24,
         },
-        REPLY_PER_PAGE : 10,    // 每页显示的回复数量,
         PAGINATION: {
             height: 40,
         },
@@ -102,23 +101,23 @@ var ForumUI = {
         return totalLines * singleLineHeight;
     },
 
-    // 帖子列表的高度
-    calcTopicsHeight: function (pageIndex = 0) {
-        // 帖子数量不多不会翻页且高度固定，直接相乘计算高度
-        let totalHeight = this.TOPIC.height * Object.keys(ForumSystem.postsMap).length
+    // 话题列表的高度
+    calcTopicListHeight: function (topicList) {
+        // 每个话题的高度固定
+        let totalHeight = this.TOPIC.height * topicList.length;
         return totalHeight;
     },
 
     // 主页高度
     calcMainPageHeight: function (pageIndex = 0) {
-        let pageHeight = this.calcTopicsHeight(pageIndex) + this.HEAD.height + this.HEAD.marginBottom;
+        let topicList = ForumSystem.getTopicListByPageIndex(pageIndex);
+        let pageHeight = this.calcTopicListHeight(topicList) + this.HEAD.height + this.HEAD.marginBottom;
         return pageHeight;
     },
 
     // 回复列表的高度
-    calcRepliesHeight: function (post, pageIndex) {
+    calcReplyListHeight: function (replyList) {
         let totalHeight = 0;
-        let replyList = post.reply;
         for (let i = 0; i < replyList.length; i++) {
             let reply = replyList[i];
             let contentHeight = this.calcTextHeight(reply.content, this.POST.REPLY.fontSize, this.POST.REPLY.width);
@@ -134,7 +133,8 @@ var ForumUI = {
 
     // 帖子页面的高度
     calcPostPageHeight: function (post, pageIndex = 0) {
-        let contentHeight = this.calcRepliesHeight(post, pageIndex);
+        let replyList = ForumSystem.getReplyListByPageIndex(post, pageIndex);
+        let contentHeight = this.calcReplyListHeight(replyList);
         contentHeight += this.HEAD.height + this.HEAD.marginBottom;
         contentHeight += this.POST.TITLE.height;
         contentHeight += this.POST.PAGINATION.height;
