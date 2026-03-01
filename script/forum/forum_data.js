@@ -1,5 +1,6 @@
 var ForumSystem = {
     Host: "donghaiguaitan.topic.com/",      // 域名
+    PAGE_SIZE: 10,                          // 分页大小
     "postsMap": {
         "1001": {
             "id": "1001",
@@ -587,6 +588,34 @@ var ForumSystem = {
         return this.Host + postId + suffix;
     },
 
+    getPostData: function (postId) {
+        let post = this.postsMap[postId];
+        if (!post) {
+            console.log(`帖子 ${postId} 不存在！`);
+            return null;
+        }
+        return post;
+    },
+
+    getTopicListByPageIndex: function (pageIndex) {
+        let postsList = Object.values(this.postsMap);
+        // 根据最后回帖的时间戳排序, 最新的在前面
+        postsList.sort(function (a, b) {
+            return b.reply[b.reply.length - 1].timestamp - a.reply[a.reply.length - 1].timestamp;
+        });
+        // 帖子总数不多不会翻页，就不做分页了
+        return postsList;
+    },
+
+    getReplyListByPageIndex: function (post, pageIndex) {
+        let currentPage = pageIndex || 1;
+        let startIndex = (currentPage - 1) * this.PAGE_SIZE;
+        let endIndex = startIndex + this.PAGE_SIZE;
+        let replyList = post.reply.slice(startIndex, endIndex);
+        console.log(`当前页: ${currentPage}, 截取范围: ${startIndex} - ${endIndex}, 本页数据条数: ${replyList.length}`);
+        return replyList;
+    },
+
     isPostVisited: function (postId) {
         let visitedPosts = ac.var.visitedPosts.split("|");
         return visitedPosts.includes(postId);
@@ -610,12 +639,4 @@ var ForumSystem = {
         return true;
     },
 
-    getPostData: function (postId) {
-        let post = this.postsMap[postId];
-        if (!post) {
-            console.log(`帖子 ${postId} 不存在！`);
-            return null;
-        }
-        return post;
-    },
 };
