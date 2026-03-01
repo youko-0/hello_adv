@@ -61,11 +61,9 @@ def parse_forum_data():
             topic_author = random.choice(AUTHOR_IDS)
             
             # 时间控制变量
-            # 设定脚本运行时间前 2 ~ 10 小时为基准发帖时间
-            base_timestamp = int(time.time()) - (random.randint(2, 10) * 60 * 60)
+            # 设定脚本运行时间前 120 ~ 180 分钟的时间戳作为基准时间
+            base_timestamp = int(time.time()) - (random.randint(120, 180) * 60)
             print(f"基准时间：{base_timestamp}")
-            # 重置时间：每个新帖子的发帖时间都视为基准时间
-            current_timestamp = base_timestamp
 
             current_post = {
                 "id": p_id,
@@ -86,7 +84,7 @@ def parse_forum_data():
             
             # 逻辑：分配作者
             if floor_index == 1:
-                # 1楼通常是楼主自己，保持ID一致
+                # 1楼是楼主自己，保持ID一致
                 r_author = current_post['authorId']
                 r_time = current_post['timestamp']
                 # 1楼的时间就是发帖时间
@@ -94,8 +92,8 @@ def parse_forum_data():
             else:
                 # 其他楼层随机分配
                 r_author = random.choice(AUTHOR_IDS)
-                # 时间递增 30s ~ 180s
-                add_seconds = random.randint(30, 180)
+                # 时间递增 30s ~ 600s
+                add_seconds = random.randint(30, 600)
                 current_timestamp += add_seconds
                 r_time = current_timestamp
 
