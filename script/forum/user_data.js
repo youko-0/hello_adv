@@ -1,3 +1,4 @@
+console.log('ENTER USERDATA');
 // 用户数据
 var UserSystem = {
     database: {

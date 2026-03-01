@@ -1,3 +1,4 @@
+console.log('ENTER POSTUI');
 // 帖子
 
 ac.createStyle({

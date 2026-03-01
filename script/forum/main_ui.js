@@ -1,3 +1,4 @@
+console.log('ENTER MAINUI');
 // 主页
 
 ac.createStyle({

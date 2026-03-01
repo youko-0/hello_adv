@@ -6,14 +6,14 @@ var BrowserUI = {
         height: 720,
     },
     BG: {
-        resId: '$182983354',
+        resId: '$183358115',
         width: 1280,
         height: 720,
     },
     BTN: {
         CLOSE: {
-            resIdNormal: '$183130998',
-            resIdHighlight: '$183130996',
+            resIdNormal: '$183358117',
+            resIdHighlight: '$183358118',
             width: 30,
             height: 26,
         },
@@ -233,7 +233,7 @@ async function showGameAlert(content, onConfirm = null) {
     await ac.createImage({
         name: "img_alert_bg",
         inlayer: "layer_alert",
-        resId: '$183071397',
+        resId: '$183358121',
         visible: true,
         pos: { x: 200, y: 180 },
         anchor: { x: 50, y: 50 },

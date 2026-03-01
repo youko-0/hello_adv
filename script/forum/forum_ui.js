@@ -7,7 +7,7 @@ var ForumUI = {
         BG: {
             width: 32,
             height: 32,
-            resId: '$183071397',
+            resId: '$183358122',
         },
     },
     SV: {
@@ -20,18 +20,18 @@ var ForumUI = {
         BG: {
             width: 32,
             height: 32,
-            resId: '$183003987',
+            resId: '$183358121',
         }
     },
     TOPIC: {
         height: 64,
         BG_NORMAL: {
-            resId: '$183003987',
+            resId: '$183358122',
             width: 32,
             height: 32,
         },
         BG_HIGHLIGHT: {
-            resId: '$183071397',
+            resId: '$183358121',
             width: 32,
             height: 32,
         },
@@ -54,10 +54,10 @@ var ForumUI = {
 
 
     AVATAR: {
-        ICON_01: '$183113921',
-        ICON_02: '$183114062',
-        ICON_03: '$183113921',
-        ICON_04: '$183114062',
+        ICON_01: '$183358120',
+        ICON_02: '$183358119',
+        ICON_03: '$183358120',
+        ICON_04: '$183358119',
     },
 
     // 话题列表的高度

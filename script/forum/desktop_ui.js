@@ -1,3 +1,4 @@
+
 await ac.createLayer({
     name: 'layer_desktop',
     index: 1,
@@ -21,7 +22,7 @@ await ac.createImage({
     name: 'img_desktop',
     index: 0,
     inlayer: 'layer_desktop',
-    resId: '$182982547',
+    resId: '$183358116',
     pos: {
         x: 640,
         y: 360,
@@ -40,7 +41,7 @@ await ac.createImage({
 async function func_open_forum() {
     await ac.replaceUI({
         name: 'replaceUI_forum',
-        uiId: 'nw48gnat',
+        uiId: 'dacbc56e73a94b3daa268f1a0616d8e2',
     });
 }
 
@@ -49,8 +50,8 @@ await ac.createOption({
     index: 1,
     inlayer: 'layer_desktop',
     visible: true,
-    nResId: '$182972526',
-    sResId: '$182972526',
+    nResId: '$183358123',
+    sResId: '$183358123',
     content: ``,
     pos: {
         x: 78,
