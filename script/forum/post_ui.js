@@ -56,7 +56,7 @@ ac.createStyle({
 
 
 // 创建回复
-async function createItemReply(reply, index, posY, contentHeight) {
+async function createItemReply(reply, index, posY, contentHeight, post) {
     let bgStyle = index % 2 == 0 ? ForumUI.TOPIC.BG_NORMAL : ForumUI.TOPIC.BG_HIGHLIGHT;
     // 背景
     await ac.createImage({
@@ -139,7 +139,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
         inlayer: ForumUI.SV.name,
         content: `${reply.index}楼`,
         pos: {
-            x: ForumUI.PAGE.width - 130,
+            x: ForumUI.PAGE.width - 128,
             y: posY + 10
         },
         anchor: { x: 100, y: 0 },
@@ -158,7 +158,7 @@ async function createItemReply(reply, index, posY, contentHeight) {
         inlayer: ForumUI.SV.name,
         content: ForumUI.formatRelativeTime(reply.timestamp),
         pos: {
-            x: ForumUI.PAGE.width - 24,
+            x: ForumUI.PAGE.width - 28,
             y: posY + 10
         },
         anchor: { x: 100, y: 0 },
@@ -169,6 +169,29 @@ async function createItemReply(reply, index, posY, contentHeight) {
         style: 'style_time',
         halign: ac.HALIGN_TYPES.right,
     });
+
+    // 楼主标识
+    let isAuthor = reply.authorId === post.authorId;
+    if (isAuthor) {
+        await ac.createText({
+            name: `lbl_author_flag_${index}`,
+            index: 1,
+            inlayer: ForumUI.SV.name,
+            content: '[楼主]',
+            pos: {
+                x: ForumUI.PAGE.width - 28,
+                y: posY + contentHeight - 10,
+            },
+            anchor: { x: 100, y: 100 },
+            size: {
+                width: 100,
+                height: ForumUI.POST.REPLY.fontSize,
+            },
+            style: 'style_time',
+            halign: ac.HALIGN_TYPES.right,
+            valign: ac.VALIGN_TYPES.top,
+        });
+    }
 
 }
 
@@ -232,7 +255,6 @@ async function createPagination(pageCount, currentPage) {
         });
     }
 
-
 }
 
 // 回复列表
@@ -282,7 +304,7 @@ async function initReplyList(postId, pageIndex = 0) {
         let reply = replyList[i];
         let h = reply.height;
         startY -= h;
-        await createItemReply(reply, i, startY, h);
+        await createItemReply(reply, i, startY, h, post);
     }
 
     let pageCount = ForumSystem.calcPostPageCount(post);
