@@ -1,69 +1,12 @@
 // 地图页面
 console.log('[LOAD] ui_map');
 
-await ac.createLayer({
-    name: 'layer_full_map',
-    index: 1,
-    inlayer: 'window',
-    pos: { x: 0, y: 0 },
-    anchor: { x: 0, y: 0 },
-    size: { width: MapSystem.width, height: MapSystem.height },
-    clipMode: true,
-});
-
-await ac.createImage({
-    name: 'img_map_bg',
-    index: 0,
-    inlayer: 'layer_full_map',
-    resId: ResMap.pic_map_bg,
-    pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
-    anchor: { x: 50, y: 50 },
-});
-
-await ac.createImage({
-    name: 'img_area_1',
-    index: 1,
-    inlayer: 'img_map_bg',
-    resId: ResMap.img_area_1,
-    pos: { x: 628, y: 370 },
-    anchor: { x: 50, y: 50 },
-});
-
-await ac.createImage({
-    name: 'img_area_2',
-    index: 1,
-    inlayer: 'img_map_bg',
-    resId: ResMap.img_area_2,
-    pos: { x: 334, y: 142 },
-    anchor: { x: 50, y: 50 },
-});
-
-await ac.createImage({
-    name: 'img_area_3',
-    index: 1,
-    inlayer: 'img_map_bg',
-    resId: ResMap.img_area_3,
-    pos: { x: 1088, y: 650 },
-    anchor: { x: 50, y: 50 },
-});
-
-await ac.createImage({
-    name: 'img_area_4',
-    index: 1,
-    inlayer: 'img_map_bg',
-    resId: ResMap.img_area_4,
-    pos: { x: 106, y: 540 },
-    anchor: { x: 50, y: 50 },
-});
-
-await ac.createImage({
-    name: 'img_area_5',
-    index: 1,
-    inlayer: 'img_map_bg',
-    resId: ResMap.img_area_5,
-    pos: { x: 1096, y: 348 },
-    anchor: { x: 50, y: 50 },
-});
+async function gotoNextPlot() {
+    await ac.jump({
+        plotID: ResMap.plot_map_next,
+        transition: ac.SCENE_TRANSITION_TYPES.normal,
+    });
+}
 
 // 注册点击事件
 async function registerClickEvent() {
@@ -80,7 +23,7 @@ async function registerClickEvent() {
             type: ac.EVENT_TYPES.onTouchEnded,
             listener: async function () {
                 if (MapSystem.isAllAreaUnlocked()) {
-                    await showGameAlert("TODO 所有区域已查看, 前往下一章");
+                    await gotoNextPlot();
                     return;
                 }
                 let state = MapSystem.getAreaState(i);
@@ -156,10 +99,11 @@ async function playUnlockAnim() {
             time: 2000
         });
         // 前往下一章
-        await showGameAlert("TODO 所有区域已查看, 前往下一章");
+        await gotoNextPlot();
     }
 
 }
 
+await createMapUI();
 await registerClickEvent();
 await playUnlockAnim();

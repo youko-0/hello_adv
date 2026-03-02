@@ -79,7 +79,7 @@ async function playUnlockAnim() {
         pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
         anchor: { x: 50, y: 50 },
         scale: 100,
-        opacity: 100,
+        opacity: 20,
     });
 }
 

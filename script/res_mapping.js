@@ -38,18 +38,26 @@ const HelloADVRes = {
     ui_map: 'j1u5e_wu',
 
     // 剧情唯一 ID
+    plot_map: 13977507,
     plot_area_1: 13980816,
     plot_area_2: 13980816,
     plot_area_3: 13980816,
     plot_area_4: 13980816,
     plot_area_5: 13980816,
+    plot_map_next: 13946330,
 }
 
 const DongHaiRes = {
     pic_browser_bg: '$183358115',
     pic_desktop_bg: '$183358116',
-    pic_map_bg: '$183497324',
-    
+    pic_map_bg: '$183518317',
+    pic_mask_area_0: '$183518318',
+    pic_mask_area_1: '$183518319',
+    pic_mask_area_2: '$183518320',
+    pic_mask_area_3: '$183518321',
+    pic_mask_area_4: '$183518322',
+    pic_mask_area_5: '$183518323',
+
     btn_browser: '$183358123',
     btn_web_close_normal: '$183358117',
     btn_web_close_highlight: '$183358118',
@@ -74,11 +82,13 @@ const DongHaiRes = {
     ui_map: 'ztyhx3u3',
 
     // 剧情唯一 ID
+    plot_map: 13980661,
     plot_area_1: 13969535,
     plot_area_2: 13974014,
     plot_area_3: 13974015,
     plot_area_4: 13974016,
     plot_area_5: 13974017,
+    plot_map_next: 13970354,
 };
 
 const ResMap = (RES_FLAG == 0) ? HelloADVRes : DongHaiRes;
