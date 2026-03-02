@@ -31,4 +31,9 @@ var MapSystem = {
         }
         return 1;
     },
+
+    isAllAreaUnlocked: function () {
+        let currentIndex = this.getCurrentAreaIndex();
+        return currentIndex >= 5;
+    }
 }

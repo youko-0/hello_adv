@@ -147,6 +147,14 @@ async function playUnlockAnim() {
         });
     }
 
+    if (MapSystem.isAllAreaUnlocked()) {
+        await ac.delay({
+            time: 2000
+        });
+        // 前往下一章
+        await showGameAlert("TODO 所有区域已查看, 前往下一章");
+    }
+
 }
 
 await registerClickEvent();
