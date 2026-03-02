@@ -258,7 +258,9 @@ async function createPagination(pageCount, currentPage) {
 }
 
 // 回复列表
-async function initReplyList(postId, pageIndex = 0) {
+async function initReplyList() {
+    let postId = ForumSystem.getCurrentPostId();
+    let pageIndex = ForumSystem.getCurrentPageIndex();
     console.log(`正在创建帖子 ${postId} 的回复列表，第 ${pageIndex} 页`);
     let post = ForumSystem.getPostData(postId);
     if (!post) {
@@ -309,14 +311,13 @@ async function initReplyList(postId, pageIndex = 0) {
 
     let pageCount = ForumSystem.calcPostPageCount(post);
     await createPagination(pageCount, pageIndex);
+
+    // 保存浏览记录
+    ForumSystem.savePostVisited(postId);
 }
 
 
 // 执行
-let currentPostId = ForumSystem.getCurrentPostId();
-let currentPageIndex = ForumSystem.getCurrentPageIndex();
-await initReplyList(currentPostId, currentPageIndex);
-// 保存浏览记录
-ForumSystem.savePostVisited(currentPostId);
+await initReplyList();
 
 await startTimeLoop();

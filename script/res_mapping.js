@@ -7,6 +7,12 @@ const HelloADVRes = {
     pic_browser_bg: '$182983354',
     pic_desktop_bg: '$182982547',
     pic_map_bg: '$183497324',
+    pic_mask_area_0: '$183505919',
+    pic_mask_area_1: '$183505299',
+    pic_mask_area_2: '$183505300',
+    pic_mask_area_3: '$183505301',
+    pic_mask_area_4: '$183505302',
+    pic_mask_area_5: '$183505303',
 
     btn_browser: '$182972526',
     btn_web_close_normal: '$183130998',

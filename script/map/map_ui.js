@@ -2,9 +2,13 @@
 var MapUI = {
     width: 1280,
     height: 720,
-    MASK: {
-        resId: ResMap.img_mask_round,
-        width: 32,
-        height: 32,
-    }
+
+    getCurrentAreaIndex: function () {
+        let index = ac.var.currentAreaIndex;
+        return index;
+    },
+
+    setCurrentAreaIndex: function (index) {
+        ac.var.currentAreaIndex = index;
+    },
 }

@@ -12,17 +12,6 @@ await ac.createLayer({
 });
 
 await ac.createImage({
-    name: 'img_mask',
-    index: 1,
-    inlayer: 'layer_full_map',
-    resId: MapUI.MASK.resId,
-    pos: { x: MapUI.width / 2, y: MapUI.height / 2 },
-    anchor: { x: 50, y: 50 },
-    scale: { x: MapUI.width * 100 / MapUI.MASK.width, y: MapUI.height * 100 / MapUI.MASK.height },
-    opacity: 80,
-});
-
-await ac.createImage({
     name: 'img_map_bg',
     index: 0,
     inlayer: 'layer_full_map',
@@ -75,3 +64,54 @@ await ac.createImage({
     pos: { x: 1096, y: 348 },
     anchor: { x: 50, y: 50 },
 });
+
+
+// 解锁进度
+async function playUnlockAnim() {
+    let currentIndex = MapUI.getCurrentAreaIndex();
+    let nextIndex = currentIndex + 1;
+    console.log('[LOG] playUnlockAnim', currentIndex, nextIndex);
+    // 创建已解锁区域遮罩(淡出)
+    await ac.createImage({
+        name: `img_mask_area_${currentIndex}`,
+        index: 5,
+        inlayer: 'img_map_bg',
+        resId: ResMap[`pic_mask_area_${currentIndex}`],
+        pos: { x: MapUI.width / 2, y: MapUI.height / 2 },
+        anchor: { x: 50, y: 50 },
+        scale: 100,
+        opacity: 100,
+    });
+
+    // 淡出
+    ac.hide({
+        name: `img_mask_area_${currentIndex}`,
+        effect: 'fadeout',
+        duration: 1000,
+        canskip: false,
+    });
+
+    if (nextIndex <= 5) {
+        // 创建待探索区域遮罩(淡入)
+        await ac.createImage({
+            name: `img_mask_area_${nextIndex}`,
+            index: 5,
+            inlayer: 'img_map_bg',
+            resId: ResMap[`pic_mask_area_${nextIndex}`],
+            pos: { x: MapUI.width / 2, y: MapUI.height / 2 },
+            anchor: { x: 50, y: 50 },
+            scale: 100,
+            opacity: 100,
+        });
+
+        ac.show({
+            name: `img_mask_area_${nextIndex}`,
+            effect: 'fadein',
+            duration: 1000,
+            canskip: false,
+        });
+    }
+
+}
+
+await playUnlockAnim();
