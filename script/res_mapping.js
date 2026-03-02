@@ -34,12 +34,15 @@ const HelloADVRes = {
     ui_desktop: 'cawn43cd',
     ui_main_page: 'nw48gnat',
     ui_post_detail: 'dbjp9oun',
+    ui_map_locked: '2ea57tk1',
     ui_map: 'j1u5e_wu',
-    ui_area_1: 'j1u5e_wu',
-    ui_area_2: 'j1u5e_wu',
-    ui_area_3: 'j1u5e_wu',
-    ui_area_4: 'j1u5e_wu',
-    ui_area_5: 'j1u5e_wu',
+
+    // 剧情唯一 ID
+    plot_area_1: 'j1u5e_wu',
+    plot_area_2: 'j1u5e_wu',
+    plot_area_3: 'j1u5e_wu',
+    plot_area_4: 'j1u5e_wu',
+    plot_area_5: 'j1u5e_wu',
 }
 
 const DongHaiRes = {
@@ -66,12 +69,15 @@ const DongHaiRes = {
     ui_desktop: '01ec9a548af54c2a86d86bd299d14003',
     ui_main_page: 'dacbc56e73a94b3daa268f1a0616d8e2',
     ui_post_detail: '1af34c5623d74b82aa12ff9259621b91',
-    ui_map: 'j1u5e_wu',
-    ui_area_1: '',
-    ui_area_2: '',
-    ui_area_3: '',
-    ui_area_4: '',
-    ui_area_5: '',
+    ui_map_locked: 'd1l5qa83',
+    ui_map: 'ztyhx3u3',
+
+    // 剧情唯一 ID
+    plot_area_1: '13969535',
+    plot_area_2: '13974014',
+    plot_area_3: '13974015',
+    plot_area_4: '13974016',
+    plot_area_5: '13974017',
 };
 
 const ResMap = (RES_FLAG == 0) ? HelloADVRes : DongHaiRes;

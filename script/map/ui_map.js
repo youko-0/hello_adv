@@ -1,5 +1,5 @@
 // 地图页面
-console.log('[LOAD] ui_map_full');
+console.log('[LOAD] ui_map');
 
 await ac.createLayer({
     name: 'layer_full_map',
@@ -72,7 +72,7 @@ async function registerClickEvent() {
         MapSystem.setCurrentAreaIndex(areaIndex);
         await ac.replaceUI({
             name: 'replaceUI_area',
-            uiId: ResMap[`ui_area_${areaIndex}`],
+            uiId: ResMap[`plot_area_${areaIndex}`],
         });
     }
     for (let i = 1; i <= 5; i++) {
