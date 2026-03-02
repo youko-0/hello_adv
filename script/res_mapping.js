@@ -38,11 +38,11 @@ const HelloADVRes = {
     ui_map: 'j1u5e_wu',
 
     // 剧情唯一 ID
-    plot_area_1: 'j1u5e_wu',
-    plot_area_2: 'j1u5e_wu',
-    plot_area_3: 'j1u5e_wu',
-    plot_area_4: 'j1u5e_wu',
-    plot_area_5: 'j1u5e_wu',
+    plot_area_1: 13980816,
+    plot_area_2: 13980816,
+    plot_area_3: 13980816,
+    plot_area_4: 13980816,
+    plot_area_5: 13980816,
 }
 
 const DongHaiRes = {
@@ -54,16 +54,17 @@ const DongHaiRes = {
     btn_web_close_normal: '$183358117',
     btn_web_close_highlight: '$183358118',
 
-    img_mask_black: '$183470049',
+    img_mask_black: '$183518332',
+    img_mask_round: '$183518330',
     img_forum_topic_bg_normal: '$183358122',
     img_forum_topic_bg_highlight: '$183358121',
     img_forum_head_01: '$183358120',
     img_forum_head_02: '$183358119',
-    img_area_1: '$183498637',
-    img_area_2: '$183498689',
-    img_area_3: '$183498733',
-    img_area_4: '$183498891',
-    img_area_5: '$183498968',
+    img_area_1: '$183518325',
+    img_area_2: '$183518326',
+    img_area_3: '$183518327',
+    img_area_4: '$183518328',
+    img_area_5: '$183518329',
 
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: '01ec9a548af54c2a86d86bd299d14003',
@@ -73,11 +74,11 @@ const DongHaiRes = {
     ui_map: 'ztyhx3u3',
 
     // 剧情唯一 ID
-    plot_area_1: '13969535',
-    plot_area_2: '13974014',
-    plot_area_3: '13974015',
-    plot_area_4: '13974016',
-    plot_area_5: '13974017',
+    plot_area_1: 13969535,
+    plot_area_2: 13974014,
+    plot_area_3: 13974015,
+    plot_area_4: 13974016,
+    plot_area_5: 13974017,
 };
 
 const ResMap = (RES_FLAG == 0) ? HelloADVRes : DongHaiRes;

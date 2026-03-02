@@ -70,9 +70,9 @@ async function registerClickEvent() {
     async function gotoArea(areaIndex) {
         // 直接在这里记录点击
         MapSystem.setCurrentAreaIndex(areaIndex);
-        await ac.replaceUI({
-            name: 'replaceUI_area',
-            uiId: ResMap[`plot_area_${areaIndex}`],
+        await ac.jump({
+            plotID: ResMap[`plot_area_${areaIndex}`],
+            transition: ac.SCENE_TRANSITION_TYPES.normal,
         });
     }
     for (let i = 1; i <= 5; i++) {
