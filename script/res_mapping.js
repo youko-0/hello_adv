@@ -35,6 +35,11 @@ const HelloADVRes = {
     ui_main_page: 'nw48gnat',
     ui_post_detail: 'dbjp9oun',
     ui_map: 'j1u5e_wu',
+    ui_area_1: 'j1u5e_wu',
+    ui_area_2: 'j1u5e_wu',
+    ui_area_3: 'j1u5e_wu',
+    ui_area_4: 'j1u5e_wu',
+    ui_area_5: 'j1u5e_wu',
 }
 
 const DongHaiRes = {
@@ -62,6 +67,11 @@ const DongHaiRes = {
     ui_main_page: 'dacbc56e73a94b3daa268f1a0616d8e2',
     ui_post_detail: '1af34c5623d74b82aa12ff9259621b91',
     ui_map: 'j1u5e_wu',
+    ui_area_1: '',
+    ui_area_2: '',
+    ui_area_3: '',
+    ui_area_4: '',
+    ui_area_5: '',
 };
 
 const ResMap = (RES_FLAG == 0) ? HelloADVRes : DongHaiRes;

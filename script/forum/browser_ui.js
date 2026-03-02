@@ -18,6 +18,21 @@ var BrowserUI = {
         },
     },
 
+    ALERT: {
+        width: 400,
+        height: 360,
+        MASK: {
+            resId: ResMap.img_mask_black,
+            width: 32,
+            height: 32,
+        },
+        BG: {
+            resId: ResMap.img_forum_topic_bg_normal,
+            width: 32,
+            height: 32,
+        },
+    },
+
     // 系统时间
     formatSystemTimeStr: function () {
         var now = new Date();
@@ -76,10 +91,7 @@ async function createBrowserUI(onClose = null) {
             x: BrowserUI.WINDOW.width / 2,
             y: BrowserUI.WINDOW.height / 2,
         },
-        anchor: {
-            x: 50,
-            y: 50,
-        },
+        anchor: { x: 50, y: 50 },
         size: {
             width: BrowserUI.WINDOW.width,
             height: BrowserUI.WINDOW.height,
@@ -97,10 +109,7 @@ async function createBrowserUI(onClose = null) {
             x: BrowserUI.WINDOW.width / 2,
             y: BrowserUI.WINDOW.height / 2,
         },
-        anchor: {
-            x: 50,
-            y: 50,
-        },
+        anchor: { x: 50, y: 50 },
         scale: {
             x: BrowserUI.WINDOW.width * 100 / BrowserUI.BG.width,
             y: BrowserUI.WINDOW.height * 100 / BrowserUI.BG.height,
@@ -118,7 +127,7 @@ async function createBrowserUI(onClose = null) {
             x: 94,
             y: BrowserUI.WINDOW.height - 24,
         },
-        anchor: {x: 0, y: 50},
+        anchor: { x: 0, y: 50 },
         size: {
             width: 220,
             height: 26,
@@ -139,7 +148,7 @@ async function createBrowserUI(onClose = null) {
             x: 200,
             y: BrowserUI.WINDOW.height - 78,
         },
-        anchor: {x: 0, y: 50},
+        anchor: { x: 0, y: 50 },
         size: {
             width: 480,
             height: 26,
@@ -213,32 +222,47 @@ async function showGameAlert(content, onConfirm = null) {
         name: 'layer_alert',
         index: 500,     // 置顶
         inlayer: 'window',
-        visible: true,
         pos: {
             x: BrowserUI.WINDOW.width / 2,
-            y: BrowserUI.WINDOW.height / 2,
+            y: BrowserUI.WINDOW.height / 2
         },
-        anchor: {
-            x: 50,
-            y: 50,
+        size: { width: BrowserUI.ALERT.width, height: BrowserUI.ALERT.height },
+        anchor: { x: 50, y: 50 },
+        clipMode: false,
+    });
+
+    await ac.createImage({
+        name: "img_alert_mask",
+        index: 0,
+        inlayer: "layer_alert",
+        resId: BrowserUI.ALERT.MASK.resId,
+        pos: {
+            x: BrowserUI.ALERT.width / 2,
+            y: BrowserUI.ALERT.height / 2
         },
-        size: {
-            width: 400,
-            height: 360,
+        anchor: { x: 50, y: 50 },
+        scale: {
+            x: BrowserUI.WINDOW.width * 100 / BrowserUI.ALERT.width,
+            y: BrowserUI.WINDOW.height * 100 / BrowserUI.ALERT.height,
         },
-        clipMode: true,
+        opacity: 60,
     });
 
     await ac.createImage({
         name: "img_alert_bg",
+        index: 1,
         inlayer: "layer_alert",
-        resId: ResMap.img_forum_topic_bg_normal,
-        visible: true,
-        pos: { x: 200, y: 180 },
+        resId: BrowserUI.ALERT.BG.resId,
+        pos: {
+            x: BrowserUI.ALERT.width / 2,
+            y: BrowserUI.ALERT.height / 2
+        },
         anchor: { x: 50, y: 50 },
-        scale: { x: 2000, y: 1600 },
-        opacity: 180,
-
+        scale: {
+            x: BrowserUI.ALERT.width * 100 / BrowserUI.BG.width,
+            y: BrowserUI.ALERT.height * 100 / BrowserUI.BG.height,
+        },
+        opacity: 100,
     });
 
     await ac.createText({
@@ -246,12 +270,13 @@ async function showGameAlert(content, onConfirm = null) {
         inlayer: "layer_alert",
         content: content,
         pos: {
-            x: 200,
-            y: 200,
+            x: BrowserUI.ALERT.width / 2,
+            y: BrowserUI.ALERT.height / 2 + 60
         },
         anchor: { x: 50, y: 50 },
-        size: { width: 400, height: 360 },
+        size: { width: BrowserUI.ALERT.width - 80, height: BrowserUI.ALERT.height - 100 },
         style: "style_alert",
+        valign: ac.VALIGN_TYPES.center,
         halign: ac.HALIGN_TYPES.middle,
     });
 
@@ -260,8 +285,8 @@ async function showGameAlert(content, onConfirm = null) {
         inlayer: "layer_alert",
         content: "确定",
         pos: {
-            x: 200,
-            y: 100,
+            x: BrowserUI.ALERT.width / 2,
+            y: BrowserUI.ALERT.height / 2 - 60
         },
         anchor: { x: 50, y: 50 },
         size: { width: 100, height: 60 },

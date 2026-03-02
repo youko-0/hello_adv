@@ -7,7 +7,7 @@ await ac.createLayer({
     inlayer: 'window',
     pos: { x: 0, y: 0 },
     anchor: { x: 0, y: 0 },
-    size: { width: MapUI.width, height: MapUI.height },
+    size: { width: MapSystem.width, height: MapSystem.height },
     clipMode: true,
 });
 
@@ -16,7 +16,7 @@ await ac.createImage({
     index: 0,
     inlayer: 'layer_full_map',
     resId: ResMap.pic_map_bg,
-    pos: { x: MapUI.width / 2, y: MapUI.height / 2 },
+    pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
     anchor: { x: 50, y: 50 },
 });
 
@@ -65,10 +65,45 @@ await ac.createImage({
     anchor: { x: 50, y: 50 },
 });
 
+// 注册点击事件
+async function registerClickEvent() {
+    async function gotoArea(areaIndex) {
+        // 直接在这里记录点击
+        MapSystem.setCurrentAreaIndex(areaIndex);
+        await ac.replaceUI({
+            name: 'replaceUI_area',
+            uiId: ResMap[`ui_area_${areaIndex}`],
+        });
+    }
+    for (let i = 1; i <= 5; i++) {
+        ac.addEventListener({
+            type: ac.EVENT_TYPES.onTouchEnded,
+            listener: async function () {
+                let state = MapSystem.getAreaState(i);
+                switch (state) {
+                    case 0:
+                        await gotoArea(i);
+                        break;
+                    case -1:
+                        await showGameAlert("该区域未解锁！");
+                        break;
+                    case 1:
+                        await showGameAlert("该区域已查看！");
+                        break;
+                    default:
+                        console.warn(`未知的区域状态: ${state}`);
+                        break;
+                }
+            },
+            target: `img_area_${i}`,
+        });
+    }
+}
+
 
 // 解锁进度
 async function playUnlockAnim() {
-    let currentIndex = MapUI.getCurrentAreaIndex();
+    let currentIndex = MapSystem.getCurrentAreaIndex();
     let nextIndex = currentIndex + 1;
     console.log('[LOG] playUnlockAnim', currentIndex, nextIndex);
     // 创建已解锁区域遮罩(淡出)
@@ -77,7 +112,7 @@ async function playUnlockAnim() {
         index: 5,
         inlayer: 'img_map_bg',
         resId: ResMap[`pic_mask_area_${currentIndex}`],
-        pos: { x: MapUI.width / 2, y: MapUI.height / 2 },
+        pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
         anchor: { x: 50, y: 50 },
         scale: 100,
         opacity: 100,
@@ -98,7 +133,7 @@ async function playUnlockAnim() {
             index: 5,
             inlayer: 'img_map_bg',
             resId: ResMap[`pic_mask_area_${nextIndex}`],
-            pos: { x: MapUI.width / 2, y: MapUI.height / 2 },
+            pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
             anchor: { x: 50, y: 50 },
             scale: 100,
             opacity: 100,
@@ -114,4 +149,5 @@ async function playUnlockAnim() {
 
 }
 
+await registerClickEvent();
 await playUnlockAnim();
