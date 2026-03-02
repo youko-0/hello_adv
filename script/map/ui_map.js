@@ -79,6 +79,10 @@ async function registerClickEvent() {
         ac.addEventListener({
             type: ac.EVENT_TYPES.onTouchEnded,
             listener: async function () {
+                if (MapSystem.isAllAreaUnlocked()) {
+                    await showGameAlert("TODO 所有区域已查看, 前往下一章");
+                    return;
+                }
                 let state = MapSystem.getAreaState(i);
                 switch (state) {
                     case 0:
@@ -86,12 +90,6 @@ async function registerClickEvent() {
                         break;
                     case -1:
                         await showGameAlert("该区域未解锁！");
-                        // await ac.sysDialogOn({
-                        //     content: "该区域未解锁！",
-                        //     hasRoleName: false,
-                        //     hasBg: true,
-                        //     hasRoleAvatar: false,
-                        // });
                         break;
                     case 1:
                         await showGameAlert("该区域已查看！");
