@@ -19,8 +19,8 @@ var BrowserUI = {
     },
 
     ALERT: {
-        width: 400,
-        height: 360,
+        width: 600,
+        height: 400,
         MASK: {
             resId: ResMap.img_mask_black,
             width: 32,
@@ -205,7 +205,7 @@ async function createSystemTime() {
 
 async function showGameAlert(content, onConfirm = null) {
 
-    async function closeAlert() {
+    async function onClickBtnConfirm() {
         ac.remove({
             name: 'layer_alert',
             effect: 'normal',
@@ -215,6 +215,10 @@ async function showGameAlert(content, onConfirm = null) {
 
         // 如果传了回调函数，就执行它
         if (onConfirm) await onConfirm();
+    }
+
+    async function onTouchMask() {
+        console.log('[LOG] onTouchMask');
     }
 
     // 容器
@@ -242,8 +246,8 @@ async function showGameAlert(content, onConfirm = null) {
         },
         anchor: { x: 50, y: 50 },
         scale: {
-            x: BrowserUI.WINDOW.width * 100 / BrowserUI.ALERT.width,
-            y: BrowserUI.WINDOW.height * 100 / BrowserUI.ALERT.height,
+            x: BrowserUI.WINDOW.width * 100 / BrowserUI.ALERT.MASK.width,
+            y: BrowserUI.WINDOW.height * 100 / BrowserUI.ALERT.MASK.height,
         },
         opacity: 60,
     });
@@ -259,14 +263,15 @@ async function showGameAlert(content, onConfirm = null) {
         },
         anchor: { x: 50, y: 50 },
         scale: {
-            x: BrowserUI.ALERT.width * 100 / BrowserUI.BG.width,
-            y: BrowserUI.ALERT.height * 100 / BrowserUI.BG.height,
+            x: BrowserUI.ALERT.width * 100 / BrowserUI.ALERT.BG.width,
+            y: BrowserUI.ALERT.height * 100 / BrowserUI.ALERT.BG.height,
         },
         opacity: 100,
     });
 
     await ac.createText({
         name: "alert_content",
+        index: 2,
         inlayer: "layer_alert",
         content: content,
         pos: {
@@ -282,6 +287,7 @@ async function showGameAlert(content, onConfirm = null) {
 
     await ac.createText({
         name: "alert_confirm_btn",
+        index: 2,
         inlayer: "layer_alert",
         content: "确定",
         pos: {
@@ -294,10 +300,17 @@ async function showGameAlert(content, onConfirm = null) {
         halign: ac.HALIGN_TYPES.middle,
     });
 
+    // 拦截点击
+    ac.addEventListener({
+        type: ac.EVENT_TYPES.onTouchBegan,
+        listener: onTouchMask,
+        target: "img_alert_mask",
+    });
+
     // 确定按钮
     ac.addEventListener({
         type: ac.EVENT_TYPES.onTouchEnded,
-        listener: closeAlert,
+        listener: onClickBtnConfirm,
         target: "alert_confirm_btn",
     });
 }

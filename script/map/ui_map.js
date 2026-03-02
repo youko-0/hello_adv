@@ -86,6 +86,12 @@ async function registerClickEvent() {
                         break;
                     case -1:
                         await showGameAlert("该区域未解锁！");
+                        // await ac.sysDialogOn({
+                        //     content: "该区域未解锁！",
+                        //     hasRoleName: false,
+                        //     hasBg: true,
+                        //     hasRoleAvatar: false,
+                        // });
                         break;
                     case 1:
                         await showGameAlert("该区域已查看！");
