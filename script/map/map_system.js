@@ -3,6 +3,34 @@ var MapSystem = {
     width: 1280,
     height: 720,
 
+    AREA: {
+        area1: {
+            resIdLocked: ResMap.img_area_1_locked,
+            resIdNormal: ResMap.img_area_1,
+            pos: { x: 628, y: 370 },
+        },
+        area2: {
+            resIdLocked: ResMap.img_area_2_locked,
+            resIdNormal: ResMap.img_area_2,
+            pos: { x: 334, y: 142 },
+        },
+        area3: {
+            resIdLocked: ResMap.img_area_3_locked,
+            resIdNormal: ResMap.img_area_3,
+            pos: { x: 1088, y: 650 },
+        },
+        area4: {
+            resIdLocked: ResMap.img_area_4_locked,
+            resIdNormal: ResMap.img_area_4,
+            pos: { x: 106, y: 540 },
+        },
+        area5: {
+            resIdLocked: ResMap.img_area_5_locked,
+            resIdNormal: ResMap.img_area_5,
+            pos: { x: 1096, y: 348 },
+        }
+    },
+
     getCurrentAreaIndex: function () {
         let index = ac.var.currentAreaIndex;
         return index;
@@ -19,7 +47,7 @@ var MapSystem = {
         return index <= currentIndex + 1;
     },
 
-    // 0: 当前开放, -1 : 未解锁, 1: 已解锁但不可跳转
+    // 0: 当前开放, -1 : 未解锁, 1: 已完成
     getAreaState: function (index) {
         // 当前开放区域可以点击跳转
         let currentIndex = this.getCurrentAreaIndex();
@@ -38,8 +66,8 @@ var MapSystem = {
     }
 }
 
-async function createMapUI() {
-    console.log('[LOAD] createMapUI');
+// 地图底图
+async function createMapStaticBg() {
     await ac.createLayer({
         name: 'layer_full_map',
         index: 0,
@@ -58,50 +86,88 @@ async function createMapUI() {
         pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
         anchor: { x: 50, y: 50 },
     });
+}
 
+// 地图区域
+async function createMapAreas() {
+    for (let i = 1; i <= 5; i++) {
+        let state = MapSystem.getAreaState(i);
+        let config = MapSystem.AREA[`area${i}`];
+        let resId = state === -1 ? config.resIdLocked : config.resIdNormal;
+        await ac.createImage({
+            name: `img_area_${i}`,
+            index: 1,
+            inlayer: 'img_map_bg',
+            resId: resId,
+            pos: config.pos,
+            anchor: { x: 50, y: 50 },
+        });
+    }
+}
+
+async function createMapUI() {
+    await createMapStaticBg();
+    await createMapAreas();
+}
+
+// 全屏压黑
+async function createMapMask() {
+    let currentIndex = MapSystem.getCurrentAreaIndex();
     await ac.createImage({
-        name: 'img_area_1',
-        index: 1,
+        name: `img_mask_area_${currentIndex}`,
+        index: 5,
         inlayer: 'img_map_bg',
-        resId: ResMap.img_area_1,
-        pos: { x: 628, y: 370 },
+        resId: ResMap[`pic_mask_area_${currentIndex}`],
+        pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
         anchor: { x: 50, y: 50 },
+        scale: 100,
+        opacity: 90,
+    });
+}
+
+// 解锁表现
+async function refreshMapMask() {
+    let currentIndex = MapSystem.getCurrentAreaIndex();
+    let nextIndex = currentIndex + 1;
+    console.log('[LOG] refreshMapMask', currentIndex, nextIndex);
+    // 创建已解锁区域遮罩(淡出)
+    await ac.createImage({
+        name: `img_mask_area_${currentIndex}`,
+        index: 5,
+        inlayer: 'img_map_bg',
+        resId: ResMap[`pic_mask_area_${currentIndex}`],
+        pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
+        anchor: { x: 50, y: 50 },
+        scale: 100,
+        opacity: 100,
     });
 
-    await ac.createImage({
-        name: 'img_area_2',
-        index: 1,
-        inlayer: 'img_map_bg',
-        resId: ResMap.img_area_2,
-        pos: { x: 334, y: 142 },
-        anchor: { x: 50, y: 50 },
+    // 淡出
+    ac.hide({
+        name: `img_mask_area_${currentIndex}`,
+        effect: 'fadeout',
+        duration: 1000,
+        canskip: false,
     });
 
-    await ac.createImage({
-        name: 'img_area_3',
-        index: 1,
-        inlayer: 'img_map_bg',
-        resId: ResMap.img_area_3,
-        pos: { x: 1088, y: 650 },
-        anchor: { x: 50, y: 50 },
-    });
+    if (nextIndex <= 5) {
+        // 创建待探索区域遮罩(淡入)
+        await ac.createImage({
+            name: `img_mask_area_${nextIndex}`,
+            index: 5,
+            inlayer: 'img_map_bg',
+            resId: ResMap[`pic_mask_area_${nextIndex}`],
+            pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
+            anchor: { x: 50, y: 50 },
+            scale: 100,
+            opacity: 100,
+        });
 
-    await ac.createImage({
-        name: 'img_area_4',
-        index: 1,
-        inlayer: 'img_map_bg',
-        resId: ResMap.img_area_4,
-        pos: { x: 106, y: 540 },
-        anchor: { x: 50, y: 50 },
-    });
-
-    await ac.createImage({
-        name: 'img_area_5',
-        index: 1,
-        inlayer: 'img_map_bg',
-        resId: ResMap.img_area_5,
-        pos: { x: 1096, y: 348 },
-        anchor: { x: 50, y: 50 },
-    });
-
+        ac.show({
+            name: `img_mask_area_${nextIndex}`,
+            effect: 'fadein',
+            duration: 1000,
+            canskip: false,
+        });
+    }
 }

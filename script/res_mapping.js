@@ -25,16 +25,20 @@ const HelloADVRes = {
     img_forum_head_01: '$183114062',
     img_forum_head_02: '$183113921',
     img_area_1: '$183498637',
+    img_area_1_locked: '$183562482',
     img_area_2: '$183498689',
+    img_area_2_locked: '$183562466',
     img_area_3: '$183498733',
+    img_area_3_locked: '$183562465',
     img_area_4: '$183498891',
+    img_area_4_locked: '$183562464',
     img_area_5: '$183498968',
+    img_area_5_locked: '$183562355',
 
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: 'cawn43cd',
     ui_main_page: 'nw48gnat',
     ui_post_detail: 'dbjp9oun',
-    ui_map_locked: '2ea57tk1',
     ui_map: 'j1u5e_wu',
 
     // 剧情唯一 ID
@@ -78,7 +82,6 @@ const DongHaiRes = {
     ui_desktop: '01ec9a548af54c2a86d86bd299d14003',
     ui_main_page: 'dacbc56e73a94b3daa268f1a0616d8e2',
     ui_post_detail: '1af34c5623d74b82aa12ff9259621b91',
-    ui_map_locked: 'd1l5qa83',
     ui_map: 'ztyhx3u3',
 
     // 剧情唯一 ID
