@@ -42,6 +42,7 @@ const HelloADVRes = {
     ui_map: 'j1u5e_wu',
 
     // 剧情唯一 ID
+    plot_forum_next: 13977507,
     plot_map: 13977507,
     plot_area_1: 13980816,
     plot_area_2: 13980816,
@@ -85,6 +86,7 @@ const DongHaiRes = {
     ui_map: 'ztyhx3u3',
 
     // 剧情唯一 ID
+    plot_forum_next: 13977507,
     plot_map: 13980661,
     plot_area_1: 13969535,
     plot_area_2: 13974014,

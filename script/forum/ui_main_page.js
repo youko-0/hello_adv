@@ -207,7 +207,7 @@ async function onClose() {
         await showGameAlert("请先看完所有的帖子！");
     } else {
         await ac.jump({
-            plotID: 13969471,
+            plotID: ResMap.plot_forum_next,
             transition: ac.SCENE_TRANSITION_TYPES.normal,
         });
     }
