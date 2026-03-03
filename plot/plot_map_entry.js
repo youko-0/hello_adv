@@ -1,5 +1,5 @@
 // 入口剧情
-console.log('[LOAD] map plot_entry');
+console.log('[LOAD] plot_map_entry');
 
 // @TODO: UI 不能显示在 SysDialog 下面, 可能需要改成在剧情里直接执行 ui_map
 

@@ -1,5 +1,5 @@
 // 入口剧情
-console.log('[LOAD] forum plot_entry');
+console.log('[LOAD] plot_forum_entry');
 
 /**
  * [资源预加载锚点] @KEEP @PRELOAD
