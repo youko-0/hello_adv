@@ -205,7 +205,7 @@ async function onClose() {
     });
 }
 
-await createBrowserUI(onClose);
+await BrowserUI.createBrowserUI(onClose);
 
 // 导航条
 async function createPagination(pageCount, currentPage) {
@@ -273,7 +273,7 @@ async function initReplyList() {
     let pageHeight = ForumUI.calcPostPageHeight(post, pageIndex);
     pageHeight += extraHeight;
     pageHeight = Math.max(ForumUI.PAGE.height, pageHeight);
-    await createForumUI(pageHeight);
+    await ForumUI.createForumUI(pageHeight);
 
     // 帖子内容初始坐标
     let startY = pageHeight - ForumUI.HEADER.height - ForumUI.HEADER.marginBottom;

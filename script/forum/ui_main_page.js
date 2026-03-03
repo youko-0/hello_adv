@@ -213,11 +213,11 @@ async function onClose() {
     }
 }
 
-await createBrowserUI(onClose);
+await BrowserUI.createBrowserUI(onClose);
 
 // 创建论坛 UI
 let pageHeight = ForumUI.calcMainPageHeight(0);
-await createForumUI(pageHeight);
+await ForumUI.createForumUI(pageHeight);
 
 async function initPostList() {
     let postsList = ForumSystem.getTopicListByPageIndex(0);

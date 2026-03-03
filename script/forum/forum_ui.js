@@ -141,100 +141,71 @@ var ForumUI = {
         // 跨年
         return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
     },
-}
 
-// 论坛框架 UI
-// pageHeight: 页面高度, 带版头
-async function createForumUI(pageHeight = 0) {
-    // 总高度不能小于页面高度
-    if (pageHeight < ForumUI.PAGE.height) {
-        pageHeight = ForumUI.PAGE.height;
-    }
-    // 容器
-    await ac.createLayer({
-        name: 'layer_forum_ui',
-        index: 1,
-        inlayer: 'window',
-        visible: true,
-        // 左右居中底对齐
-        pos: {
-            x: BrowserUI.WINDOW.width / 2,
-            y: 60,
-        },
-        anchor: {
-            x: 50,
-            y: 0,
-        },
-        size: {
-            width: ForumUI.PAGE.width,
-            height: ForumUI.PAGE.height,
-        },
-        clipMode: true,
-    });
-
-    // 背景
-    await ac.createImage({
-        name: 'img_page_bg',
-        index: 0,
-        inlayer: 'layer_forum_ui',
-        resId: ForumUI.PAGE.BG.resId,
-        pos: {
-            x: 0,
-            y: 0,
-        },
-        anchor: {
-            x: 0,
-            y: 0,
-        },
-        scale: {
-            x: ForumUI.PAGE.width * 100 / ForumUI.PAGE.BG.width,
-            y: ForumUI.PAGE.height * 100 / ForumUI.PAGE.BG.height,
+    // 论坛框架 UI
+    // pageHeight: 页面高度, 带版头
+    createForumUI: async function (pageHeight = 0) {
+        // 总高度不能小于页面高度
+        if (pageHeight < ForumUI.PAGE.height) {
+            pageHeight = ForumUI.PAGE.height;
         }
-    });
+        // 容器
+        await ac.createLayer({
+            name: 'layer_forum_ui',
+            index: 1,
+            inlayer: 'window',
+            // 左右居中底对齐
+            pos: { x: BrowserUI.WINDOW.width / 2, y: 60 },
+            anchor: { x: 50, y: 0 },
+            size: { width: ForumUI.PAGE.width, height: ForumUI.PAGE.height },
+            clipMode: true,
+        });
 
-    // 滚动层
-    await ac.createScrollView({
-        name: ForumUI.SV.name,
-        index: 1,
-        inlayer: 'layer_forum_ui',
-        visible: true,
-        pos: {
-            x: 0,
-            y: 0,
-        },
-        anchor: {
-            x: 0,
-            y: 0,
-        },
-        size: {
-            width: ForumUI.PAGE.width,
-            height: ForumUI.PAGE.height,
-        },
-        innerSize: {
-            width: ForumUI.PAGE.width,
-            height: pageHeight,
-        },
-        horizontalScroll: false,
-        verticalScroll: true,
-    });
+        // 背景
+        await ac.createImage({
+            name: 'img_page_bg',
+            index: 0,
+            inlayer: 'layer_forum_ui',
+            resId: ForumUI.PAGE.BG.resId,
+            pos: { x: 0, y: 0 },
+            anchor: { x: 0, y: 0 },
+            scale: {
+                x: ForumUI.PAGE.width * 100 / ForumUI.PAGE.BG.width,
+                y: ForumUI.PAGE.height * 100 / ForumUI.PAGE.BG.height,
+            }
+        });
 
-    // 版头
-    await ac.createImage({
-        name: 'img_header_bg',
-        index: 0,
-        inlayer: ForumUI.SV.name,
-        resId: ForumUI.HEADER.BG.resId,
-        pos: {
-            x: ForumUI.PAGE.width / 2,
-            y: pageHeight,
-        },
-        anchor: {
-            x: 50,
-            y: 100,
-        },
-        scale: {
-            x: ForumUI.HEADER.width * 100 / ForumUI.HEADER.BG.width,
-            y: ForumUI.HEADER.height * 100 / ForumUI.HEADER.BG.height,
-        },
-    });
+        // 滚动层
+        await ac.createScrollView({
+            name: ForumUI.SV.name,
+            index: 1,
+            inlayer: 'layer_forum_ui',
+            pos: { x: 0, y: 0 },
+            anchor: { x: 0, y: 0 },
+            size: {
+                width: ForumUI.PAGE.width,
+                height: ForumUI.PAGE.height,
+            },
+            innerSize: {
+                width: ForumUI.PAGE.width,
+                height: pageHeight,
+            },
+            horizontalScroll: false,
+            verticalScroll: true,
+        });
+
+        // 版头
+        await ac.createImage({
+            name: 'img_header_bg',
+            index: 0,
+            inlayer: ForumUI.SV.name,
+            resId: ForumUI.HEADER.BG.resId,
+            pos: { x: ForumUI.PAGE.width / 2, y: pageHeight },
+            anchor: { x: 50, y: 100 },
+            scale: {
+                x: ForumUI.HEADER.width * 100 / ForumUI.HEADER.BG.width,
+                y: ForumUI.HEADER.height * 100 / ForumUI.HEADER.BG.height,
+            },
+        });
+    }
 }
