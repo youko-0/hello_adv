@@ -1,7 +1,7 @@
 // 浏览器UI
 console.log('[LOAD] browser_ui');
 
-var BrowserUI = {
+const BrowserUI = {
     WINDOW: {
         width: 1280,
         height: 720,

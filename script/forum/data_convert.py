@@ -71,7 +71,7 @@ def find_matching_brace(text, start_index):
 
 def update_forum_system_js(posts_map, timestamp):
     """
-    针对 var ForumSystem = { ... } 结构的专用更新函数
+    针对 const ForumSystem = { ... } 结构的专用更新函数
     """
     if not os.path.exists(JS_TARGET_FILE):
         print(f"错误：找不到目标 JS 文件 {JS_TARGET_FILE}")

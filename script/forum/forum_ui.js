@@ -1,7 +1,7 @@
 // 论坛UI配置
 console.log('[LOAD] forum_ui');
 
-var ForumUI = {
+const ForumUI = {
     PAGE: {
         width: 1200,
         height: 552,
@@ -207,5 +207,5 @@ var ForumUI = {
                 y: ForumUI.HEADER.height * 100 / ForumUI.HEADER.BG.height,
             },
         });
-    }
+    },
 }

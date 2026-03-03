@@ -50,8 +50,8 @@ async function registerClickEvent() {
     }
 }
 
-await createMapUI();
-await refreshMapMask();
+await MapSystem.createMapUI();
+await MapSystem.refreshMapMask();
 await registerClickEvent();
 
 // 全部解锁前往下一章

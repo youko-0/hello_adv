@@ -1,6 +1,6 @@
 console.log('[LOAD] user_system');
 // 用户数据
-var UserSystem = {
+const UserSystem = {
     database: {
         "user_001": {
             id: "user_001",

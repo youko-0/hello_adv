@@ -1,5 +1,5 @@
 // 地图配置
-var MapSystem = {
+const MapSystem = {
     width: 1280,
     height: 720,
 
@@ -63,111 +63,108 @@ var MapSystem = {
     isAllAreaUnlocked: function () {
         let currentIndex = this.getCurrentAreaIndex();
         return currentIndex >= 5;
-    }
-}
+    },
 
-// 地图底图
-async function createMapStaticBg() {
-    await ac.createLayer({
-        name: 'layer_full_map',
-        index: 0,
-        inlayer: 'window',
-        pos: { x: 0, y: 0 },
-        anchor: { x: 0, y: 0 },
-        size: { width: MapSystem.width, height: MapSystem.height },
-        clipMode: true,
-    });
+    // 地图背景
+    createMapStaticBg: async function () {
+        await ac.createLayer({
+            name: 'layer_full_map',
+            index: 0,
+            inlayer: 'window',
+            pos: { x: 0, y: 0 },
+            anchor: { x: 0, y: 0 },
+            size: { width: MapSystem.width, height: MapSystem.height },
+            clipMode: true,
+        });
 
-    await ac.createImage({
-        name: 'img_map_bg',
-        index: 0,
-        inlayer: 'layer_full_map',
-        resId: ResMap.pic_map_bg,
-        pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
-        anchor: { x: 50, y: 50 },
-    });
-}
-
-// 地图区域
-async function createMapAreas() {
-    for (let i = 1; i <= 5; i++) {
-        let state = MapSystem.getAreaState(i);
-        let config = MapSystem.AREA[`area${i}`];
-        let resId = state === -1 ? config.resIdLocked : config.resIdNormal;
         await ac.createImage({
-            name: `img_area_${i}`,
-            index: 1,
-            inlayer: 'img_map_bg',
-            resId: resId,
-            pos: config.pos,
+            name: 'img_map_bg',
+            index: 0,
+            inlayer: 'layer_full_map',
+            resId: ResMap.pic_map_bg,
+            pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
             anchor: { x: 50, y: 50 },
         });
-    }
-}
+    },
 
-async function createMapUI() {
-    await createMapStaticBg();
-    await createMapAreas();
-}
+    // 地图区域
+    createMapAreas: async function () {
+        for (let i = 1; i <= 5; i++) {
+            let state = MapSystem.getAreaState(i);
+            let config = MapSystem.AREA[`area${i}`];
+            let resId = state === -1 ? config.resIdLocked : config.resIdNormal;
+            await ac.createImage({
+                name: `img_area_${i}`,
+                index: 1,
+                inlayer: 'img_map_bg',
+                resId: resId,
+                pos: config.pos,
+                anchor: { x: 50, y: 50 },
+            });
+        }
+    },
 
-// 全屏压黑
-async function createMapMask() {
-    let currentIndex = MapSystem.getCurrentAreaIndex();
-    await ac.createImage({
-        name: `img_mask_area_${currentIndex}`,
-        index: 5,
-        inlayer: 'img_map_bg',
-        resId: ResMap[`pic_mask_area_${currentIndex}`],
-        pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
-        anchor: { x: 50, y: 50 },
-        scale: 100,
-        opacity: 90,
-    });
-}
+    // 完整地图
+    createMapUI: async function () {
+        await MapSystem.createMapStaticBg();
+        await MapSystem.createMapAreas();
+    },
 
-// 解锁表现
-async function refreshMapMask() {
-    let currentIndex = MapSystem.getCurrentAreaIndex();
-    let nextIndex = currentIndex + 1;
-    console.log('[LOG] refreshMapMask', currentIndex, nextIndex);
-    // 创建已解锁区域遮罩(淡出)
-    await ac.createImage({
-        name: `img_mask_area_${currentIndex}`,
-        index: 5,
-        inlayer: 'img_map_bg',
-        resId: ResMap[`pic_mask_area_${currentIndex}`],
-        pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
-        anchor: { x: 50, y: 50 },
-        scale: 100,
-        opacity: 100,
-    });
-
-    // 淡出
-    ac.hide({
-        name: `img_mask_area_${currentIndex}`,
-        effect: 'fadeout',
-        duration: 1000,
-        canskip: false,
-    });
-
-    if (nextIndex <= 5) {
-        // 创建待探索区域遮罩(淡入)
+    // 全屏压黑
+    createMapMask: async function () {
+        let currentIndex = MapSystem.getCurrentAreaIndex();
         await ac.createImage({
-            name: `img_mask_area_${nextIndex}`,
+            name: `img_mask_area_${currentIndex}`,
             index: 5,
             inlayer: 'img_map_bg',
-            resId: ResMap[`pic_mask_area_${nextIndex}`],
+            resId: ResMap[`pic_mask_area_${currentIndex}`],
             pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
             anchor: { x: 50, y: 50 },
             scale: 100,
-            opacity: 100,
+            opacity: 90,
+        });
+    },
+
+    // 解锁表现
+    refreshMapMask: async function () {
+        let currentIndex = MapSystem.getCurrentAreaIndex();
+        let nextIndex = currentIndex + 1;
+        console.log('[LOG] refreshMapMask', currentIndex, nextIndex);
+        // 创建已解锁区域遮罩(淡出)
+        await ac.createImage({
+            name: `img_mask_area_${currentIndex}`,
+            index: 5,
+            inlayer: 'img_map_bg',
+            resId: ResMap[`pic_mask_area_${currentIndex}`],
+            pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
+            anchor: { x: 50, y: 50 },
         });
 
-        ac.show({
-            name: `img_mask_area_${nextIndex}`,
-            effect: 'fadein',
+        // 淡出
+        ac.hide({
+            name: `img_mask_area_${currentIndex}`,
+            effect: 'fadeout',
             duration: 1000,
             canskip: false,
         });
-    }
+
+        if (nextIndex <= 5) {
+            // 创建待探索区域遮罩(淡入)
+            await ac.createImage({
+                name: `img_mask_area_${nextIndex}`,
+                index: 5,
+                inlayer: 'img_map_bg',
+                resId: ResMap[`pic_mask_area_${nextIndex}`],
+                pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
+                anchor: { x: 50, y: 50 },
+            });
+
+            ac.show({
+                name: `img_mask_area_${nextIndex}`,
+                effect: 'fadein',
+                duration: 1000,
+                canskip: false,
+            });
+        }
+    },
 }

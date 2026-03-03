@@ -1,7 +1,7 @@
 // 论坛系统配置
 console.log('[LOAD] forum_system');
 
-var ForumSystem = {
+const ForumSystem = {
     HOST: "donghaiguaitan.topic.com/",      // 域名
     NAME: "东海论坛",
     PAGE_SIZE: 10,                          // 分页大小
