@@ -2,10 +2,6 @@
 console.log('[LOAD] browser_ui');
 
 const BrowserUI = {
-    WINDOW: {
-        width: 1280,
-        height: 720,
-    },
     BG: {
         resId: ResMap.pic_browser_bg,
         width: 1280,
@@ -58,15 +54,9 @@ const BrowserUI = {
             name: 'layer_browser_ui',
             index: 0,
             inlayer: 'window',
-            pos: {
-                x: BrowserUI.WINDOW.width / 2,
-                y: BrowserUI.WINDOW.height / 2,
-            },
+            pos: { x: GameConfig.CenterX, y: GameConfig.CenterY },
             anchor: { x: 50, y: 50 },
-            size: {
-                width: BrowserUI.WINDOW.width,
-                height: BrowserUI.WINDOW.height,
-            },
+            size: { width: GameConfig.Width, height: GameConfig.Height },
             clipMode: true,
         });
 
@@ -76,14 +66,11 @@ const BrowserUI = {
             index: 0,
             inlayer: 'layer_browser_ui',
             resId: BrowserUI.BG.resId,
-            pos: {
-                x: BrowserUI.WINDOW.width / 2,
-                y: BrowserUI.WINDOW.height / 2,
-            },
+            pos: { x: GameConfig.CenterX, y: GameConfig.CenterY },
             anchor: { x: 50, y: 50 },
             scale: {
-                x: BrowserUI.WINDOW.width * 100 / BrowserUI.BG.width,
-                y: BrowserUI.WINDOW.height * 100 / BrowserUI.BG.height,
+                x: GameConfig.Width * 100 / BrowserUI.BG.width,
+                y: GameConfig.Height * 100 / BrowserUI.BG.height,
             },
         });
 
@@ -93,15 +80,9 @@ const BrowserUI = {
             index: 1,
             inlayer: 'layer_browser_ui',
             content: ForumSystem.getCurrentTitle(),
-            pos: {
-                x: 94,
-                y: BrowserUI.WINDOW.height - 24,
-            },
+            pos: { x: 94, y: GameConfig.Height - 24 },
             anchor: { x: 0, y: 50 },
-            size: {
-                width: 220,
-                height: 26,
-            },
+            size: { width: 220, height: 26 },
             style: 'style_status_bar',
             halign: ac.HALIGN_TYPES.left,
             valign: ac.VALIGN_TYPES.top,
@@ -113,15 +94,9 @@ const BrowserUI = {
             index: 1,
             inlayer: 'layer_browser_ui',
             content: ForumSystem.getCurrentUrl(),
-            pos: {
-                x: 200,
-                y: BrowserUI.WINDOW.height - 78,
-            },
+            pos: { x: 200, y: GameConfig.Height - 78 },
             anchor: { x: 0, y: 50 },
-            size: {
-                width: 480,
-                height: 26,
-            },
+            size: { width: 480, height: 26 },
             style: 'style_status_bar',
             halign: ac.HALIGN_TYPES.left,
             valign: ac.VALIGN_TYPES.top,
@@ -135,14 +110,8 @@ const BrowserUI = {
             nResId: BrowserUI.BTN.CLOSE.resIdNormal,
             sResId: BrowserUI.BTN.CLOSE.resIdHighlight,
             content: ``,
-            pos: {
-                x: BrowserUI.WINDOW.width,
-                y: BrowserUI.WINDOW.height,
-            },
-            anchor: {
-                x: 100,
-                y: 100,
-            },
+            pos: { width: GameConfig.Width, height: GameConfig.Height },
+            anchor: { x: 100, y: 100 },
             onTouchEnded: onClose,
         });
     },
@@ -155,15 +124,9 @@ const BrowserUI = {
             index: 10,
             inlayer: 'window',
             content: timeStr,
-            pos: {
-                x: BrowserUI.WINDOW.width - 20,
-                y: 12
-            },
+            pos: { x: GameConfig.Width - 20, y: 12 },
             anchor: { x: 100, y: 0 },
-            size: {
-                width: 120,
-                height: 64,
-            },
+            size: { width: 120, height: 64 },
             style: 'style_system_time',
             halign: ac.HALIGN_TYPES.right,
             valign: ac.VALIGN_TYPES.bottom,
@@ -221,10 +184,7 @@ async function showGameAlert(content, onConfirm = null) {
         name: 'layer_alert',
         index: 500,     // 置顶
         inlayer: 'window',
-        pos: {
-            x: BrowserUI.WINDOW.width / 2,
-            y: BrowserUI.WINDOW.height / 2
-        },
+        pos: { x: GameConfig.CenterX, y: GameConfig.CenterY },
         size: { width: BrowserUI.ALERT.width, height: BrowserUI.ALERT.height },
         anchor: { x: 50, y: 50 },
         clipMode: false,
@@ -241,8 +201,8 @@ async function showGameAlert(content, onConfirm = null) {
         },
         anchor: { x: 50, y: 50 },
         scale: {
-            x: BrowserUI.WINDOW.width * 100 / BrowserUI.ALERT.MASK.width,
-            y: BrowserUI.WINDOW.height * 100 / BrowserUI.ALERT.MASK.height,
+            x: GameConfig.Width * 100 / BrowserUI.ALERT.MASK.width,
+            y: GameConfig.Height * 100 / BrowserUI.ALERT.MASK.height,
         },
         opacity: 60,
     });

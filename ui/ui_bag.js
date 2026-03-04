@@ -1,4 +1,5 @@
-
+// 背包界面
+console.log('[LOAD] ui_bag');
 
 await ac.createImage({
     name: 'image2',
@@ -13,7 +14,7 @@ await ac.createImage({
         x: 50,
         y: 50,
     },
-    opacity: 50,
+    opacity: 0,
     scale: 100,
     visible: true,
     verticalFlip: false,
@@ -21,7 +22,7 @@ await ac.createImage({
 });
 
 await ac.createImage({
-    name: 'img_bg',
+    name: 'img_ui_bg',
     index: 0,
     inlayer: 'window',
     resId: '$183658448',
@@ -128,6 +129,26 @@ await ac.createImage({
     horizontalFlip: false,
 });
 
+await ac.createImage({
+    name: 'img_item_icon_1',
+    index: 200,
+    inlayer: 'sv_items',
+    resId: '$183687836',
+    pos: {
+        x: 56,
+        y: 300,
+    },
+    anchor: {
+        x: 50,
+        y: 50,
+    },
+    opacity: 100,
+    scale: 100,
+    visible: true,
+    verticalFlip: false,
+    horizontalFlip: false,
+});
+
 await ac.createText({
     name: 'lbl_item_name_1',
     index: 200,
@@ -150,6 +171,26 @@ await ac.createText({
         x: 50,
         y: 50,
     },
+});
+
+await ac.createImage({
+    name: 'img_bag_item_count_1',
+    index: 5,
+    inlayer: 'window',
+    resId: '$183688524',
+    pos: {
+        x: 280,
+        y: 460,
+    },
+    anchor: {
+        x: 50,
+        y: 50,
+    },
+    opacity: 100,
+    scale: 100,
+    visible: true,
+    verticalFlip: false,
+    horizontalFlip: false,
 });
 
 await ac.createText({

@@ -4,6 +4,8 @@ console.log('[LOAD] res_map');
 let RES_FLAG = 0;        // 用来切换资源
 
 const HelloADVRes = {
+    pic_common_bg_01: '$183658447',
+    pic_common_bg_02: '$183658448',
     pic_browser_bg: '$182983354',
     pic_desktop_bg: '$182982547',
     pic_map_bg: '$183497324',

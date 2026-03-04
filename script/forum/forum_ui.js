@@ -155,7 +155,7 @@ const ForumUI = {
             index: 1,
             inlayer: 'window',
             // 左右居中底对齐
-            pos: { x: BrowserUI.WINDOW.width / 2, y: 60 },
+            pos: { x: GameConfig.CenterX, y: 60 },
             anchor: { x: 50, y: 0 },
             size: { width: ForumUI.PAGE.width, height: ForumUI.PAGE.height },
             clipMode: true,

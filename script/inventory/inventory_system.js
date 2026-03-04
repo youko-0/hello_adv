@@ -1,3 +1,6 @@
+// 道具系统
+console.log('[LOAD] inventory_system');
+
 const InventorySystem = {
     // 内存中的缓存（操作都在这里进行，计算快）
     _bagCache: {},     // 存道具数量 { "apple": 5 }

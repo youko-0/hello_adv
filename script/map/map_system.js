@@ -1,7 +1,5 @@
 // 地图配置
 const MapSystem = {
-    width: 1280,
-    height: 720,
 
     AREA: {
         area1: {
@@ -73,7 +71,7 @@ const MapSystem = {
             inlayer: 'window',
             pos: { x: 0, y: 0 },
             anchor: { x: 0, y: 0 },
-            size: { width: MapSystem.width, height: MapSystem.height },
+            size: { width: GameConfig.Width, height: GameConfig.Height },
             clipMode: true,
         });
 
@@ -82,7 +80,7 @@ const MapSystem = {
             index: 0,
             inlayer: 'layer_full_map',
             resId: ResMap.pic_map_bg,
-            pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
+            pos: { x: GameConfig.CenterX, y: GameConfig.CenterY },
             anchor: { x: 50, y: 50 },
         });
     },
@@ -118,7 +116,7 @@ const MapSystem = {
             index: 5,
             inlayer: 'img_map_bg',
             resId: ResMap[`pic_mask_area_${currentIndex}`],
-            pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
+            pos: { x: GameConfig.CenterX, y: GameConfig.CenterY },
             anchor: { x: 50, y: 50 },
             scale: 100,
             opacity: 90,
@@ -136,7 +134,7 @@ const MapSystem = {
             index: 5,
             inlayer: 'img_map_bg',
             resId: ResMap[`pic_mask_area_${currentIndex}`],
-            pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
+            pos: { x: GameConfig.CenterX, y: GameConfig.CenterY },
             anchor: { x: 50, y: 50 },
         });
 
@@ -155,7 +153,7 @@ const MapSystem = {
                 index: 5,
                 inlayer: 'img_map_bg',
                 resId: ResMap[`pic_mask_area_${nextIndex}`],
-                pos: { x: MapSystem.width / 2, y: MapSystem.height / 2 },
+                pos: { x: GameConfig.CenterX, y: GameConfig.CenterY },
                 anchor: { x: 50, y: 50 },
             });
 
