@@ -5,26 +5,31 @@ const MapSystem = {
 
     area: {
         area1: {
+            name: "下城区",
             resIdLocked: ResMap.img_area_1_locked,
             resIdNormal: ResMap.img_area_1,
             pos: { x: 628, y: 370 },
         },
         area2: {
+            name: "赛车场",
             resIdLocked: ResMap.img_area_2_locked,
             resIdNormal: ResMap.img_area_2,
             pos: { x: 334, y: 142 },
         },
         area3: {
+            name: "哪吒庙",
             resIdLocked: ResMap.img_area_3_locked,
             resIdNormal: ResMap.img_area_3,
             pos: { x: 1088, y: 650 },
         },
         area4: {
+            name: "龙王庙",
             resIdLocked: ResMap.img_area_4_locked,
             resIdNormal: ResMap.img_area_4,
             pos: { x: 106, y: 540 },
         },
         area5: {
+            name: "德兴大厦",
             resIdLocked: ResMap.img_area_5_locked,
             resIdNormal: ResMap.img_area_5,
             pos: { x: 1096, y: 348 },

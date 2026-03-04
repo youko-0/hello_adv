@@ -1,6 +1,9 @@
 // 背包界面
 console.log('[LOAD] ui_bag');
 
+// 每行显示道具数量
+const ITEM_PER_ROW = 4;
+
 await ac.createImage({
     name: 'image2',
     index: 100,
@@ -16,84 +19,53 @@ await ac.createImage({
     },
     opacity: 0,
     scale: 100,
-    visible: true,
     verticalFlip: false,
     horizontalFlip: false,
 });
+
+async function createItemUI(itemId, index) {
+    let itemConfig = ItemConfig[itemId];
+    
+}
 
 await ac.createImage({
     name: 'img_ui_bg',
     index: 0,
     inlayer: 'window',
     resId: ResMap.pic_common_bg_02,
-    pos: { GameConfig.centerX, GameConfig.centerY },
+    pos: { x: GameConfig.centerX, y: GameConfig.centerY },
     anchor: { x: 50, y: 50 },
 });
 
 await ac.createImage({
     name: 'img_title',
-    index: 2,
-    inlayer: 'window',
-    resId: '$183658488',
-    pos: {
-        x: 26,
-        y: 669,
-    },
-    anchor: {
-        x: 0,
-        y: 50,
-    },
-    opacity: 100,
-    scale: 100,
-    visible: true,
-    verticalFlip: false,
-    horizontalFlip: false,
+    index: 1,
+    inlayer: 'img_ui_bg',
+    resId: ResMap.img_bag_title,
+    pos: { x: 26, y: 670 },
+    anchor: { x: 0, y: 50 },
 });
 
-async function function1() {
-
-}
-
 await ac.createOption({
-    name: 'btn_close_ui',
+    name: 'btn_ui_close',
     index: 0,
-    inlayer: 'window',
-    visible: true,
-    nResId: '$183658478',
-    sResId: '$183658477',
+    inlayer: 'img_ui_bg',
+    nResId: ResMap.btn_common_close_normal,
+    sResId: ResMap.btn_common_close_highlight,
     content: ``,
-    pos: {
-        x: 1220,
-        y: 72,
-    },
-    anchor: {
-        x: 50,
-        y: 50,
-    },
-    onTouchEnded: function1,
+    pos: { x: 1220, y: 72 },
+    anchor: { x: 50, y: 50 },
+    onTouchEnded: ac.removeCurrentUI,
 });
 
 await ac.createScrollView({
     name: 'sv_items',
-    index: 0,
-    inlayer: 'window',
-    visible: true,
-    pos: {
-        x: 450,
-        y: 360,
-    },
-    anchor: {
-        x: 50,
-        y: 50,
-    },
-    size: {
-        width: 512,
-        height: 360,
-    },
-    innerSize: {
-        width: 512,
-        height: 360,
-    },
+    index: 1,
+    inlayer: 'img_ui_bg',
+    pos: { x: 450, y: 360 },
+    anchor: { x: 50, y: 50 },
+    size: { width: 512, height: 360 },
+    innerSize: { width: 512, height: 360 },
     horizontalScroll: false,
     verticalScroll: true,
 });

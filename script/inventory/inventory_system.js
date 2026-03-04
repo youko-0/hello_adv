@@ -169,5 +169,17 @@ const InventorySystem = {
      */
     hasItem: function (itemId) {
         return this.getCount(itemId) > 0;
-    }
+    },
+
+    getItemConfig: function (itemId) {
+        return ItemConfig[itemId];
+    },
+
+    // 根据类型获取道具列表, 未获得的道具也要显示, 遍历 ItemConfig
+    getItemListByType: function (type) {
+        let itemList = Object.keys(ItemConfig).filter(itemId => ItemConfig[itemId].type === type);
+        // 根据 itemId 排序
+        return itemList.sort();
+    },
+
 };

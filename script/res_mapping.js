@@ -16,6 +16,8 @@ const HelloADVRes = {
     pic_mask_area_4: '$183505302',
     pic_mask_area_5: '$183505303',
 
+    btn_common_close_normal: '$183658478',
+    btn_common_close_highlight: '$183658477',
     btn_browser: '$182972526',
     btn_web_close_normal: '$183130998',
     btn_web_close_highlight: '$183130996',
