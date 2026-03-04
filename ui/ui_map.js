@@ -8,7 +8,7 @@ async function gotoNextPlot() {
             transition: ac.SCENE_TRANSITION_TYPES.normal,
         });
     }
-    await showGameAlert("探索全部完成", onConfirm);
+    await CommonUI.showAlert("探索全部完成", onConfirm);
 }
 
 // 注册点击事件
@@ -35,10 +35,10 @@ async function registerClickEvent() {
                         await gotoArea(i);
                         break;
                     case -1:
-                        await showGameAlert("该区域未解锁！");
+                        await CommonUI.showAlert("该区域未解锁！");
                         break;
                     case 1:
-                        await showGameAlert("该区域已查看！");
+                        await CommonUI.showAlert("该区域已查看！");
                         break;
                     default:
                         console.warn(`未知的区域状态: ${state}`);

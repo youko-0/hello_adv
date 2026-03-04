@@ -7,7 +7,7 @@ await ac.createLayer({
     inlayer: 'window',
     pos: { x: 0, y: 0 },
     anchor: { x: 0, y: 0 },
-    size: { width: GameConfig.Width, height: GameConfig.Height },
+    size: { width: GameConfig.width, height: GameConfig.height },
     clipMode: true,
 });
 
@@ -16,7 +16,7 @@ await ac.createImage({
     index: 0,
     inlayer: 'layer_desktop',
     resId: ResMap.pic_desktop_bg,
-    pos: { x: GameConfig.CenterX, y: GameConfig.CenterY },
+    pos: { x: GameConfig.centerX, y: GameConfig.centerY },
     anchor: { x: 50, y: 50 },
 });
 

@@ -6,8 +6,8 @@ let RES_FLAG = 0;        // 用来切换资源
 const HelloADVRes = {
     pic_common_bg_01: '$183658447',
     pic_common_bg_02: '$183658448',
-    pic_browser_bg: '$182983354',
     pic_desktop_bg: '$182982547',
+    pic_browser_bg: '$182983354',
     pic_map_bg: '$183497324',
     pic_mask_area_0: '$183505919',
     pic_mask_area_1: '$183505299',
@@ -36,6 +36,11 @@ const HelloADVRes = {
     img_area_4_locked: '$183562464',
     img_area_5: '$183498968',
     img_area_5_locked: '$183562355',
+    img_bag_title: '$183658488',
+    img_bag_item_normal: '$183658487',
+    img_bag_item_highlight: '$183658486',
+    img_bag_detail_title: '$183685868',
+    img_bag_detail_bg: '$183685565',
 
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: 'cawn43cd',

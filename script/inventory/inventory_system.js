@@ -134,7 +134,7 @@ const InventorySystem = {
 
         // 2. 检查数量是否足够
         if (this.getCount(itemId) < num) {
-            await showGameAlert("物品数量不足！");
+            await CommonUI.showAlert("物品数量不足！");
             return false;
         }
         // 只有消耗品和关键道具可以使用
@@ -147,7 +147,7 @@ const InventorySystem = {
         if (typeof config.effect === 'function') {
             let success = await config.effect();
             if (!success) {
-                await showGameAlert(`道具 ${config.name} 使用失败！`);
+                await CommonUI.showAlert(`道具 ${config.name} 使用失败！`);
                 return false;
             }
         }

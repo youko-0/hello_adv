@@ -204,7 +204,7 @@ async function onClose() {
     let flag = ForumSystem.isAllPostVisited();
     console.log(`是否看完了所有的帖子：${flag}`);
     if (!flag) {
-        await showGameAlert("请先看完所有的帖子！");
+        await CommonUI.showAlert("请先看完所有的帖子！");
     } else {
         await ac.jump({
             plotID: ResMap.plot_forum_next,

@@ -2,8 +2,8 @@
 console.log('[LOAD] game_config');
 
 const GameConfig = {
-    Width: 1280,
-    Height: 720,
-    CenterX: 1280 / 2,
-    CenterY: 720 / 2,
+    width: 1280,
+    height: 720,
+    centerX: 1280 / 2,
+    centerY: 720 / 2,
 }

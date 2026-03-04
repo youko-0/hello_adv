@@ -25,20 +25,9 @@ await ac.createImage({
     name: 'img_ui_bg',
     index: 0,
     inlayer: 'window',
-    resId: '$183658448',
-    pos: {
-        x: 640,
-        y: 360,
-    },
-    anchor: {
-        x: 50,
-        y: 50,
-    },
-    opacity: 100,
-    scale: 100,
-    visible: true,
-    verticalFlip: false,
-    horizontalFlip: false,
+    resId: ResMap.pic_common_bg_02,
+    pos: { GameConfig.centerX, GameConfig.centerY },
+    anchor: { x: 50, y: 50 },
 });
 
 await ac.createImage({

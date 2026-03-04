@@ -14,21 +14,6 @@ const BrowserUI = {
         },
     },
 
-    ALERT: {
-        width: 600,
-        height: 400,
-        MASK: {
-            resId: ResMap.img_mask_black,
-            width: 32,
-            height: 32,
-        },
-        BG: {
-            resId: ResMap.img_forum_topic_bg_normal,
-            width: 32,
-            height: 32,
-        },
-    },
-
     // 系统时间
     formatSystemTimeStr: function () {
         var now = new Date();
@@ -54,9 +39,9 @@ const BrowserUI = {
             name: 'layer_browser_ui',
             index: 0,
             inlayer: 'window',
-            pos: { x: GameConfig.CenterX, y: GameConfig.CenterY },
+            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             anchor: { x: 50, y: 50 },
-            size: { width: GameConfig.Width, height: GameConfig.Height },
+            size: { width: GameConfig.width, height: GameConfig.height },
             clipMode: true,
         });
 
@@ -66,11 +51,11 @@ const BrowserUI = {
             index: 0,
             inlayer: 'layer_browser_ui',
             resId: BrowserUI.BG.resId,
-            pos: { x: GameConfig.CenterX, y: GameConfig.CenterY },
+            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             anchor: { x: 50, y: 50 },
             scale: {
-                x: GameConfig.Width * 100 / BrowserUI.BG.width,
-                y: GameConfig.Height * 100 / BrowserUI.BG.height,
+                x: GameConfig.width * 100 / BrowserUI.BG.width,
+                y: GameConfig.height * 100 / BrowserUI.BG.height,
             },
         });
 
@@ -80,7 +65,7 @@ const BrowserUI = {
             index: 1,
             inlayer: 'layer_browser_ui',
             content: ForumSystem.getCurrentTitle(),
-            pos: { x: 94, y: GameConfig.Height - 24 },
+            pos: { x: 94, y: GameConfig.height - 24 },
             anchor: { x: 0, y: 50 },
             size: { width: 220, height: 26 },
             style: 'style_status_bar',
@@ -94,7 +79,7 @@ const BrowserUI = {
             index: 1,
             inlayer: 'layer_browser_ui',
             content: ForumSystem.getCurrentUrl(),
-            pos: { x: 200, y: GameConfig.Height - 78 },
+            pos: { x: 200, y: GameConfig.height - 78 },
             anchor: { x: 0, y: 50 },
             size: { width: 480, height: 26 },
             style: 'style_status_bar',
@@ -110,7 +95,7 @@ const BrowserUI = {
             nResId: BrowserUI.BTN.CLOSE.resIdNormal,
             sResId: BrowserUI.BTN.CLOSE.resIdHighlight,
             content: ``,
-            pos: { width: GameConfig.Width, height: GameConfig.Height },
+            pos: { x: GameConfig.width, y: GameConfig.height },
             anchor: { x: 100, y: 100 },
             onTouchEnded: onClose,
         });
@@ -124,7 +109,7 @@ const BrowserUI = {
             index: 10,
             inlayer: 'window',
             content: timeStr,
-            pos: { x: GameConfig.Width - 20, y: 12 },
+            pos: { x: GameConfig.width - 20, y: 12 },
             anchor: { x: 100, y: 0 },
             size: { width: 120, height: 64 },
             style: 'style_system_time',
@@ -160,115 +145,6 @@ ac.createStyle({
     fontSize: 24,
     color: '#d1d3df',
 });
-
-async function showGameAlert(content, onConfirm = null) {
-
-    async function onClickBtnConfirm() {
-        ac.remove({
-            name: 'layer_alert',
-            effect: 'normal',
-            duration: 0,
-            canskip: false,
-        });
-
-        // 如果传了回调函数，就执行它
-        if (onConfirm) await onConfirm();
-    }
-
-    async function onTouchMask() {
-        console.log('[LOG] onTouchMask');
-    }
-
-    // 容器
-    await ac.createLayer({
-        name: 'layer_alert',
-        index: 500,     // 置顶
-        inlayer: 'window',
-        pos: { x: GameConfig.CenterX, y: GameConfig.CenterY },
-        size: { width: BrowserUI.ALERT.width, height: BrowserUI.ALERT.height },
-        anchor: { x: 50, y: 50 },
-        clipMode: false,
-    });
-
-    await ac.createImage({
-        name: "img_alert_mask",
-        index: 0,
-        inlayer: "layer_alert",
-        resId: BrowserUI.ALERT.MASK.resId,
-        pos: {
-            x: BrowserUI.ALERT.width / 2,
-            y: BrowserUI.ALERT.height / 2
-        },
-        anchor: { x: 50, y: 50 },
-        scale: {
-            x: GameConfig.Width * 100 / BrowserUI.ALERT.MASK.width,
-            y: GameConfig.Height * 100 / BrowserUI.ALERT.MASK.height,
-        },
-        opacity: 60,
-    });
-
-    await ac.createImage({
-        name: "img_alert_bg",
-        index: 1,
-        inlayer: "layer_alert",
-        resId: BrowserUI.ALERT.BG.resId,
-        pos: {
-            x: BrowserUI.ALERT.width / 2,
-            y: BrowserUI.ALERT.height / 2
-        },
-        anchor: { x: 50, y: 50 },
-        scale: {
-            x: BrowserUI.ALERT.width * 100 / BrowserUI.ALERT.BG.width,
-            y: BrowserUI.ALERT.height * 100 / BrowserUI.ALERT.BG.height,
-        },
-        opacity: 100,
-    });
-
-    await ac.createText({
-        name: "alert_content",
-        index: 2,
-        inlayer: "layer_alert",
-        content: content,
-        pos: {
-            x: BrowserUI.ALERT.width / 2,
-            y: BrowserUI.ALERT.height / 2 + 60
-        },
-        anchor: { x: 50, y: 50 },
-        size: { width: BrowserUI.ALERT.width - 80, height: BrowserUI.ALERT.height - 100 },
-        style: "style_alert",
-        valign: ac.VALIGN_TYPES.center,
-        halign: ac.HALIGN_TYPES.middle,
-    });
-
-    await ac.createText({
-        name: "alert_confirm_btn",
-        index: 2,
-        inlayer: "layer_alert",
-        content: "确定",
-        pos: {
-            x: BrowserUI.ALERT.width / 2,
-            y: BrowserUI.ALERT.height / 2 - 60
-        },
-        anchor: { x: 50, y: 50 },
-        size: { width: 100, height: 60 },
-        style: "style_alert",
-        halign: ac.HALIGN_TYPES.middle,
-    });
-
-    // 拦截点击
-    ac.addEventListener({
-        type: ac.EVENT_TYPES.onTouchBegan,
-        listener: onTouchMask,
-        target: "img_alert_mask",
-    });
-
-    // 确定按钮
-    ac.addEventListener({
-        type: ac.EVENT_TYPES.onTouchEnded,
-        listener: onClickBtnConfirm,
-        target: "alert_confirm_btn",
-    });
-}
 
 // 估算字符宽度
 function measureCharWidth(char, fontSize) {
