@@ -58,12 +58,12 @@ ac.createStyle({
 
 // 创建回复
 async function createItemReply(reply, index, posY, contentHeight, post) {
-    let bgStyle = index % 2 == 0 ? ForumUI.TOPIC.BG_NORMAL : ForumUI.TOPIC.BG_HIGHLIGHT;
+    let bgStyle = index % 2 == 0 ? ForumUI.topic.bgNormal : ForumUI.topic.bgHighlight;
     // 背景
     await ac.createImage({
         name: `img_bg_${index}`,
         index: 0,
-        inlayer: ForumUI.SV.name,
+        inlayer: ForumUI.sv.name,
         resId: bgStyle.resId,
         pos: {
             x: 0,
@@ -74,7 +74,7 @@ async function createItemReply(reply, index, posY, contentHeight, post) {
             y: 0,
         },
         scale: {
-            x: ForumUI.PAGE.width * 100 / bgStyle.width,
+            x: ForumUI.page.width * 100 / bgStyle.width,
             y: contentHeight * 100 / bgStyle.height,
         },
     });
@@ -83,7 +83,7 @@ async function createItemReply(reply, index, posY, contentHeight, post) {
     await ac.createImage({
         name: `img_avatar_${index}`,
         index: 0,
-        inlayer: ForumUI.SV.name,
+        inlayer: ForumUI.sv.name,
         resId: UserSystem.getUserIcon(reply.authorId),
         pos: {
             x: 100,
@@ -99,7 +99,7 @@ async function createItemReply(reply, index, posY, contentHeight, post) {
     await ac.createText({
         name: `lbl_username_${index}`,
         index: 1,
-        inlayer: ForumUI.SV.name,
+        inlayer: ForumUI.sv.name,
         content: UserSystem.getUserName(reply.authorId),
         pos: {
             x: 100,
@@ -108,7 +108,7 @@ async function createItemReply(reply, index, posY, contentHeight, post) {
         anchor: { x: 50, y: 50 },
         size: {
             width: 200,
-            height: ForumUI.POST.REPLY.fontSize,
+            height: ForumUI.reply.fontSize,
         },
         style: 'style_name',
         halign: ac.HALIGN_TYPES.middle,
@@ -118,16 +118,16 @@ async function createItemReply(reply, index, posY, contentHeight, post) {
     await ac.createText({
         name: `lbl_reply_${index}`,
         index: 1,
-        inlayer: ForumUI.SV.name,
+        inlayer: ForumUI.sv.name,
         content: reply.content,
         pos: {
             x: 200,
-            y: posY + contentHeight - ForumUI.POST.REPLY.padding
+            y: posY + contentHeight - ForumUI.reply.padding
         },
         anchor: { x: 0, y: 100 },
         size: {
-            width: ForumUI.POST.REPLY.width,
-            height: contentHeight - ForumUI.POST.REPLY.padding * 2,
+            width: ForumUI.reply.width,
+            height: contentHeight - ForumUI.reply.padding * 2,
         },
         style: 'style_content',
         valign: ac.VALIGN_TYPES.top,
@@ -137,16 +137,16 @@ async function createItemReply(reply, index, posY, contentHeight, post) {
     await ac.createText({
         name: `lbl_index_${index}`,
         index: 1,
-        inlayer: ForumUI.SV.name,
+        inlayer: ForumUI.sv.name,
         content: `${reply.index}楼`,
         pos: {
-            x: ForumUI.PAGE.width - 132,
+            x: ForumUI.page.width - 132,
             y: posY + 10
         },
         anchor: { x: 100, y: 0 },
         size: {
             width: 40,
-            height: ForumUI.POST.REPLY.fontSize,
+            height: ForumUI.reply.fontSize,
         },
         style: 'style_time',
         halign: ac.HALIGN_TYPES.right,
@@ -156,16 +156,16 @@ async function createItemReply(reply, index, posY, contentHeight, post) {
     await ac.createText({
         name: `lbl_reply_time_${index}`,
         index: 1,
-        inlayer: ForumUI.SV.name,
-        content: ForumUI.formatRelativeTime(reply.timestamp),
+        inlayer: ForumUI.sv.name,
+        content: Utils.formatRelativeTime(reply.timestamp, ForumSystem.NOW_YEAR),
         pos: {
-            x: ForumUI.PAGE.width - 28,
+            x: ForumUI.page.width - 28,
             y: posY + 10
         },
         anchor: { x: 100, y: 0 },
         size: {
             width: 100,
-            height: ForumUI.POST.REPLY.fontSize,
+            height: ForumUI.reply.fontSize,
         },
         style: 'style_time',
         halign: ac.HALIGN_TYPES.right,
@@ -177,16 +177,16 @@ async function createItemReply(reply, index, posY, contentHeight, post) {
         await ac.createText({
             name: `lbl_author_flag_${index}`,
             index: 1,
-            inlayer: ForumUI.SV.name,
+            inlayer: ForumUI.sv.name,
             content: '[楼主]',
             pos: {
-                x: ForumUI.PAGE.width - 28,
+                x: ForumUI.page.width - 28,
                 y: posY + contentHeight - 10,
             },
             anchor: { x: 100, y: 100 },
             size: {
                 width: 100,
-                height: ForumUI.POST.REPLY.fontSize,
+                height: ForumUI.reply.fontSize,
             },
             style: 'style_time',
             halign: ac.HALIGN_TYPES.right,
@@ -226,7 +226,7 @@ async function createPagination(pageCount, currentPage) {
         await ac.createText({
             name: `btn_page_${i}`,
             index: 1,
-            inlayer: ForumUI.SV.name,
+            inlayer: ForumUI.sv.name,
             content: content,
             pos: {
                 x: x,
@@ -269,21 +269,21 @@ async function initReplyList() {
 
     // 第一页要显示标题
     let isFirstPage = pageIndex <= 1;
-    let extraHeight = isFirstPage ? ForumUI.POST.TITLE.height : 0;
+    let extraHeight = isFirstPage ? ForumUI.post.title.height : 0;
     let pageHeight = ForumUI.calcPostPageHeight(post, pageIndex);
     pageHeight += extraHeight;
-    pageHeight = Math.max(ForumUI.PAGE.height, pageHeight);
+    pageHeight = Math.max(ForumUI.page.height, pageHeight);
     await ForumUI.createForumUI(pageHeight);
 
     // 帖子内容初始坐标
-    let startY = pageHeight - ForumUI.HEADER.height - ForumUI.HEADER.marginBottom;
+    let startY = pageHeight - ForumUI.header.height - ForumUI.header.marginBottom;
 
     if (isFirstPage) {
         // 标题
         await ac.createText({
             name: "lbl_topic_title",
             index: 1,
-            inlayer: ForumUI.SV.name,
+            inlayer: ForumUI.sv.name,
             content: post.topic,
             pos: {
                 x: 42,
@@ -291,14 +291,14 @@ async function initReplyList() {
             },
             anchor: { x: 0, y: 100 },
             size: {
-                width: ForumUI.POST.REPLY.width,
-                height: ForumUI.POST.TITLE.height,
+                width: ForumUI.reply.width,
+                height: ForumUI.post.title.height,
             },
             style: 'style_title',
             valign: ac.VALIGN_TYPES.top,
         });
 
-        startY -= ForumUI.POST.TITLE.height;
+        startY -= ForumUI.post.title.height;
     }
 
     let replyList = ForumSystem.getReplyListByPageIndex(post, pageIndex);
@@ -320,4 +320,4 @@ async function initReplyList() {
 // 执行
 await initReplyList();
 
-await startTimeLoop();
+await BrowserUI.createSystemTimeLoop();

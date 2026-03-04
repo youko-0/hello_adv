@@ -3,7 +3,7 @@ console.log('[LOAD] map_system');
 
 const MapSystem = {
 
-    AREA: {
+    area: {
         area1: {
             resIdLocked: ResMap.img_area_1_locked,
             resIdNormal: ResMap.img_area_1,
@@ -91,7 +91,7 @@ const MapSystem = {
     createMapAreas: async function () {
         for (let i = 1; i <= 5; i++) {
             let state = MapSystem.getAreaState(i);
-            let config = MapSystem.AREA[`area${i}`];
+            let config = MapSystem.area[`area${i}`];
             let resId = state === -1 ? config.resIdLocked : config.resIdNormal;
             await ac.createImage({
                 name: `img_area_${i}`,

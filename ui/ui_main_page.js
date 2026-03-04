@@ -50,13 +50,13 @@ async function createItemTopic(post, index, posY) {
         });
     }
 
-    let bgStyle = index % 2 == 0 ? ForumUI.TOPIC.BG_NORMAL : ForumUI.TOPIC.BG_HIGHLIGHT;
+    let bgStyle = index % 2 == 0 ? ForumUI.topic.bgNormal : ForumUI.topic.bgHighlight;
     let visited = ForumSystem.isPostVisited(post.id);
 
     await ac.createImage({
         name: `btn_topic_${post.id}`,
         index: 0,
-        inlayer: ForumUI.SV.name,
+        inlayer: ForumUI.sv.name,
         resId: bgStyle.resId,
         pos: {
             x: 0,
@@ -67,8 +67,8 @@ async function createItemTopic(post, index, posY) {
             y: 0,
         },
         scale: {
-            x: ForumUI.PAGE.width * 100 / bgStyle.width,
-            y: ForumUI.TOPIC.height * 100 / bgStyle.height,
+            x: ForumUI.page.width * 100 / bgStyle.width,
+            y: ForumUI.topic.height * 100 / bgStyle.height,
         },
     });
 
@@ -76,11 +76,11 @@ async function createItemTopic(post, index, posY) {
     await ac.createText({
         name: `lbl_reply_count_${post.id}`,
         index: 1,
-        inlayer: ForumUI.SV.name,
+        inlayer: ForumUI.sv.name,
         content: `【${post.reply.length}】`,
         pos: {
             x: 60,
-            y: posY + ForumUI.TOPIC.height / 2,
+            y: posY + ForumUI.topic.height / 2,
         },
         anchor: {
             x: 50,
@@ -88,7 +88,7 @@ async function createItemTopic(post, index, posY) {
         },
         size: {
             width: 80,
-            height: ForumUI.TOPIC.height,
+            height: ForumUI.topic.height,
         },
         style: 'style_topic',
         halign: ac.HALIGN_TYPES.middle,
@@ -98,11 +98,11 @@ async function createItemTopic(post, index, posY) {
     await ac.createText({
         name: `lbl_topic_${post.id}`,
         index: 1,
-        inlayer: ForumUI.SV.name,
+        inlayer: ForumUI.sv.name,
         content: post.topic,
         pos: {
             x: 100,
-            y: posY + ForumUI.TOPIC.height / 2,
+            y: posY + ForumUI.topic.height / 2,
         },
         anchor: {
             x: 0,
@@ -110,7 +110,7 @@ async function createItemTopic(post, index, posY) {
         },
         size: {
             width: 600,
-            height: ForumUI.TOPIC.height,
+            height: ForumUI.topic.height,
         },
         style: visited ? 'style_topic_visited' : 'style_topic',
     });
@@ -119,16 +119,16 @@ async function createItemTopic(post, index, posY) {
     await ac.createText({
         name: `lbl_author_${post.id}`,
         index: 1,
-        inlayer: ForumUI.SV.name,
+        inlayer: ForumUI.sv.name,
         content: UserSystem.getUserName(post.authorId),
         pos: {
             x: 800,
-            y: posY + ForumUI.TOPIC.height / 2 + 2,
+            y: posY + ForumUI.topic.height / 2 + 2,
         },
         anchor: { x: 0, y: 0 },
         size: {
             width: 200,
-            height: ForumUI.TOPIC.height,
+            height: ForumUI.topic.height,
         },
         style: 'style_name',
         valign: ac.VALIGN_TYPES.bottom,
@@ -138,16 +138,16 @@ async function createItemTopic(post, index, posY) {
     await ac.createText({
         name: `lbl_time_${post.id}`,
         index: 1,
-        inlayer: ForumUI.SV.name,
-        content: ForumUI.formatRelativeTime(post.timestamp),
+        inlayer: ForumUI.sv.name,
+        content: Utils.formatRelativeTime(post.timestamp, ForumSystem.NOW_YEAR),
         pos: {
             x: 800,
-            y: posY + ForumUI.TOPIC.height / 2 - 2,
+            y: posY + ForumUI.topic.height / 2 - 2,
         },
         anchor: { x: 0, y: 100 },
         size: {
             width: 200,
-            height: ForumUI.TOPIC.height,
+            height: ForumUI.topic.height,
         },
         style: 'style_time',
         valign: ac.VALIGN_TYPES.top,
@@ -159,16 +159,16 @@ async function createItemTopic(post, index, posY) {
         await ac.createText({
             name: `lbl_last_reply_${post.id}`,
             index: 1,
-            inlayer: ForumUI.SV.name,
+            inlayer: ForumUI.sv.name,
             content: UserSystem.getUserName(lastReply.authorId),
             pos: {
                 x: 1000,
-                y: posY + ForumUI.TOPIC.height / 2 + 2,
+                y: posY + ForumUI.topic.height / 2 + 2,
             },
             anchor: { x: 0, y: 0 },
             size: {
                 width: 200,
-                height: ForumUI.TOPIC.height,
+                height: ForumUI.topic.height,
             },
             style: 'style_name',
             valign: ac.VALIGN_TYPES.bottom,
@@ -176,16 +176,16 @@ async function createItemTopic(post, index, posY) {
         await ac.createText({
             name: `lbl_last_reply_time_${post.id}`,
             index: 1,
-            inlayer: ForumUI.SV.name,
-            content: ForumUI.formatRelativeTime(lastReply.timestamp),
+            inlayer: ForumUI.sv.name,
+            content: Utils.formatRelativeTime(lastReply.timestamp, ForumSystem.NOW_YEAR),
             pos: {
                 x: 1000,
-                y: posY + ForumUI.TOPIC.height / 2 - 2,
+                y: posY + ForumUI.topic.height / 2 - 2,
             },
             anchor: { x: 0, y: 100 },
             size: {
                 width: 200,
-                height: ForumUI.TOPIC.height,
+                height: ForumUI.topic.height,
             },
             style: 'style_time',
             valign: ac.VALIGN_TYPES.top,
@@ -222,11 +222,11 @@ await ForumUI.createForumUI(pageHeight);
 async function initPostList() {
     let postsList = ForumSystem.getTopicListByPageIndex(0);
 
-    let startY = Math.max(ForumUI.PAGE.height, pageHeight) - ForumUI.HEADER.height - ForumUI.HEADER.marginBottom;
+    let startY = Math.max(ForumUI.page.height, pageHeight) - ForumUI.header.height - ForumUI.header.marginBottom;
 
     for (var i = 0; i < postsList.length; i++) {
         let post = postsList[i];
-        let y = startY - (i + 1) * ForumUI.TOPIC.height;
+        let y = startY - (i + 1) * ForumUI.topic.height;
         console.log(`正在创建第 ${i} 个帖子 ${post.id}`);
         await createItemTopic(post, i, y);
     }
@@ -237,4 +237,4 @@ async function initPostList() {
 // 执行
 await initPostList();
 
-await startTimeLoop();
+await BrowserUI.createSystemTimeLoop();

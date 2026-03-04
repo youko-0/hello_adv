@@ -2,33 +2,14 @@
 console.log('[LOAD] browser_ui');
 
 const BrowserUI = {
-    BG: {
+    bg: {
         resId: ResMap.pic_browser_bg,
         width: 1280,
         height: 720,
     },
-    BTN: {
-        CLOSE: {
-            resIdNormal: ResMap.btn_web_close_normal,
-            resIdHighlight: ResMap.btn_web_close_highlight,
-        },
-    },
-
-    // 系统时间
-    formatSystemTimeStr: function () {
-        var now = new Date();
-        // 修改年份
-        now.setFullYear(ForumSystem.NOW_YEAR);
-        var year = now.getFullYear();
-        // 月份 + 1
-        var month = now.getMonth() + 1;
-        var day = now.getDate();
-        var hours = now.getHours().toString().padStart(2, '0');
-        var minutes = now.getMinutes().toString().padStart(2, '0');
-        // 换行
-        var timeStr = `${hours}:${minutes}
-        ${year}/${month}/${day}`;
-        return timeStr
+    btnClose: {
+        resIdNormal: ResMap.btn_web_close_normal,
+        resIdHighlight: ResMap.btn_web_close_highlight,
     },
 
     // 创建浏览器 UI
@@ -50,12 +31,12 @@ const BrowserUI = {
             name: 'img_browser_bg',
             index: 0,
             inlayer: 'layer_browser_ui',
-            resId: BrowserUI.BG.resId,
+            resId: this.bg.resId,
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             anchor: { x: 50, y: 50 },
             scale: {
-                x: GameConfig.width * 100 / BrowserUI.BG.width,
-                y: GameConfig.height * 100 / BrowserUI.BG.height,
+                x: GameConfig.width * 100 / this.bg.width,
+                y: GameConfig.height * 100 / this.bg.height,
             },
         });
 
@@ -92,8 +73,8 @@ const BrowserUI = {
             name: 'btn_close_browser',
             index: 5,
             inlayer: 'layer_browser_ui',
-            nResId: BrowserUI.BTN.CLOSE.resIdNormal,
-            sResId: BrowserUI.BTN.CLOSE.resIdHighlight,
+            nResId: this.btnClose.resIdNormal,
+            sResId: this.btnClose.resIdHighlight,
             content: ``,
             pos: { x: GameConfig.width, y: GameConfig.height },
             anchor: { x: 100, y: 100 },
@@ -103,7 +84,7 @@ const BrowserUI = {
 
     // 创建系统时间
     createSystemTime: async function () {
-        let timeStr = BrowserUI.formatSystemTimeStr();
+        let timeStr = Utils.formatSystemTimeStr(ForumSystem.NOW_YEAR);
         await ac.createText({
             name: 'lbl_system_time',
             index: 10,
@@ -117,6 +98,23 @@ const BrowserUI = {
             valign: ac.VALIGN_TYPES.bottom,
         });
     },
+
+    // 创建系统时间循环
+    createSystemTimeLoop: async function () {
+        // 先执行一次
+        await this.createSystemTime();
+        // 计算距离下一分钟还差多少毫秒
+        let now = new Date();
+        let delayMs = (60 - now.getSeconds()) * 1000;
+        // 至少等待 1 秒，防止计算出 0 导致死循环
+        delayMs = Math.max(1000, delayMs);
+        // 等待直到下一分钟
+        await ac.delay({
+            time: delayMs
+        });
+        await this.createSystemTimeLoop();
+    },
+
 };
 
 ac.createStyle({
@@ -145,76 +143,3 @@ ac.createStyle({
     fontSize: 24,
     color: '#d1d3df',
 });
-
-// 估算字符宽度
-function measureCharWidth(char, fontSize) {
-    var code = char.charCodeAt(0);
-    // 1. 汉字和全角字符 (Unicode > 255)
-    if (code > 255) {
-        return fontSize;
-    }
-    // 2. 空格 (空格通常比普通字母窄)
-    if (char === ' ') {
-        return fontSize * 0.35;
-    }
-    // 3. 大写字母 (比小写稍微宽一点，约 0.7)
-    if (code >= 65 && code <= 90) {
-        return fontSize * 0.7;
-    }
-    // 4. 其他 ASCII (小写字母、数字、半角标点，约 0.55~0.6)
-    return fontSize * 0.6;
-}
-
-// 计算文本宽度
-function calcTextWidth(text, fontSize) {
-    var width = 0;
-    for (var i = 0; i < text.length; i++) {
-        width += measureCharWidth(text[i], fontSize);
-    }
-    return width;
-}
-
-
-// 计算文本高度
-function calcTextHeight(content, fontSize = 28, containerWidth = 580) {
-    if (!content) return 0;
-
-    const lineHeightMultiplier = 1.5;
-    const singleLineHeight = fontSize * lineHeightMultiplier;
-
-    let paragraphs = content.toString().split('\n');
-    let totalLines = 0;
-
-    paragraphs.forEach(para => {
-        if (para.length === 0) {
-            totalLines += 1; // 空行也算一行
-            return;
-        }
-
-        let currentLineWidth = 0;
-        currentLineWidth += calcTextWidth(para, fontSize);
-
-        // 向上取整
-        let linesInPara = Math.ceil(currentLineWidth / containerWidth);
-        totalLines += Math.max(1, linesInPara);
-    });
-
-    // 总行数 * 单行高度
-    return totalLines * singleLineHeight;
-}
-
-// 每分钟刷新一次系统时间
-async function startTimeLoop() {
-    // 先执行一次
-    await BrowserUI.createSystemTime();
-    // 计算距离下一分钟还差多少毫秒
-    let now = new Date();
-    let delayMs = (60 - now.getSeconds()) * 1000;
-    // 至少等待 1 秒，防止计算出 0 导致死循环
-    delayMs = Math.max(1000, delayMs);
-    // 等待直到下一分钟
-    await ac.delay({
-        time: delayMs
-    });
-    await startTimeLoop();
-}

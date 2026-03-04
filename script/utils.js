@@ -1,0 +1,133 @@
+// 工具类
+console.log('[LOAD] utils');
+
+const Utils = {
+
+    // 系统时间
+    formatSystemTimeStr: function (fullYear=0) {
+        var now = new Date();
+        if (fullYear) {
+            // 修改年份
+            now.setFullYear(fullYear);
+        }
+        var year = now.getFullYear();
+        // 月份 + 1
+        var month = now.getMonth() + 1;
+        var day = now.getDate();
+        var hours = now.getHours().toString().padStart(2, '0');
+        var minutes = now.getMinutes().toString().padStart(2, '0');
+        // 换行
+        var timeStr = `${hours}:${minutes}
+        ${year}/${month}/${day}`;
+        return timeStr
+    },
+
+    formatRelativeTime: function (timestamp, fullYear=0) {
+        if (!timestamp) return "";
+
+        // 如果是数字且长度只有 10 位，说明是秒，需要乘 1000
+        if (typeof timestamp === 'number' && timestamp.toString().length === 10) {
+            timestamp = timestamp * 1000;
+        }
+
+        var date = new Date(timestamp);
+        var now = new Date();
+        if (fullYear) {
+            // 修改年份
+            now.setFullYear(fullYear);
+        }
+
+        var diff = now.getTime() - date.getTime();
+
+        function pad(n) { return n < 10 ? '0' + n : n; }
+        var timeStr = pad(date.getHours()) + ":" + pad(date.getMinutes());
+
+        // 1小时内
+        if (diff >= 0 && diff < 3600000) {
+            // 如果是刚刚（1分钟内），显示“刚刚”
+            if (diff < 60000) return "刚刚";
+            return Math.floor(diff / 60000) + "分钟前";
+        }
+
+        // 今天
+        if (date.getFullYear() === now.getFullYear() &&
+            date.getMonth() === now.getMonth() &&
+            date.getDate() === now.getDate()) {
+            return "今天 " + timeStr;
+        }
+
+        // 昨天
+        var yesterday = new Date(now);
+        yesterday.setDate(yesterday.getDate() - 1);
+        if (date.getFullYear() === yesterday.getFullYear() &&
+            date.getMonth() === yesterday.getMonth() &&
+            date.getDate() === yesterday.getDate()) {
+            return "昨天 " + timeStr;
+        }
+
+        // 今年
+        if (date.getFullYear() === now.getFullYear()) {
+            return pad(date.getMonth() + 1) + "-" + pad(date.getDate()) + " " + timeStr;
+        }
+
+        // 跨年
+        return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
+    },
+
+    // 估算字符宽度
+    measureCharWidth: function (char, fontSize) {
+        var code = char.charCodeAt(0);
+        // 1. 汉字和全角字符 (Unicode > 255)
+        if (code > 255) {
+            return fontSize;
+        }
+        // 2. 空格 (空格通常比普通字母窄)
+        if (char === ' ') {
+            return fontSize * 0.35;
+        }
+        // 3. 大写字母 (比小写稍微宽一点，约 0.7)
+        if (code >= 65 && code <= 90) {
+            return fontSize * 0.7;
+        }
+        // 4. 其他 ASCII (小写字母、数字、半角标点，约 0.55~0.6)
+        return fontSize * 0.6;
+    },
+
+    // 计算文本宽度
+    calcTextWidth: function (text, fontSize) {
+        var width = 0;
+        for (var i = 0; i < text.length; i++) {
+            width += this.measureCharWidth(text[i], fontSize);
+        }
+        return width;
+    },
+
+    // 计算文本高度
+    calcTextHeight: function (content, fontSize = 28, containerWidth = 580) {
+        if (!content) return 0;
+
+        const lineHeightMultiplier = 1.5;
+        const singleLineHeight = fontSize * lineHeightMultiplier;
+
+        let paragraphs = content.toString().split('\n');
+        let totalLines = 0;
+
+        paragraphs.forEach(para => {
+            if (para.length === 0) {
+                totalLines += 1; // 空行也算一行
+                return;
+            }
+
+            let currentLineWidth = 0;
+            currentLineWidth += this.calcTextWidth(para, fontSize);
+
+            // 向上取整
+            let linesInPara = Math.ceil(currentLineWidth / containerWidth);
+            totalLines += Math.max(1, linesInPara);
+        });
+
+        // 总行数 * 单行高度
+        return totalLines * singleLineHeight;
+    },
+
+}
