@@ -44,6 +44,17 @@ const HelloADVRes = {
     img_bag_detail_title: '$183685868',
     img_bag_detail_bg: '$183685565',
 
+    icon_item_pendant: '$183687836',
+    icon_item_armor: '$183720439',
+    icon_item_compass: '$183720476',
+    icon_item_blessing: '$183720595',
+    icon_item_visa: '$183720793',
+    img_item_pendent: '$183720948',
+    img_item_armor: '$183720970',
+    img_item_compass: '$183721506',
+    img_item_blessing: '$183721672',
+    img_item_visa: '$183722014',
+
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: 'cawn43cd',
     ui_main_page: 'nw48gnat',

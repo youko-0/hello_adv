@@ -96,6 +96,7 @@ const InventorySystem = {
         // --- 存盘 ---
         this._save();
 
+        // TODO 关键道具弹窗
         console.log(`获得了 ${num} 个 ${config.name}`);
         return true;
     },

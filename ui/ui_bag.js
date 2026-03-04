@@ -24,8 +24,27 @@ await ac.createImage({
 });
 
 async function createItemUI(itemId, index) {
-    let itemConfig = ItemConfig[itemId];
-    
+    let itemConfig = InventorySystem.getItemConfig(itemId);
+    await ac.createImage({
+        name: 'img_item_1',
+        index: 0,
+        inlayer: 'sv_items',
+        resId: '$183658487',
+        pos: {
+            x: 58,
+            y: 280,
+        },
+        anchor: {
+            x: 50,
+            y: 50,
+        },
+        opacity: 100,
+        scale: 100,
+        visible: true,
+        verticalFlip: false,
+        horizontalFlip: false,
+    });
+
 }
 
 await ac.createImage({
