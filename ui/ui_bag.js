@@ -55,7 +55,7 @@ async function createItemUI(itemId, posX, posY) {
     // 背景
     await ac.createOption({
         name: `bag_item_bg_${itemId}`,
-        index: 0,
+        index: 1,
         inlayer: 'sv_items',
         nResId: BagUI.bg.resIdNormal,
         sResId: BagUI.bg.resIdHighlight,
@@ -69,7 +69,7 @@ async function createItemUI(itemId, posX, posY) {
     // 道具图标
     await ac.createImage({
         name: `bag_item_icon_${itemId}`,
-        index: 1,
+        index: 2,
         inlayer: 'sv_items',
         resId: itemConfig.icon,
         pos: { x: posX, y: posY + 20 },
@@ -79,7 +79,7 @@ async function createItemUI(itemId, posX, posY) {
     // 道具名称
     await ac.createText({
         name: `lbl_item_name_${itemId}`,
-        index: 1,
+        index: 2,
         inlayer: 'sv_items',
         content: Utils.truncateText(itemConfig.name, 4),
         pos: { x: posX, y: posY - 48 },
@@ -93,7 +93,7 @@ async function createItemUI(itemId, posX, posY) {
     // 道具数量底框
     await ac.createImage({
         name: `bag_item_count_${itemId}`,
-        index: 2,
+        index: 3,
         inlayer: 'sv_items',
         resId: ResMap.img_bag_item_count,
         pos: { x: posX + 30, y: posY - 4 },
@@ -103,7 +103,7 @@ async function createItemUI(itemId, posX, posY) {
     // 道具数量
     await ac.createText({
         name: `lbl_item_count_${itemId}`,
-        index: 2,
+        index: 4,
         inlayer: 'sv_items',
         content: `${InventorySystem.getItemCount(itemId)}`,
         pos: { x: posX + 30, y: posY - 4 },
@@ -155,8 +155,15 @@ async function createItemList(itemList) {
         let y = startY - row * (BagUI.bg.height + vertSpace);
         await createItemUI(itemId, x, y);
     }
-
 }
+
+async function onClickBtnView(itemId) {
+
+};
+
+async function onClickBtnUse(itemId) {
+    InventorySystem.useItem(itemId);
+};
 
 // 刷新右侧道具详情
 async function refreshItemDetail(itemId) {
@@ -173,7 +180,6 @@ async function refreshItemDetail(itemId) {
         direction: ac.TEXT_DIRECTION_TYPES.horizontal,
         halign: ac.HALIGN_TYPES.middle,
         valign: ac.VALIGN_TYPES.center,
-        spacing: 1,
         anchor: { x: 50, y: 50 },
         style: 'style_detail',
     });
@@ -206,7 +212,41 @@ async function refreshItemDetail(itemId) {
         anchor: { x: 50, y: 50 },
         style: 'style_detail',
     });
-}
+
+    let count = InventorySystem.getItemCount(itemId);
+    if (count <= 0) {
+        // 创建查看按钮
+        await ac.createOption({
+            name: 'btn_view_item',
+            index: 2,
+            inlayer: 'img_ui_bg',
+            nResId: ResMap.btn_item_view_normal,
+            sResId: ResMap.btn_item_view_highlight,
+            content: ``,
+            pos: { x: 894, y: 228 },
+            anchor: { x: 50, y: 50 },
+            onTouchEnded: async function () {
+                await onClickBtnView(itemId);     // 传递参数
+            },
+        });
+    }else {
+        // 创建使用按钮
+        await ac.createOption({
+            name: 'btn_use_item',
+            index: 2,
+            inlayer: 'img_ui_bg',
+            nResId: ResMap.btn_item_use_normal,
+            sResId: ResMap.btn_item_use_highlight,
+            content: ``,
+            pos: { x: 894, y: 228 },
+            anchor: { x: 50, y: 50 },
+            onTouchEnded: async function () {
+                await onClickBtnUse(itemId);     // 传递参数
+            },
+        });
+    }
+    
+};
 
 await ac.createImage({
     name: 'img_ui_bg',
@@ -256,27 +296,6 @@ await ac.createImage({
     anchor: { x: 50, y: 50 },
 });
 
-
 let itemList = InventorySystem.getItemListByType(ItemType.KEY);
 await createItemList(itemList);
 await refreshItemDetail(itemList[0]);
-
-
-await ac.createOption({
-    name: 'btn_use',
-    index: 5,
-    inlayer: 'window',
-    visible: true,
-    nResId: '$183658483',
-    sResId: '$183658482',
-    content: ``,
-    pos: {
-        x: 894,
-        y: 228,
-    },
-    anchor: {
-        x: 50,
-        y: 50,
-    },
-    onTouchEnded: function1,
-});

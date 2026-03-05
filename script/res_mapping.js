@@ -6,6 +6,7 @@ let RES_FLAG = 0;        // 用来切换资源
 const HelloADVRes = {
     pic_common_bg_01: '$183658447',
     pic_common_bg_02: '$183658448',
+    pic_common_bg_03: '$183773264',
     pic_desktop_bg: '$182982547',
     pic_browser_bg: '$182983354',
     pic_map_bg: '$183497324',
@@ -21,6 +22,10 @@ const HelloADVRes = {
     btn_browser: '$182972526',
     btn_web_close_normal: '$183130998',
     btn_web_close_highlight: '$183130996',
+    btn_item_view_normal: '$183658485',
+    btn_item_view_highlight: '$183658484',
+    btn_item_use_normal: '$183658483',
+    btn_item_use_highlight: '$183658482',
 
     img_mask_black: '$183470049',
     img_mask_round: '$183502801',
@@ -61,6 +66,7 @@ const HelloADVRes = {
     ui_main_page: 'nw48gnat',
     ui_post_detail: 'dbjp9oun',
     ui_map: 'j1u5e_wu',
+    ui_bag: 'h_83r63s',
 
     // 剧情唯一 ID
     plot_forum_next: 13977507,

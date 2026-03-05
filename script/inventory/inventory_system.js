@@ -134,7 +134,7 @@ const InventorySystem = {
         if (!config) return false;
 
         // 2. 检查数量是否足够
-        if (this.getCount(itemId) < num) {
+        if (this.getItemCount(itemId) < num) {
             await CommonUI.showAlert("物品数量不足！");
             return false;
         }
@@ -155,7 +155,7 @@ const InventorySystem = {
         }
         // 扣除数量
         this.removeItem(itemId, num);
-        CommonUI.showAlert(`使用了 ${num} 个 ${config.name}！`);
+        await CommonUI.showAlert(`使用了 ${num} 个 ${config.name}！`);
         return true;
     },
 
@@ -164,13 +164,6 @@ const InventorySystem = {
      */
     getItemCount: function (itemId) {
         return this._bagCache[itemId] || 0;
-    },
-
-    /**
-     * 是否拥有（数量 > 0）
-     */
-    hasItem: function (itemId) {
-        return this.getItemCount(itemId) > 0;
     },
 
     getItemConfig: function (itemId) {
