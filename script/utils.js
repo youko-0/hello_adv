@@ -123,11 +123,10 @@ const Utils = {
     },
 
     // 计算文本高度(自动换行)
-    calcTextHeight: function (content, fontSize = 28, containerWidth = 580) {
+    calcTextHeight: function (content, fontSize = 28, containerWidth = 580, spacing=1.5) {
         if (!content) return 0;
 
-        const lineHeightMultiplier = 1.5;
-        const singleLineHeight = fontSize * lineHeightMultiplier;
+        const singleLineHeight = fontSize * spacing;
 
         let paragraphs = content.toString().split('\n');
         let totalLines = 0;
@@ -145,6 +144,8 @@ const Utils = {
             let linesInPara = Math.ceil(currentLineWidth / containerWidth);
             totalLines += Math.max(1, linesInPara);
         });
+
+        console.log(`calcTextHeight: totalLines: ${totalLines}, singleLineHeight: ${singleLineHeight}`);
 
         // 总行数 * 单行高度
         return totalLines * singleLineHeight;
