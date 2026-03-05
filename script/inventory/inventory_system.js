@@ -145,23 +145,24 @@ const InventorySystem = {
         }
 
         // 使用道具
+        let success = true;     // 默认成功
         if (typeof config.effect === 'function') {
-            let success = await config.effect();
-            if (!success) {
-                await CommonUI.showAlert(`道具 ${config.name} 使用失败！`);
-                return false;
-            }
+            success = await config.effect();
+        }
+        if (!success) {
+            await CommonUI.showAlert(`道具 ${config.name} 使用失败！`);
+            return false;
         }
         // 扣除数量
         this.removeItem(itemId, num);
-        conslole.log(`使用了 ${num} 个 ${config.name}`);
+        CommonUI.showAlert(`使用了 ${num} 个 ${config.name}！`);
         return true;
     },
 
     /**
      * 查询数量
      */
-    getCount: function (itemId) {
+    getItemCount: function (itemId) {
         return this._bagCache[itemId] || 0;
     },
 
@@ -169,7 +170,7 @@ const InventorySystem = {
      * 是否拥有（数量 > 0）
      */
     hasItem: function (itemId) {
-        return this.getCount(itemId) > 0;
+        return this.getItemCount(itemId) > 0;
     },
 
     getItemConfig: function (itemId) {

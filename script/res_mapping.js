@@ -41,6 +41,7 @@ const HelloADVRes = {
     img_bag_title: '$183658488',
     img_bag_item_normal: '$183658487',
     img_bag_item_highlight: '$183658486',
+    img_bag_item_count: '$183688524',
     img_bag_detail_title: '$183685868',
     img_bag_detail_bg: '$183685565',
 

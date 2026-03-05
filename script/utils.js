@@ -4,7 +4,7 @@ console.log('[LOAD] utils');
 const Utils = {
 
     // 系统时间
-    formatSystemTimeStr: function (fullYear=0) {
+    formatSystemTimeStr: function (fullYear = 0) {
         var now = new Date();
         if (fullYear) {
             // 修改年份
@@ -22,7 +22,8 @@ const Utils = {
         return timeStr
     },
 
-    formatRelativeTime: function (timestamp, fullYear=0) {
+    // 格式化时间戳为相对时间
+    formatRelativeTime: function (timestamp, fullYear = 0) {
         if (!timestamp) return "";
 
         // 如果是数字且长度只有 10 位，说明是秒，需要乘 1000
@@ -74,6 +75,25 @@ const Utils = {
         return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
     },
 
+    /**
+     * 限制文本长度
+     * 规则：超过 limit 个字，保留 (limit-1) 个字并加上 ".."
+     * @param {string} str - 原始字符串
+     * @param {number} limit - 最大限制字数 (默认 4)
+     */
+    truncateText: function (str, limit = 4) {
+        if (!str) return ""; // 防止传空报错
+
+        // 如果长度超过限制
+        if (str.length > limit) {
+            // 截取前 limit - 1 个字符，拼接省略号
+            return str.substring(0, limit - 1) + "..";
+        }
+
+        // 没超过限制，直接返回
+        return str;
+    },
+
     // 估算字符宽度
     measureCharWidth: function (char, fontSize) {
         var code = char.charCodeAt(0);
@@ -102,7 +122,7 @@ const Utils = {
         return width;
     },
 
-    // 计算文本高度
+    // 计算文本高度(自动换行)
     calcTextHeight: function (content, fontSize = 28, containerWidth = 580) {
         if (!content) return 0;
 
@@ -130,4 +150,10 @@ const Utils = {
         return totalLines * singleLineHeight;
     },
 
+    // 计算文本宽高
+    calcTextSize: function (content, fontSize = 28) {
+        let width = this.calcTextWidth(content, fontSize);
+        let height = fontSize * 1.5
+        return { width: width, height: height };
+    },
 }
