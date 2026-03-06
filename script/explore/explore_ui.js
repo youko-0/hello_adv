@@ -5,15 +5,46 @@ const ExploreUI = {
 
     // 创建视图 UI
     createViewUI: async function (sceneId, viewId) {
-        let config = ExploreSystem.getViewConfig(sceneId, viewId);
+        async function onClickInteract(itemId) {
+            CommonUI.showAlert("你点击了交互物体！itemId " + itemId);
+        }
+        async function onTouchmask(params=null) {
+            console.log('[LOG] onTouchmask', params);
+        }
+
+        let viewConfig = ExploreSystem.getViewConfig(sceneId, viewId);
         // 场景图
         await ac.createImage({
             name: `img_${sceneId}_${viewId}`,
             index: 0,
             inlayer: 'window',
-            resId: config.bg,
+            resId: viewConfig.bg,
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             anchor: { x: 50, y: 50 },
         });
+        // 交互物体
+        for (const [itemId, interact] of Object.entries(viewConfig.interact)) {
+            let itemConfig = InventorySystem.getItemConfig(itemId);
+            await ac.createOption({
+                name: `img_${sceneId}_${viewId}_${itemId}`,
+                index: 0,
+                inlayer: `img_${sceneId}_${viewId}`,
+                nResId: itemConfig.icon,
+                sResId: itemConfig.icon,
+                content: ``,
+                pos: { x: interact.x, y: interact.y },
+                anchor: { x: 50, y: 50 },
+                // onTouchEnded: async function () {
+                //     await onClickInteract(itemId);
+                // },
+            });
+            ac.addEventListener({
+                type: ac.EVENT_TYPES.onTouchBegan,
+                listener: onTouchmask,
+                target: `img_${sceneId}_${viewId}_${itemId}`,
+            });
+        }
+
+        
     }
 }
