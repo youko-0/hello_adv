@@ -173,8 +173,10 @@ const InventorySystem = {
     // 根据类型获取道具列表, 未获得的道具也要显示, 遍历 ItemConfig
     getItemListByType: function (type) {
         let itemList = Object.keys(ItemConfig).filter(itemId => ItemConfig[itemId].type === type);
-        // 根据 itemId 排序
-        return itemList.sort();
+        // 根据 itemConfig.sortIndex 排序
+        itemList = itemList.sort((a, b) => {
+            return ItemConfig[a].sortIndex - ItemConfig[b].sortIndex;
+        })
+        return itemList;
     },
-
 };
