@@ -99,6 +99,9 @@ const ExploreSystem = {
     // 跳去场景
     gotoView: async function (sceneId, viewId = null) {
         console.log('[LOG] gotoView', sceneId, viewId);
+        if (await CommonUI.isInterrupted()) {
+            return;
+        }
         if (viewId == null) {
             viewId = this.getDefaultView(sceneId);
         }

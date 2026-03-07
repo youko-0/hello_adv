@@ -52,11 +52,23 @@ const CommonUI = {
 
     },
 
+    // 是否是打断状态, 不可操作
+    isInterrupted: async function () {
+        let uiName = ['layer_alert', 'layer_item_detail_info'];
+        for (let i = 0; i < uiName.length; i++) {
+            let flag = await this.isWidgetExist(uiName[i]);
+            console.log('[LOG] isInterrupted', uiName[i], flag);
+            if (flag) {
+                return true;
+            }
+        }
+        return false;
+    },
+
     // 创建物品详情 UI, 大图 + 文字描述
     showItemDetail: async function (itemId) {
         console.log('[LOG] showItemDetail', itemId);
-        if(await this.isWidgetExist('layer_item_detail_info')) {
-            console.log('[LOG] showItemDetail already exist');
+        if (await this.isInterrupted()) {
             return;
         }
         let itemConfig = InventorySystem.getItemConfig(itemId);
@@ -92,11 +104,14 @@ const CommonUI = {
             bgResId: ResMap.img_dialog_bg_01,
         });
         console.log('[LOG] sysDialogOff');
-        await ac.sysDialogOff();
+        ac.sysDialogOff({
+            effect: 'fadeout',
+            duration: 1000,
+        });
         await ac.remove({
             name: "layer_item_detail_info",
-            effect: 'normal',
-            duration: 0,
+            effect: 'fadeout',
+            duration: 1000,
             canskip: false,
         })
     },
