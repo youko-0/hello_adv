@@ -5,22 +5,23 @@ let RES_FLAG = 0;        // 用来切换资源
 
 const HelloADVRes = {
     // 通用
+    img_mask_black: '$183470049',
+    img_mask_round: '$183502801',
+    img_dialog_bg_01: '$183945897',
+    btn_common_close_normal: '$183658478',
+    btn_common_close_highlight: '$183658477',
     pic_common_bg_01: '$183658447',
     pic_common_bg_02: '$183658448',
     pic_common_bg_03: '$183773264',
-    img_mask_black: '$183470049',
-    img_mask_round: '$183502801',
-    btn_common_close_normal: '$183658478',
-    btn_common_close_highlight: '$183658477',
 
     // 论坛
+    img_forum_topic_bg_normal: '$183003987',
+    img_forum_topic_bg_highlight: '$183071397',
+    btn_web_close_normal: '$183130998',
+    btn_web_close_highlight: '$183130996',
     pic_desktop_bg: '$182982547',
     pic_browser_bg: '$182983354',
     btn_browser: '$182972526',
-    btn_web_close_normal: '$183130998',
-    btn_web_close_highlight: '$183130996',
-    img_forum_topic_bg_normal: '$183003987',
-    img_forum_topic_bg_highlight: '$183071397',
 
     // UI - 背包
     img_bag_title: '$183658488',
@@ -60,24 +61,38 @@ const HelloADVRes = {
     btn_explore_arrow_down: '$183924701',
     btn_explore_arrow_left: '$183924704',
     btn_explore_arrow_right: '$183924705',
+    pic_old_residence_living_room: '$183954557',
     pic_nezha_temple_hall: '$183918196',
     pic_nezha_temple_left_wall: '$183918197',
     pic_nezha_temple_center_wall: '$183918195',
     pic_nezha_temple_right_wall: '$183918198',
+    pic_broken_nezha_temple_hall: '$183954556',
 
-    // 图标/立绘资源
+    // 头像
     icon_forum_head_01: '$183114062',
     icon_forum_head_02: '$183113921',
+    // 物品图标
     icon_item_pendant: '$183687836',
     icon_item_armor: '$183720439',
     icon_item_compass: '$183720476',
     icon_item_blessing: '$183720595',
     icon_item_visa: '$183720793',
+    // 场景对象
+    spr_item_family_photo: '$183946183',
+    spr_item_motorcycle_key: '$183946184',
+    spr_item_cookie_box: '$183946182',
+    spr_item_mural_nezhanaohai: '$183946187',
+    spr_item_mural_ziwenguitian: '$183946188',
+    spr_item_mural_lianhuatuosheng: '$183946185',
+    // 详情大图
     img_item_pendent: '$183720948',
     img_item_armor: '$183720970',
     img_item_compass: '$183721506',
     img_item_blessing: '$183721672',
     img_item_visa: '$183722014',
+    img_item_family_photo: '$183918600',
+    img_item_motorcycle_key: '$183918601',
+    img_item_cookie_box: '$183918599',
     img_item_mural_nezhanaohai: '$183918603',
     img_item_mural_ziwenguitian: '$183918604',
     img_item_mural_lianhuatuosheng: '$183918602',

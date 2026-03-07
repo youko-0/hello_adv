@@ -8,7 +8,7 @@ const ExploreSystem = {
         if (viewId == null) {
             viewId = this.getDefaultView(sceneId);
         }
-        await ExploreUI.createViewUI(sceneId, viewId);
+        await ExploreUI.createSceneUI(sceneId, viewId);
     },
 
     getDefaultView: function (sceneId) {

@@ -3,15 +3,21 @@ console.log('[LOAD] scene_config');
 
 const SceneConfig = {
 
-    // 民居
-    house: {
+    // 旧居
+    old_residence: {
         // 客厅
         defaultViewId: 'living_room',
         views: {
             // 客厅
             living_room: {
                 id: 'living_room',
-                bg: ResMap.pic_house_living_room, // 背景图
+                bg: ResMap.pic_old_residence_living_room, // 背景图
+                nav: {},
+                interact: {
+                    item_family_photo: { x: 200, y: 480 },
+                    item_motorcycle_key: { x: 800, y: 320 },
+                    item_cookie_box: { x: 500, y: 300 },
+                }
             }
         }
     },
@@ -43,10 +49,7 @@ const SceneConfig = {
                     right: 'hall'
                 },
                 interact: {
-                    item_mural_nezhanaohai: {
-                        x: 600,
-                        y: 380,
-                    },
+                    item_mural_nezhanaohai: { x: 600, y: 380 },
                 }
             },
             // 中间墙体
@@ -60,10 +63,7 @@ const SceneConfig = {
                     right: 'left_wall'
                 },
                 interact: {
-                    item_mural_ziwenguitian: {
-                        x: 600,
-                        y: 380,
-                    },
+                    item_mural_ziwenguitian: { x: 600, y: 380 },
                 }
             },
             // 右侧墙体
@@ -77,10 +77,7 @@ const SceneConfig = {
                     right: 'center_wall'
                 },
                 interact: {
-                    item_mural_lianhuatuosheng: {
-                        x: 600,
-                        y: 380,
-                    },
+                    item_mural_lianhuatuosheng: { x: 600, y: 380 },
                 }
             },
 

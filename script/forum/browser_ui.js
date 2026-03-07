@@ -134,12 +134,3 @@ ac.createStyle({
     fontSize: 14,
     color: '#fdf4f4',
 });
-
-ac.createStyle({
-    name: 'style_alert',
-    font: '汉仪小隶书简',
-    bold: false,
-    italic: false,
-    fontSize: 24,
-    color: '#d1d3df',
-});

@@ -19,6 +19,88 @@ const CommonUI = {
         },
     },
 
+    // 找不到易次元的直接判断的接口，用 getPos 迂回一下
+    isWidgetExist: async function (name) {
+        let v = await ac.getPos({
+            name: name,
+        })
+        console.log('[LOG] isWidgetExist', name, v.x);
+        return v.x != null;
+    },
+
+    // 通用文本样式
+    createTextStyles: async function () {
+        console.log('[LOG] createTextStyles');
+        ac.createStyle({
+            name: 'style_alert',
+            font: '汉仪小隶书简',
+            bold: false,
+            italic: false,
+            fontSize: 24,
+            color: '#d1d3df',
+        });
+
+        ac.createStyle({
+            name: 'style_item_info',
+            font: '汉仪小隶书简',
+            bold: false,
+            italic: false,
+            fontSize: 24,
+            color: '#d1d3df',
+            speed: 9,
+        });
+
+    },
+
+    // 创建物品详情 UI, 大图 + 文字描述
+    showItemDetail: async function (itemId) {
+        console.log('[LOG] showItemDetail', itemId);
+        if(await this.isWidgetExist('layer_item_detail_info')) {
+            console.log('[LOG] showItemDetail already exist');
+            return;
+        }
+        let itemConfig = InventorySystem.getItemConfig(itemId);
+        await ac.createImage({
+            name: "layer_item_detail_info",
+            index: 10,
+            inlayer: "window",
+            resId: ResMap.pic_common_bg_03,
+            pos: { x: GameConfig.centerX , y: GameConfig.centerY },
+            anchor: { x: 50, y: 50 },
+            opacity: 80,
+        });
+        // 大图
+        await ac.createImage({
+            name: "img_item_info_pic",
+            index: 0,
+            inlayer: "layer_item_detail_info",
+            resId: itemConfig.illust,
+            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
+            anchor: { x: 50, y: 50 },
+        });
+        // 文字描述
+        await ac.sysDialogOn({
+            content: `<tag style=style_item_info>${itemConfig.desc}</tag>`,
+            tag: 'p',
+            size: { width: 960, height: 80 },
+            pos: { x: 160, y: 36 },
+            hasRoleName: false,
+            // 头像的位置用来显示道具图标
+            hasRoleAvatar: Boolean(itemConfig.icon),
+            roleAvatarResId: itemConfig.icon,
+            hasBg: true,
+            bgResId: ResMap.img_dialog_bg_01,
+        });
+        console.log('[LOG] sysDialogOff');
+        await ac.sysDialogOff();
+        await ac.remove({
+            name: "layer_item_detail_info",
+            effect: 'normal',
+            duration: 0,
+            canskip: false,
+        })
+    },
+
     showAlert: async function (content, onConfirm = null) {
         async function onClickBtnConfirm() {
             ac.remove({
@@ -125,3 +207,5 @@ const CommonUI = {
     },
 
 }
+
+CommonUI.createTextStyles();

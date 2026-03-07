@@ -26,16 +26,13 @@ const ExploreUI = {
         },
     },
 
-    // 创建视图 UI
-    createViewUI: async function (sceneId, viewId) {
+    // 创建场景UI
+    createSceneUI: async function (sceneId, viewId) {
         async function onClickInteract(itemId) {
-            CommonUI.showAlert("你点击了交互物体！itemId " + itemId);
-        }
-        async function onTouchmask(params = null) {
-            console.log('[LOG] onTouchmask', params);
+            CommonUI.showItemDetail(itemId);
         }
 
-        console.log('[LOG] createViewUI', sceneId, viewId);
+        console.log('[LOG] createSceneUI', sceneId, viewId);
 
         let viewConfig = ExploreSystem.getViewConfig(sceneId, viewId);
         // 场景图
@@ -54,20 +51,23 @@ const ExploreUI = {
                 name: `img_${itemId}`,
                 index: 0,
                 inlayer: `img_${sceneId}_${viewId}`,
-                nResId: itemConfig.illust,
-                sResId: itemConfig.illust,
+                nResId: itemConfig.sprite,
+                sResId: itemConfig.sprite,
                 content: ``,
                 pos: { x: interact.x, y: interact.y },
                 anchor: { x: 50, y: 50 },
-                // onTouchEnded: async function () {
-                //     await onClickInteract(itemId);
-                // },
+                onTouchEnded: async function () {
+                    await onClickInteract(itemId);
+                },
             });
-            ac.addEventListener({
-                type: ac.EVENT_TYPES.onTouchEnded,
-                listener: onTouchmask,
-                target: `img_${itemId}`,
-            });
+            // ac.addEventListener({
+            //     type: ac.EVENT_TYPES.onTouchEnded,
+            //     listener: async function (params) {
+            //         console.log('[LOG] onTouchEnded', params);
+            //         await onClickInteract(itemId);
+            //     },
+            //     target: `img_${itemId}`,
+            // });
         }
         // 导航按钮
         for (const [direction, viewName] of Object.entries(viewConfig.nav)) {
