@@ -29,11 +29,17 @@ const ExploreUI = {
     // 创建场景UI
     createSceneUI: async function (sceneId, viewId) {
         console.log('[LOG] createSceneUI', sceneId, viewId);
-
+        // 先移除旧场景
+        await ac.remove({
+            name: "layer_explore_scene_bg",
+            effect: 'normal',
+            duration: 0,
+            canskip: false,
+        })
         let viewConfig = ExploreSystem.getViewConfig(sceneId, viewId);
         // 场景图
         await ac.createImage({
-            name: `img_${sceneId}_${viewId}`,
+            name: "layer_explore_scene_bg",
             index: 0,
             inlayer: 'window',
             resId: viewConfig.bg,
@@ -46,7 +52,7 @@ const ExploreUI = {
             await ac.createOption({
                 name: `img_${itemId}`,
                 index: 0,
-                inlayer: `img_${sceneId}_${viewId}`,
+                inlayer: "layer_explore_scene_bg",
                 nResId: itemConfig.sprite,
                 sResId: itemConfig.sprite,
                 content: ``,
@@ -74,7 +80,7 @@ const ExploreUI = {
             await ac.createOption({
                 name: `btn_explore_arrow_${direction}`,
                 index: 5,
-                inlayer: `img_${sceneId}_${viewId}`,
+                inlayer: "layer_explore_scene_bg",
                 nResId: navConfig.resId,
                 sResId: navConfig.resId,
                 content: ``,
