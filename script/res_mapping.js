@@ -4,11 +4,37 @@ console.log('[LOAD] res_map');
 let RES_FLAG = 0;        // 用来切换资源
 
 const HelloADVRes = {
+    // 通用
     pic_common_bg_01: '$183658447',
     pic_common_bg_02: '$183658448',
     pic_common_bg_03: '$183773264',
+    img_mask_black: '$183470049',
+    img_mask_round: '$183502801',
+    btn_common_close_normal: '$183658478',
+    btn_common_close_highlight: '$183658477',
+
+    // 论坛
     pic_desktop_bg: '$182982547',
     pic_browser_bg: '$182983354',
+    btn_browser: '$182972526',
+    btn_web_close_normal: '$183130998',
+    btn_web_close_highlight: '$183130996',
+    img_forum_topic_bg_normal: '$183003987',
+    img_forum_topic_bg_highlight: '$183071397',
+
+    // UI - 背包
+    img_bag_title: '$183658488',
+    img_bag_item_normal: '$183658487',
+    img_bag_item_highlight: '$183658486',
+    img_bag_item_count: '$183688524',
+    img_bag_detail_title: '$183685868',
+    img_bag_detail_bg: '$183685565',
+    btn_item_view_normal: '$183658485',
+    btn_item_view_highlight: '$183658484',
+    btn_item_use_normal: '$183658483',
+    btn_item_use_highlight: '$183658482',
+
+    // 地图
     pic_map_bg: '$183497324',
     pic_mask_area_0: '$183505919',
     pic_mask_area_1: '$183505299',
@@ -16,23 +42,6 @@ const HelloADVRes = {
     pic_mask_area_3: '$183505301',
     pic_mask_area_4: '$183505302',
     pic_mask_area_5: '$183505303',
-
-    btn_common_close_normal: '$183658478',
-    btn_common_close_highlight: '$183658477',
-    btn_browser: '$182972526',
-    btn_web_close_normal: '$183130998',
-    btn_web_close_highlight: '$183130996',
-    btn_item_view_normal: '$183658485',
-    btn_item_view_highlight: '$183658484',
-    btn_item_use_normal: '$183658483',
-    btn_item_use_highlight: '$183658482',
-
-    img_mask_black: '$183470049',
-    img_mask_round: '$183502801',
-    img_forum_topic_bg_normal: '$183003987',
-    img_forum_topic_bg_highlight: '$183071397',
-    img_forum_head_01: '$183114062',
-    img_forum_head_02: '$183113921',
     img_area_1: '$183498637',
     img_area_1_locked: '$183562482',
     img_area_2: '$183498689',
@@ -43,13 +52,16 @@ const HelloADVRes = {
     img_area_4_locked: '$183562464',
     img_area_5: '$183498968',
     img_area_5_locked: '$183562355',
-    img_bag_title: '$183658488',
-    img_bag_item_normal: '$183658487',
-    img_bag_item_highlight: '$183658486',
-    img_bag_item_count: '$183688524',
-    img_bag_detail_title: '$183685868',
-    img_bag_detail_bg: '$183685565',
 
+    // 探索
+    pic_nezha_temple_hall: '$183918196',
+    pic_nezha_temple_left_wall: '$183918197',
+    pic_nezha_temple_center_wall: '$183918195',
+    pic_nezha_temple_right_wall: '$183918198',
+
+    // 图标/立绘资源
+    icon_forum_head_01: '$183114062',
+    icon_forum_head_02: '$183113921',
     icon_item_pendant: '$183687836',
     icon_item_armor: '$183720439',
     icon_item_compass: '$183720476',
@@ -60,6 +72,9 @@ const HelloADVRes = {
     img_item_compass: '$183721506',
     img_item_blessing: '$183721672',
     img_item_visa: '$183722014',
+    img_item_mural_nezhanaohai: '$183918603',
+    img_item_mural_ziwenguitian: '$183918604',
+    img_item_mural_lianhuatuosheng: '$183918602',
 
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: 'cawn43cd',
@@ -98,8 +113,8 @@ const DongHaiRes = {
     img_mask_round: '$183518330',
     img_forum_topic_bg_normal: '$183358122',
     img_forum_topic_bg_highlight: '$183358121',
-    img_forum_head_01: '$183358120',
-    img_forum_head_02: '$183358119',
+    icon_forum_head_01: '$183358120',
+    icon_forum_head_02: '$183358119',
     img_area_1: '$183518325',
     img_area_2: '$183518326',
     img_area_3: '$183518327',

@@ -2,6 +2,16 @@
 console.log('[LOAD] scene_config');
 
 const SceneConfig = {
+
+    // 下城区旧居
+    old_house: {
+        defaultViewId: 'hall',
+        views: {
+            // 客厅
+            hall: {}
+        }
+    },
+
     // 哪吒庙
     nezha_temple: {
         defaultViewId: 'hall',
@@ -9,7 +19,7 @@ const SceneConfig = {
             // 主殿
             hall: {
                 id: 'hall',
-                bg: ResMap.pic_explore_nezha_temple_hall, // 背景图
+                bg: ResMap.pic_nezha_temple_hall, // 背景图
                 nav: {
                     up: null,
                     left: 'left_wall',
@@ -20,7 +30,7 @@ const SceneConfig = {
             // 左侧墙体
             left_wall: {
                 id: 'left_wall',
-                bg: ResMap.pic_explore_nezha_temple_left_wall,
+                bg: ResMap.pic_nezha_temple_left_wall,
                 nav: {
                     down: null,
                     up: null,
@@ -37,7 +47,7 @@ const SceneConfig = {
             // 中间墙体
             center_wall: {
                 id: 'center_wall',
-                bg: ResMap.pic_explore_nezha_temple_center_wall,
+                bg: ResMap.pic_nezha_temple_center_wall,
                 nav: {
                     down: null,
                     up: 'hall',
@@ -54,7 +64,7 @@ const SceneConfig = {
             // 右侧墙体
             right_wall: {
                 id: 'right_wall',
-                bg: ResMap.pic_explore_nezha_temple_right_wall,
+                bg: ResMap.pic_nezha_temple_right_wall,
                 nav: {
                     down: null,
                     up: null,
