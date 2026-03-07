@@ -7,6 +7,7 @@ const SceneConfig = {
     old_residence: {
         // 客厅
         defaultViewId: 'living_room',
+        nextPlot: 14005426, // 下一关剧情
         views: {
             // 客厅
             living_room: {

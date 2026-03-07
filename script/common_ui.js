@@ -101,6 +101,23 @@ const CommonUI = {
         })
     },
 
+    // 自动关闭的文本框
+    showSysDialog: async function (content) {
+        console.log('[LOG] showSysDialog', content);
+        // 文字描述
+        await ac.sysDialogOn({
+            content: `<tag style=style_item_info>${content}</tag>`,
+            tag: 'p',
+            size: { width: 960, height: 80 },
+            pos: { x: 160, y: 36 },
+            hasRoleName: false,
+            hasRoleAvatar: false,
+            hasBg: true,
+            bgResId: ResMap.img_dialog_bg_01,
+        });
+        await ac.sysDialogOff();
+    },
+
     showAlert: async function (content, onConfirm = null) {
         async function onClickBtnConfirm() {
             ac.remove({

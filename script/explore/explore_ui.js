@@ -28,10 +28,6 @@ const ExploreUI = {
 
     // 创建场景UI
     createSceneUI: async function (sceneId, viewId) {
-        async function onClickInteract(itemId) {
-            CommonUI.showItemDetail(itemId);
-        }
-
         console.log('[LOG] createSceneUI', sceneId, viewId);
 
         let viewConfig = ExploreSystem.getViewConfig(sceneId, viewId);
@@ -57,14 +53,14 @@ const ExploreUI = {
                 pos: { x: interact.x, y: interact.y },
                 anchor: { x: 50, y: 50 },
                 onTouchEnded: async function () {
-                    await onClickInteract(itemId);
+                    await ExploreSystem.viewItem(sceneId, itemId);
                 },
             });
             // ac.addEventListener({
             //     type: ac.EVENT_TYPES.onTouchEnded,
             //     listener: async function (params) {
             //         console.log('[LOG] onTouchEnded', params);
-            //         await onClickInteract(itemId);
+            //         await ExploreSystem.viewItem(itemId);
             //     },
             //     target: `img_${itemId}`,
             // });
