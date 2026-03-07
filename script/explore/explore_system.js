@@ -115,6 +115,9 @@ const ExploreSystem = {
         console.log('[LOG] hasInspectedAll', flag);
         if (flag) {
             await CommonUI.showSysDialog('场景里似乎没有什么可探索的了。');
+            await ac.delay({
+                time: 1000,
+            })
             let nextPlot = SceneConfig[sceneId].nextPlot;
             if (nextPlot) {
                 await ac.jump({
