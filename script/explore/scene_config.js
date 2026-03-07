@@ -3,12 +3,16 @@ console.log('[LOAD] scene_config');
 
 const SceneConfig = {
 
-    // 下城区旧居
-    old_house: {
-        defaultViewId: 'hall',
+    // 民居
+    house: {
+        // 客厅
+        defaultViewId: 'living_room',
         views: {
             // 客厅
-            hall: {}
+            living_room: {
+                id: 'living_room',
+                bg: ResMap.pic_house_living_room, // 背景图
+            }
         }
     },
 
@@ -26,6 +30,7 @@ const SceneConfig = {
                     right: 'right_wall',
                     down: 'center_wall'
                 },
+                interact: {}
             },
             // 左侧墙体
             left_wall: {
@@ -40,7 +45,7 @@ const SceneConfig = {
                 interact: {
                     item_mural_nezhanaohai: {
                         x: 600,
-                        y: 200,
+                        y: 380,
                     },
                 }
             },
@@ -57,7 +62,7 @@ const SceneConfig = {
                 interact: {
                     item_mural_ziwenguitian: {
                         x: 600,
-                        y: 200,
+                        y: 380,
                     },
                 }
             },
@@ -74,7 +79,7 @@ const SceneConfig = {
                 interact: {
                     item_mural_lianhuatuosheng: {
                         x: 600,
-                        y: 200,
+                        y: 380,
                     },
                 }
             },

@@ -54,6 +54,12 @@ const HelloADVRes = {
     img_area_5_locked: '$183562355',
 
     // 探索
+    btn_explore_view_normal: '$183658418',
+    btn_explore_view_highlight: '$183658417',
+    btn_explore_arrow_up: '$183924706',
+    btn_explore_arrow_down: '$183924701',
+    btn_explore_arrow_left: '$183924704',
+    btn_explore_arrow_right: '$183924705',
     pic_nezha_temple_hall: '$183918196',
     pic_nezha_temple_left_wall: '$183918197',
     pic_nezha_temple_center_wall: '$183918195',
