@@ -62,11 +62,11 @@ const HelloADVRes = {
     btn_explore_arrow_left: '$183924704',
     btn_explore_arrow_right: '$183924705',
     pic_old_residence_living_room: '$183954557',
-    pic_nezha_temple_hall: '$183918196',
-    pic_nezha_temple_left_wall: '$183918197',
-    pic_nezha_temple_center_wall: '$183918195',
-    pic_nezha_temple_right_wall: '$183918198',
-    pic_broken_nezha_temple_hall: '$183954556',
+    pic_nezha_temple_main_hall: '$183918196',
+    pic_nezha_temple_left_hall: '$183918197',
+    pic_nezha_temple_back_hall: '$183918195',
+    pic_nezha_temple_right_hall: '$183918198',
+    pic_broken_nezha_temple_main_hall: '$183954556',
 
     // 头像
     icon_forum_head_01: '$183114062',
@@ -84,6 +84,9 @@ const HelloADVRes = {
     spr_item_mural_nezhanaohai: '$183946187',
     spr_item_mural_ziwenguitian: '$183946188',
     spr_item_mural_lianhuatuosheng: '$183946185',
+    spr_item_mural_jianzaoshenmiao: '$183946186',
+    spr_item_mural_zhuzaosuxiang: '$183946189',
+    spr_item_mural_lijingsb: '$183946190',
     // 详情大图
     img_item_pendent: '$183720948',
     img_item_armor: '$183720970',
@@ -96,6 +99,9 @@ const HelloADVRes = {
     img_item_mural_nezhanaohai: '$183918603',
     img_item_mural_ziwenguitian: '$183918604',
     img_item_mural_lianhuatuosheng: '$183918602',
+    img_item_mural_jianzaoshenmiao: '$183918605',
+    img_item_mural_zhuzaosuxiang: '$183918606',
+    img_item_mural_lijingsb: '$183918607',
 
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: 'cawn43cd',

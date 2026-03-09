@@ -25,64 +25,123 @@ const SceneConfig = {
 
     // 哪吒庙
     nezha_temple: {
-        defaultViewId: 'hall',
+        defaultViewId: 'main_hall',
         views: {
             // 主殿
-            hall: {
-                id: 'hall',
-                bg: ResMap.pic_nezha_temple_hall, // 背景图
+            main_hall: {
+                id: 'main_hall',
+                bg: ResMap.pic_nezha_temple_main_hall, // 背景图
                 nav: {
                     up: null,
-                    left: 'left_wall',
-                    right: 'right_wall',
-                    down: 'center_wall'
+                    left: 'left_hall',
+                    right: 'right_hall',
+                    down: 'back_hall'
                 },
                 interact: {}
             },
-            // 左侧墙体
-            left_wall: {
-                id: 'left_wall',
-                bg: ResMap.pic_nezha_temple_left_wall,
+            // 左殿
+            left_hall: {
+                id: 'left_hall',
+                bg: ResMap.pic_nezha_temple_left_hall,
                 nav: {
                     down: null,
                     up: null,
-                    left: 'center_wall',
-                    right: 'hall'
+                    left: 'back_hall',
+                    right: 'main_hall'
                 },
                 interact: {
                     item_mural_nezhanaohai: { x: 600, y: 380 },
                 }
             },
-            // 中间墙体
-            center_wall: {
-                id: 'center_wall',
-                bg: ResMap.pic_nezha_temple_center_wall,
+            // 后殿
+            back_hall: {
+                id: 'back_hall',
+                bg: ResMap.pic_nezha_temple_back_hall,
                 nav: {
                     down: null,
-                    up: 'hall',
-                    left: 'right_wall',
-                    right: 'left_wall'
+                    up: 'main_hall',
+                    left: 'right_hall',
+                    right: 'left_hall'
                 },
                 interact: {
                     item_mural_ziwenguitian: { x: 600, y: 380 },
                 }
             },
-            // 右侧墙体
-            right_wall: {
-                id: 'right_wall',
-                bg: ResMap.pic_nezha_temple_right_wall,
+            // 右殿
+            right_hall: {
+                id: 'right_hall',
+                bg: ResMap.pic_nezha_temple_right_hall,
                 nav: {
                     down: null,
                     up: null,
-                    left: 'hall',
-                    right: 'center_wall'
+                    left: 'main_hall',
+                    right: 'back_hall'
                 },
                 interact: {
                     item_mural_lianhuatuosheng: { x: 600, y: 380 },
                 }
             },
+        },
+    },
 
-
+    // 破碎的哪吒庙
+    broken_nezha_temple: {
+        defaultViewId: 'main_hall',
+        views: {
+            // 主殿
+            main_hall: {
+                id: 'main_hall',
+                bg: ResMap.pic_broken_nezha_temple_hall, // 背景图
+                nav: {
+                    up: null,
+                    left: 'left_hall',
+                    right: 'right_hall',
+                    down: 'back_hall'
+                },
+                interact: {}
+            },
+            // 左殿
+            left_hall: {
+                id: 'left_hall',
+                bg: ResMap.pic_broken_nezha_temple_left_hall,
+                nav: {
+                    down: null,
+                    up: null,
+                    left: 'back_hall',
+                    right: 'main_hall'
+                },
+                interact: {
+                    item_mural_jianzaoshenmiao: { x: 600, y: 380 },
+                }
+            },
+            // 后殿
+            back_hall: {
+                id: 'back_hall',
+                bg: ResMap.pic_broken_nezha_temple_back_hall,
+                nav: {
+                    down: null,
+                    up: 'main_hall',
+                    left: 'right_hall',
+                    right: 'left_hall'
+                },
+                interact: {
+                    item_mural_ziwenguitian: { x: 600, y: 380 },
+                }
+            },
+            // 右殿
+            right_hall: {
+                id: 'right_hall',
+                bg: ResMap.pic_broken_nezha_temple_right_hall,
+                nav: {
+                    down: null,
+                    up: null,
+                    left: 'main_hall',
+                    right: 'back_hall'
+                },
+                interact: {
+                    item_mural_lianhuatuosheng: { x: 600, y: 380 },
+                }
+            },
         },
     },
 };

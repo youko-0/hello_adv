@@ -2,36 +2,51 @@
 console.log('[LOAD] explore_system');
 
 const ExploreSystem = {
-    // 数据缓存
-    _data: {
-        inspected: {}, // 记录已查看的物品 ID
-        // unlockedScenes: {} // 以后如果要扩展已解锁场景，也可以放这里
-    },
+
+    // 内存缓存, 初始化为 null，以此判断是否需要加载
+    // {inspected: {}} 记录已查看的线索
+    _cache: null,
+
     // 存入 ac.var 的变量名
     VAR_NAME: 'str_explore_data',
 
     /**
-     * 系统初始化：从存档读取数据
-     * 建议在游戏开始或进入探索模式前调用一次
+     * 【核心方法】获取数据的唯一入口
+     * 自动处理“懒加载”逻辑
+     * @returns {Object} 返回完整的数据对象
      */
-    init: function () {
-        // 1. 获取易次元变量
-        // 注意：第一次玩的时候，这个变量可能是 null, undefined 或者 空字符串 ""
-        let jsonStr = ac.var[this.VAR_NAME];
+    getData: function () {
+        // 如果缓存是 null，说明是第一次访问，或者脚本被重置了
+        if (this._cache == null) {
+            console.log("【ExploreSystem】缓存未命中，正在从存档加载...");
+            this._loadFromVar();
+        }
+        return this._cache;
+    },
 
-        // 2. 尝试解析
+    /**
+     * 系统初始化：从存档读取数据, 确保数据已加载
+     * 切换剧情会重新加载脚本, 这个方法应该在每次读取/修改 _cache 前调用以确保数据是同步的
+     */
+    _loadFromVar: function () {
+        // 读取易次元变量
+        let jsonStr = ac.var[this.VAR_NAME];
+        let data = null;
         if (jsonStr && jsonStr.length > 0) {
             try {
-                this._data = JSON.parse(jsonStr);
-                console.log("【ExploreSystem】数据读取成功:", this._data);
+                data = JSON.parse(jsonStr);
             } catch (e) {
-                console.error("【ExploreSystem】存档数据损坏，重置为默认值", e);
-                this._resetData();
+                console.error("【ExploreSystem】存档损坏:", e);
             }
-        } else {
-            console.log("【ExploreSystem】无存档数据，初始化新数据");
-            this._resetData();
         }
+
+        // 确保数据结构完整（如果没读到，或者读到的数据缺字段）
+        if (!data) data = {};
+        if (!data.inspected) data.inspected = {};
+
+        // 写入缓存
+        this._cache = data;
+        console.log("【ExploreSystem】数据加载完毕");
     },
 
     /**
@@ -39,22 +54,17 @@ const ExploreSystem = {
      * 每次修改数据后调用
      */
     save: function () {
+        // 如果 _cache 是 null，说明没有读取过数据, 为避免覆盖存档，不保存
+        if (this._cache == null) {
+            console.warn("【ExploreSystem】警告：试图在未初始化的情况下保存数据，已拦截！");
+            return;
+        }
         // 序列化为字符串
-        let jsonStr = JSON.stringify(this._data);
+        let jsonStr = JSON.stringify(this._cache);
         // 存入易次元变量
         ac.var[this.VAR_NAME] = jsonStr;
 
         console.log("【ExploreSystem】已保存:", jsonStr);
-    },
-
-    /**
-     * 内部方法：重置数据
-     */
-    _resetData: function () {
-        this._data = {
-            inspected: {}
-        };
-        this.save();
     },
 
     /**
@@ -63,9 +73,10 @@ const ExploreSystem = {
  * @returns {boolean}
  */
     hasInspected: function (itemId) {
-        // 检查内存中的数据
+        // 确保数据已加载
+        const data = this.getData();
         // !! 是为了确保返回的是布尔值 true/false，而不是 undefined
-        return !!this._data.inspected[itemId];
+        return !!data.inspected[itemId];
     },
 
     /**
@@ -74,10 +85,10 @@ const ExploreSystem = {
      */
     recordInspected: function (itemId) {
         if (!itemId) return;
-
+        const data = this.getData();
         // 如果还没看过，才进行记录和保存，避免重复写入消耗性能
-        if (!this._data.inspected[itemId]) {
-            this._data.inspected[itemId] = true;
+        if (!data.inspected[itemId]) {
+            data.inspected[itemId] = true;
             this.save(); // 立即存盘
             console.log(`【ExploreSystem】记录新线索: ${itemId}`);
         }
@@ -86,7 +97,8 @@ const ExploreSystem = {
     // 是否已查看场景中的全部线索
     hasInspectedAll: function (sceneId) {
         let sceneConfig = SceneConfig[sceneId];
-        for( const [viewId, viewConfig] of Object.entries(sceneConfig.views)) {
+        for (const [viewId, viewConfig] of Object.entries(sceneConfig.views)) {
+            if (!viewConfig.interact) continue;
             for (const [itemId, interact] of Object.entries(viewConfig.interact)) {
                 if (!this.hasInspected(itemId)) {
                     return false;
