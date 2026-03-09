@@ -9,14 +9,6 @@ const ItemType = {
 };
 
 const ItemConfig = {
-    // "gold_coin": {
-    //     name: "金币",
-    //     type: ItemType.MATERIAL,
-    //     icon: ResMap.icon_gold_coin,
-    //     desc: "通用的货币。",
-    //     maxStack: 9999,     // 最大堆叠数量
-    //     dropLimit: -1       // 无掉落限制
-    // },
 
     item_pendant: {
         name: "龙鳞吊坠",
