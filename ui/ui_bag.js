@@ -157,14 +157,6 @@ async function createItemList(itemList) {
     }
 }
 
-async function onClickBtnView(itemId) {
-
-};
-
-async function onClickBtnUse(itemId) {
-    InventorySystem.useItem(itemId);
-};
-
 // 刷新右侧道具详情
 async function refreshItemDetail(itemId) {
     let itemConfig = InventorySystem.getItemConfig(itemId);
@@ -226,7 +218,7 @@ async function refreshItemDetail(itemId) {
             pos: { x: 894, y: 228 },
             anchor: { x: 50, y: 50 },
             onTouchEnded: async function () {
-                await onClickBtnView(itemId);     // 传递参数
+                await InventorySystem.viewItem(itemId, ResMap.ui_bag);
             },
         });
     }else {
@@ -241,7 +233,7 @@ async function refreshItemDetail(itemId) {
             pos: { x: 894, y: 228 },
             anchor: { x: 50, y: 50 },
             onTouchEnded: async function () {
-                await onClickBtnUse(itemId);     // 传递参数
+                await InventorySystem.useItem(itemId, 1);
             },
         });
     }

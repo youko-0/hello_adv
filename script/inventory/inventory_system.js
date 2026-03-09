@@ -13,6 +13,10 @@ const InventorySystem = createSystem(
     'str_inventory_data', // 变量名
     _inventoryDefault,    // 默认数据生成器
     {
+        getItemConfig: function (itemId) {
+            return ItemConfig[itemId];
+        },
+
         getItemCount: function (itemId) {
             return this.getData().bag[itemId] || 0;
         },
@@ -88,9 +92,6 @@ const InventorySystem = createSystem(
 
             console.log(`[Inventory] 获得了 ${actualAdd} 个 ${config.name}`);
 
-            // TODO 关键道具弹窗
-            // CommonUI.toast(`获得了 ${config.name} x${actualAdd}`);
-
             return actualAdd;
         },
 
@@ -160,5 +161,46 @@ const InventorySystem = createSystem(
             await CommonUI.showAlert(`使用了 ${num} 个 ${config.name}`);
             return true;
         },
+
+        /**
+        * 打开背包界面, await InventorySystem.openBag()
+        */
+        openBag: async function () {
+            await ac.callUI({
+                name: 'callUI_inventory',
+                uiId: ResMap.ui_bag,
+            });
+        },
+
+        /**
+        * 从UI中查看道具详情
+        * UI 界面打开的情况下不能显示 sysDialog, 
+        * 需要先关闭UI, 之后再打开
+        * TODO: 这种模式用不了, UI 被移除之后后续方法执行不了
+        */
+        viewItem: async function (itemId, fromUI = null) {
+            async function delayDo() {
+                await ac.delay(
+                    { time: 100, }
+                )
+                console.log('[LOG] delayDo');
+                await CommonUI.showItemDetail(itemId);
+                await ac.callUI({
+                    name: 'callUI_inventory',
+                    uiId: fromUI,
+                })
+            }
+            // 重新打开关闭的 UI
+            if (fromUI == null) {
+                fromUI = ResMap.ui_bag
+            }
+            console.log('[LOG] viewItem', itemId, fromUI);
+            delayDo();
+            await ac.removeCurrentUI();
+            console.log('[LOG] after removeCurrentUI');
+            // await CommonUI.showItemDetail(itemId);
+ 
+            
+        }
     }
 );
