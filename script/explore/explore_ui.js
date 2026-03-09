@@ -62,14 +62,6 @@ const ExploreUI = {
                     await ExploreSystem.viewItem(sceneId, itemId);
                 },
             });
-            // ac.addEventListener({
-            //     type: ac.EVENT_TYPES.onTouchEnded,
-            //     listener: async function (params) {
-            //         console.log('[LOG] onTouchEnded', params);
-            //         await ExploreSystem.viewItem(itemId);
-            //     },
-            //     target: `img_${itemId}`,
-            // });
         }
         // 导航按钮
         for (const [direction, viewName] of Object.entries(viewConfig.nav)) {

@@ -105,7 +105,7 @@ const HelloADVRes = {
 
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: 'cawn43cd',
-    ui_main_page: 'nw48gnat',
+    ui_forum: 'nw48gnat',
     ui_post_detail: 'dbjp9oun',
     ui_map: 'j1u5e_wu',
     ui_bag: 'h_83r63s',
@@ -150,7 +150,7 @@ const DongHaiRes = {
 
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: '01ec9a548af54c2a86d86bd299d14003',
-    ui_main_page: 'dacbc56e73a94b3daa268f1a0616d8e2',
+    ui_forum: 'dacbc56e73a94b3daa268f1a0616d8e2',
     ui_post_detail: '1af34c5623d74b82aa12ff9259621b91',
     ui_map: 'ztyhx3u3',
 

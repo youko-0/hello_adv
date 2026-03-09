@@ -41,15 +41,6 @@ ac.createStyle({
 // 创建标题项
 async function createItemTopic(post, index, posY) {
 
-    async function viewPost() {
-        ForumSystem.setCurrentPostId(post.id);
-        ForumSystem.setCurrentPageIndex(1);
-        await ac.replaceUI({
-            name: 'replaceUI_post',
-            uiId: ResMap.ui_post_detail,
-        });
-    }
-
     let bgStyle = index % 2 == 0 ? ForumUI.topic.bgNormal : ForumUI.topic.bgHighlight;
     let visited = ForumSystem.isPostVisited(post.id);
 
@@ -194,10 +185,11 @@ async function createItemTopic(post, index, posY) {
 
     ac.addEventListener({
         type: ac.EVENT_TYPES.onTouchEnded,
-        listener: viewPost,
+        listener: async function (params) {
+            await ForumSystem.viewPost(post.id, 1);
+        },
         target: `lbl_topic_${post.id}`,
     });
-
 }
 
 async function onClose() {
@@ -220,7 +212,7 @@ let pageHeight = ForumUI.calcMainPageHeight(0);
 await ForumUI.createForumUI(pageHeight);
 
 async function initPostList() {
-    let postsList = ForumSystem.getTopicListByPageIndex(0);
+    let postsList = ForumSystem.getTopicListAtPage(0);
 
     let startY = Math.max(ForumUI.page.height, pageHeight) - ForumUI.header.height - ForumUI.header.marginBottom;
 

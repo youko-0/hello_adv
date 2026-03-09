@@ -20,13 +20,6 @@ await ac.createImage({
     anchor: { x: 50, y: 50 },
 });
 
-async function func_open_forum() {
-    await ac.replaceUI({
-        name: 'replaceUI_main_page',
-        uiId: ResMap.ui_main_page
-    });
-}
-
 await ac.createOption({
     name: 'btn_browser',
     index: 1,
@@ -36,7 +29,7 @@ await ac.createOption({
     content: ``,
     pos: { x: 96, y: 640 },
     anchor: { x: 50, y: 50 },
-    onTouchEnded: func_open_forum,
+    onTouchEnded: ForumSystem.viewForum,
 });
 
 await BrowserUI.createSystemTimeLoop();

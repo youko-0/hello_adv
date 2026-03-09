@@ -12,6 +12,13 @@ const ExploreSystem = createSystem(
     'str_explore_data', // 变量名
     _exploreDefault,    // 默认数据生成器
     {
+        getDefaultView: function (sceneId) {
+            return SceneConfig[sceneId].defaultViewId;
+        },
+
+        getViewConfig: function (sceneId, viewId) {
+            return SceneConfig[sceneId].views[viewId];
+        },
 
         /**
          * 检查某个线索是否已经查看过
@@ -99,13 +106,5 @@ const ExploreSystem = createSystem(
                 }
             }
         },
-
-        getDefaultView: function (sceneId) {
-            return SceneConfig[sceneId].defaultViewId;
-        },
-
-        getViewConfig: function (sceneId, viewId) {
-            return SceneConfig[sceneId].views[viewId];
-        }
     }
 );

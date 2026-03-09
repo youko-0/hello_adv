@@ -196,26 +196,10 @@ async function createItemReply(reply, index, posY, contentHeight, post) {
 
 }
 
-async function onClose() {
-    ForumSystem.setCurrentPostId("")
-    ForumSystem.setCurrentPageIndex(1);
-    await ac.replaceUI({
-        name: 'replaceUI_main_page',
-        uiId: ResMap.ui_main_page
-    });
-}
-
-await BrowserUI.createBrowserUI(onClose);
+await BrowserUI.createBrowserUI(ForumSystem.viewForum);
 
 // 导航条
 async function createPagination(pageCount, currentPage) {
-    async function viewPage(pageIndex) {
-        ForumSystem.setCurrentPageIndex(pageIndex);
-        await ac.replaceUI({
-            name: 'replaceUI_post',
-            uiId: ResMap.ui_post_detail,
-        });
-    }
 
     for (let i = 1; i <= pageCount; i++) {
         let x = 100 + (i - 1) * 56;
@@ -249,18 +233,17 @@ async function createPagination(pageCount, currentPage) {
             type: ac.EVENT_TYPES.onTouchEnded,
             listener: async function () {
                 if (isCurrent) return; // 如果是当前页，点击无效
-                await viewPage(i);     // 传递参数
+                await ForumSystem.viewPost(null, i);
             },
             target: `btn_page_${i}`,
         });
     }
-
 }
 
 // 回复列表
 async function initReplyList() {
-    let postId = ForumSystem.getCurrentPostId();
-    let pageIndex = ForumSystem.getCurrentPageIndex();
+    let postId = ForumSystem.getPostId();
+    let pageIndex = ForumSystem.getPageIndex();
     console.log(`正在创建帖子 ${postId} 的回复列表，第 ${pageIndex} 页`);
     let post = ForumSystem.getPostData(postId);
     if (!post) {
@@ -301,7 +284,7 @@ async function initReplyList() {
         startY -= ForumUI.post.title.height;
     }
 
-    let replyList = ForumSystem.getReplyListByPageIndex(post, pageIndex);
+    let replyList = ForumSystem.getReplyListAtPage(post, pageIndex);
     for (var i = 0; i < replyList.length; i++) {
         let reply = replyList[i];
         let h = reply.height;

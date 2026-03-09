@@ -66,7 +66,7 @@ const ForumUI = {
 
     // 主页高度
     calcMainPageHeight: function (pageIndex = 0) {
-        let topicList = ForumSystem.getTopicListByPageIndex(pageIndex);
+        let topicList = ForumSystem.getTopicListAtPage(pageIndex);
         let pageHeight = this.calcTopicListHeight(topicList) + this.header.height + this.header.marginBottom;
         return pageHeight;
     },
@@ -89,7 +89,7 @@ const ForumUI = {
 
     // 帖子页面的高度
     calcPostPageHeight: function (post, pageIndex = 0) {
-        let replyList = ForumSystem.getReplyListByPageIndex(post, pageIndex);
+        let replyList = ForumSystem.getReplyListAtPage(post, pageIndex);
         let contentHeight = this.calcReplyListHeight(replyList);
         contentHeight += this.header.height + this.header.marginBottom;
         contentHeight += this.pagination.height;
