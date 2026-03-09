@@ -8,7 +8,7 @@ import datetime
 # ================= 配置区域 =================
 INPUT_FILE = 'data.txt'
 # 目标 JS 文件名
-JS_TARGET_FILE = 'forum_system.js'
+JS_TARGET_FILE = 'forum_data.js'
 
 # 可用的用户ID列表
 AUTHOR_IDS = ["user_001", "user_002", "user_003", "user_004", "user_010"]
@@ -69,9 +69,9 @@ def find_matching_brace(text, start_index):
                     return i # 找到最外层的闭合括号
     return -1
 
-def update_forum_system_js(posts_map, timestamp):
+def update_forum_data_js(posts_map, timestamp):
     """
-    针对 const ForumSystem = { ... } 结构的专用更新函数
+    针对 const ForumData = { ... } 结构的专用更新函数
     """
     if not os.path.exists(JS_TARGET_FILE):
         print(f"错误：找不到目标 JS 文件 {JS_TARGET_FILE}")
@@ -89,9 +89,9 @@ def update_forum_system_js(posts_map, timestamp):
     else:
         print("警告：未找到 STATIC_TIMESTAMP 字段，跳过时间更新。")
 
-    # 2. 更新 postsMap
-    # 查找 postsMap: { 的位置
-    map_start_match = re.search(r'(postsMap:\s*\{)', content)
+    # 2. 更新 postData
+    # 查找 postData: { 的位置
+    map_start_match = re.search(r'(postData:\s*\{)', content)
     
     if map_start_match:
         start_index = map_start_match.end() - 1 # 获取 '{' 的索引位置
@@ -113,12 +113,12 @@ def update_forum_system_js(posts_map, timestamp):
                 f.write(new_content)
             print(f"成功！已将 {len(posts_map)} 个帖子写入 {JS_TARGET_FILE}")
         else:
-            print("错误：JS 文件结构异常，找不到 postsMap 对应的闭合括号 '}'")
+            print("错误：JS 文件结构异常，找不到 postData 对应的闭合括号 '}'")
     else:
-        print("错误：JS 文件中找不到 'postsMap:' 字段")
+        print("错误：JS 文件中找不到 'postData:' 字段")
 
 
-def parse_forum_system():
+def parse_forum_data():
     try:
         with open(INPUT_FILE, 'r', encoding='utf-8') as f:
             lines = f.readlines()
@@ -232,7 +232,7 @@ def parse_forum_system():
         posts_map[str(current_post['id'])] = current_post
 
     # 3. 直接更新 JS 文件
-    update_forum_system_js(posts_map, static_timestamp)
+    update_forum_data_js(posts_map, static_timestamp)
 
 if __name__ == '__main__':
-    parse_forum_system()
+    parse_forum_data()
