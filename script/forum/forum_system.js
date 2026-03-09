@@ -6,7 +6,10 @@ const ForumSystem = {
     NAME: "东海论坛",
     PAGE_SIZE: 10,                          // 分页大小
     NOW_YEAR: 2034,                         // 当前年份
-    STATIC_TIMESTAMP: 2024814236,             // 基准时间戳
+
+    _cache: null,   // 数据缓存
+
+    VAR_NAME: 'str_forum_data',
 
     // 当前帖子id
     getCurrentPostId: function () {
