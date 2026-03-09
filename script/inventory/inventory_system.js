@@ -12,7 +12,7 @@ const _inventoryDefault = function () {
 const InventorySystem = createSystem(
     'str_inventory_data', // 变量名
     _inventoryDefault,    // 默认数据生成器
-    {
+    {    
         getItemConfig: function (itemId) {
             return ItemConfig[itemId];
         },
@@ -164,43 +164,61 @@ const InventorySystem = createSystem(
 
         /**
         * 打开背包界面, await InventorySystem.openBag()
+        * 这里用一个 while(true) 循环来实现背包自动打开
+        * 背包主循环：负责打开 UI -> 等关闭 -> 检查是不是要看详情 -> 循环
         */
         openBag: async function () {
-            await ac.callUI({
-                name: 'callUI_inventory',
-                uiId: ResMap.ui_bag,
-            });
+            let keepOpen = true;
+            // 这是一个“应用主循环”，只要 keepOpen 为 true，背包就会一直尝试重新打开
+            while (keepOpen) {
+                // 确保标记是空的
+                // ac.var['_temp_view_item_id'] = "";
+
+                // 2. 打开背包 UI，并“卡住”在这里等待 UI 关闭
+                // 注意：ac.callUI 默认行为是等待 UI 被 remove 后，代码才会往下走
+                await ac.callUI({
+                    name: 'callUI_bag', // 你的 UI 调用名
+                    uiId: ResMap.ui_bag       // 你的 UI 资源 ID
+                });
+
+                // --- 只有当 UI 被 removeCurrentUI 关闭后，代码才会跑到这里 ---
+
+                // 检查全局变量：是因为看道具临时关闭的吗？
+                let targetItemId = ac.var['_temp_view_item_id'];
+                if (targetItemId) {
+                    ac.var['_temp_view_item_id'] = "";
+                    console.log(`[Inventory] 检测到详情请求: ${targetItemId}`);
+
+                    // 4. 在 UI 关闭状态下，显示系统对话框
+                    // 这里可以放心地使用 sysDialog，因为 UI 已经没了
+                    await CommonUI.showItemDetail(targetItemId);
+
+                    console.log('[Inventory] 详情查看结束，准备重新打开背包');
+                    // 循环继续，会再次执行 callUI
+                } else {
+                    // 5. 没有标记，说明是玩家点的“关闭”按钮，或者按了右键返回
+                    console.log('[Inventory] 玩家正常关闭背包，退出循环');
+                    keepOpen = false; // 打破循环
+                }
+            }
+        },
+
+        // 清掉临时数据并关闭背包界面
+        closeBag: async function () {
+            console.log('[LOG] closeBag');
+            ac.var['_temp_view_item_id'] = "";
+            await ac.removeCurrentUI();
         },
 
         /**
-        * 从UI中查看道具详情
+        * 从背包UI中查看道具详情
         * UI 界面打开的情况下不能显示 sysDialog, 
-        * 需要先关闭UI, 之后再打开
-        * TODO: 这种模式用不了, UI 被移除之后后续方法执行不了
+        * 需要先关闭UI, 之后再配合 openBag 中的循环打开
         */
-        viewItem: async function (itemId, fromUI = null) {
-            async function delayDo() {
-                await ac.delay(
-                    { time: 100, }
-                )
-                console.log('[LOG] delayDo');
-                await CommonUI.showItemDetail(itemId);
-                await ac.callUI({
-                    name: 'callUI_inventory',
-                    uiId: fromUI,
-                })
-            }
-            // 重新打开关闭的 UI
-            if (fromUI == null) {
-                fromUI = ResMap.ui_bag
-            }
-            console.log('[LOG] viewItem', itemId, fromUI);
-            delayDo();
+        viewItem: async function (itemId) {
+            console.log('[LOG] viewItem', itemId);
+            ac.var['_temp_view_item_id'] = itemId;
             await ac.removeCurrentUI();
-            console.log('[LOG] after removeCurrentUI');
-            // await CommonUI.showItemDetail(itemId);
- 
-            
         }
     }
 );

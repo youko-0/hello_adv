@@ -218,7 +218,7 @@ async function refreshItemDetail(itemId) {
             pos: { x: 894, y: 228 },
             anchor: { x: 50, y: 50 },
             onTouchEnded: async function () {
-                await InventorySystem.viewItem(itemId, ResMap.ui_bag);
+                await InventorySystem.viewItem(itemId);
             },
         });
     }else {
@@ -267,7 +267,7 @@ await ac.createOption({
     content: ``,
     pos: { x: 1220, y: 72 },
     anchor: { x: 50, y: 50 },
-    onTouchEnded: ac.removeCurrentUI,
+    onTouchEnded: InventorySystem.closeBag,
 });
 
 await ac.createImage({
