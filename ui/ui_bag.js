@@ -51,14 +51,17 @@ ac.createStyle({
 
 
 async function createItemUI(itemId, posX, posY) {
+    let tempId = InventorySystem.getTempViewId();
     let itemConfig = InventorySystem.getItemConfig(itemId);
+    let count = InventorySystem.getItemCount(itemId);
     // 背景
+    let resId = tempId === itemId ? BagUI.bg.resIdHighlight : BagUI.bg.resIdNormal;    
     await ac.createOption({
         name: `bag_item_bg_${itemId}`,
         index: 1,
         inlayer: 'sv_items',
-        nResId: BagUI.bg.resIdNormal,
-        sResId: BagUI.bg.resIdHighlight,
+        nResId: resId,
+        sResId: resId,
         content: ``,
         pos: { x: posX, y: posY },
         anchor: { x: 50, y: 50 },
@@ -77,11 +80,12 @@ async function createItemUI(itemId, posX, posY) {
     });
 
     // 道具名称
+    let itemName = count <= 0 ? "？？？" : itemConfig.name;
     await ac.createText({
         name: `lbl_item_name_${itemId}`,
         index: 2,
         inlayer: 'sv_items',
-        content: Utils.truncateText(itemConfig.name, 4),
+        content: Utils.truncateText(itemName, 4),
         pos: { x: posX, y: posY - 48 },
         size: { width: BagUI.bg.width - 4, height: 28 },
         halign: ac.HALIGN_TYPES.middle,
@@ -105,7 +109,7 @@ async function createItemUI(itemId, posX, posY) {
         name: `lbl_item_count_${itemId}`,
         index: 4,
         inlayer: 'sv_items',
-        content: `${InventorySystem.getItemCount(itemId)}`,
+        content: `${count}`,
         pos: { x: posX + 30, y: posY - 4 },
         size: { width: 40, height: 28 },
         halign: ac.HALIGN_TYPES.middle,
@@ -113,6 +117,18 @@ async function createItemUI(itemId, posX, posY) {
         anchor: { x: 50, y: 50 },
         style: 'style_item',
     })
+
+    // 压黑
+    if (count <= 0) {
+        ac.changeMaskTo({
+        name: `bag_item_icon_${itemId}`,
+        r: 0,
+        g: 0,
+        b: 0,
+        opacity: 100,
+        duration: 0,
+        });
+    }
 
 }
 
@@ -289,5 +305,6 @@ await ac.createImage({
 });
 
 let itemList = InventorySystem.getItemListByType(ItemType.KEY);
+let currentId = InventorySystem.getTempViewId() || itemList[0];
 await createItemList(itemList);
-await refreshItemDetail(itemList[0]);
+await refreshItemDetail(currentId);

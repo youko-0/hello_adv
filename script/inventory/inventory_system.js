@@ -12,7 +12,8 @@ const _inventoryDefault = function () {
 const InventorySystem = createSystem(
     'str_inventory_data', // 变量名
     _inventoryDefault,    // 默认数据生成器
-    {    
+    {
+
         getItemConfig: function (itemId) {
             return ItemConfig[itemId];
         },
@@ -35,6 +36,16 @@ const InventorySystem = createSystem(
             })
             return itemList;
         },
+
+        getTempViewId: function () {
+            return ac.var['_temp_view_item_id'] || ""
+        },
+
+        saveTempViewId: function (itemId) {
+            console.log('saveTempViewId', itemId);
+            ac.var['_temp_view_item_id'] = itemId;
+        },
+        
 
         /**
         * 获得道具, InventorySystem.addItem(itemId, num)
@@ -169,13 +180,8 @@ const InventorySystem = createSystem(
         */
         openBag: async function () {
             let keepOpen = true;
-            // 这是一个“应用主循环”，只要 keepOpen 为 true，背包就会一直尝试重新打开
             while (keepOpen) {
-                // 确保标记是空的
-                // ac.var['_temp_view_item_id'] = "";
-
-                // 2. 打开背包 UI，并“卡住”在这里等待 UI 关闭
-                // 注意：ac.callUI 默认行为是等待 UI 被 remove 后，代码才会往下走
+                // 打开背包 UI，并等待 UI 关闭
                 await ac.callUI({
                     name: 'callUI_bag', // 你的 UI 调用名
                     uiId: ResMap.ui_bag       // 你的 UI 资源 ID
@@ -183,20 +189,18 @@ const InventorySystem = createSystem(
 
                 // --- 只有当 UI 被 removeCurrentUI 关闭后，代码才会跑到这里 ---
 
-                // 检查全局变量：是因为看道具临时关闭的吗？
-                let targetItemId = ac.var['_temp_view_item_id'];
+                // 检查全局变量, 是通过 closeBag 关闭的还是通过 viewItem 关闭的
+                let targetItemId = this.getTempViewId();
+                console.log('[LOG] targetItemId', targetItemId);
                 if (targetItemId) {
-                    ac.var['_temp_view_item_id'] = "";
                     console.log(`[Inventory] 检测到详情请求: ${targetItemId}`);
-
-                    // 4. 在 UI 关闭状态下，显示系统对话框
-                    // 这里可以放心地使用 sysDialog，因为 UI 已经没了
+                    // 在 UI 关闭状态下，显示系统对话框
                     await CommonUI.showItemDetail(targetItemId);
 
                     console.log('[Inventory] 详情查看结束，准备重新打开背包');
                     // 循环继续，会再次执行 callUI
                 } else {
-                    // 5. 没有标记，说明是玩家点的“关闭”按钮，或者按了右键返回
+                    // 没有标记，说明是主动点击了关闭按钮
                     console.log('[Inventory] 玩家正常关闭背包，退出循环');
                     keepOpen = false; // 打破循环
                 }
@@ -206,7 +210,7 @@ const InventorySystem = createSystem(
         // 清掉临时数据并关闭背包界面
         closeBag: async function () {
             console.log('[LOG] closeBag');
-            ac.var['_temp_view_item_id'] = "";
+            this.saveTempViewId("");
             await ac.removeCurrentUI();
         },
 
@@ -217,7 +221,7 @@ const InventorySystem = createSystem(
         */
         viewItem: async function (itemId) {
             console.log('[LOG] viewItem', itemId);
-            ac.var['_temp_view_item_id'] = itemId;
+            this.saveTempViewId(itemId);
             await ac.removeCurrentUI();
         }
     }

@@ -87,7 +87,7 @@ const CommonUI = {
             index: 0,
             inlayer: "layer_item_detail_info",
             resId: itemConfig.illust,
-            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
+            pos: { x: GameConfig.centerX, y: GameConfig.centerY + 100},
             anchor: { x: 50, y: 50 },
         });
         // 文字描述
@@ -100,18 +100,19 @@ const CommonUI = {
             // 头像的位置用来显示道具图标
             hasRoleAvatar: Boolean(itemConfig.icon),
             roleAvatarResId: itemConfig.icon,
+            roleAvatarPos: { x: 40, y: 40 },
             hasBg: true,
             bgResId: ResMap.img_dialog_bg_01,
         });
         console.log('[LOG] sysDialogOff');
         ac.sysDialogOff({
             effect: 'fadeout',
-            duration: 1000,
+            duration: 500,
         });
         await ac.remove({
             name: "layer_item_detail_info",
             effect: 'fadeout',
-            duration: 1000,
+            duration: 500,
             canskip: false,
         })
     },
