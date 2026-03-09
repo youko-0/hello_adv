@@ -140,7 +140,7 @@ async function createItemReply(reply, index, posY, contentHeight, post) {
         inlayer: ForumUI.sv.name,
         content: `${reply.index}楼`,
         pos: {
-            x: ForumUI.page.width - 132,
+            x: ForumUI.page.width - 136,
             y: posY + 10
         },
         anchor: { x: 100, y: 0 },
@@ -164,7 +164,7 @@ async function createItemReply(reply, index, posY, contentHeight, post) {
         },
         anchor: { x: 100, y: 0 },
         size: {
-            width: 100,
+            width: 200,
             height: ForumUI.reply.fontSize,
         },
         style: 'style_time',
@@ -294,9 +294,6 @@ async function initReplyList() {
 
     let pageCount = ForumSystem.calcPostPageCount(post);
     await createPagination(pageCount, pageIndex);
-
-    // 保存浏览记录
-    ForumSystem.savePostVisited(postId);
 }
 
 

@@ -45,7 +45,7 @@ const createSystem = function (varName, defaultDataFactory, customMethods) {
                 }
 
                 this._cache = data;
-                console.log(`【${this.VAR_NAME}】数据加载完毕`);
+                console.log(`【${this.VAR_NAME}】数据加载完毕: ${jsonStr}`);
             }
             return this._cache;
         },
@@ -55,7 +55,9 @@ const createSystem = function (varName, defaultDataFactory, customMethods) {
          */
         save: function () {
             // 防御：没读过就不许存
-            if (this._cache == null) return;
+            if (this._cache == null){
+                console.warn(`【${this.VAR_NAME}】未初始化，无法保存`);
+            }
 
             let jsonStr = JSON.stringify(this._cache);
             ac.var[this.VAR_NAME] = jsonStr;
@@ -73,6 +75,18 @@ const createSystem = function (varName, defaultDataFactory, customMethods) {
     };
 
     // 【关键步骤】将“基础逻辑”和“自定义方法”合并
-    // 类似于 Python 的多重继承或 Mixin
-    return Object.assign(baseSystem, customMethods);
+    // 将 customMethods 混入 baseSystem
+    // 使用 Object.assign 将 customMethods 的属性复制到 baseSystem
+    const finalSystem = Object.assign(baseSystem, customMethods);
+
+    // 锁定 this 指向
+    // 遍历 finalSystem 的所有属性，如果是函数，就强制 bind 自身
+    for (let key in finalSystem) {
+        if (typeof finalSystem[key] === 'function') {
+            // bind 返回一个新的函数，它的 this 永远指向 finalSystem
+            finalSystem[key] = finalSystem[key].bind(finalSystem);
+        }
+    }
+
+    return finalSystem;
 };

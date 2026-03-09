@@ -25,6 +25,7 @@ const ForumSystem = createSystem(
         },
 
         savePostId: function (postId) {
+            if (!postId) return;
             let data = this.getData();
             // 只有变化时才保存，节省性能
             if (data.postId !== postId) {
@@ -56,6 +57,8 @@ const ForumSystem = createSystem(
         },
 
         savePostVisited: function (postId) {
+            console.log(`[Forum] 标记帖子 ${postId} 为已读`);
+            if (!postId) return;
             let data = this.getData();
 
             // 只有未读时才写入，避免重复 save
@@ -125,18 +128,17 @@ const ForumSystem = createSystem(
         },
 
         /**
-         * 查看论坛主页, 自动重置页码
+         * 查看论坛主页
          */
-        viewForum: async function (pageIndex=1) {
-            this.savePostId("")
-            this.savePageIndex(pageIndex);
+        viewForum: async function () {
+            console.log('[Forum] 查看论坛主页');
+            this.savePostId("");
             await ac.replaceUI({
                 name: 'replaceUI_forum',
                 uiId: ResMap.ui_forum
             });
         },
 
-        // 查看帖子
         /**
          * 查看帖子
          * @param {string} postId  - 帖子id, 默认为当前帖子
@@ -148,11 +150,12 @@ const ForumSystem = createSystem(
             }
             this.savePostId(postId);
             this.savePageIndex(pageIndex);
+            // 标记为已读, 这个需要在 replaceUI 之前调用
+            this.savePostVisited(postId);
             await ac.replaceUI({
                 name: 'replaceUI_post',
                 uiId: ResMap.ui_post_detail,
             });
         }
-
     }
 );
