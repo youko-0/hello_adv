@@ -105,11 +105,12 @@ const CommonUI = {
             bgResId: ResMap.img_dialog_bg_01,
         });
         console.log('[LOG] sysDialogOff');
+        // 同步执行
         ac.sysDialogOff({
             effect: 'fadeout',
             duration: 500,
         });
-        await ac.remove({
+        ac.remove({
             name: "layer_item_detail_info",
             effect: 'fadeout',
             duration: 500,
