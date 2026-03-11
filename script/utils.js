@@ -175,7 +175,7 @@ const Utils = {
             // 试探性加上这个字
             let testLine = currentLine + char;
 
-            let w = this.calcTextWidth(testLine, fontSize) : (testLine.length * fontSize);
+            let w = this.calcTextWidth(testLine, fontSize);
 
             if (w > maxW) {
                 // 超宽了，说明 currentLine 已经是这一行的极限

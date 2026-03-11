@@ -36,14 +36,41 @@ const CommonUI = {
     // 对话框
     dialog: {
         name: 'layer_dialog',
+        index: 200,     // 高层级，盖住其他UI
         width: 960,
         height: 80,
         centerX: 960 / 2,
         centerY: 80 / 2,
+        pos: { x: 160, y: 36 },
+        mask: {
+            resId: ResMap.img_mask_black,
+            width: 32,
+            height: 32,
+        },
         bg: {
             resId: ResMap.img_dialog_bg,
             width: 1241,
             height: 150,
+        },
+        style: {
+            name: 'style_dialog',
+            font: '汉仪小隶书简',
+            bold: false,
+            italic: false,
+            fontSize: 24,
+            color: '#d1d3df',
+            speed: 9,
+        },
+        // 角色头像配置
+        roleAvatar: {
+            size: 80,
+            pos: { x: 40, y: 40 },
+        },
+        // 文本配置
+        text: {
+            padding: { x: 20, y: 15 },
+            lineHeight: 36,
+            typingSpeed: 0.03, // 每个字符显示间隔（秒）
         }
     },
 
@@ -178,164 +205,248 @@ const CommonUI = {
     },
 
     /**
-     * 可以在 UI 之上弹出的自定义对话框, 模拟 sysDialogOn）
+     * 可以在 UI 之上弹出的自定义对话框, 模拟 sysDialogOn
      * @param {Object} config 配置项
+     * @param {string} config.content 要显示的文本内容
+     * @param {string} [config.roleAvatarResId] 角色头像资源ID，有值则显示头像
+     * @param {Object} [config.roleAvatarPos] 角色头像位置
+     * @param {boolean} [config.hasBg] 是否显示背景
+     * @param {string} [config.bgResId] 背景资源ID
+     * @param {boolean} [config.autoClose] 是否自动关闭（显示完毕后）
+     * @param {Function} [config.onComplete] 对话框完成回调
+     * @param {Function} [config.onClose] 对话框关闭回调
      */
     showCustomDialog: async function (config) {
-        console.log('[CustomDialog] 打开对话框');
-        const finalConfig = { ...this.dialog, ...config };
+        const self = this;
+        
+        // 对话框状态管理
+        this._dialogState = {
+            isTyping: false,
+            skipTyping: false,
+            nextPage: false,
+            currentPage: 0,
+            pages: [],
+            isCompleted: false,
+        };
 
-        // 1. --- 布局常量配置 (根据你的参数调整) ---
-        const DIALOG_X = config.pos ? config.pos.x : 160;
-        const DIALOG_Y = config.pos ? config.pos.y : 36;
-        const DIALOG_W = config.size ? config.size.width : 960;
-        const DIALOG_H = config.size ? config.size.height : 80;
-
-        // 内容区域（去除内边距）
-        const PADDING_X = 20;
-        const PADDING_Y = 15;
-        const ICON_SIZE = 80; // 假设头像/图标大小
-
-        // 计算文本显示的起始 X 坐标和最大宽度
-        let textStartX = DIALOG_X + PADDING_X;
-        let maxTextW = DIALOG_W - (PADDING_X * 2);
-
-        // 如果有图标，文本要给图标腾地方
-        if (config.hasRoleAvatar && config.roleAvatarResId) {
-            // 头像位置 (config.roleAvatarPos 是相对坐标还是绝对？这里假设是相对对话框左上角)
-            const iconX = DIALOG_X + (config.roleAvatarPos ? config.roleAvatarPos.x : 40);
-            // 文本起始 X 往右移
-            textStartX = iconX + ICON_SIZE + 20; // 20是图标和文字的间距
-            maxTextW = (DIALOG_X + DIALOG_W) - textStartX - PADDING_X;
-        }
-
-        const FONT_SIZE = 24; // 假设字体大小
-        const LINE_HEIGHT = 36; // 行高
-        // 计算一页能放下几行
-        const MAX_LINES = Math.floor((DIALOG_H - PADDING_Y * 2) / LINE_HEIGHT);
-
-
-        // 2. --- 创建 UI 层级 ---
-
-        // 创建一个高层级的 Layer (zIndex 设大一点，盖住背包)
-        // 这一层也充当“点击拦截层”
-        let layer = await ac.createLayer({
-            name: 'layer_custom_dialog',
-            zIndex: 2000,
-            touchable: true // 开启点击交互
-        });
-        this._dialogState.layer = layer;
-
-        // 背景图
-        if (config.hasBg && config.bgResId) {
-            await ac.createImage({
-                resId: config.bgResId,
-                parent: layer,
-                pos: { x: DIALOG_X, y: DIALOG_Y },
-                size: { width: DIALOG_W, height: DIALOG_H },
-                anchor: { x: 0, y: 0 } // 确保坐标对齐习惯
-            });
-        }
-
-        // 图标/头像
-        if (config.hasRoleAvatar && config.roleAvatarResId) {
-            await ac.createImage({
-                resId: config.roleAvatarResId,
-                parent: layer,
-                pos: {
-                    x: DIALOG_X + (config.roleAvatarPos?.x || 40),
-                    y: DIALOG_Y + (config.roleAvatarPos?.y || 40)
-                },
-                anchor: { x: 0.5, y: 0.5 }, // 居中定位
-                size: { width: ICON_SIZE, height: ICON_SIZE } // 限制一下图标大小
-            });
-        }
-
-        // 文本对象 (初始为空)
-        let textObj = await ac.createText({
-            content: "",
-            parent: layer,
-            pos: { x: textStartX, y: DIALOG_Y + PADDING_Y },
-            size: FONT_SIZE,
-            color: '#ffffff', // 根据背景调整颜色
-            anchor: { x: 0, y: 0 }
-            // 注意：不要在这里设置 width 自动换行，我们要手动控制打字机
-        });
-        this._dialogState.textObj = textObj;
-
-
-        // 3. --- 绑定点击事件 ---
-
-        // 重置状态
-        this._dialogState.isTyping = false;
-        this._dialogState.skipTyping = false;
-        this._dialogState.nextPage = false;
-
-        // 监听整个 Layer 的点击
-        layer.on('touch_end', () => {
-            if (this._dialogState.isTyping) {
-                // 如果正在打字 -> 标记“跳过”，瞬间显示
-                this._dialogState.skipTyping = true;
+        async function onTouchDialog() {
+            console.log('[LOG] onTouchDialog, isTyping:', self._dialogState.isTyping);
+            if (self._dialogState.isTyping) {
+                // 正在打字时点击，跳过打字效果
+                self._dialogState.skipTyping = true;
+            } else if (self._dialogState.isCompleted) {
+                // 已经完成，关闭对话框
+                await closeDialog();
             } else {
-                // 如果没在打字（已显示完） -> 标记“下一页/关闭”
-                this._dialogState.nextPage = true;
+                // 显示下一页
+                self._dialogState.nextPage = true;
             }
+        }
+
+        async function closeDialog() {
+            console.log('[CustomDialog] 关闭对话框');
+            
+            // 移除事件监听
+            ac.removeEventListener({
+                type: ac.EVENT_TYPES.onTouchEnded,
+                target: "dialog_touch_area",
+            });
+            
+            // 移除UI
+            ac.remove({
+                name: finalConfig.name,
+                effect: 'normal',
+                duration: 0,
+                canskip: false,
+            });
+
+            // 执行关闭回调
+            if (finalConfig.onClose) await finalConfig.onClose();
+            
+            // 清理状态
+            self._dialogState = null;
+        }
+
+        const finalConfig = { ...this.dialog, ...config };
+        
+        console.log('[CustomDialog] 显示对话框:', finalConfig.content);
+
+        // 创建容器层
+        await ac.createLayer({
+            name: finalConfig.name,
+            index: finalConfig.index,
+            inlayer: 'window',
+            pos: finalConfig.pos,
+            size: { width: finalConfig.width, height: finalConfig.height },
+            anchor: { x: 0, y: 0 },
+            clipMode: false,
         });
 
+        // 创建遮罩层（用于拦截点击）
+        await ac.createImage({
+            name: "dialog_touch_area",
+            index: 0,
+            inlayer: finalConfig.name,
+            resId: finalConfig.mask.resId,
+            pos: { x: finalConfig.width / 2, y: finalConfig.height / 2 },
+            anchor: { x: 50, y: 50 },
+            scale: {
+                x: finalConfig.width * 100 / finalConfig.mask.width,
+                y: finalConfig.height * 100 / finalConfig.mask.height,
+            },
+            opacity: 0, // 透明，只用于接收点击
+        });
 
-        // 4. --- 文本分页算法 (关键) ---
+        // 创建背景
+        if (finalConfig.hasBg !== false) {
+            await ac.createImage({
+                name: "img_dialog_bg",
+                index: 1,
+                inlayer: finalConfig.name,
+                resId: finalConfig.bg.resId,
+                pos: { x: finalConfig.width / 2, y: finalConfig.height / 2 },
+                anchor: { x: 50, y: 50 },
+                scale: {
+                    x: finalConfig.width * 100 / finalConfig.bg.width,
+                    y: finalConfig.height * 100 / finalConfig.bg.height,
+                },
+                opacity: 100,
+            });
+        }
 
-        // 去除 HTML 标签获取纯文本用于计算（如果你的 calcTextWidth 不支持标签）
-        // 简单处理：itemConfig.desc 可能是纯文本，也可能有简单的 tag
-        let rawText = config.content.replace(/<[^>]+>/g, '');
+        // 创建角色头像
+        if (finalConfig.roleAvatarResId) {
+            await ac.createImage({
+                name: "img_dialog_avatar",
+                index: 2,
+                inlayer: finalConfig.name,
+                resId: finalConfig.roleAvatarResId,
+                pos: {
+                    x: finalConfig.roleAvatar.pos.x,
+                    y: finalConfig.roleAvatar.pos.y
+                },
+                anchor: { x: 50, y: 50 },
+                scale: { x: 100, y: 100 },
+                opacity: 100,
+            });
+        }
 
-        let pages = this._paginateText(rawText, FONT_SIZE, maxTextW, MAX_LINES);
+        // 计算文本显示区域
+        let textStartX = finalConfig.text.padding.x;
+        let textWidth = finalConfig.width - finalConfig.text.padding.x * 2;
+        
+        // 如果有头像，需要调整文本区域
+        if (finalConfig.roleAvatarResId) {
+            textStartX = finalConfig.roleAvatar.pos.x + finalConfig.roleAvatar.size + 20;
+            textWidth = finalConfig.width - textStartX - finalConfig.text.padding.x;
+        }
 
+        // 绑定点击事件
+        ac.addEventListener({
+            type: ac.EVENT_TYPES.onTouchEnded,
+            listener: onTouchDialog,
+            target: "dialog_touch_area",
+        });
 
-        // 5. --- 异步打字机循环 (Game Loop) ---
+        // 文本分页处理
+        const content = finalConfig.content || "";
+        const maxLines = Math.floor((finalConfig.height - finalConfig.text.padding.y * 2) / finalConfig.text.lineHeight);
+        
+        // 使用 Utils.paginateText 进行智能分页
+        this._dialogState.pages = Utils.paginateText(
+            content,
+            finalConfig.style.fontSize,
+            textWidth,
+            maxLines
+        );
 
-        for (let i = 0; i < pages.length; i++) {
-            let pageContent = pages[i];
-            let currentDisplay = "";
-
+        // 逐页显示文本
+        for (let pageIndex = 0; pageIndex < this._dialogState.pages.length; pageIndex++) {
+            this._dialogState.currentPage = pageIndex;
+            const pageContent = this._dialogState.pages[pageIndex];
+            
             this._dialogState.isTyping = true;
             this._dialogState.skipTyping = false;
-            this._dialogState.nextPage = false; // 重置下一页信号
+            this._dialogState.nextPage = false;
 
-            // [阶段 A] 打字显示
-            // 遍历这一页的每一个字符
-            for (let char of pageContent) {
-                // 检查是否被点击要求跳过
+            // 打字机效果
+            let displayContent = "";
+            for (let charIndex = 0; charIndex < pageContent.length; charIndex++) {
+                // 检查是否需要跳过打字效果
                 if (this._dialogState.skipTyping) {
-                    currentDisplay = pageContent; // 直接变成全页内容
-                    textObj.text = currentDisplay; // 刷新 UI
-                    break; // 跳出打字循环
+                    displayContent = pageContent;
+                    break;
                 }
 
-                currentDisplay += char;
-                textObj.text = currentDisplay;
+                displayContent += pageContent[charIndex];
+                
+                // 通过重新创建同名组件来刷新文本显示
+                await ac.createText({
+                    name: "txt_dialog_content",
+                    index: 3,
+                    inlayer: finalConfig.name,
+                    content: displayContent,
+                    pos: {
+                        x: textStartX,
+                        y: finalConfig.text.padding.y
+                    },
+                    anchor: { x: 0, y: 0 },
+                    size: { width: textWidth, height: finalConfig.height - finalConfig.text.padding.y * 2 },
+                    style: finalConfig.style.name,
+                    valign: ac.VALIGN_TYPES.top,
+                    halign: ac.HALIGN_TYPES.left,
+                });
 
-                // 打字速度：0.03秒一个字
-                await ac.delay(0.03);
+                // 等待打字间隔
+                await ac.delay(finalConfig.text.typingSpeed * 1000);
             }
 
-            // 打字结束
+            // 确保最终显示完整内容
+            await ac.createText({
+                name: "txt_dialog_content",
+                index: 3,
+                inlayer: finalConfig.name,
+                content: pageContent,
+                pos: {
+                    x: textStartX,
+                    y: finalConfig.text.padding.y
+                },
+                anchor: { x: 0, y: 0 },
+                size: { width: textWidth, height: finalConfig.height - finalConfig.text.padding.y * 2 },
+                style: finalConfig.style.name,
+                valign: ac.VALIGN_TYPES.top,
+                halign: ac.HALIGN_TYPES.left,
+            });
+
             this._dialogState.isTyping = false;
 
-            // [阶段 B] 等待点击翻页
-            // 只要用户没点下一页，就卡在这里
-            while (!this._dialogState.nextPage) {
-                await ac.delay(0.1); // 每 0.1 秒检查一次点击状态
+            // 如果是最后一页
+            if (pageIndex === this._dialogState.pages.length - 1) {
+                this._dialogState.isCompleted = true;
+                
+                // 执行完成回调
+                if (finalConfig.onComplete) await finalConfig.onComplete();
+                
+                // 如果设置了自动关闭
+                if (finalConfig.autoClose) {
+                    await ac.delay(1000); // 等待1秒后自动关闭
+                    await closeDialog();
+                    return;
+                }
             }
 
-            // 用户点击了下一页，循环继续，进入 i+1 页
-            // 如果是最后一页，循环结束
+            // 等待用户点击进入下一页
+            while (!this._dialogState.nextPage && !this._dialogState.isCompleted) {
+                await ac.delay(100);
+            }
         }
 
-        // 6. --- 关闭清理 ---
-        console.log('[CustomDialog] 关闭');
-        layer.remove(); // 或者 layer.destroy()，视引擎版本而定
-        this._dialogState.layer = null;
+        // 如果没有设置自动关闭，等待用户点击关闭
+        if (!finalConfig.autoClose) {
+            while (!this._dialogState.isCompleted) {
+                await ac.delay(100);
+            }
+        }
     },
 
     // 创建物品详情 UI, 大图 + 文字描述
@@ -422,6 +533,16 @@ const CommonUI = {
 
         ac.createStyle({
             name: 'style_item_info',
+            font: '汉仪小隶书简',
+            bold: false,
+            italic: false,
+            fontSize: 24,
+            color: '#d1d3df',
+            speed: 9,
+        });
+
+        ac.createStyle({
+            name: 'style_dialog',
             font: '汉仪小隶书简',
             bold: false,
             italic: false,
