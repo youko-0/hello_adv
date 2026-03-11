@@ -157,4 +157,49 @@ const Utils = {
         let height = fontSize * 1.5
         return { width: width, height: height };
     },
+
+    /**
+     * 辅助函数：将长文本切分为页
+     * @param {string} text 完整文本
+     * @param {number} fontSize 字号
+     * @param {number} maxW 最大宽度
+     * @param {number} maxLines 每页最大行数
+     * @returns {Array} 页码数组 ['第一页内容...', '第二页内容...']
+     */
+    paginateText: function (text, fontSize, maxW, maxLines) {
+        let pages = [];
+        let currentLines = []; // 当前页的所有行
+        let currentLine = "";  // 当前正在拼凑的行
+
+        for (let char of text) {
+            // 试探性加上这个字
+            let testLine = currentLine + char;
+
+            let w = this.calcTextWidth(testLine, fontSize) : (testLine.length * fontSize);
+
+            if (w > maxW) {
+                // 超宽了，说明 currentLine 已经是这一行的极限
+                currentLines.push(currentLine);
+                currentLine = char; // 这个字放到下一行开头
+            } else {
+                currentLine = testLine;
+            }
+
+            // 检查行数是否满了
+            if (currentLines.length >= maxLines) {
+                pages.push(currentLines.join('\n'));
+                currentLines = [];
+            }
+        }
+
+        // 处理剩下的尾巴
+        if (currentLine.length > 0) {
+            currentLines.push(currentLine);
+        }
+        if (currentLines.length > 0) {
+            pages.push(currentLines.join('\n'));
+        }
+
+        return pages;
+    }
 }

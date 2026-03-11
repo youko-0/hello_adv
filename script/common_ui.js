@@ -2,7 +2,13 @@
 console.log('[LOAD] common_ui');
 
 const CommonUI = {
+    // 黑条
+    toast: {
+        name: 'layer_toast',
+    },
+    // 弹窗
     alert: {
+        name: 'layer_alert',
         width: 600,
         height: 400,
         centerX: 600 / 2,
@@ -17,7 +23,29 @@ const CommonUI = {
             width: 32,
             height: 32,
         },
+        style: {
+            name: 'style_alert',
+            font: '汉仪小隶书简',
+            bold: false,
+            italic: false,
+            fontSize: 24,
+            color: '#d1d3df',
+        },
     },
+    // 对话框
+    dialog: {
+        name: 'layer_dialog',
+        width: 960,
+        height: 80,
+        centerX: 960 / 2,
+        centerY: 80 / 2,
+        bg: {
+            resId: ResMap.img_dialog_bg,
+            width: 1241,
+            height: 150,
+        }
+    },
+
 
     // 找不到易次元的直接判断的接口，用 getPos 迂回一下
     isWidgetExist: async function (name) {
@@ -26,6 +54,19 @@ const CommonUI = {
         })
         console.log('[LOG] isWidgetExist', name, v.x);
         return v.x != null;
+    },
+
+    // 是否是打断状态(有关键 UI 弹出), 不可操作
+    isInterrupted: async function () {
+        let uiName = [this.alert.name, 'layer_item_detail_info'];
+        for (let i = 0; i < uiName.length; i++) {
+            let flag = await this.isWidgetExist(uiName[i]);
+            console.log('[LOG] isInterrupted', uiName[i], flag);
+            if (flag) {
+                return true;
+            }
+        }
+        return false;
     },
 
     // 通用文本样式
@@ -52,17 +93,165 @@ const CommonUI = {
 
     },
 
-    // 是否是打断状态, 不可操作
-    isInterrupted: async function () {
-        let uiName = ['layer_alert', 'layer_item_detail_info'];
-        for (let i = 0; i < uiName.length; i++) {
-            let flag = await this.isWidgetExist(uiName[i]);
-            console.log('[LOG] isInterrupted', uiName[i], flag);
-            if (flag) {
-                return true;
-            }
+    /**
+     * 可以在 UI 之上弹出的自定义对话框, 模拟 sysDialogOn）
+     * @param {Object} config 配置项
+     */
+    showCustomDialog: async function (config) {
+        console.log('[CustomDialog] 打开对话框');
+        const finalConfig = { ...this.dialog, ...config };
+
+        // 1. --- 布局常量配置 (根据你的参数调整) ---
+        const DIALOG_X = config.pos ? config.pos.x : 160;
+        const DIALOG_Y = config.pos ? config.pos.y : 36;
+        const DIALOG_W = config.size ? config.size.width : 960;
+        const DIALOG_H = config.size ? config.size.height : 80;
+
+        // 内容区域（去除内边距）
+        const PADDING_X = 20;
+        const PADDING_Y = 15;
+        const ICON_SIZE = 80; // 假设头像/图标大小
+
+        // 计算文本显示的起始 X 坐标和最大宽度
+        let textStartX = DIALOG_X + PADDING_X;
+        let maxTextW = DIALOG_W - (PADDING_X * 2);
+
+        // 如果有图标，文本要给图标腾地方
+        if (config.hasRoleAvatar && config.roleAvatarResId) {
+            // 头像位置 (config.roleAvatarPos 是相对坐标还是绝对？这里假设是相对对话框左上角)
+            const iconX = DIALOG_X + (config.roleAvatarPos ? config.roleAvatarPos.x : 40);
+            // 文本起始 X 往右移
+            textStartX = iconX + ICON_SIZE + 20; // 20是图标和文字的间距
+            maxTextW = (DIALOG_X + DIALOG_W) - textStartX - PADDING_X;
         }
-        return false;
+
+        const FONT_SIZE = 24; // 假设字体大小
+        const LINE_HEIGHT = 36; // 行高
+        // 计算一页能放下几行
+        const MAX_LINES = Math.floor((DIALOG_H - PADDING_Y * 2) / LINE_HEIGHT);
+
+
+        // 2. --- 创建 UI 层级 ---
+
+        // 创建一个高层级的 Layer (zIndex 设大一点，盖住背包)
+        // 这一层也充当“点击拦截层”
+        let layer = await ac.createLayer({
+            name: 'layer_custom_dialog',
+            zIndex: 2000,
+            touchable: true // 开启点击交互
+        });
+        this._dialogState.layer = layer;
+
+        // 背景图
+        if (config.hasBg && config.bgResId) {
+            await ac.createImage({
+                resId: config.bgResId,
+                parent: layer,
+                pos: { x: DIALOG_X, y: DIALOG_Y },
+                size: { width: DIALOG_W, height: DIALOG_H },
+                anchor: { x: 0, y: 0 } // 确保坐标对齐习惯
+            });
+        }
+
+        // 图标/头像
+        if (config.hasRoleAvatar && config.roleAvatarResId) {
+            await ac.createImage({
+                resId: config.roleAvatarResId,
+                parent: layer,
+                pos: {
+                    x: DIALOG_X + (config.roleAvatarPos?.x || 40),
+                    y: DIALOG_Y + (config.roleAvatarPos?.y || 40)
+                },
+                anchor: { x: 0.5, y: 0.5 }, // 居中定位
+                size: { width: ICON_SIZE, height: ICON_SIZE } // 限制一下图标大小
+            });
+        }
+
+        // 文本对象 (初始为空)
+        let textObj = await ac.createText({
+            content: "",
+            parent: layer,
+            pos: { x: textStartX, y: DIALOG_Y + PADDING_Y },
+            size: FONT_SIZE,
+            color: '#ffffff', // 根据背景调整颜色
+            anchor: { x: 0, y: 0 }
+            // 注意：不要在这里设置 width 自动换行，我们要手动控制打字机
+        });
+        this._dialogState.textObj = textObj;
+
+
+        // 3. --- 绑定点击事件 ---
+
+        // 重置状态
+        this._dialogState.isTyping = false;
+        this._dialogState.skipTyping = false;
+        this._dialogState.nextPage = false;
+
+        // 监听整个 Layer 的点击
+        layer.on('touch_end', () => {
+            if (this._dialogState.isTyping) {
+                // 如果正在打字 -> 标记“跳过”，瞬间显示
+                this._dialogState.skipTyping = true;
+            } else {
+                // 如果没在打字（已显示完） -> 标记“下一页/关闭”
+                this._dialogState.nextPage = true;
+            }
+        });
+
+
+        // 4. --- 文本分页算法 (关键) ---
+
+        // 去除 HTML 标签获取纯文本用于计算（如果你的 calcTextWidth 不支持标签）
+        // 简单处理：itemConfig.desc 可能是纯文本，也可能有简单的 tag
+        let rawText = config.content.replace(/<[^>]+>/g, '');
+
+        let pages = this._paginateText(rawText, FONT_SIZE, maxTextW, MAX_LINES);
+
+
+        // 5. --- 异步打字机循环 (Game Loop) ---
+
+        for (let i = 0; i < pages.length; i++) {
+            let pageContent = pages[i];
+            let currentDisplay = "";
+
+            this._dialogState.isTyping = true;
+            this._dialogState.skipTyping = false;
+            this._dialogState.nextPage = false; // 重置下一页信号
+
+            // [阶段 A] 打字显示
+            // 遍历这一页的每一个字符
+            for (let char of pageContent) {
+                // 检查是否被点击要求跳过
+                if (this._dialogState.skipTyping) {
+                    currentDisplay = pageContent; // 直接变成全页内容
+                    textObj.text = currentDisplay; // 刷新 UI
+                    break; // 跳出打字循环
+                }
+
+                currentDisplay += char;
+                textObj.text = currentDisplay;
+
+                // 打字速度：0.03秒一个字
+                await ac.delay(0.03);
+            }
+
+            // 打字结束
+            this._dialogState.isTyping = false;
+
+            // [阶段 B] 等待点击翻页
+            // 只要用户没点下一页，就卡在这里
+            while (!this._dialogState.nextPage) {
+                await ac.delay(0.1); // 每 0.1 秒检查一次点击状态
+            }
+
+            // 用户点击了下一页，循环继续，进入 i+1 页
+            // 如果是最后一页，循环结束
+        }
+
+        // 6. --- 关闭清理 ---
+        console.log('[CustomDialog] 关闭');
+        layer.remove(); // 或者 layer.destroy()，视引擎版本而定
+        this._dialogState.layer = null;
     },
 
     // 创建物品详情 UI, 大图 + 文字描述

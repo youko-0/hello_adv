@@ -75,9 +75,9 @@ const createSystem = function (varName, defaultDataFactory, customMethods) {
     };
 
     // 【关键步骤】将“基础逻辑”和“自定义方法”合并
-    // 将 customMethods 混入 baseSystem
-    // 使用 Object.assign 将 customMethods 的属性复制到 baseSystem
-    const finalSystem = Object.assign(baseSystem, customMethods);
+    // 创建一个全新的对象，把 baseSystem 和 customMethods 的属性“拷贝”进去
+    // 不影响 baseSystem 和 customMethods 的原始结构
+    const finalSystem = { ...baseSystem, ...customMethods };
 
     // 锁定 this 指向
     // 遍历 finalSystem 的所有属性，如果是函数，就强制 bind 自身
