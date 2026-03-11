@@ -9,6 +9,7 @@ const CommonUI = {
     // 弹窗
     alert: {
         name: 'layer_alert',
+        index: 100,     // 置顶
         width: 600,
         height: 400,
         centerX: 600 / 2,
@@ -58,7 +59,7 @@ const CommonUI = {
 
     // 是否是打断状态(有关键 UI 弹出), 不可操作
     isInterrupted: async function () {
-        let uiName = [this.alert.name, 'layer_item_detail_info'];
+        let uiName = [finalConfig.name, 'layer_item_detail_info'];
         for (let i = 0; i < uiName.length; i++) {
             let flag = await this.isWidgetExist(uiName[i]);
             console.log('[LOG] isInterrupted', uiName[i], flag);
@@ -69,28 +70,111 @@ const CommonUI = {
         return false;
     },
 
-    // 通用文本样式
-    createTextStyles: async function () {
-        console.log('[LOG] createTextStyles');
-        ac.createStyle({
-            name: 'style_alert',
-            font: '汉仪小隶书简',
-            bold: false,
-            italic: false,
-            fontSize: 24,
-            color: '#d1d3df',
+    showAlert: async function (content, config) {
+        async function onClickBtnConfirm() {
+            ac.remove({
+                name: finalConfig.name,
+                effect: 'normal',
+                duration: 0,
+                canskip: false,
+            });
+
+            // 如果传了回调函数，就执行它
+            if (finalConfig.onConfirm) await finalConfig.onConfirm();
+        }
+
+        async function onTouchmask() {
+            console.log('[LOG] onTouchmask');
+        }
+
+        const finalConfig = { ...this.alert, ...config };
+
+        // 容器
+        await ac.createLayer({
+            name: finalConfig.name,
+            index: finalConfig.index,
+            inlayer: 'window',
+            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
+            size: { width: finalConfig.width, height: finalConfig.height },
+            anchor: { x: 50, y: 50 },
+            clipMode: false,
         });
 
-        ac.createStyle({
-            name: 'style_item_info',
-            font: '汉仪小隶书简',
-            bold: false,
-            italic: false,
-            fontSize: 24,
-            color: '#d1d3df',
-            speed: 9,
+        await ac.createImage({
+            name: "img_alert_mask",
+            index: 0,
+            inlayer: finalConfig.name,
+            resId: finalConfig.mask.resId,
+            pos: { x: finalConfig.centerX, y: finalConfig.centerY },
+            anchor: { x: 50, y: 50 },
+            scale: {
+                x: GameConfig.width * 100 / finalConfig.mask.width,
+                y: GameConfig.height * 100 / finalConfig.mask.height,
+            },
+            opacity: 60,
         });
 
+        await ac.createImage({
+            name: "img_alert_bg",
+            index: 1,
+            inlayer: finalConfig.name,
+            resId: finalConfig.bg.resId,
+            pos: {
+                x: finalConfig.width / 2,
+                y: finalConfig.height / 2
+            },
+            anchor: { x: 50, y: 50 },
+            scale: {
+                x: finalConfig.width * 100 / finalConfig.bg.width,
+                y: finalConfig.height * 100 / finalConfig.bg.height,
+            },
+            opacity: 100,
+        });
+
+        await ac.createText({
+            name: "txt_alert_content",
+            index: 2,
+            inlayer: finalConfig.name,
+            content: content,
+            pos: {
+                x: finalConfig.width / 2,
+                y: finalConfig.height / 2 + 60
+            },
+            anchor: { x: 50, y: 50 },
+            size: { width: finalConfig.width - 80, height: finalConfig.height - 100 },
+            style: finalConfig.style.name,
+            valign: ac.VALIGN_TYPES.center,
+            halign: ac.HALIGN_TYPES.middle,
+        });
+
+        await ac.createText({
+            name: "btn_alert_confirm",
+            index: 2,
+            inlayer: finalConfig.name,
+            content: "确定",
+            pos: {
+                x: finalConfig.width / 2,
+                y: finalConfig.height / 2 - 60
+            },
+            anchor: { x: 50, y: 50 },
+            size: { width: 100, height: 60 },
+            style: finalConfig.style.name,
+            halign: ac.HALIGN_TYPES.middle,
+        });
+
+        // 拦截点击
+        ac.addEventListener({
+            type: ac.EVENT_TYPES.onTouchBegan,
+            listener: onTouchmask,
+            target: "img_alert_mask",
+        });
+
+        // 确定按钮
+        ac.addEventListener({
+            type: ac.EVENT_TYPES.onTouchEnded,
+            listener: onClickBtnConfirm,
+            target: "btn_alert_confirm",
+        });
     },
 
     /**
@@ -266,7 +350,7 @@ const CommonUI = {
             index: 10,
             inlayer: "window",
             resId: ResMap.pic_common_bg_03,
-            pos: { x: GameConfig.centerX , y: GameConfig.centerY },
+            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             anchor: { x: 50, y: 50 },
             opacity: 80,
         });
@@ -276,7 +360,7 @@ const CommonUI = {
             index: 0,
             inlayer: "layer_item_detail_info",
             resId: itemConfig.illust,
-            pos: { x: GameConfig.centerX, y: GameConfig.centerY + 100},
+            pos: { x: GameConfig.centerX, y: GameConfig.centerY + 100 },
             anchor: { x: 50, y: 50 },
         });
         // 文字描述
@@ -324,111 +408,31 @@ const CommonUI = {
         await ac.sysDialogOff();
     },
 
-    showAlert: async function (content, onConfirm = null) {
-        async function onClickBtnConfirm() {
-            ac.remove({
-                name: 'layer_alert',
-                effect: 'normal',
-                duration: 0,
-                canskip: false,
-            });
-
-            // 如果传了回调函数，就执行它
-            if (onConfirm) await onConfirm();
-        }
-
-        async function onTouchmask() {
-            console.log('[LOG] onTouchmask');
-        }
-
-        // 容器
-        await ac.createLayer({
-            name: 'layer_alert',
-            index: 500,     // 置顶
-            inlayer: 'window',
-            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
-            size: { width: this.alert.width, height: this.alert.height },
-            anchor: { x: 50, y: 50 },
-            clipMode: false,
+    // 通用文本样式
+    createTextStyles: async function () {
+        console.log('[LOG] createTextStyles');
+        ac.createStyle({
+            name: 'style_alert',
+            font: '汉仪小隶书简',
+            bold: false,
+            italic: false,
+            fontSize: 24,
+            color: '#d1d3df',
         });
 
-        await ac.createImage({
-            name: "img_alert_mask",
-            index: 0,
-            inlayer: "layer_alert",
-            resId: this.alert.mask.resId,
-            pos: { x: this.alert.centerX, y: this.alert.centerY },
-            anchor: { x: 50, y: 50 },
-            scale: {
-                x: GameConfig.width * 100 / this.alert.mask.width,
-                y: GameConfig.height * 100 / this.alert.mask.height,
-            },
-            opacity: 60,
+        ac.createStyle({
+            name: 'style_item_info',
+            font: '汉仪小隶书简',
+            bold: false,
+            italic: false,
+            fontSize: 24,
+            color: '#d1d3df',
+            speed: 9,
         });
 
-        await ac.createImage({
-            name: "img_alert_bg",
-            index: 1,
-            inlayer: "layer_alert",
-            resId: this.alert.bg.resId,
-            pos: {
-                x: this.alert.width / 2,
-                y: this.alert.height / 2
-            },
-            anchor: { x: 50, y: 50 },
-            scale: {
-                x: this.alert.width * 100 / this.alert.bg.width,
-                y: this.alert.height * 100 / this.alert.bg.height,
-            },
-            opacity: 100,
-        });
-
-        await ac.createText({
-            name: "alert_content",
-            index: 2,
-            inlayer: "layer_alert",
-            content: content,
-            pos: {
-                x: this.alert.width / 2,
-                y: this.alert.height / 2 + 60
-            },
-            anchor: { x: 50, y: 50 },
-            size: { width: this.alert.width - 80, height: this.alert.height - 100 },
-            style: "style_alert",
-            valign: ac.VALIGN_TYPES.center,
-            halign: ac.HALIGN_TYPES.middle,
-        });
-
-        await ac.createText({
-            name: "alert_confirm_btn",
-            index: 2,
-            inlayer: "layer_alert",
-            content: "确定",
-            pos: {
-                x: this.alert.width / 2,
-                y: this.alert.height / 2 - 60
-            },
-            anchor: { x: 50, y: 50 },
-            size: { width: 100, height: 60 },
-            style: "style_alert",
-            halign: ac.HALIGN_TYPES.middle,
-        });
-
-        // 拦截点击
-        ac.addEventListener({
-            type: ac.EVENT_TYPES.onTouchBegan,
-            listener: onTouchmask,
-            target: "img_alert_mask",
-        });
-
-        // 确定按钮
-        ac.addEventListener({
-            type: ac.EVENT_TYPES.onTouchEnded,
-            listener: onClickBtnConfirm,
-            target: "alert_confirm_btn",
-        });
     },
 
 }
+
 
 CommonUI.createTextStyles();
