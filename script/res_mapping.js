@@ -7,7 +7,8 @@ const HelloADVRes = {
     // 通用
     img_mask_black: '$183470049',
     img_mask_round: '$183502801',
-    img_dialog_bg_01: '$183945897',
+    img_dialog_bg_no_head: '$184489241',
+    img_dialog_bg_with_head: '$184489243',
     btn_common_close_normal: '$183658478',
     btn_common_close_highlight: '$183658477',
     pic_common_bg_01: '$183658447',

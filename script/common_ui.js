@@ -47,8 +47,13 @@ const CommonUI = {
             width: 32,
             height: 32,
         },
-        bg: {
-            resId: ResMap.img_dialog_bg_01,
+        bg_no_head: {
+            resId: ResMap.img_dialog_bg_no_head,
+            width: 1241,
+            height: 150,
+        },
+        bg_with_head: {
+            resId: ResMap.img_dialog_bg_with_head,
             width: 1241,
             height: 150,
         },
@@ -486,27 +491,7 @@ const CommonUI = {
             content: itemConfig.desc
         }
         await this.showCustomDialog(config);
-        // // 文字描述
-        // await ac.sysDialogOn({
-        //     content: `<tag style=style_item_info>${itemConfig.desc}</tag>`,
-        //     tag: 'p',
-        //     size: { width: 960, height: 80 },
-        //     pos: { x: 160, y: 36 },
-        //     hasRoleName: false,
-        //     // 头像的位置用来显示道具图标
-        //     hasRoleAvatar: Boolean(itemConfig.icon),
-        //     roleAvatarResId: itemConfig.icon,
-        //     roleAvatarPos: { x: 40, y: 40 },
-        //     hasBg: true,
-        //     bgResId: ResMap.img_dialog_bg_01,
-        // });
-        // console.log('[LOG] sysDialogOff');
-        // 同步执行
-        ac.sysDialogOff({
-            effect: 'fadeout',
-            duration: 500,
-        });
-        ac.remove({
+        await ac.remove({
             name: "layer_item_detail_info",
             effect: 'fadeout',
             duration: 500,
