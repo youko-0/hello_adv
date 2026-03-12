@@ -38,9 +38,9 @@ const CommonUI = {
         name: 'layer_dialog',
         index: 200,     // 高层级，盖住其他UI
         width: 960,
-        height: 80,
+        height: 100,
         centerX: 960 / 2,
-        centerY: 80 / 2,
+        centerY: 100 / 2,
         pos: { x: 160, y: 36 },
         mask: {
             resId: ResMap.img_mask_black,
@@ -48,7 +48,7 @@ const CommonUI = {
             height: 32,
         },
         bg: {
-            resId: ResMap.img_dialog_bg,
+            resId: ResMap.img_dialog_bg_01,
             width: 1241,
             height: 150,
         },
@@ -238,8 +238,9 @@ const CommonUI = {
                 // 已经完成，关闭对话框
                 await closeDialog();
             } else {
-                // 显示下一页
-                self._dialogState.nextPage = true;
+                // 当前页播放完成，播放下一页
+                self._dialogState.currentPage++;
+                await self.playCurrentPage();
             }
         }
 
@@ -261,33 +262,21 @@ const CommonUI = {
         }
 
         const finalConfig = { ...this.dialog, ...config };
+        
+        // 保存配置供 playCurrentPage 方法使用
+        this._dialogConfig = finalConfig;
 
         console.log('[CustomDialog] 显示对话框:', finalConfig.content);
 
-        // 创建容器层
+        // 创建容器层(拦截点击)
         await ac.createLayer({
             name: finalConfig.name,
             index: finalConfig.index,
             inlayer: 'window',
-            pos: finalConfig.pos,
-            size: { width: finalConfig.width, height: finalConfig.height },
+            pos: { x: 0, y: 0 },
+            size: { width: GameConfig.width, height: GameConfig.height },
             anchor: { x: 0, y: 0 },
             clipMode: false,
-        });
-
-        // 创建遮罩层（用于拦截点击）
-        await ac.createImage({
-            name: "dialog_touch_area",
-            index: 0,
-            inlayer: finalConfig.name,
-            resId: finalConfig.mask.resId,
-            pos: { x: finalConfig.width / 2, y: finalConfig.height / 2 },
-            anchor: { x: 50, y: 50 },
-            scale: {
-                x: finalConfig.width * 100 / finalConfig.mask.width,
-                y: finalConfig.height * 100 / finalConfig.mask.height,
-            },
-            opacity: 0, // 透明，只用于接收点击
         });
 
         // 创建背景
@@ -334,11 +323,15 @@ const CommonUI = {
             textWidth = finalConfig.width - textStartX - finalConfig.text.padding.x;
         }
 
+        // 保存文本区域信息供 playCurrentPage 方法使用
+        this._dialogTextStartX = textStartX;
+        this._dialogTextWidth = textWidth;
+
         // 绑定点击事件
         ac.addEventListener({
             type: ac.EVENT_TYPES.onTouchEnded,
             listener: onTouchDialog,
-            target: "dialog_touch_area",
+            target: finalConfig.name
         });
 
         // 文本分页处理
@@ -352,93 +345,116 @@ const CommonUI = {
             maxLines
         );
 
-        // 逐页显示文本
-        for (let pageIndex = 0; pageIndex < this._dialogState.pages.length; pageIndex++) {
-            this._dialogState.currentPage = pageIndex;
-            const pageContent = this._dialogState.pages[pageIndex];
+        // 开始播放第一页
+        this._dialogState.currentPage = 0;
+        await this.playCurrentPage();
+    },
 
-            this._dialogState.isTyping = true;
-            this._dialogState.skipTyping = false;
-            this._dialogState.nextPage = false;
+    /**
+     * 播放当前页的内容（打字机效果）
+     */
+    playCurrentPage: async function() {
+        if (!this._dialogState || this._dialogState.currentPage >= this._dialogState.pages.length) {
+            // 所有页面播放完成
+            this._dialogState.isCompleted = true;
+            
+            // 执行完成回调
+            if (this._dialogConfig && this._dialogConfig.onComplete) {
+                await this._dialogConfig.onComplete();
+            }
+            
+            // 如果设置了自动关闭
+            if (this._dialogConfig && this._dialogConfig.autoClose) {
+                await ac.delay({time: 1000});
+                await this.closeCurrentDialog();
+            }
+            return;
+        }
 
-            // 打字机效果
-            let displayContent = "";
-            for (let charIndex = 0; charIndex < pageContent.length; charIndex++) {
-                // 检查是否需要跳过打字效果
-                if (this._dialogState.skipTyping) {
-                    displayContent = pageContent;
-                    break;
-                }
+        const pageContent = this._dialogState.pages[this._dialogState.currentPage];
+        
+        this._dialogState.isTyping = true;
+        this._dialogState.skipTyping = false;
+        this._dialogState.nextPage = false;
 
-                displayContent += pageContent[charIndex];
-
-                // 通过重新创建同名组件来刷新文本显示
-                await ac.createText({
-                    name: "txt_dialog_content",
-                    index: 3,
-                    inlayer: finalConfig.name,
-                    content: displayContent,
-                    pos: {
-                        x: textStartX,
-                        y: finalConfig.text.padding.y
-                    },
-                    anchor: { x: 0, y: 0 },
-                    size: { width: textWidth, height: finalConfig.height - finalConfig.text.padding.y * 2 },
-                    style: finalConfig.style.name,
-                    valign: ac.VALIGN_TYPES.top,
-                    halign: ac.HALIGN_TYPES.left,
-                });
-
-                // 等待打字间隔
-                await ac.delay({ time: finalConfig.text.typingSpeed * 1000 });
+        // 打字机效果
+        let displayContent = "";
+        for (let charIndex = 0; charIndex < pageContent.length; charIndex++) {
+            // 检查是否需要跳过打字效果
+            if (this._dialogState.skipTyping) {
+                displayContent = pageContent;
+                break;
             }
 
-            // 确保最终显示完整内容
+            displayContent += pageContent[charIndex];
+            
+            // 通过重新创建同名组件来刷新文本显示
             await ac.createText({
                 name: "txt_dialog_content",
                 index: 3,
-                inlayer: finalConfig.name,
-                content: pageContent,
+                inlayer: this._dialogConfig.name,
+                content: displayContent,
                 pos: {
-                    x: textStartX,
-                    y: finalConfig.text.padding.y
+                    x: this._dialogTextStartX,
+                    y: this._dialogConfig.text.padding.y
                 },
                 anchor: { x: 0, y: 0 },
-                size: { width: textWidth, height: finalConfig.height - finalConfig.text.padding.y * 2 },
-                style: finalConfig.style.name,
+                size: { width: this._dialogTextWidth, height: this._dialogConfig.height - this._dialogConfig.text.padding.y * 2 },
+                style: this._dialogConfig.style.name,
                 valign: ac.VALIGN_TYPES.top,
-                halign: ac.HALIGN_TYPES.left,
+                halign: ac.VALIGN_TYPES.left,
             });
 
-            this._dialogState.isTyping = false;
-
-            // 如果是最后一页
-            if (pageIndex === this._dialogState.pages.length - 1) {
-                this._dialogState.isCompleted = true;
-
-                // 执行完成回调
-                if (finalConfig.onComplete) await finalConfig.onComplete();
-
-                // 如果设置了自动关闭
-                if (finalConfig.autoClose) {
-                    await ac.delay({ time: 1000 }); // 等待1秒后自动关闭
-                    await closeDialog();
-                    return;
-                }
-            }
-
-            // 等待用户点击进入下一页
-            while (!this._dialogState.nextPage && !this._dialogState.isCompleted) {
-                await ac.delay({ time: 100 });
-            }
+            // 等待打字间隔
+            await ac.delay({time: this._dialogConfig.text.typingSpeed * 1000});
         }
 
-        // 如果没有设置自动关闭，等待用户点击关闭
-        if (!finalConfig.autoClose) {
-            while (!this._dialogState.isCompleted) {
-                await ac.delay({ time: 100 });
-            }
+        // 确保最终显示完整内容
+        await ac.createText({
+            name: "txt_dialog_content",
+            index: 3,
+            inlayer: this._dialogConfig.name,
+            content: pageContent,
+            pos: {
+                x: this._dialogTextStartX,
+                y: this._dialogConfig.text.padding.y
+            },
+            anchor: { x: 0, y: 0 },
+            size: { width: this._dialogTextWidth, height: this._dialogConfig.height - this._dialogConfig.text.padding.y * 2 },
+            style: this._dialogConfig.style.name,
+            valign: ac.VALIGN_TYPES.top,
+            halign: ac.VALIGN_TYPES.left,
+        });
+
+        this._dialogState.isTyping = false;
+    },
+
+    /**
+     * 关闭当前对话框
+     */
+    closeCurrentDialog: async function() {
+        if (!this._dialogConfig) return;
+        
+        console.log('[CustomDialog] 关闭对话框');
+        
+        // 移除UI
+        ac.remove({
+            name: this._dialogConfig.name,
+            effect: 'normal',
+            duration: 0,
+            canskip: false,
+        });
+
+        // 执行关闭回调
+        if (this._dialogConfig.onClose) {
+            await this._dialogConfig.onClose();
         }
+
+        // 清理状态
+        this._dialogState = null;
+        this._dialogConfig = null;
+        this._dialogTextStartX = null;
+        this._dialogTextWidth = null;
     },
 
     // 创建物品详情 UI, 大图 + 文字描述
