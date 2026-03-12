@@ -179,33 +179,39 @@ const InventorySystem = createSystem(
         * 背包主循环：负责打开 UI -> 等关闭 -> 检查是不是要看详情 -> 循环
         */
         openBag: async function () {
-            let keepOpen = true;
-            while (keepOpen) {
-                // 打开背包 UI，并等待 UI 关闭
-                await ac.callUI({
-                    name: 'callUI_bag', // 你的 UI 调用名
-                    uiId: ResMap.ui_bag       // 你的 UI 资源 ID
-                });
-                break
 
-                // --- 只有当 UI 被 removeCurrentUI 关闭后，代码才会跑到这里 ---
+            await ac.callUI({
+                name: 'callUI_bag', // 你的 UI 调用名
+                uiId: ResMap.ui_bag       // 你的 UI 资源 ID
+            });
 
-                // 检查全局变量, 是通过 closeBag 关闭的还是通过 viewItem 关闭的
-                let targetItemId = this.getTempViewId();
-                console.log('[LOG] targetItemId', targetItemId);
-                if (targetItemId) {
-                    console.log(`[Inventory] 检测到详情请求: ${targetItemId}`);
-                    // 在 UI 关闭状态下，显示系统对话框
-                    await CommonUI.showItemDetail(targetItemId);
+            // 下面这些是之前使用 systemDialog 作出的尝试
+            // let keepOpen = true;
+            // while (keepOpen) {
+            //     // 打开背包 UI，并等待 UI 关闭
+            //     await ac.callUI({
+            //         name: 'callUI_bag', // 你的 UI 调用名
+            //         uiId: ResMap.ui_bag       // 你的 UI 资源 ID
+            //     });
 
-                    console.log('[Inventory] 详情查看结束，准备重新打开背包');
-                    // 循环继续，会再次执行 callUI
-                } else {
-                    // 没有标记，说明是主动点击了关闭按钮
-                    console.log('[Inventory] 玩家正常关闭背包，退出循环');
-                    keepOpen = false; // 打破循环
-                }
-            }
+            //     // --- 只有当 UI 被 removeCurrentUI 关闭后，代码才会跑到这里 ---
+
+            //     // 检查全局变量, 是通过 closeBag 关闭的还是通过 viewItem 关闭的
+            //     let targetItemId = this.getTempViewId();
+            //     console.log('[LOG] targetItemId', targetItemId);
+            //     if (targetItemId) {
+            //         console.log(`[Inventory] 检测到详情请求: ${targetItemId}`);
+            //         // 在 UI 关闭状态下，显示系统对话框
+            //         await CommonUI.showItemDetail(targetItemId);
+
+            //         console.log('[Inventory] 详情查看结束，准备重新打开背包');
+            //         // 循环继续，会再次执行 callUI
+            //     } else {
+            //         // 没有标记，说明是主动点击了关闭按钮
+            //         console.log('[Inventory] 玩家正常关闭背包，退出循环');
+            //         keepOpen = false; // 打破循环
+            //     }
+            // }
         },
 
         // 清掉临时数据并关闭背包界面

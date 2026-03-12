@@ -214,9 +214,7 @@ const CommonUI = {
      * @param {Object} config 配置项
      * @param {string} config.content 要显示的文本内容
      * @param {string} [config.roleAvatarResId] 角色头像资源ID，有值则显示头像
-     * @param {Object} [config.roleAvatarPos] 角色头像位置
      * @param {boolean} [config.hasBg] 是否显示背景
-     * @param {string} [config.bgResId] 背景资源ID
      * @param {boolean} [config.autoClose] 是否自动关闭（显示完毕后）
      * @param {Function} [config.onComplete] 对话框完成回调
      * @param {Function} [config.onClose] 对话框关闭回调
@@ -284,18 +282,19 @@ const CommonUI = {
             clipMode: false,
         });
 
-        // 创建背景
+        // 创建背景（根据是否有头像选择不同的背景）
         if (finalConfig.hasBg !== false) {
+            const bgConfig = finalConfig.roleAvatarResId ? finalConfig.bg_with_head : finalConfig.bg_no_head;
             await ac.createImage({
                 name: "img_dialog_bg",
                 index: 1,
                 inlayer: finalConfig.name,
-                resId: finalConfig.bg.resId,
-                pos: { x: finalConfig.width / 2, y: finalConfig.height / 2 },
+                resId: bgConfig.resId,
+                pos: { x: finalConfig.pos.x + finalConfig.width / 2, y: finalConfig.pos.y + finalConfig.height / 2 },
                 anchor: { x: 50, y: 50 },
                 scale: {
-                    x: finalConfig.width * 100 / finalConfig.bg.width,
-                    y: finalConfig.height * 100 / finalConfig.bg.height,
+                    x: finalConfig.width * 100 / bgConfig.width,
+                    y: finalConfig.height * 100 / bgConfig.height,
                 },
                 opacity: 100,
             });
