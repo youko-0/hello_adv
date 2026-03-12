@@ -186,6 +186,7 @@ const InventorySystem = createSystem(
                     name: 'callUI_bag', // 你的 UI 调用名
                     uiId: ResMap.ui_bag       // 你的 UI 资源 ID
                 });
+                break
 
                 // --- 只有当 UI 被 removeCurrentUI 关闭后，代码才会跑到这里 ---
 
@@ -222,7 +223,8 @@ const InventorySystem = createSystem(
         viewItem: async function (itemId) {
             console.log('[LOG] viewItem', itemId);
             this.saveTempViewId(itemId);
-            await ac.removeCurrentUI();
+            // await ac.removeCurrentUI();
+            await CommonUI.showItemDetail(itemId);
         }
     }
 );

@@ -86,7 +86,7 @@ const CommonUI = {
 
     // 是否是打断状态(有关键 UI 弹出), 不可操作
     isInterrupted: async function () {
-        let uiName = [finalConfig.name, 'layer_item_detail_info'];
+        let uiName = [this.alert.name, this.dialog.name, 'layer_item_detail_info'];
         for (let i = 0; i < uiName.length; i++) {
             let flag = await this.isWidgetExist(uiName[i]);
             console.log('[LOG] isInterrupted', uiName[i], flag);
@@ -218,7 +218,7 @@ const CommonUI = {
      */
     showCustomDialog: async function (config) {
         const self = this;
-        
+
         // 对话框状态管理
         this._dialogState = {
             isTyping: false,
@@ -245,13 +245,6 @@ const CommonUI = {
 
         async function closeDialog() {
             console.log('[CustomDialog] 关闭对话框');
-            
-            // 移除事件监听
-            ac.removeEventListener({
-                type: ac.EVENT_TYPES.onTouchEnded,
-                target: "dialog_touch_area",
-            });
-            
             // 移除UI
             ac.remove({
                 name: finalConfig.name,
@@ -262,13 +255,13 @@ const CommonUI = {
 
             // 执行关闭回调
             if (finalConfig.onClose) await finalConfig.onClose();
-            
+
             // 清理状态
             self._dialogState = null;
         }
 
         const finalConfig = { ...this.dialog, ...config };
-        
+
         console.log('[CustomDialog] 显示对话框:', finalConfig.content);
 
         // 创建容器层
@@ -334,7 +327,7 @@ const CommonUI = {
         // 计算文本显示区域
         let textStartX = finalConfig.text.padding.x;
         let textWidth = finalConfig.width - finalConfig.text.padding.x * 2;
-        
+
         // 如果有头像，需要调整文本区域
         if (finalConfig.roleAvatarResId) {
             textStartX = finalConfig.roleAvatar.pos.x + finalConfig.roleAvatar.size + 20;
@@ -351,8 +344,7 @@ const CommonUI = {
         // 文本分页处理
         const content = finalConfig.content || "";
         const maxLines = Math.floor((finalConfig.height - finalConfig.text.padding.y * 2) / finalConfig.text.lineHeight);
-        
-        // 使用 Utils.paginateText 进行智能分页
+
         this._dialogState.pages = Utils.paginateText(
             content,
             finalConfig.style.fontSize,
@@ -364,7 +356,7 @@ const CommonUI = {
         for (let pageIndex = 0; pageIndex < this._dialogState.pages.length; pageIndex++) {
             this._dialogState.currentPage = pageIndex;
             const pageContent = this._dialogState.pages[pageIndex];
-            
+
             this._dialogState.isTyping = true;
             this._dialogState.skipTyping = false;
             this._dialogState.nextPage = false;
@@ -379,7 +371,7 @@ const CommonUI = {
                 }
 
                 displayContent += pageContent[charIndex];
-                
+
                 // 通过重新创建同名组件来刷新文本显示
                 await ac.createText({
                     name: "txt_dialog_content",
@@ -398,7 +390,7 @@ const CommonUI = {
                 });
 
                 // 等待打字间隔
-                await ac.delay(finalConfig.text.typingSpeed * 1000);
+                await ac.delay({ time: finalConfig.text.typingSpeed * 1000 });
             }
 
             // 确保最终显示完整内容
@@ -423,13 +415,13 @@ const CommonUI = {
             // 如果是最后一页
             if (pageIndex === this._dialogState.pages.length - 1) {
                 this._dialogState.isCompleted = true;
-                
+
                 // 执行完成回调
                 if (finalConfig.onComplete) await finalConfig.onComplete();
-                
+
                 // 如果设置了自动关闭
                 if (finalConfig.autoClose) {
-                    await ac.delay(1000); // 等待1秒后自动关闭
+                    await ac.delay({ time: 1000 }); // 等待1秒后自动关闭
                     await closeDialog();
                     return;
                 }
@@ -437,14 +429,14 @@ const CommonUI = {
 
             // 等待用户点击进入下一页
             while (!this._dialogState.nextPage && !this._dialogState.isCompleted) {
-                await ac.delay(100);
+                await ac.delay({ time: 100 });
             }
         }
 
         // 如果没有设置自动关闭，等待用户点击关闭
         if (!finalConfig.autoClose) {
             while (!this._dialogState.isCompleted) {
-                await ac.delay(100);
+                await ac.delay({ time: 100 });
             }
         }
     },
@@ -474,21 +466,25 @@ const CommonUI = {
             pos: { x: GameConfig.centerX, y: GameConfig.centerY + 100 },
             anchor: { x: 50, y: 50 },
         });
-        // 文字描述
-        await ac.sysDialogOn({
-            content: `<tag style=style_item_info>${itemConfig.desc}</tag>`,
-            tag: 'p',
-            size: { width: 960, height: 80 },
-            pos: { x: 160, y: 36 },
-            hasRoleName: false,
-            // 头像的位置用来显示道具图标
-            hasRoleAvatar: Boolean(itemConfig.icon),
-            roleAvatarResId: itemConfig.icon,
-            roleAvatarPos: { x: 40, y: 40 },
-            hasBg: true,
-            bgResId: ResMap.img_dialog_bg_01,
-        });
-        console.log('[LOG] sysDialogOff');
+        let config = {
+            content: itemConfig.desc
+        }
+        await this.showCustomDialog(config);
+        // // 文字描述
+        // await ac.sysDialogOn({
+        //     content: `<tag style=style_item_info>${itemConfig.desc}</tag>`,
+        //     tag: 'p',
+        //     size: { width: 960, height: 80 },
+        //     pos: { x: 160, y: 36 },
+        //     hasRoleName: false,
+        //     // 头像的位置用来显示道具图标
+        //     hasRoleAvatar: Boolean(itemConfig.icon),
+        //     roleAvatarResId: itemConfig.icon,
+        //     roleAvatarPos: { x: 40, y: 40 },
+        //     hasBg: true,
+        //     bgResId: ResMap.img_dialog_bg_01,
+        // });
+        // console.log('[LOG] sysDialogOff');
         // 同步执行
         ac.sysDialogOff({
             effect: 'fadeout',
