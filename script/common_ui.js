@@ -236,7 +236,6 @@ const CommonUI = {
                 skipTyping: false,
                 currentPage: 0,
                 pages: [],
-                isCompleted: false,
                 waitingForClick: false,
             },
             layout: {
@@ -248,7 +247,7 @@ const CommonUI = {
         // 事件处理函数
         const onTouchDialog = async () => {
             const state = this._dialogContext.state;
-            console.log('[LOG] onTouchDialog, currentPage:', state.currentPage, 'isCompleted:', state.isCompleted, 'isTyping:', state.isTyping, 'waitingForClick:', state.waitingForClick);
+            console.log('[LOG] onTouchDialog, currentPage:', state.currentPage, 'isTyping:', state.isTyping, 'waitingForClick:', state.waitingForClick);
             
             if (state.isTyping) {
                 // 正在打字时点击，跳过打字效果
@@ -258,10 +257,6 @@ const CommonUI = {
                 // 等待翻页时点击，继续下一页
                 console.log('[LOG] 用户点击翻页');
                 state.waitingForClick = false;
-            } else if (state.isCompleted) {
-                // 已经完成，关闭对话框
-                console.log('[LOG] 对话已完成，关闭对话框');
-                await this.closeCurrentDialog();
             }
         };
 
@@ -307,9 +302,6 @@ const CommonUI = {
                 await this._waitForPageClick();
             }
         }
-        
-        // 所有页面播放完成
-        state.isCompleted = true;
         console.log('[LOG] 所有页面播放完成');
         
         // 执行完成回调
@@ -527,17 +519,6 @@ const CommonUI = {
         // 确保最终显示完整内容
         await this._updateDialogText(pageContent);
         state.isTyping = false;
-
-        // 检查是否是最后一页
-        if (state.currentPage >= state.pages.length - 1) {
-            // 这是最后一页，播放完成后标记为完成
-            state.isCompleted = true;
-            
-            // 执行完成回调
-            if (config.onComplete) {
-                await config.onComplete();
-            }
-        }
     },
 
     /**
