@@ -220,61 +220,81 @@ const CommonUI = {
      * @param {Function} [config.onClose] 对话框关闭回调
      */
     showCustomDialog: async function (config) {
-        const self = this;
-
-        // 对话框状态管理
-        this._dialogState = {
-            isTyping: false,
-            skipTyping: false,
-            nextPage: false,
-            currentPage: 0,
-            pages: [],
-            isCompleted: false,
-        };
-
-        async function onTouchDialog() {
-            console.log('[LOG] onTouchDialog, isTyping:', self._dialogState.isTyping);
-            if (self._dialogState.isTyping) {
-                // 正在打字时点击，跳过打字效果
-                self._dialogState.skipTyping = true;
-            } else if (self._dialogState.isCompleted) {
-                // 已经完成，关闭对话框
-                await closeDialog();
-            } else {
-                // 当前页播放完成，播放下一页
-                self._dialogState.currentPage++;
-                await self.playCurrentPage();
-            }
-        }
-
-        async function closeDialog() {
-            console.log('[CustomDialog] 关闭对话框');
-            // 移除UI
-            ac.remove({
-                name: finalConfig.name,
-                effect: 'normal',
-                duration: 0,
-                canskip: false,
-            });
-
-            // 执行关闭回调
-            if (finalConfig.onClose) await finalConfig.onClose();
-
-            // 清理状态
-            self._dialogState = null;
+        // 配置验证
+        if (!config || !config.content) {
+            console.error('[CustomDialog] 错误: 缺少必要的 content 参数');
+            return;
         }
 
         const finalConfig = { ...this.dialog, ...config };
-        
-        // 保存配置供 playCurrentPage 方法使用
-        this._dialogConfig = finalConfig;
+
+        // 统一的对话框状态管理
+        this._dialogContext = {
+            config: finalConfig,
+            state: {
+                isTyping: false,
+                skipTyping: false,
+                currentPage: 0,
+                pages: [],
+                isCompleted: false,
+            },
+            layout: {
+                textStartX: 0,
+                textWidth: 0,
+            },
+        };
+
+        // 事件处理函数
+        const onTouchDialog = async () => {
+            const state = this._dialogContext.state;
+            console.log('[LOG] onTouchDialog, isTyping:', state.isTyping);
+            
+            if (state.isTyping) {
+                // 正在打字时点击，跳过打字效果
+                state.skipTyping = true;
+            } else if (state.isCompleted) {
+                // 已经完成，关闭对话框
+                await this.closeCustomDialog();
+            } else {
+                // 当前页播放完成，播放下一页
+                state.currentPage++;
+                await this._playCurrentPage();
+            }
+        };
 
         console.log('[CustomDialog] 显示对话框:', finalConfig.content);
 
+        // 创建UI组件
+        await this._createDialogUI();
+        
+        // 计算文本布局
+        this._calculateTextLayout();
+        
+        // 绑定事件
+        ac.addEventListener({
+            type: ac.EVENT_TYPES.onTouchEnded,
+            listener: onTouchDialog,
+            target: finalConfig.name
+        });
+
+        // 文本分页处理
+        await this._prepareDialogContent();
+        
+        // 开始播放第一页
+        this._dialogContext.state.currentPage = 0;
+        await this._playCurrentPage();
+    },
+
+    /**
+     * 创建对话框UI组件
+     */
+    _createDialogUI: async function() {
+        const config = this._dialogContext.config;
+
         // 创建容器层(拦截点击)
         await ac.createLayer({
-            name: finalConfig.name,
-            index: finalConfig.index,
+            name: config.name,
+            index: config.index,
             inlayer: 'window',
             pos: { x: 0, y: 0 },
             size: { width: GameConfig.width, height: GameConfig.height },
@@ -283,182 +303,183 @@ const CommonUI = {
         });
 
         // 创建背景（根据是否有头像选择不同的背景）
-        if (finalConfig.hasBg !== false) {
-            const bgConfig = finalConfig.roleAvatarResId ? finalConfig.bg_with_head : finalConfig.bg_no_head;
+        if (config.hasBg !== false) {
+            const bgConfig = config.roleAvatarResId ? config.bg_with_head : config.bg_no_head;
             await ac.createImage({
                 name: "img_dialog_bg",
                 index: 1,
-                inlayer: finalConfig.name,
+                inlayer: config.name,
                 resId: bgConfig.resId,
-                pos: { x: finalConfig.pos.x + finalConfig.width / 2, y: finalConfig.pos.y + finalConfig.height / 2 },
+                pos: { x: config.pos.x + config.width / 2, y: config.pos.y + config.height / 2 },
                 anchor: { x: 50, y: 50 },
                 scale: {
-                    x: finalConfig.width * 100 / bgConfig.width,
-                    y: finalConfig.height * 100 / bgConfig.height,
+                    x: config.width * 100 / bgConfig.width,
+                    y: config.height * 100 / bgConfig.height,
                 },
                 opacity: 100,
             });
         }
 
         // 创建角色头像
-        if (finalConfig.roleAvatarResId) {
+        if (config.roleAvatarResId) {
             await ac.createImage({
                 name: "img_dialog_avatar",
                 index: 2,
-                inlayer: finalConfig.name,
-                resId: finalConfig.roleAvatarResId,
+                inlayer: config.name,
+                resId: config.roleAvatarResId,
                 pos: {
-                    x: finalConfig.roleAvatar.pos.x,
-                    y: finalConfig.roleAvatar.pos.y
+                    x: config.roleAvatar.pos.x,
+                    y: config.roleAvatar.pos.y
                 },
                 anchor: { x: 50, y: 50 },
                 scale: { x: 100, y: 100 },
                 opacity: 100,
             });
         }
+    },
 
-        // 计算文本显示区域
-        let textStartX = finalConfig.text.padding.x;
-        let textWidth = finalConfig.width - finalConfig.text.padding.x * 2;
+    /**
+     * 计算文本显示区域布局
+     */
+    _calculateTextLayout: function() {
+        const config = this._dialogContext.config;
+        
+        let textStartX = config.text.padding.x;
+        let textWidth = config.width - config.text.padding.x * 2;
 
         // 如果有头像，需要调整文本区域
-        if (finalConfig.roleAvatarResId) {
-            textStartX = finalConfig.roleAvatar.pos.x + finalConfig.roleAvatar.size + 20;
-            textWidth = finalConfig.width - textStartX - finalConfig.text.padding.x;
+        if (config.roleAvatarResId) {
+            textStartX = config.roleAvatar.pos.x + config.roleAvatar.size + 20;
+            textWidth = config.width - textStartX - config.text.padding.x;
         }
 
-        // 保存文本区域信息供 playCurrentPage 方法使用
-        this._dialogTextStartX = textStartX;
-        this._dialogTextWidth = textWidth;
+        this._dialogContext.layout.textStartX = textStartX;
+        this._dialogContext.layout.textWidth = textWidth;
+    },
 
-        // 绑定点击事件
-        ac.addEventListener({
-            type: ac.EVENT_TYPES.onTouchEnded,
-            listener: onTouchDialog,
-            target: finalConfig.name
-        });
+    /**
+     * 准备对话框内容（分页处理）
+     */
+    _prepareDialogContent: async function() {
+        const config = this._dialogContext.config;
+        const layout = this._dialogContext.layout;
+        
+        const content = config.content || "";
+        const maxLines = Math.floor((config.height - config.text.padding.y * 2) / config.text.lineHeight);
 
-        // 文本分页处理
-        const content = finalConfig.content || "";
-        const maxLines = Math.floor((finalConfig.height - finalConfig.text.padding.y * 2) / finalConfig.text.lineHeight);
-
-        this._dialogState.pages = Utils.paginateText(
+        this._dialogContext.state.pages = Utils.paginateText(
             content,
-            finalConfig.style.fontSize,
-            textWidth,
+            config.style.fontSize,
+            layout.textWidth,
             maxLines
         );
+    },
 
-        // 开始播放第一页
-        this._dialogState.currentPage = 0;
-        await this.playCurrentPage();
+    /**
+     * 创建或更新文本显示
+     */
+    _updateDialogText: async function(content) {
+        const config = this._dialogContext.config;
+        const layout = this._dialogContext.layout;
+        
+        await ac.createText({
+            name: "txt_dialog_content",
+            index: 3,
+            inlayer: config.name,
+            content: content,
+            pos: {
+                x: layout.textStartX,
+                y: config.text.padding.y
+            },
+            anchor: { x: 0, y: 0 },
+            size: { width: layout.textWidth, height: config.height - config.text.padding.y * 2 },
+            style: config.style.name,
+            valign: ac.VALIGN_TYPES.top,
+            halign: ac.HALIGN_TYPES.left,
+        });
     },
 
     /**
      * 播放当前页的内容（打字机效果）
      */
-    playCurrentPage: async function() {
-        if (!this._dialogState || this._dialogState.currentPage >= this._dialogState.pages.length) {
+    _playCurrentPage: async function() {
+        if (!this._dialogContext || !this._dialogContext.state) {
+            console.error('[CustomDialog] 对话框状态异常');
+            return;
+        }
+
+        const { config, state } = this._dialogContext;
+        
+        if (state.currentPage >= state.pages.length) {
             // 所有页面播放完成
-            this._dialogState.isCompleted = true;
+            state.isCompleted = true;
             
             // 执行完成回调
-            if (this._dialogConfig && this._dialogConfig.onComplete) {
-                await this._dialogConfig.onComplete();
+            if (config.onComplete) {
+                await config.onComplete();
             }
             
             // 如果设置了自动关闭
-            if (this._dialogConfig && this._dialogConfig.autoClose) {
+            if (config.autoClose) {
                 await ac.delay({time: 1000});
-                await this.closeCurrentDialog();
+                await this.closeCustomDialog();
             }
             return;
         }
 
-        const pageContent = this._dialogState.pages[this._dialogState.currentPage];
+        const pageContent = state.pages[state.currentPage];
         
-        this._dialogState.isTyping = true;
-        this._dialogState.skipTyping = false;
-        this._dialogState.nextPage = false;
+        state.isTyping = true;
+        state.skipTyping = false;
 
         // 打字机效果
         let displayContent = "";
         for (let charIndex = 0; charIndex < pageContent.length; charIndex++) {
             // 检查是否需要跳过打字效果
-            if (this._dialogState.skipTyping) {
+            if (state.skipTyping) {
                 displayContent = pageContent;
                 break;
             }
 
             displayContent += pageContent[charIndex];
             
-            // 通过重新创建同名组件来刷新文本显示
-            await ac.createText({
-                name: "txt_dialog_content",
-                index: 3,
-                inlayer: this._dialogConfig.name,
-                content: displayContent,
-                pos: {
-                    x: this._dialogTextStartX,
-                    y: this._dialogConfig.text.padding.y
-                },
-                anchor: { x: 0, y: 0 },
-                size: { width: this._dialogTextWidth, height: this._dialogConfig.height - this._dialogConfig.text.padding.y * 2 },
-                style: this._dialogConfig.style.name,
-                valign: ac.VALIGN_TYPES.top,
-                halign: ac.VALIGN_TYPES.left,
-            });
+            // 使用封装的方法更新文本显示
+            await this._updateDialogText(displayContent);
 
             // 等待打字间隔
-            await ac.delay({time: this._dialogConfig.text.typingSpeed * 1000});
+            await ac.delay({time: config.text.typingSpeed * 1000});
         }
 
         // 确保最终显示完整内容
-        await ac.createText({
-            name: "txt_dialog_content",
-            index: 3,
-            inlayer: this._dialogConfig.name,
-            content: pageContent,
-            pos: {
-                x: this._dialogTextStartX,
-                y: this._dialogConfig.text.padding.y
-            },
-            anchor: { x: 0, y: 0 },
-            size: { width: this._dialogTextWidth, height: this._dialogConfig.height - this._dialogConfig.text.padding.y * 2 },
-            style: this._dialogConfig.style.name,
-            valign: ac.VALIGN_TYPES.top,
-            halign: ac.VALIGN_TYPES.left,
-        });
-
-        this._dialogState.isTyping = false;
+        await this._updateDialogText(pageContent);
+        state.isTyping = false;
     },
 
     /**
-     * 关闭当前对话框
+     * 关闭对话框
      */
-    closeCurrentDialog: async function() {
-        if (!this._dialogConfig) return;
+    closeCustomDialog: async function() {
+        if (!this._dialogContext) return;
         
         console.log('[CustomDialog] 关闭对话框');
         
-        // 移除UI
+        const { config } = this._dialogContext;
+        
+        // 移除UI（会自动移除绑定的事件）
         ac.remove({
-            name: this._dialogConfig.name,
+            name: config.name,
             effect: 'normal',
             duration: 0,
             canskip: false,
         });
 
         // 执行关闭回调
-        if (this._dialogConfig.onClose) {
-            await this._dialogConfig.onClose();
+        if (config.onClose) {
+            await config.onClose();
         }
-
+        
         // 清理状态
-        this._dialogState = null;
-        this._dialogConfig = null;
-        this._dialogTextStartX = null;
-        this._dialogTextWidth = null;
+        this._dialogContext = null;
     },
 
     // 创建物品详情 UI, 大图 + 文字描述
