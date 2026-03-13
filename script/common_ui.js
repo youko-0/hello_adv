@@ -232,8 +232,6 @@ const CommonUI = {
         this._dialogContext = {
             config: finalConfig,
             state: {
-                isTyping: false,
-                skipTyping: false,
                 currentPage: 0,
                 pages: [],
                 waitingForClick: false,
@@ -247,15 +245,10 @@ const CommonUI = {
         // 事件处理函数
         const onTouchDialog = async () => {
             const state = this._dialogContext.state;
-            console.log('[LOG] onTouchDialog, currentPage:', state.currentPage, 'isTyping:', state.isTyping, 'waitingForClick:', state.waitingForClick);
+            console.log('[LOG] onTouchDialog, currentPage:', state.currentPage, 'waitingForClick:', state.waitingForClick);
             
-            if (state.isTyping) {
-                // 正在打字时点击，跳过打字效果
-                console.log('[LOG] 跳过打字效果');
-                state.skipTyping = true;
-            } else if (state.waitingForClick) {
-                // 等待翻页时点击，继续下一页
-                console.log('[LOG] 用户点击翻页');
+            if (state.waitingForClick) {
+                console.log('[LOG] 用户点击屏幕');
                 state.waitingForClick = false;
             }
         };
@@ -327,14 +320,12 @@ const CommonUI = {
      */
     _playPageContent: async function(pageContent) {
         const { state, config } = this._dialogContext;
-        
-        state.isTyping = true;
-        state.skipTyping = false;
+        state.waitingForClick = true;
         
         // 打字机效果
         for (let charIndex = 0; charIndex < pageContent.length; charIndex++) {
             // 检查是否需要跳过打字效果
-            if (state.skipTyping) {
+            if (! state.waitingForClick) {
                 break;
             }
             
@@ -344,7 +335,6 @@ const CommonUI = {
         
         // 确保最终显示完整内容
         await this._updateDialogText(pageContent);
-        state.isTyping = false;
     },
 
     /**
@@ -471,51 +461,6 @@ const CommonUI = {
             valign: ac.VALIGN_TYPES.top,
             halign: ac.HALIGN_TYPES.left,
         });
-    },
-
-    /**
-     * 播放当前页的内容（打字机效果）
-     */
-    _playCurrentPage: async function() {
-        if (!this._dialogContext || !this._dialogContext.state) {
-            console.error('[CustomDialog] 对话框状态异常');
-            return;
-        }
-
-        const { config, state } = this._dialogContext;
-        
-        if (state.currentPage >= state.pages.length) {
-            // 超出页面范围，不应该发生
-            console.warn('[CustomDialog] currentPage 超出范围:', state.currentPage, 'pages.length:', state.pages.length);
-            return;
-        }
-
-        const pageContent = state.pages[state.currentPage];
-        
-        state.isTyping = true;
-        state.skipTyping = false;
-
-        // 打字机效果
-        let displayContent = "";
-        for (let charIndex = 0; charIndex < pageContent.length; charIndex++) {
-            // 检查是否需要跳过打字效果
-            if (state.skipTyping) {
-                displayContent = pageContent;
-                break;
-            }
-
-            displayContent += pageContent[charIndex];
-            
-            // 使用封装的方法更新文本显示
-            await this._updateDialogText(displayContent);
-
-            // 等待打字间隔
-            await ac.delay({time: config.text.typingSpeed * 1000});
-        }
-
-        // 确保最终显示完整内容
-        await this._updateDialogText(pageContent);
-        state.isTyping = false;
     },
 
     /**
