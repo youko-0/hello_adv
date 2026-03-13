@@ -237,6 +237,7 @@ const CommonUI = {
                 currentPage: 0,
                 pages: [],
                 isCompleted: false,
+                waitingForClick: false,
             },
             layout: {
                 textStartX: 0,
@@ -247,21 +248,20 @@ const CommonUI = {
         // 事件处理函数
         const onTouchDialog = async () => {
             const state = this._dialogContext.state;
-            console.log('[LOG] onTouchDialog, currentPage:', state.currentPage, 'isCompleted:', state.isCompleted, 'isTyping:', state.isTyping, 'pages.length:', state.pages.length);
+            console.log('[LOG] onTouchDialog, currentPage:', state.currentPage, 'isCompleted:', state.isCompleted, 'isTyping:', state.isTyping, 'waitingForClick:', state.waitingForClick);
             
             if (state.isTyping) {
                 // 正在打字时点击，跳过打字效果
                 console.log('[LOG] 跳过打字效果');
                 state.skipTyping = true;
+            } else if (state.waitingForClick) {
+                // 等待翻页时点击，继续下一页
+                console.log('[LOG] 用户点击翻页');
+                state.waitingForClick = false;
             } else if (state.isCompleted) {
                 // 已经完成，关闭对话框
                 console.log('[LOG] 对话已完成，关闭对话框');
                 await this.closeCurrentDialog();
-            } else {
-                // 当前页播放完成，播放下一页
-                console.log('[LOG] 播放下一页，currentPage:', state.currentPage, '->', state.currentPage + 1);
-                state.currentPage++;
-                await this._playCurrentPage();
             }
         };
 
@@ -283,35 +283,90 @@ const CommonUI = {
         // 文本分页处理
         await this._prepareDialogContent();
         
-        // 开始播放第一页
-        this._dialogContext.state.currentPage = 0;
-        await this._playCurrentPage();
-
-        // 等待对话流程完成
-        await this._waitForDialogComplete();
+        // 循环播放所有页面
+        await this._playAllPages();
     },
 
     /**
-     * 等待对话流程完成
+     * 循环播放所有页面（新版本实现）
      */
-    _waitForDialogComplete: async function() {
-        // 轮询等待对话框完成或关闭
-        while (this._dialogContext && !this._dialogContext.state.isCompleted) {
-            await ac.delay({time: 100}); // 每100ms检查一次状态
+    _playAllPages: async function() {
+        const { state, config } = this._dialogContext;
+        
+        // 循环播放每一页
+        for (let pageIndex = 0; pageIndex < state.pages.length; pageIndex++) {
+            state.currentPage = pageIndex;
+            console.log('[LOG] 播放第', pageIndex + 1, '页，共', state.pages.length, '页');
+            
+            // 播放当前页
+            await this._playPageContent(state.pages[pageIndex]);
+            
+            // 如果不是最后一页，等待用户点击翻页
+            if (pageIndex < state.pages.length - 1) {
+                console.log('[LOG] 等待用户点击翻页...');
+                await this._waitForPageClick();
+            }
         }
         
-        // 对话播放完成后的处理
-        if (this._dialogContext && this._dialogContext.state.isCompleted) {
-            if (this._dialogContext.config.autoClose) {
-                // 自动关闭：等待1秒后关闭
-                await ac.delay({time: 1000});
-                await this.closeCurrentDialog();
-            } else {
-                // 手动关闭：等待用户点击关闭
-                while (this._dialogContext) {
-                    await ac.delay({time: 100});
-                }
+        // 所有页面播放完成
+        state.isCompleted = true;
+        console.log('[LOG] 所有页面播放完成');
+        
+        // 执行完成回调
+        if (config.onComplete) {
+            await config.onComplete();
+        }
+        
+        // 处理对话框关闭
+        if (config.autoClose) {
+            // 自动关闭：等待1秒后关闭
+            await ac.delay({time: 1000});
+            await this.closeCurrentDialog();
+        } else {
+            // 手动关闭：等待用户点击关闭
+            console.log('[LOG] 等待用户点击关闭...');
+            await this._waitForPageClick();
+            await this.closeCurrentDialog();
+        }
+    },
+
+    /**
+     * 播放单页内容（打字机效果）
+     */
+    _playPageContent: async function(pageContent) {
+        const { state, config } = this._dialogContext;
+        
+        state.isTyping = true;
+        state.skipTyping = false;
+        
+        // 打字机效果
+        let displayContent = "";
+        for (let charIndex = 0; charIndex < pageContent.length; charIndex++) {
+            // 检查是否需要跳过打字效果
+            if (state.skipTyping) {
+                displayContent = pageContent;
+                break;
             }
+            
+            displayContent += pageContent[charIndex];
+            await this._updateDialogText(displayContent);
+            await ac.delay({time: config.text.typingSpeed * 1000});
+        }
+        
+        // 确保最终显示完整内容
+        await this._updateDialogText(pageContent);
+        state.isTyping = false;
+    },
+
+    /**
+     * 等待用户点击翻页
+     */
+    _waitForPageClick: async function() {
+        this._dialogContext.state.waitingForClick = true;
+        
+        // 等待用户点击
+        while (this._dialogContext && this._dialogContext.state.waitingForClick) {
+            await ac.delay({time: 100});
         }
     },
 
