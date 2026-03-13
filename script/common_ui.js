@@ -332,16 +332,13 @@ const CommonUI = {
         state.skipTyping = false;
         
         // 打字机效果
-        let displayContent = "";
         for (let charIndex = 0; charIndex < pageContent.length; charIndex++) {
             // 检查是否需要跳过打字效果
             if (state.skipTyping) {
-                displayContent = pageContent;
                 break;
             }
             
-            displayContent += pageContent[charIndex];
-            await this._updateDialogText(displayContent);
+            await this._updateDialogText(pageContent.slice(0, charIndex + 1));
             await ac.delay({time: config.text.typingSpeed * 1000});
         }
         
