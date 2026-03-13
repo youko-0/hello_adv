@@ -247,18 +247,21 @@ const CommonUI = {
         // 事件处理函数
         const onTouchDialog = async () => {
             const state = this._dialogContext.state;
-            console.log('[LOG] onTouchDialog, isTyping:', state.isTyping);
+            console.log('[LOG] onTouchDialog, currentPage:', state.currentPage, 'isCompleted:', state.isCompleted, 'isTyping:', state.isTyping, 'pages.length:', state.pages.length);
             
             if (state.isTyping) {
                 // 正在打字时点击，跳过打字效果
+                console.log('[LOG] 跳过打字效果');
                 state.skipTyping = true;
             } else if (state.isCompleted) {
                 // 已经完成，关闭对话框
+                console.log('[LOG] 对话已完成，关闭对话框');
                 await this.closeCurrentDialog();
             } else {
                 // 当前页播放完成，播放下一页
+                console.log('[LOG] 播放下一页，currentPage:', state.currentPage, '->', state.currentPage + 1);
                 state.currentPage++;
-                await this.playCurrentPage();
+                await this._playCurrentPage();
             }
         };
 
@@ -282,7 +285,7 @@ const CommonUI = {
         
         // 开始播放第一页
         this._dialogContext.state.currentPage = 0;
-        await this.playCurrentPage();
+        await this._playCurrentPage();
 
         // 等待对话流程完成
         await this._waitForDialogComplete();
@@ -429,7 +432,7 @@ const CommonUI = {
     /**
      * 播放当前页的内容（打字机效果）
      */
-    playCurrentPage: async function() {
+    _playCurrentPage: async function() {
         if (!this._dialogContext || !this._dialogContext.state) {
             console.error('[CustomDialog] 对话框状态异常');
             return;
@@ -438,13 +441,8 @@ const CommonUI = {
         const { config, state } = this._dialogContext;
         
         if (state.currentPage >= state.pages.length) {
-            // 所有页面播放完成
-            state.isCompleted = true;
-            
-            // 执行完成回调
-            if (config.onComplete) {
-                await config.onComplete();
-            }
+            // 超出页面范围，不应该发生
+            console.warn('[CustomDialog] currentPage 超出范围:', state.currentPage, 'pages.length:', state.pages.length);
             return;
         }
 
@@ -474,6 +472,17 @@ const CommonUI = {
         // 确保最终显示完整内容
         await this._updateDialogText(pageContent);
         state.isTyping = false;
+
+        // 检查是否是最后一页
+        if (state.currentPage >= state.pages.length - 1) {
+            // 这是最后一页，播放完成后标记为完成
+            state.isCompleted = true;
+            
+            // 执行完成回调
+            if (config.onComplete) {
+                await config.onComplete();
+            }
+        }
     },
 
     /**
