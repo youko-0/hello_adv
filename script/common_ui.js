@@ -215,9 +215,8 @@ const CommonUI = {
      * @param {string} config.content 要显示的文本内容
      * @param {string} [config.roleAvatarResId] 角色头像资源ID，有值则显示头像
      * @param {boolean} [config.hasBg] 是否显示背景
-     * @param {boolean} [config.autoClose] 是否自动关闭（显示完毕后）
-     * @param {Function} [config.onComplete] 对话框完成回调
-     * @param {Function} [config.onClose] 对话框关闭回调
+     * @param {Function} [config.onComplete] 对话完成回调
+     * @param {boolean} [config.closeType] 关闭逻辑, 默认手动关闭, 1 自动关闭, 2 不关闭
      */
     showCustomDialog: async function (config) {
         // 配置验证
@@ -246,11 +245,9 @@ const CommonUI = {
         const onTouchDialog = async () => {
             const state = this._dialogContext.state;
             console.log('[LOG] onTouchDialog, currentPage:', state.currentPage, 'waitingForClick:', state.waitingForClick);
-            
-            if (state.waitingForClick) {
-                console.log('[LOG] 用户点击屏幕');
-                state.waitingForClick = false;
-            }
+            // 这句判断其实没必要，本来是 false 只是赋一次相同值
+            // if (state.waitingForClick)
+            state.waitingForClick = false;
         };
 
         console.log('[CustomDialog] 显示对话框:', finalConfig.content);
@@ -292,7 +289,7 @@ const CommonUI = {
             // 如果不是最后一页，等待用户点击翻页
             if (pageIndex < state.pages.length - 1) {
                 console.log('[LOG] 等待用户点击翻页...');
-                await this._waitForPageClick();
+                await this._waitForUserClick();
             }
         }
         console.log('[LOG] 所有页面播放完成');
@@ -303,14 +300,16 @@ const CommonUI = {
         }
         
         // 处理对话框关闭
-        if (config.autoClose) {
+        if (config.closeType == 1) {
             // 自动关闭：等待1秒后关闭
             await ac.delay({time: 1000});
             await this.closeCurrentDialog();
+        } else if (config.closeType == 2) {
+            // 不关闭
         } else {
-            // 手动关闭：等待用户点击关闭
+            // 默认手动关闭
             console.log('[LOG] 等待用户点击关闭...');
-            await this._waitForPageClick();
+            await this._waitForUserClick();
             await this.closeCurrentDialog();
         }
     },
@@ -338,12 +337,11 @@ const CommonUI = {
     },
 
     /**
-     * 等待用户点击翻页
+     * 等待用户点击
      */
-    _waitForPageClick: async function() {
+    _waitForUserClick: async function() {
         this._dialogContext.state.waitingForClick = true;
-        
-        // 等待用户点击
+
         while (this._dialogContext && this._dialogContext.state.waitingForClick) {
             await ac.delay({time: 100});
         }
@@ -480,11 +478,6 @@ const CommonUI = {
             duration: 0,
             canskip: false,
         });
-
-        // 执行关闭回调
-        if (config.onClose) {
-            await config.onClose();
-        }
         
         // 清理状态
         this._dialogContext = null;
