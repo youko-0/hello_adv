@@ -38,7 +38,7 @@ const CommonUI = {
         name: 'layer_dialog',
         index: 200,     // 高层级，盖住其他UI
         width: 960,
-        height: 100,
+        height: 120,
         centerX: 960 / 2,
         centerY: 100 / 2,
         pos: { x: 160, y: 36 },
