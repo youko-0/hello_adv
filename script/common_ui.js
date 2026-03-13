@@ -254,11 +254,11 @@ const CommonUI = {
                 state.skipTyping = true;
             } else if (state.isCompleted) {
                 // 已经完成，关闭对话框
-                await this.closeCustomDialog();
+                await this.closeCurrentDialog();
             } else {
                 // 当前页播放完成，播放下一页
                 state.currentPage++;
-                await this._playCurrentPage();
+                await this.playCurrentPage();
             }
         };
 
@@ -282,7 +282,34 @@ const CommonUI = {
         
         // 开始播放第一页
         this._dialogContext.state.currentPage = 0;
-        await this._playCurrentPage();
+        await this.playCurrentPage();
+
+        // 等待对话流程完成
+        await this._waitForDialogComplete();
+    },
+
+    /**
+     * 等待对话流程完成
+     */
+    _waitForDialogComplete: async function() {
+        // 轮询等待对话框完成或关闭
+        while (this._dialogContext && !this._dialogContext.state.isCompleted) {
+            await ac.delay({time: 100}); // 每100ms检查一次状态
+        }
+        
+        // 对话播放完成后的处理
+        if (this._dialogContext && this._dialogContext.state.isCompleted) {
+            if (this._dialogContext.config.autoClose) {
+                // 自动关闭：等待1秒后关闭
+                await ac.delay({time: 1000});
+                await this.closeCurrentDialog();
+            } else {
+                // 手动关闭：等待用户点击关闭
+                while (this._dialogContext) {
+                    await ac.delay({time: 100});
+                }
+            }
+        }
     },
 
     /**
@@ -402,7 +429,7 @@ const CommonUI = {
     /**
      * 播放当前页的内容（打字机效果）
      */
-    _playCurrentPage: async function() {
+    playCurrentPage: async function() {
         if (!this._dialogContext || !this._dialogContext.state) {
             console.error('[CustomDialog] 对话框状态异常');
             return;
@@ -417,12 +444,6 @@ const CommonUI = {
             // 执行完成回调
             if (config.onComplete) {
                 await config.onComplete();
-            }
-            
-            // 如果设置了自动关闭
-            if (config.autoClose) {
-                await ac.delay({time: 1000});
-                await this.closeCustomDialog();
             }
             return;
         }
@@ -456,9 +477,9 @@ const CommonUI = {
     },
 
     /**
-     * 关闭对话框
+     * 关闭当前对话框
      */
-    closeCustomDialog: async function() {
+    closeCurrentDialog: async function() {
         if (!this._dialogContext) return;
         
         console.log('[CustomDialog] 关闭对话框');
