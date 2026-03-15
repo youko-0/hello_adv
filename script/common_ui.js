@@ -56,9 +56,8 @@ const CommonUI = {
         },
         // 文本配置
         text: {
-            padding: { top: 15, bottom: 15, left: 120, right: 120 },
-            paddingWithAvatar: { top: 15, bottom: 15, left: 120, right: 120 }, // 有头像时增加左边距
-            lineHeight: 36,
+            padding: { top: 15, bottom: 15, left: 120, right: 20 },
+            paddingWithAvatar: { top: 15, bottom: 15, left: 120, right: 20 }, // 有头像时增加左边距
             typingSpeed: 0.03, // 每个字符显示间隔（秒）
         },
         // 文本样式
@@ -405,18 +404,18 @@ const CommonUI = {
 
         // 对话框位置：左右居中，底部贴边
         const dialogX = (GameConfig.width - config.width) / 2;
-        const dialogY = config.margin.bottom || 0;
+        const dialogY = GameConfig.height - config.height - (config.margin.bottom || 0);
 
         // 选择合适的padding配置
         const textPadding = config.roleAvatarResId ? config.text.paddingWithAvatar : config.text.padding;
 
-        // 头像位置（相对于对话框背景）
+        // 头像位置（相对于对话框背景，易次元坐标系左下角为原点）
         const avatarX = config.roleAvatar.size / 2 + textPadding.left / 2; // 头像居中于左边距区域
         const avatarY = config.height / 2; // 垂直居中
 
-        // 文本区域（相对于对话框背景的padding）
+        // 文本区域（相对于对话框背景的padding，易次元坐标系左下角为原点）
         const textX = textPadding.left;
-        const textY = textPadding.top;
+        const textY = textPadding.bottom; // 左下角坐标系，从底部开始计算
         const textWidth = config.width - textPadding.left - textPadding.right;
         const textHeight = config.height - textPadding.top - textPadding.bottom;
 
@@ -442,7 +441,9 @@ const CommonUI = {
         const layout = this._dialogContext.layout;
 
         const content = config.content || "";
-        const maxLines = Math.floor(layout.textHeight / config.text.lineHeight);
+        // 使用字体大小的1.5倍作为行高估算（易次元没有明确的lineHeight支持）
+        const estimatedLineHeight = config.style.fontSize * 1.5;
+        const maxLines = Math.floor(layout.textHeight / estimatedLineHeight);
 
         this._dialogContext.state.pages = Utils.paginateText(
             content,
