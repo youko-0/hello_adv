@@ -39,17 +39,29 @@ const CommonUI = {
         index: 200,     // 高层级，盖住其他UI
         width: 960,
         height: 120,
-        pos: { x: 160, y: 36 },
-        bgNoHead: {
+        margin: { bottom: 36 }, // 底部留边
+        bg: {
             resId: ResMap.img_dialog_bg_no_head,
             width: 1241,
             height: 150,
         },
-        bgWithHead: {
+        bgWithAvatar: {
             resId: ResMap.img_dialog_bg_with_head,
             width: 1241,
             height: 150,
         },
+        // 角色头像配置
+        roleAvatar: {
+            size: 80,
+        },
+        // 文本配置
+        text: {
+            padding: { top: 15, bottom: 15, left: 120, right: 120 },
+            paddingWithAvatar: { top: 15, bottom: 15, left: 120, right: 120 }, // 有头像时增加左边距
+            lineHeight: 36,
+            typingSpeed: 0.03, // 每个字符显示间隔（秒）
+        },
+        // 文本样式
         style: {
             name: 'style_dialog',
             font: '汉仪小隶书简',
@@ -58,17 +70,6 @@ const CommonUI = {
             fontSize: 24,
             color: '#d1d3df',
         },
-        // 角色头像配置
-        roleAvatar: {
-            size: 80,
-            pos: { x: 40, y: 40 },
-        },
-        // 文本配置
-        text: {
-            padding: { x: 20, y: 15 },
-            lineHeight: 36,
-            typingSpeed: 0.03, // 每个字符显示间隔（秒）
-        }
     },
 
 
@@ -244,11 +245,11 @@ const CommonUI = {
 
         console.log('[CustomDialog] 显示对话框:', finalConfig.content);
 
+        // 计算文本布局（需要在创建UI前计算）
+        this._calculateTextLayout();
+
         // 创建UI组件
         await this._createDialogUI();
-
-        // 计算文本布局
-        this._calculateTextLayout();
 
         // 绑定事件
         ac.addEventListener({
@@ -295,14 +296,14 @@ const CommonUI = {
         if (config.closeType == 1) {
             // 自动关闭：等待1秒后关闭
             await ac.delay({ time: 1000 });
-            await this.closeCurrentDialog();
+            await this._closeCustomDialog();
         } else if (config.closeType == 2) {
             // 不关闭
         } else {
             // 默认手动关闭
             console.log('[LOG] 等待用户点击关闭...');
             await this._waitForUserClick();
-            await this.closeCurrentDialog();
+            await this._closeCustomDialog();
         }
     },
 
@@ -344,6 +345,7 @@ const CommonUI = {
      */
     _createDialogUI: async function () {
         const config = this._dialogContext.config;
+        const layout = this._dialogContext.layout;
 
         // 创建容器层(拦截点击)
         await ac.createLayer({
@@ -356,15 +358,18 @@ const CommonUI = {
             clipMode: false,
         });
 
-        // 创建背景（根据是否有头像选择不同的背景）
+        // 创建对话框背景
         if (config.hasBg !== false) {
-            const bgConfig = config.roleAvatarResId ? config.bgWithHead : config.bgNoHead;
+            const bgConfig = config.roleAvatarResId ? config.bgWithAvatar : config.bg;
             await ac.createImage({
                 name: "img_dialog_bg",
                 index: 1,
                 inlayer: config.name,
                 resId: bgConfig.resId,
-                pos: { x: config.pos.x + config.width / 2, y: config.pos.y + config.height / 2 },
+                pos: {
+                    x: layout.dialogX + config.width / 2,
+                    y: layout.dialogY + config.height / 2
+                },
                 anchor: { x: 50, y: 50 },
                 scale: {
                     x: config.width * 100 / bgConfig.width,
@@ -379,11 +384,11 @@ const CommonUI = {
             await ac.createImage({
                 name: "img_dialog_avatar",
                 index: 2,
-                inlayer: config.name,
+                inlayer: "img_dialog_bg", // 头像作为背景的子节点
                 resId: config.roleAvatarResId,
                 pos: {
-                    x: config.roleAvatar.pos.x,
-                    y: config.roleAvatar.pos.y
+                    x: layout.avatarX,
+                    y: layout.avatarY
                 },
                 anchor: { x: 50, y: 50 },
                 scale: { x: 100, y: 100 },
@@ -398,17 +403,35 @@ const CommonUI = {
     _calculateTextLayout: function () {
         const config = this._dialogContext.config;
 
-        let textStartX = (GameConfig.width - config.width) / 2 + config.text.padding.x;     // 左右居中
-        let textWidth = config.width - config.text.padding.x * 2;
+        // 对话框位置：左右居中，底部贴边
+        const dialogX = (GameConfig.width - config.width) / 2;
+        const dialogY = config.margin.bottom || 0;
 
-        // 如果有头像，需要调整文本区域
-        if (config.roleAvatarResId) {
-            textStartX = config.roleAvatar.pos.x + config.roleAvatar.size + 20;
-            textWidth = config.width - textStartX - config.text.padding.x;
-        }
+        // 选择合适的padding配置
+        const textPadding = config.roleAvatarResId ? config.text.paddingWithAvatar : config.text.padding;
 
-        this._dialogContext.layout.textStartX = textStartX;
-        this._dialogContext.layout.textWidth = textWidth;
+        // 头像位置（相对于对话框背景）
+        const avatarX = config.roleAvatar.size / 2 + textPadding.left / 2; // 头像居中于左边距区域
+        const avatarY = config.height / 2; // 垂直居中
+
+        // 文本区域（相对于对话框背景的padding）
+        const textX = textPadding.left;
+        const textY = textPadding.top;
+        const textWidth = config.width - textPadding.left - textPadding.right;
+        const textHeight = config.height - textPadding.top - textPadding.bottom;
+
+        // 保存布局信息
+        this._dialogContext.layout = {
+            dialogX: dialogX,
+            dialogY: dialogY,
+            avatarX: avatarX,
+            avatarY: avatarY,
+            textX: textX,
+            textY: textY,
+            textWidth: textWidth,
+            textHeight: textHeight,
+        };
+        console.log('[CustomDialog] 对话框布局:', this._dialogContext.layout);
     },
 
     /**
@@ -419,7 +442,7 @@ const CommonUI = {
         const layout = this._dialogContext.layout;
 
         const content = config.content || "";
-        const maxLines = Math.floor((config.height - config.text.padding.y * 2) / config.text.lineHeight);
+        const maxLines = Math.floor(layout.textHeight / config.text.lineHeight);
 
         this._dialogContext.state.pages = Utils.paginateText(
             content,
@@ -439,14 +462,14 @@ const CommonUI = {
         await ac.createText({
             name: "txt_dialog_content",
             index: 3,
-            inlayer: config.name,
+            inlayer: "img_dialog_bg", // 文本作为背景的子节点
             content: content,
             pos: {
-                x: layout.textStartX,
-                y: config.text.padding.y + config.pos.y
+                x: layout.textX,
+                y: layout.textY
             },
             anchor: { x: 0, y: 0 },
-            size: { width: layout.textWidth, height: config.height - config.text.padding.y * 2 },
+            size: { width: layout.textWidth, height: layout.textHeight },
             style: config.style.name,
             valign: ac.VALIGN_TYPES.top,
             halign: ac.HALIGN_TYPES.left,
@@ -454,9 +477,9 @@ const CommonUI = {
     },
 
     /**
-     * 关闭当前对话框
+     * 关闭对话框
      */
-    closeCurrentDialog: async function () {
+    _closeCustomDialog: async function () {
         if (!this._dialogContext) return;
 
         console.log('[CustomDialog] 关闭对话框');
