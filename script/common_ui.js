@@ -39,20 +39,13 @@ const CommonUI = {
         index: 200,     // 高层级，盖住其他UI
         width: 960,
         height: 120,
-        centerX: 960 / 2,
-        centerY: 100 / 2,
         pos: { x: 160, y: 36 },
-        mask: {
-            resId: ResMap.img_mask_black,
-            width: 32,
-            height: 32,
-        },
-        bg_no_head: {
+        bgNoHead: {
             resId: ResMap.img_dialog_bg_no_head,
             width: 1241,
             height: 150,
         },
-        bg_with_head: {
+        bgWithHead: {
             resId: ResMap.img_dialog_bg_with_head,
             width: 1241,
             height: 150,
@@ -64,7 +57,6 @@ const CommonUI = {
             italic: false,
             fontSize: 24,
             color: '#d1d3df',
-            speed: 9,
         },
         // 角色头像配置
         roleAvatar: {
@@ -254,10 +246,10 @@ const CommonUI = {
 
         // 创建UI组件
         await this._createDialogUI();
-        
+
         // 计算文本布局
         this._calculateTextLayout();
-        
+
         // 绑定事件
         ac.addEventListener({
             type: ac.EVENT_TYPES.onTouchEnded,
@@ -267,7 +259,7 @@ const CommonUI = {
 
         // 文本分页处理
         await this._prepareDialogContent();
-        
+
         // 循环播放所有页面
         await this._playAllPages();
     },
@@ -275,17 +267,17 @@ const CommonUI = {
     /**
      * 循环播放所有页面（新版本实现）
      */
-    _playAllPages: async function() {
+    _playAllPages: async function () {
         const { state, config } = this._dialogContext;
-        
+
         // 循环播放每一页
         for (let pageIndex = 0; pageIndex < state.pages.length; pageIndex++) {
             state.currentPage = pageIndex;
             console.log('[LOG] 播放第', pageIndex + 1, '页，共', state.pages.length, '页');
-            
+
             // 播放当前页
             await this._playPageContent(state.pages[pageIndex]);
-            
+
             // 如果不是最后一页，等待用户点击翻页
             if (pageIndex < state.pages.length - 1) {
                 console.log('[LOG] 等待用户点击翻页...');
@@ -293,16 +285,16 @@ const CommonUI = {
             }
         }
         console.log('[LOG] 所有页面播放完成');
-        
+
         // 执行完成回调
         if (config.onComplete) {
             await config.onComplete();
         }
-        
+
         // 处理对话框关闭
         if (config.closeType == 1) {
             // 自动关闭：等待1秒后关闭
-            await ac.delay({time: 1000});
+            await ac.delay({ time: 1000 });
             await this.closeCurrentDialog();
         } else if (config.closeType == 2) {
             // 不关闭
@@ -317,21 +309,21 @@ const CommonUI = {
     /**
      * 播放单页内容（打字机效果）
      */
-    _playPageContent: async function(pageContent) {
+    _playPageContent: async function (pageContent) {
         const { state, config } = this._dialogContext;
         state.waitingForClick = true;
-        
+
         // 打字机效果
         for (let charIndex = 0; charIndex < pageContent.length; charIndex++) {
             // 检查是否需要跳过打字效果
-            if (! state.waitingForClick) {
+            if (!state.waitingForClick) {
                 break;
             }
-            
+
             await this._updateDialogText(pageContent.slice(0, charIndex + 1));
-            await ac.delay({time: config.text.typingSpeed * 1000});
+            await ac.delay({ time: config.text.typingSpeed * 1000 });
         }
-        
+
         // 确保最终显示完整内容
         await this._updateDialogText(pageContent);
     },
@@ -339,18 +331,18 @@ const CommonUI = {
     /**
      * 等待用户点击
      */
-    _waitForUserClick: async function() {
+    _waitForUserClick: async function () {
         this._dialogContext.state.waitingForClick = true;
 
         while (this._dialogContext && this._dialogContext.state.waitingForClick) {
-            await ac.delay({time: 100});
+            await ac.delay({ time: 100 });
         }
     },
 
     /**
      * 创建对话框UI组件
      */
-    _createDialogUI: async function() {
+    _createDialogUI: async function () {
         const config = this._dialogContext.config;
 
         // 创建容器层(拦截点击)
@@ -366,7 +358,7 @@ const CommonUI = {
 
         // 创建背景（根据是否有头像选择不同的背景）
         if (config.hasBg !== false) {
-            const bgConfig = config.roleAvatarResId ? config.bg_with_head : config.bg_no_head;
+            const bgConfig = config.roleAvatarResId ? config.bgWithHead : config.bgNoHead;
             await ac.createImage({
                 name: "img_dialog_bg",
                 index: 1,
@@ -403,10 +395,10 @@ const CommonUI = {
     /**
      * 计算文本显示区域布局
      */
-    _calculateTextLayout: function() {
+    _calculateTextLayout: function () {
         const config = this._dialogContext.config;
-        
-        let textStartX = config.text.padding.x;
+
+        let textStartX = (GameConfig.width - config.width) / 2 + config.text.padding.x;     // 左右居中
         let textWidth = config.width - config.text.padding.x * 2;
 
         // 如果有头像，需要调整文本区域
@@ -422,10 +414,10 @@ const CommonUI = {
     /**
      * 准备对话框内容（分页处理）
      */
-    _prepareDialogContent: async function() {
+    _prepareDialogContent: async function () {
         const config = this._dialogContext.config;
         const layout = this._dialogContext.layout;
-        
+
         const content = config.content || "";
         const maxLines = Math.floor((config.height - config.text.padding.y * 2) / config.text.lineHeight);
 
@@ -440,10 +432,10 @@ const CommonUI = {
     /**
      * 创建或更新文本显示
      */
-    _updateDialogText: async function(content) {
+    _updateDialogText: async function (content) {
         const config = this._dialogContext.config;
         const layout = this._dialogContext.layout;
-        
+
         await ac.createText({
             name: "txt_dialog_content",
             index: 3,
@@ -451,7 +443,7 @@ const CommonUI = {
             content: content,
             pos: {
                 x: layout.textStartX,
-                y: config.text.padding.y
+                y: config.text.padding.y + config.pos.y
             },
             anchor: { x: 0, y: 0 },
             size: { width: layout.textWidth, height: config.height - config.text.padding.y * 2 },
@@ -464,13 +456,13 @@ const CommonUI = {
     /**
      * 关闭当前对话框
      */
-    closeCurrentDialog: async function() {
+    closeCurrentDialog: async function () {
         if (!this._dialogContext) return;
-        
+
         console.log('[CustomDialog] 关闭对话框');
-        
+
         const { config } = this._dialogContext;
-        
+
         // 移除UI（会自动移除绑定的事件）
         ac.remove({
             name: config.name,
@@ -478,7 +470,7 @@ const CommonUI = {
             duration: 0,
             canskip: false,
         });
-        
+
         // 清理状态
         this._dialogContext = null;
     },
@@ -520,7 +512,7 @@ const CommonUI = {
         })
     },
 
-    // 自动关闭的文本框
+    // 自动关闭的系统文本框
     showSysDialog: async function (content) {
         console.log('[LOG] showSysDialog', content);
         // 文字描述
@@ -532,14 +524,13 @@ const CommonUI = {
             hasRoleName: false,
             hasRoleAvatar: false,
             hasBg: true,
-            bgResId: ResMap.img_dialog_bg_01,
         });
         await ac.sysDialogOff();
     },
 
-    // 通用文本样式
-    createTextStyles: async function () {
-        console.log('[LOG] createTextStyles');
+    // 脚本载入时的初始化函数
+    onLoad: async function () {
+        console.log('[LOG] [CommonUI] onLoad');
         ac.createStyle({
             name: 'style_alert',
             font: '汉仪小隶书简',
@@ -559,19 +550,11 @@ const CommonUI = {
             speed: 9,
         });
 
-        ac.createStyle({
-            name: 'style_dialog',
-            font: '汉仪小隶书简',
-            bold: false,
-            italic: false,
-            fontSize: 24,
-            color: '#d1d3df',
-            speed: 9,
-        });
+        ac.createStyle(this.dialog.style);
 
     },
 
 }
 
 
-CommonUI.createTextStyles();
+CommonUI.onLoad();
