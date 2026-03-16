@@ -36,10 +36,10 @@ const CommonUI = {
     // 对话框
     dialog: {
         name: 'layer_dialog',
-        index: 200,     // 高层级，盖住其他UI
+        index: 100,     // 高层级，盖住其他UI
         width: 960,
         height: 120,
-        margin: { bottom: 36 }, // 底部留边
+        margin: { bottom: 24 }, // 底部留边
         bg: {
             resId: ResMap.img_dialog_bg_no_head,
             width: 1241,
@@ -56,7 +56,7 @@ const CommonUI = {
         },
         // 文本配置
         text: {
-            padding: { top: 10, bottom: 10, left: 100, right: 80 },
+            padding: { top: 20, bottom: 10, left: 100, right: 80 },
             typingSpeed: 0.03, // 每个字符显示间隔（秒）
         },
         // 文本样式
@@ -357,7 +357,7 @@ const CommonUI = {
             clipMode: false,
         });
         
-        // 创建全屏点击层(拦截点击)
+        // 创建全屏点击层同时拦截点击
         await ac.createLayer({
             name: 'layer_touch_area',
             index: config.index,
@@ -422,7 +422,7 @@ const CommonUI = {
 
         // 文本区域：根据 padding 计算实际位置和大小
         const textX = textPadding.left;
-        const textY = textPadding.bottom;
+        const textY = config.height - textPadding.top;
         const textWidth = config.width - textPadding.left - textPadding.right;
         const textHeight = config.height - textPadding.top - textPadding.bottom;
 
@@ -473,11 +473,11 @@ const CommonUI = {
             inlayer: config.name,
             content: content,
             pos: { x: layout.textX, y: layout.textY },
-            anchor: { x: 0, y: 0 },
+            anchor: { x: 0, y: 100 },
             size: { width: layout.textWidth, height: layout.textHeight },
             style: config.style.name,
-            valign: ac.VALIGN_TYPES.top,
             halign: ac.HALIGN_TYPES.left,
+            valign: ac.VALIGN_TYPES.top,
         });
     },
 
