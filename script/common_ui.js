@@ -56,7 +56,7 @@ const CommonUI = {
         },
         // 文本配置
         text: {
-            padding: { top: 15, bottom: 15, left: 120, right: 20 },
+            padding: { top: 10, bottom: 10, left: 100, right: 80 },
             typingSpeed: 0.03, // 每个字符显示间隔（秒）
         },
         // 文本样式
@@ -420,9 +420,9 @@ const CommonUI = {
         const avatarX = config.roleAvatar.size / 2 + textPadding.left / 2; // 头像居中于左边距区域
         const avatarY = config.height / 2; // 垂直居中
 
-        // 文本区域：上下左右居中, 根据 padding 计算文本宽高
-        const textX = config.width / 2;
-        const textY = config.height / 2;
+        // 文本区域：根据 padding 计算实际位置和大小
+        const textX = textPadding.left;
+        const textY = textPadding.bottom;
         const textWidth = config.width - textPadding.left - textPadding.right;
         const textHeight = config.height - textPadding.top - textPadding.bottom;
 
@@ -473,7 +473,7 @@ const CommonUI = {
             inlayer: config.name,
             content: content,
             pos: { x: layout.textX, y: layout.textY },
-            anchor: { x: 50, y: 50 },
+            anchor: { x: 0, y: 0 },
             size: { width: layout.textWidth, height: layout.textHeight },
             style: config.style.name,
             valign: ac.VALIGN_TYPES.top,
