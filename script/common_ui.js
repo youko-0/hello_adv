@@ -57,7 +57,6 @@ const CommonUI = {
         // 文本配置
         text: {
             padding: { top: 15, bottom: 15, left: 120, right: 20 },
-            paddingWithAvatar: { top: 15, bottom: 15, left: 120, right: 20 }, // 有头像时增加左边距
             typingSpeed: 0.03, // 每个字符显示间隔（秒）
         },
         // 文本样式
@@ -254,7 +253,7 @@ const CommonUI = {
         ac.addEventListener({
             type: ac.EVENT_TYPES.onTouchEnded,
             listener: onTouchDialog,
-            target: finalConfig.name
+            target: 'layer_touch_area'
         });
 
         // 文本分页处理
@@ -310,6 +309,7 @@ const CommonUI = {
      * 播放单页内容（打字机效果）
      */
     _playPageContent: async function (pageContent) {
+        console.log('[LOG] 播放页面内容:', pageContent);
         const { state, config } = this._dialogContext;
         state.waitingForClick = true;
 
@@ -346,11 +346,22 @@ const CommonUI = {
         const config = this._dialogContext.config;
         const layout = this._dialogContext.layout;
 
-        // 创建容器层(拦截点击)
+        // 创建容器层
         await ac.createLayer({
             name: config.name,
             index: config.index,
             inlayer: 'window',
+            pos: { x: layout.dialogX, y: layout.dialogY },
+            anchor: { x: 50, y: 50 },
+            size: { width: config.width, height: config.height },
+            clipMode: false,
+        });
+        
+        // 创建全屏点击层(拦截点击)
+        await ac.createLayer({
+            name: 'layer_touch_area',
+            index: config.index,
+            inlayer: config.name,
             pos: { x: 0, y: 0 },
             size: { width: GameConfig.width, height: GameConfig.height },
             anchor: { x: 0, y: 0 },
@@ -365,10 +376,7 @@ const CommonUI = {
                 index: 1,
                 inlayer: config.name,
                 resId: bgConfig.resId,
-                pos: {
-                    x: layout.dialogX + config.width / 2,
-                    y: layout.dialogY + config.height / 2
-                },
+                pos: { x: config.width / 2, y: config.height / 2 },
                 anchor: { x: 50, y: 50 },
                 scale: {
                     x: config.width * 100 / bgConfig.width,
@@ -383,7 +391,7 @@ const CommonUI = {
             await ac.createImage({
                 name: "img_dialog_avatar",
                 index: 2,
-                inlayer: "img_dialog_bg", // 头像作为背景的子节点
+                inlayer: config.name,
                 resId: config.roleAvatarResId,
                 pos: {
                     x: layout.avatarX,
@@ -403,19 +411,18 @@ const CommonUI = {
         const config = this._dialogContext.config;
 
         // 对话框位置：左右居中，底部贴边
-        const dialogX = (GameConfig.width - config.width) / 2;
-        const dialogY = GameConfig.height - config.height - (config.margin.bottom || 0);
+        const dialogX = (GameConfig.width - config.width) / 2 + config.width / 2;
+        const dialogY = (config.margin.bottom || 0) + config.height / 2;
 
-        // 选择合适的padding配置
-        const textPadding = config.roleAvatarResId ? config.text.paddingWithAvatar : config.text.padding;
+        const textPadding = config.text.padding;
 
         // 头像位置（相对于对话框背景，易次元坐标系左下角为原点）
         const avatarX = config.roleAvatar.size / 2 + textPadding.left / 2; // 头像居中于左边距区域
         const avatarY = config.height / 2; // 垂直居中
 
-        // 文本区域（相对于对话框背景的padding，易次元坐标系左下角为原点）
-        const textX = textPadding.left;
-        const textY = textPadding.bottom; // 左下角坐标系，从底部开始计算
+        // 文本区域：上下左右居中, 根据 padding 计算文本宽高
+        const textX = config.width / 2;
+        const textY = config.height / 2;
         const textWidth = config.width - textPadding.left - textPadding.right;
         const textHeight = config.height - textPadding.top - textPadding.bottom;
 
@@ -463,13 +470,10 @@ const CommonUI = {
         await ac.createText({
             name: "txt_dialog_content",
             index: 3,
-            inlayer: "img_dialog_bg", // 文本作为背景的子节点
+            inlayer: config.name,
             content: content,
-            pos: {
-                x: layout.textX,
-                y: layout.textY
-            },
-            anchor: { x: 0, y: 0 },
+            pos: { x: layout.textX, y: layout.textY },
+            anchor: { x: 50, y: 50 },
             size: { width: layout.textWidth, height: layout.textHeight },
             style: config.style.name,
             valign: ac.VALIGN_TYPES.top,
