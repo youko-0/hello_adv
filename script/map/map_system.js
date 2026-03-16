@@ -42,12 +42,22 @@ const MapSystem = {
             resIdLocked: ResMap.img_area_dragon_temple_locked,
             resIdNormal: ResMap.img_area_dragon_temple,
             pos: { x: 507, y: 431 },
+            btn: {
+                resIdNormal: ResMap.btn_area_dragon_temple_normal,
+                resIdHighlight: ResMap.btn_area_dragon_temple_highlight,
+                pos: { x: 50, y: 50 },
+            }
         },
         area5: {
             name: "德兴大厦",
             resIdLocked: ResMap.img_area_dexing_tower_locked,
             resIdNormal: ResMap.img_area_dexing_tower,
             pos: { x: 918, y: 369 },
+            btn: {
+                resIdNormal: ResMap.btn_area_dexing_tower_normal,
+                resIdHighlight: ResMap.btn_area_dexing_tower_highlight,
+                pos: { x: 50, y: 50 },
+            }
         }
     },
 
