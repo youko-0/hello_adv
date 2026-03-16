@@ -167,12 +167,12 @@ class ResMappingSyncer:
                 comment_match = re.search(r'//.*$', line)
                 comment = comment_match.group(0) if comment_match else ''
                 
-                # 优先使用DongHaiRes中的值，如果没有则使用HelloADVRes的值
+                # 优先使用DongHaiRes中的值，如果没有则填充空字符串
                 if key in self.dong_hai_res:
                     value = self.dong_hai_res[key]
                     used_dong_hai_keys.add(key)
                 else:
-                    value = original_value
+                    value = "''"
                 
                 # 构建新的行
                 if comment:
@@ -232,7 +232,7 @@ class ResMappingSyncer:
             print("✅ 同步完成！")
             print(f"✓ HelloADVRes: {len(self.hello_adv_res)} 个资源")
             print(f"✓ DongHaiRes同步: {len([k for k in self.hello_adv_res if k in self.dong_hai_res])} 个保留原值")
-            print(f"✓ DongHaiRes新增: {len([k for k in self.hello_adv_res if k not in self.dong_hai_res])} 个使用HelloADVRes的值")
+            print(f"✓ DongHaiRes新增: {len([k for k in self.hello_adv_res if k not in self.dong_hai_res])} 个填充空字符串")
             return True
         
         return False
