@@ -3,7 +3,7 @@ console.log('[LOAD] ui_desktop');
 
 await ac.createLayer({
     name: 'layer_desktop',
-    index: 1,
+    index: ZORDER.SCENE,
     inlayer: 'window',
     pos: { x: 0, y: 0 },
     anchor: { x: 0, y: 0 },

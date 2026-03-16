@@ -74,7 +74,7 @@ const MapSystem = {
     createMapStaticBg: async function () {
         await ac.createLayer({
             name: 'layer_full_map',
-            index: 0,
+            index: ZORDER.SCENE,
             inlayer: 'window',
             pos: { x: 0, y: 0 },
             anchor: { x: 0, y: 0 },

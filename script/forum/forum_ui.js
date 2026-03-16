@@ -106,7 +106,7 @@ const ForumUI = {
         // 容器
         await ac.createLayer({
             name: 'layer_forum_ui',
-            index: 1,
+            index: ZORDER.SCENE,
             inlayer: 'window',
             // 左右居中底对齐
             pos: { x: GameConfig.centerX, y: 60 },

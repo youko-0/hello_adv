@@ -258,7 +258,7 @@ async function refreshItemDetail(itemId) {
 
 await ac.createImage({
     name: 'img_ui_bg',
-    index: 0,
+    index: ZORDER.UI,
     inlayer: 'window',
     resId: ResMap.pic_common_bg_02,
     pos: { x: GameConfig.centerX, y: GameConfig.centerY },

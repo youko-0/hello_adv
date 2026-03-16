@@ -18,7 +18,7 @@ const BrowserUI = {
         // 容器
         await ac.createLayer({
             name: 'layer_browser_ui',
-            index: 0,
+            index: ZORDER.SCENE,
             inlayer: 'window',
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             anchor: { x: 50, y: 50 },
@@ -87,7 +87,7 @@ const BrowserUI = {
         let timeStr = Utils.formatSystemTimeStr(ForumSystem.NOW_YEAR);
         await ac.createText({
             name: 'lbl_system_time',
-            index: 10,
+            index: ZORDER.SCENE + 1,
             inlayer: 'window',
             content: timeStr,
             pos: { x: GameConfig.width - 20, y: 12 },

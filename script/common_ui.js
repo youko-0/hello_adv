@@ -1,6 +1,15 @@
 // 通用 UI
 console.log('[LOAD] common_ui');
 
+const ZORDER = {
+    BOTTOM: 0,      // 底层
+    SCENE: 10,      // 画布
+    UI: 20,     // 普通 UI
+    DIALOG: 50,     // 对话框
+    POPUP: 100,     // 弹窗
+    TOP: 500,       // 顶层
+}
+
 const CommonUI = {
     // 黑条
     toast: {
@@ -9,11 +18,8 @@ const CommonUI = {
     // 弹窗
     alert: {
         name: 'layer_alert',
-        index: 100,     // 置顶
         width: 600,
         height: 400,
-        centerX: 600 / 2,
-        centerY: 400 / 2,
         mask: {
             resId: ResMap.img_mask_black,
             width: 32,
@@ -36,7 +42,6 @@ const CommonUI = {
     // 对话框
     dialog: {
         name: 'layer_dialog',
-        index: 100,     // 高层级，盖住其他UI
         width: 960,
         height: 120,
         margin: { bottom: 24 }, // 底部留边
@@ -96,7 +101,7 @@ const CommonUI = {
     showAlert: async function (content, config) {
         async function onClickBtnConfirm() {
             ac.remove({
-                name: finalConfig.name,
+                name: this.alert.name,
                 effect: 'normal',
                 duration: 0,
                 canskip: false,
@@ -114,8 +119,8 @@ const CommonUI = {
 
         // 容器
         await ac.createLayer({
-            name: finalConfig.name,
-            index: finalConfig.index,
+            name: this.alert.name,
+            index: ZORDER.POPUP,
             inlayer: 'window',
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             size: { width: finalConfig.width, height: finalConfig.height },
@@ -126,9 +131,9 @@ const CommonUI = {
         await ac.createImage({
             name: "img_alert_mask",
             index: 0,
-            inlayer: finalConfig.name,
+            inlayer: this.alert.name,
             resId: finalConfig.mask.resId,
-            pos: { x: finalConfig.centerX, y: finalConfig.centerY },
+            pos: { x: finalConfig.width / 2, y: finalConfig.height / 2 },
             anchor: { x: 50, y: 50 },
             scale: {
                 x: GameConfig.width * 100 / finalConfig.mask.width,
@@ -140,7 +145,7 @@ const CommonUI = {
         await ac.createImage({
             name: "img_alert_bg",
             index: 1,
-            inlayer: finalConfig.name,
+            inlayer: this.alert.name,
             resId: finalConfig.bg.resId,
             pos: {
                 x: finalConfig.width / 2,
@@ -157,7 +162,7 @@ const CommonUI = {
         await ac.createText({
             name: "txt_alert_content",
             index: 2,
-            inlayer: finalConfig.name,
+            inlayer: this.alert.name,
             content: content,
             pos: {
                 x: finalConfig.width / 2,
@@ -173,7 +178,7 @@ const CommonUI = {
         await ac.createText({
             name: "btn_alert_confirm",
             index: 2,
-            inlayer: finalConfig.name,
+            inlayer: this.alert.name,
             content: "确定",
             pos: {
                 x: finalConfig.width / 2,
@@ -348,8 +353,8 @@ const CommonUI = {
 
         // 创建容器层
         await ac.createLayer({
-            name: config.name,
-            index: config.index,
+            name: this.dialog.name,
+            index: ZORDER.DIALOG,
             inlayer: 'window',
             pos: { x: layout.dialogX, y: layout.dialogY },
             anchor: { x: 50, y: 50 },
@@ -360,8 +365,8 @@ const CommonUI = {
         // 创建全屏点击层同时拦截点击
         await ac.createLayer({
             name: 'layer_touch_area',
-            index: config.index,
-            inlayer: config.name,
+            index: 0,
+            inlayer: this.dialog.name,
             pos: { x: 0, y: 0 },
             size: { width: GameConfig.width, height: GameConfig.height },
             anchor: { x: 0, y: 0 },
@@ -374,7 +379,7 @@ const CommonUI = {
             await ac.createImage({
                 name: "img_dialog_bg",
                 index: 1,
-                inlayer: config.name,
+                inlayer: this.dialog.name,
                 resId: bgConfig.resId,
                 pos: { x: config.width / 2, y: config.height / 2 },
                 anchor: { x: 50, y: 50 },
@@ -391,7 +396,7 @@ const CommonUI = {
             await ac.createImage({
                 name: "img_dialog_avatar",
                 index: 2,
-                inlayer: config.name,
+                inlayer: this.dialog.name,
                 resId: config.roleAvatarResId,
                 pos: {
                     x: layout.avatarX,
@@ -470,7 +475,7 @@ const CommonUI = {
         await ac.createText({
             name: "txt_dialog_content",
             index: 3,
-            inlayer: config.name,
+            inlayer: this.dialog.name,
             content: content,
             pos: { x: layout.textX, y: layout.textY },
             anchor: { x: 0, y: 100 },
@@ -485,15 +490,11 @@ const CommonUI = {
      * 关闭对话框
      */
     _closeCustomDialog: async function () {
-        if (!this._dialogContext) return;
-
         console.log('[CustomDialog] 关闭对话框');
-
-        const { config } = this._dialogContext;
 
         // 移除UI（会自动移除绑定的事件）
         ac.remove({
-            name: config.name,
+            name: this.dialog.name,
             effect: 'normal',
             duration: 0,
             canskip: false,
@@ -501,43 +502,6 @@ const CommonUI = {
 
         // 清理状态
         this._dialogContext = null;
-    },
-
-    // 创建物品详情 UI, 大图 + 文字描述
-    showItemDetail: async function (itemId) {
-        console.log('[LOG] showItemDetail', itemId);
-        if (await this.isInterrupted()) {
-            return;
-        }
-        let itemConfig = InventorySystem.getItemConfig(itemId);
-        await ac.createImage({
-            name: "layer_item_detail_info",
-            index: 10,
-            inlayer: "window",
-            resId: ResMap.pic_common_bg_03,
-            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
-            anchor: { x: 50, y: 50 },
-            opacity: 80,
-        });
-        // 大图
-        await ac.createImage({
-            name: "img_item_info_pic",
-            index: 0,
-            inlayer: "layer_item_detail_info",
-            resId: itemConfig.illust,
-            pos: { x: GameConfig.centerX, y: GameConfig.centerY + 100 },
-            anchor: { x: 50, y: 50 },
-        });
-        let config = {
-            content: itemConfig.desc
-        }
-        await this.showCustomDialog(config);
-        await ac.remove({
-            name: "layer_item_detail_info",
-            effect: 'fadeout',
-            duration: 500,
-            canskip: false,
-        })
     },
 
     // 自动关闭的系统文本框
@@ -580,7 +544,19 @@ const CommonUI = {
 
         ac.createStyle(this.dialog.style);
 
+        await ac.delay({time: 100});
+        await this.onLoadDelay();
+
     },
+
+    onLoadDelay: async function () {
+        console.log('[LOG] [CommonUI] onLoadDelay');
+        // // 有 UI 弹出的时候不创建全局按钮
+        // if (this.isInterrupted()) {
+        //     return;
+        // }
+        InventoryUI.createBtnBag();
+    }
 
 }
 

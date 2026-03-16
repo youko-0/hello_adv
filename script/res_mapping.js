@@ -25,6 +25,7 @@ const HelloADVRes = {
     btn_browser: '$182972526',
 
     // UI - 背包
+    btn_bag_normal: '$184938951',
     img_bag_title: '$183658488',
     img_bag_item_normal: '$183658487',
     img_bag_item_highlight: '$183658486',

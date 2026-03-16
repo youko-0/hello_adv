@@ -181,8 +181,8 @@ const InventorySystem = createSystem(
         openBag: async function () {
 
             await ac.callUI({
-                name: 'callUI_bag', // 你的 UI 调用名
-                uiId: ResMap.ui_bag       // 你的 UI 资源 ID
+                name: 'callUI_bag',
+                uiId: ResMap.ui_bag
             });
 
             // 下面这些是之前使用 systemDialog 作出的尝试
@@ -230,7 +230,7 @@ const InventorySystem = createSystem(
             console.log('[LOG] viewItem', itemId);
             this.saveTempViewId(itemId);
             // await ac.removeCurrentUI();
-            await CommonUI.showItemDetail(itemId);
+            await InventoryUI.showItemDetail(itemId);
         }
     }
 );
