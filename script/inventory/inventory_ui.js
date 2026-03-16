@@ -15,7 +15,7 @@ const InventoryUI = {
             index: ZORDER.ZERO,       // UI 底层
             inlayer: 'window',
             resId: ResMap.btn_bag_normal,
-            pos: { x: GameConfig.width - 48, y: GameConfig.height - 200 },
+            pos: { x: GameConfig.width - 36, y: GameConfig.height - 186 },
             anchor: { x: 100, y: 100 },
         });
         // 绑定事件
@@ -35,7 +35,7 @@ const InventoryUI = {
         let itemConfig = InventorySystem.getItemConfig(itemId);
         await ac.createImage({
             name: this.itemDetail.name,
-            index: ZORDER.POPUP,
+            index: ZORDER.UI + 1,
             inlayer: 'window',
             resId: ResMap.pic_common_bg_03,
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },

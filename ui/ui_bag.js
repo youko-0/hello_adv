@@ -14,8 +14,6 @@ const BagUI = {
         resIdHighlight: ResMap.img_bag_item_highlight,
         width: 106,     // 道具项宽度
         height: 148,    // 道具项高度
-        halfWidth: 106 / 2,  // 道具项宽度的一半
-        halfHeight: 148 / 2, // 道具项高度的一半
     },
     itemIcon: {
         width: 64,      // 道具图标宽度
@@ -160,8 +158,8 @@ async function createItemList(itemList) {
     });
 
     // 创建道具项
-    let startX = BagUI.bg.halfWidth;
-    let startY = listHeight - BagUI.bg.halfHeight;
+    let startX = BagUI.bg.width / 2;
+    let startY = listHeight - BagUI.bg.height / 2;
     console.log(`startX: ${startX}, startY: ${startY}`);
     for (let i = 0; i < count; ++i) {
         let itemId = itemList[i];

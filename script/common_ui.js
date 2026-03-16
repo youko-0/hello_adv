@@ -57,11 +57,12 @@ const CommonUI = {
         },
         // 角色头像配置
         roleAvatar: {
-            size: 80,
+            size: 64,
         },
         // 文本配置
         text: {
             padding: { top: 20, bottom: 10, left: 100, right: 80 },
+            paddingWithAvatar: { top: 20, bottom: 10, left: 120, right: 80 },
             typingSpeed: 0.03, // 每个字符显示间隔（秒）
         },
         // 文本样式
@@ -387,7 +388,6 @@ const CommonUI = {
                     x: config.width * 100 / bgConfig.width,
                     y: config.height * 100 / bgConfig.height,
                 },
-                opacity: 100,
             });
         }
 
@@ -398,13 +398,8 @@ const CommonUI = {
                 index: 2,
                 inlayer: this.dialog.name,
                 resId: config.roleAvatarResId,
-                pos: {
-                    x: layout.avatarX,
-                    y: layout.avatarY
-                },
+                pos: { x: layout.avatarX, y: layout.avatarY },
                 anchor: { x: 50, y: 50 },
-                scale: { x: 100, y: 100 },
-                opacity: 100,
             });
         }
     },
@@ -419,10 +414,10 @@ const CommonUI = {
         const dialogX = (GameConfig.width - config.width) / 2 + config.width / 2;
         const dialogY = (config.margin.bottom || 0) + config.height / 2;
 
-        const textPadding = config.text.padding;
+        const textPadding = config.roleAvatarResId ? config.text.paddingWithAvatar : config.text.padding;
 
         // 头像位置（相对于对话框背景，易次元坐标系左下角为原点）
-        const avatarX = config.roleAvatar.size / 2 + textPadding.left / 2; // 头像居中于左边距区域
+        const avatarX = config.roleAvatar.size / 2 + 20; // 头像居中于左边距区域
         const avatarY = config.height / 2; // 垂直居中
 
         // 文本区域：根据 padding 计算实际位置和大小
