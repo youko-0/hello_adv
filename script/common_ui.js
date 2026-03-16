@@ -102,7 +102,7 @@ const CommonUI = {
     showAlert: async function (content, config) {
         async function onClickBtnConfirm() {
             ac.remove({
-                name: this.alert.name,
+                name: CommonUI.alert.name,
                 effect: 'normal',
                 duration: 0,
                 canskip: false,

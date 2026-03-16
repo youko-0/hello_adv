@@ -6,33 +6,48 @@ const MapSystem = {
     area: {
         area1: {
             name: "下城区",
-            resIdLocked: ResMap.img_area_1_locked,
-            resIdNormal: ResMap.img_area_1,
-            pos: { x: 628, y: 370 },
+            resIdLocked: ResMap.img_area_undercity_locked,
+            resIdNormal: ResMap.img_area_undercity,
+            pos: { x: 771, y: 427 },
+            btn: {
+                resIdNormal: ResMap.btn_area_undercity_normal,
+                resIdHighlight: ResMap.btn_area_undercity_highlight,
+                pos: { x: 50, y: 50 },
+            }
         },
         area2: {
             name: "赛车场",
-            resIdLocked: ResMap.img_area_2_locked,
-            resIdNormal: ResMap.img_area_2,
-            pos: { x: 334, y: 142 },
+            resIdLocked: ResMap.img_area_circuit_locked,
+            resIdNormal: ResMap.img_area_circuit,
+            pos: { x: 719, y: 182 },
+            btn: {
+                resIdNormal: ResMap.btn_area_circuit_normal,
+                resIdHighlight: ResMap.btn_area_circuit_highlight,
+                pos: { x: 50, y: 50 },
+            }
         },
         area3: {
             name: "哪吒庙",
-            resIdLocked: ResMap.img_area_3_locked,
-            resIdNormal: ResMap.img_area_3,
-            pos: { x: 1088, y: 650 },
+            resIdLocked: ResMap.img_area_nezha_temple_locked,
+            resIdNormal: ResMap.img_area_nezha_temple,
+            pos: { x: 566, y: 547 },
+            btn: {
+                resIdNormal: ResMap.btn_area_nezha_temple_normal,
+                resIdHighlight: ResMap.btn_area_nezha_temple_highlight,
+                pos: { x: 50, y: 50 },
+            }
         },
         area4: {
             name: "龙王庙",
-            resIdLocked: ResMap.img_area_4_locked,
-            resIdNormal: ResMap.img_area_4,
-            pos: { x: 106, y: 540 },
+            resIdLocked: ResMap.img_area_dragon_temple_locked,
+            resIdNormal: ResMap.img_area_dragon_temple,
+            pos: { x: 507, y: 431 },
         },
         area5: {
             name: "德兴大厦",
-            resIdLocked: ResMap.img_area_5_locked,
-            resIdNormal: ResMap.img_area_5,
-            pos: { x: 1096, y: 348 },
+            resIdLocked: ResMap.img_area_dexing_tower_locked,
+            resIdNormal: ResMap.img_area_dexing_tower,
+            pos: { x: 918, y: 369 },
         }
     },
 
@@ -86,7 +101,7 @@ const MapSystem = {
             name: 'img_map_bg',
             index: 0,
             inlayer: 'layer_full_map',
-            resId: ResMap.pic_map_bg,
+            resId: ResMap.pic_map_bg_locked,
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             anchor: { x: 50, y: 50 },
         });
