@@ -53,6 +53,7 @@ const MapUI = {
         const areaConfig = MapSystem.area[`area${areaIndex}`];
         let areaState = MapSystem.getAreaState(areaIndex);
         const resId = areaState === -1 ? areaConfig.resIdLocked : areaConfig.resIdNormal;
+        const scale = areaConfig.scale || { x: 100, y: 100 };
         const btnConfig = areaConfig.btn;
         // 地块
         await ac.createImage({
@@ -62,6 +63,7 @@ const MapUI = {
             resId: resId,
             pos: areaConfig.pos,
             anchor: { x: 50, y: 50 },
+            scale: scale,
         });
 
         ac.addEventListener({
@@ -76,11 +78,11 @@ const MapUI = {
         await ac.createOption({
             name: `btn_area_${areaIndex}`,
             index: 5,
-            inlayer: `img_area_${areaIndex}`,
+            inlayer: this.map.name,
             nResId: btnConfig.resIdNormal,
             sResId: btnConfig.resIdHighlight,
             content: ``,
-            pos: btnConfig.pos,
+            pos: {x: areaConfig.pos.x + btnConfig.pos.x, y: areaConfig.pos.y + btnConfig.pos.y},
             anchor: { x: 50, y: 50 },
             onTouchEnded: async function () {
                 await MapSystem.onClickArea(areaIndex);

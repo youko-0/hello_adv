@@ -12,7 +12,7 @@ const MapSystem = {
             btn: {
                 resIdNormal: ResMap.btn_area_undercity_normal,
                 resIdHighlight: ResMap.btn_area_undercity_highlight,
-                pos: { x: 50, y: 50 },
+                pos: { x: -64, y: 20 },
             }
         },
         area2: {
@@ -23,29 +23,31 @@ const MapSystem = {
             btn: {
                 resIdNormal: ResMap.btn_area_circuit_normal,
                 resIdHighlight: ResMap.btn_area_circuit_highlight,
-                pos: { x: 50, y: 50 },
+                pos: { x: -120, y: 0 },
             }
         },
         area3: {
             name: "哪吒庙",
             resIdLocked: ResMap.img_area_nezha_temple_locked,
             resIdNormal: ResMap.img_area_nezha_temple,
-            pos: { x: 566, y: 547 },
+            pos: { x: 480, y: 547 },
+            scale: { x: 150, y: 150 },
             btn: {
                 resIdNormal: ResMap.btn_area_nezha_temple_normal,
                 resIdHighlight: ResMap.btn_area_nezha_temple_highlight,
-                pos: { x: 50, y: 50 },
+                pos: { x: -48, y: 20 },
             }
         },
         area4: {
             name: "龙王庙",
             resIdLocked: ResMap.img_area_dragon_temple_locked,
             resIdNormal: ResMap.img_area_dragon_temple,
-            pos: { x: 507, y: 431 },
+            pos: { x: 320, y: 320 },
+            scale: { x: 120, y: 120 },
             btn: {
                 resIdNormal: ResMap.btn_area_dragon_temple_normal,
                 resIdHighlight: ResMap.btn_area_dragon_temple_highlight,
-                pos: { x: 50, y: 50 },
+                pos: { x: -48, y: 0 },
             }
         },
         area5: {
@@ -56,7 +58,7 @@ const MapSystem = {
             btn: {
                 resIdNormal: ResMap.btn_area_dexing_tower_normal,
                 resIdHighlight: ResMap.btn_area_dexing_tower_highlight,
-                pos: { x: 50, y: 50 },
+                pos: { x: 64, y: 20 },
             }
         }
     },
