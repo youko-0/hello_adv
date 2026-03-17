@@ -19,6 +19,7 @@ const MapUI = {
             clipMode: false,
         });
 
+        // 拦截点击
         ac.addEventListener({
             type: ac.EVENT_TYPES.onTouchBegan,
             listener: CommonUI.onTouchMask,
@@ -34,25 +35,57 @@ const MapUI = {
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             anchor: { x: 50, y: 50 },
         });
-        await MapSystem.createMapStaticBg();
-        await MapSystem.createMapAreas();
+
+        // 创建地块
+        let areaCount = MapSystem.getAreaCount();
+        for (let i = 1; i <= areaCount; i++) {
+            await this._createMapArea(i);
+        }
     },
 
-    // 地图区域
-    createMapArea: async function (areaIndex, config, areaState) {
-        for (let i = 1; i <= 5; i++) {
-            let state = MapSystem.getAreaState(i);
-            let config = MapSystem.area[`area${i}`];
-            let resId = state === -1 ? config.resIdLocked : config.resIdNormal;
-            await ac.createImage({
-                name: `img_area_${i}`,
-                index: 1,
-                inlayer: 'img_map_bg',
-                resId: resId,
-                pos: config.pos,
-                anchor: { x: 50, y: 50 },
-            });
-        }
+    // 刷新地图解锁状态
+    refreshMap: async function () {
+
+    },
+
+    // 单个地图块
+    _createMapArea: async function (areaIndex) {
+        const areaConfig = MapSystem.area[`area${areaIndex}`];
+        let areaState = MapSystem.getAreaState(areaIndex);
+        const resId = areaState === -1 ? areaConfig.resIdLocked : areaConfig.resIdNormal;
+        const btnConfig = areaConfig.btn;
+        // 地块
+        await ac.createImage({
+            name: `img_area_${areaIndex}`,
+            index: 2,
+            inlayer: this.map.name,
+            resId: resId,
+            pos: areaConfig.pos,
+            anchor: { x: 50, y: 50 },
+        });
+
+        ac.addEventListener({
+            type: ac.EVENT_TYPES.onTouchEnded,
+            listener: async function () {
+                await MapSystem.onClickArea(areaIndex);
+            },
+            target: `img_area_${areaIndex}`,
+        });
+
+        // 按钮
+        await ac.createOption({
+            name: `btn_area_${areaIndex}`,
+            index: 5,
+            inlayer: `img_area_${areaIndex}`,
+            nResId: btnConfig.resIdNormal,
+            sResId: btnConfig.resIdHighlight,
+            content: ``,
+            pos: btnConfig.pos,
+            anchor: { x: 50, y: 50 },
+            onTouchEnded: async function () {
+                await MapSystem.onClickArea(areaIndex);
+            },
+        });
     },
 
 }

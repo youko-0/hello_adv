@@ -72,6 +72,10 @@ const MapSystem = {
         ac.var.currentAreaIndex = index;
     },
 
+    getAreaCount: function () {
+        return Object.keys(this.area).length;
+    },
+
     isAreaUnlocked: function (index) {
         let currentIndex = this.getCurrentAreaIndex();
         return index <= currentIndex + 1;
@@ -90,69 +94,62 @@ const MapSystem = {
         return 1;
     },
 
-    isAllAreaUnlocked: function () {
+    // 全部区域探索完成
+    isAllAreaVisited: function () {
         let currentIndex = this.getCurrentAreaIndex();
-        return currentIndex >= 5;
+        let areaCount = this.getAreaCount();
+        return currentIndex >= areaCount;
     },
 
-    // 地图背景
-    createMapStaticBg: async function () {
-        await ac.createLayer({
-            name: 'layer_full_map',
-            index: ZORDER.SCENE,
-            inlayer: 'window',
-            pos: { x: 0, y: 0 },
-            anchor: { x: 0, y: 0 },
-            size: { width: GameConfig.width, height: GameConfig.height },
-            clipMode: true,
-        });
-
-        await ac.createImage({
-            name: 'img_map_bg',
-            index: 0,
-            inlayer: 'layer_full_map',
-            resId: ResMap.pic_map_bg_locked,
-            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
-            anchor: { x: 50, y: 50 },
-        });
-    },
-
-    // 地图区域
-    createMapAreas: async function () {
-        for (let i = 1; i <= 5; i++) {
-            let state = MapSystem.getAreaState(i);
-            let config = MapSystem.area[`area${i}`];
-            let resId = state === -1 ? config.resIdLocked : config.resIdNormal;
-            await ac.createImage({
-                name: `img_area_${i}`,
-                index: 1,
-                inlayer: 'img_map_bg',
-                resId: resId,
-                pos: config.pos,
-                anchor: { x: 50, y: 50 },
+    // 探索完成
+    onAllAreaVisited: async function () {
+        async function onConfirm() {
+            await ac.jump({
+                plotID: ResMap.plot_map_next,
+                transition: ac.SCENE_TRANSITION_TYPES.normal,
             });
+        }
+        await CommonUI.showAlert("探索全部完成", onConfirm);
+    },
+
+    // 前往区域
+    onGotoArea: async function (areaIndex) {
+        // 直接在这里记录点击
+        MapSystem.setCurrentAreaIndex(areaIndex);
+        await ac.jump({
+            plotID: ResMap[`plot_area_${areaIndex}`],
+            transition: ac.SCENE_TRANSITION_TYPES.normal,
+        });
+    },
+
+    // 点击地图区域
+    // 这里是回调函数, 不用 this 用 MapSystem
+    onClickArea: async function (index) {
+        if (MapSystem.isAllAreaVisited()) {
+            await MapSystem.onAllAreaVisited();
+            return;
+        }
+        let state = MapSystem.getAreaState(index);
+        switch (state) {
+            case 0:
+                await MapSystem.onGotoArea(index);
+                break;
+            case -1:
+                await CommonUI.showAlert("该区域未解锁！");
+                break;
+            case 1:
+                await CommonUI.showAlert("该区域已查看！");
+                break;
+            default:
+                console.warn(`未知的区域状态: ${state}`);
+                break;
         }
     },
 
-    // 完整地图
-    createMapUI: async function () {
-        await MapSystem.createMapStaticBg();
-        await MapSystem.createMapAreas();
-    },
-
-    // 全屏压黑
-    createMapMask: async function () {
-        let currentIndex = MapSystem.getCurrentAreaIndex();
-        await ac.createImage({
-            name: `img_mask_area_${currentIndex}`,
-            index: 5,
-            inlayer: 'img_map_bg',
-            resId: ResMap[`pic_mask_area_${currentIndex}`],
-            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
-            anchor: { x: 50, y: 50 },
-            scale: 100,
-            opacity: 90,
-        });
+    // 进入地图, MapSystem.enterMap()
+    enterMap: async function () {
+        await MapUI.createMapUI();
+        await MapUI.refreshMap();
     },
 
     // 解锁表现
