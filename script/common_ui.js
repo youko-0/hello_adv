@@ -99,6 +99,12 @@ const CommonUI = {
         return false;
     },
 
+    // 通用点击拦截函数
+    onTouchMask: async function (params) {
+        console.log('[LOG] onTouchMask', this, params);
+    },
+
+    // 弹窗
     showAlert: async function (content, config) {
         async function onClickBtnConfirm() {
             ac.remove({
@@ -110,10 +116,6 @@ const CommonUI = {
 
             // 如果传了回调函数，就执行它
             if (finalConfig.onConfirm) await finalConfig.onConfirm();
-        }
-
-        async function onTouchmask() {
-            console.log('[LOG] onTouchmask');
         }
 
         const finalConfig = { ...this.alert, ...config };
@@ -130,7 +132,7 @@ const CommonUI = {
         });
 
         await ac.createImage({
-            name: "img_alert_mask",
+            name: "layer_alert_mask",
             index: 0,
             inlayer: this.alert.name,
             resId: finalConfig.mask.resId,
@@ -194,8 +196,8 @@ const CommonUI = {
         // 拦截点击
         ac.addEventListener({
             type: ac.EVENT_TYPES.onTouchBegan,
-            listener: onTouchmask,
-            target: "img_alert_mask",
+            listener: this.onTouchMask,
+            target: "layer_alert_mask",
         });
 
         // 确定按钮
@@ -259,7 +261,7 @@ const CommonUI = {
         ac.addEventListener({
             type: ac.EVENT_TYPES.onTouchEnded,
             listener: onTouchDialog,
-            target: 'layer_touch_area'
+            target: 'layer_dialog_mask'
         });
 
         // 文本分页处理
@@ -362,10 +364,10 @@ const CommonUI = {
             size: { width: config.width, height: config.height },
             clipMode: false,
         });
-        
+
         // 创建全屏点击层同时拦截点击
         await ac.createLayer({
-            name: 'layer_touch_area',
+            name: 'layer_dialog_mask',
             index: 0,
             inlayer: this.dialog.name,
             pos: { x: 0, y: 0 },
@@ -539,7 +541,7 @@ const CommonUI = {
 
         ac.createStyle(this.dialog.style);
 
-        await ac.delay({time: 100});
+        await ac.delay({ time: 100 });
         await this.onLoadDelay();
 
     },
