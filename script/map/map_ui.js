@@ -45,7 +45,8 @@ const MapUI = {
 
     // 刷新地图解锁状态
     refreshMap: async function () {
-
+        let currentIndex = MapSystem.getCurrentAreaIndex();
+        let nextIndex = currentIndex + 1;
     },
 
     // 单个地图块
