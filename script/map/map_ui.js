@@ -53,7 +53,7 @@ const MapUI = {
             await ac.createImage({
                 name: `img_${areaId}_locked`,
                 index: 5,
-                inlayer: 'img_map_bg',
+                inlayer: this.map.name,
                 resId: areaConfig.resIdLocked,
                 pos: areaConfig.pos,
                 anchor: { x: 50, y: 50 },
@@ -111,8 +111,8 @@ const MapUI = {
         let sResId = isVisited ? areaConfig.resIdNormal : areaConfig.resIdHighlight;
         await ac.createOption({
             name: `img_${areaId}`,
-            index: 1,
-            inlayer: 'img_map_bg',
+            index: 4,
+            inlayer: this.map.name,
             nResId: nResId,
             sResId: sResId,
             pos: areaConfig.pos,
