@@ -57,7 +57,6 @@ const ForumSystem = createSystem(
         },
 
         saveRead: function (postId) {
-            console.log(`[Forum] 标记帖子 ${postId} 为已读`);
             if (!postId) return;
             let data = this.getData();
 
@@ -65,12 +64,12 @@ const ForumSystem = createSystem(
             if (!data.read[postId]) {
                 data.read[postId] = true;
                 this.save();
-                console.log(`[Forum] 已标记帖子 ${postId} 为已读`);
+                console.log(`[Forum] 标记帖子 ${postId} 为已读`);
             }
         },
 
-        // 是否看完了所有的帖子
-        isAllPostVisited: function () {
+        // 是否全部已读
+        isAllPostRead: function () {
             for (let post of Object.values(ForumData.postData)) {
                 if (!this.isRead(post.id)) {
                     return false;

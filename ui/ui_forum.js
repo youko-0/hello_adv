@@ -11,7 +11,7 @@ ac.createStyle({
 });
 
 ac.createStyle({
-    name: 'style_topic_visited',
+    name: 'style_topic_read',
     font: '汉仪小隶书简',
     bold: false,
     italic: false,
@@ -42,7 +42,7 @@ ac.createStyle({
 async function createItemTopic(post, index, posY) {
 
     let bgStyle = index % 2 == 0 ? ForumUI.topic.bgNormal : ForumUI.topic.bgHighlight;
-    let visited = ForumSystem.isRead(post.id);
+    let read = ForumSystem.isRead(post.id);
 
     await ac.createImage({
         name: `btn_topic_${post.id}`,
@@ -103,7 +103,7 @@ async function createItemTopic(post, index, posY) {
             width: 600,
             height: ForumUI.topic.height,
         },
-        style: visited ? 'style_topic_visited' : 'style_topic',
+        style: read ? 'style_topic_read' : 'style_topic',
     });
 
     // 帖子作者
@@ -193,10 +193,10 @@ async function createItemTopic(post, index, posY) {
 }
 
 async function onClose() {
-    let flag = ForumSystem.isAllPostVisited();
-    console.log(`是否看完了所有的帖子：${flag}`);
+    let flag = ForumSystem.isAllPostRead();
+    console.log(`是否全部已读：${flag}`);
     if (!flag) {
-        await CommonUI.showAlert("请先看完所有的帖子！");
+        await CommonUI.showAlert("请先阅读所有帖子！");
     } else {
         await ac.jump({
             plotID: ResMap.plot_forum_next,

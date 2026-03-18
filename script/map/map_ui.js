@@ -37,56 +37,44 @@ const MapUI = {
         });
 
         // 创建地块
-        let areaCount = MapSystem.getAreaCount();
-        for (let i = 1; i <= areaCount; i++) {
-            await this._createMapArea(i);
+        let areas = MapSystem.getAreaList();
+        for (let area of areas) {
+            await this._createMapArea(area);
         }
     },
 
-    // 刷新地图解锁状态
-    refreshMap: async function () {
-        let currentIndex = MapSystem.getCurrentAreaIndex();
+    // 进入地图的刷新
+    onEnterMap: async function () {
+        let currentIndex = MapSystem.getAreaId();
         let nextIndex = currentIndex + 1;
+
+        // 全部区域探索完成前往下一章
+        if (MapSystem.isAllAreaVisited()) {
+            await ac.delay({
+                time: 2000
+            });
+            await MapSystem.onAllAreaVisited();
+        }
     },
 
     // 单个地图块
-    _createMapArea: async function (areaIndex) {
-        const areaConfig = MapSystem.area[`area${areaIndex}`];
-        let areaState = MapSystem.getAreaState(areaIndex);
-        const resId = areaState === -1 ? areaConfig.resIdLocked : areaConfig.resIdNormal;
-        const scale = areaConfig.scale || { x: 100, y: 100 };
-        const btnConfig = areaConfig.btn;
-        // 地块
-        await ac.createImage({
-            name: `img_${areaIndex}`,
+    _createMapArea: async function (aredId) {
+        const areaConfig = MapSystem.getAreaConfig(aredId);
+        let isVisiting = MapSystem.isVisiting(aredId);
+        let isVisited = MapSystem.isVisited(aredId);
+        // 地块, 已访问的用普通态 + 普通态, 未访问的用锁定态 + 高亮态
+        let nResId = isVisited ? areaConfig.resIdNormal : areaConfig.resIdLocked;
+        let sResId = isVisited ? areaConfig.resIdNormal : areaConfig.resIdHighlight;
+        await ac.createOption({
+            name: `img_${aredId}`,
             index: 2,
-            inlayer: this.map.name,
-            resId: resId,
+            inlayer: 'img_map_bg',
+            nResId: nResId,
+            sResId: sResId,
             pos: areaConfig.pos,
             anchor: { x: 50, y: 50 },
-            scale: scale,
-        });
-
-        ac.addEventListener({
-            type: ac.EVENT_TYPES.onTouchEnded,
-            listener: async function () {
-                await MapSystem.onClickArea(areaIndex);
-            },
-            target: `img_${areaIndex}`,
-        });
-
-        // 按钮
-        await ac.createOption({
-            name: `btn_${areaIndex}`,
-            index: 5,
-            inlayer: this.map.name,
-            nResId: btnConfig.resIdNormal,
-            sResId: btnConfig.resIdHighlight,
-            content: ``,
-            pos: {x: areaConfig.pos.x + btnConfig.pos.x, y: areaConfig.pos.y + btnConfig.pos.y},
-            anchor: { x: 50, y: 50 },
             onTouchEnded: async function () {
-                await MapSystem.onClickArea(areaIndex);
+                await MapSystem.onClickArea(aredId);
             },
         });
     },
