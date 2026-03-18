@@ -81,9 +81,27 @@ const MapSystem = createSystem(
             }
         },
 
+        getAreaList: function () {
+            return Object.keys(this.area);
+        },
+
+        getAreaConfig: function (areaId) {
+            return this.area[areaId];
+        },
+
         // 获取当前访问区域
         getAreaId: function () {
             return this.getData().areaId;
+        },
+
+        // 保存当前访问区域
+        saveAreaId: function (areaId) {
+            let data = this.getData();
+            if (data.areaId !== areaId) {
+                console.log(`[Map] 切换区域: ${data.areaId} -> ${areaId}`);
+                data.areaId = areaId;
+                this.save();
+            }
         },
 
         // 是不是当前区域
@@ -109,14 +127,6 @@ const MapSystem = createSystem(
             }
         },
 
-        getAreaList: function () {
-            return Object.keys(this.area);
-        },
-
-        getAreaConfig: function (areaId) {
-            return this.area[areaId];
-        },
-
         // 全部区域探索完成
         isAllAreaVisited: function () {
             for (let area of Object.keys(this.area)) {
@@ -130,23 +140,30 @@ const MapSystem = createSystem(
         // 探索完成
         onAllAreaVisited: async function () {
             async function onConfirm() {
+                console.log(`[Map] 探索完成, 前往下一章`, MapSystem.NEXT_PLOT);
                 await ac.jump({
-                    plotID: this.NEXT_PLOT,
-                    transition: ac.SCENE_TRANSITION_TYPES.normal,
+                    plotID: MapSystem.NEXT_PLOT,
+                    transition: ac.SCENE_TRANSITION_TYPES.fade,
+                    duration: 1000,
                 });
             }
-            await CommonUI.showAlert("探索全部完成", onConfirm);
+            await CommonUI.showAlert("全部区域探索完成", { onConfirm: onConfirm });
         },
 
         // 前往区域
         onGotoArea: async function (areaId) {
-            // TODO: 应该在剧情结束跳转回来之前记录访问
             let plotId = this.getAreaConfig(areaId).plot;
-            this.saveVisited(areaId);
+            this.saveAreaId(areaId);
             await ac.jump({
+            // TODO: 这里看下能不能用插入剧情实现
+            // await ac.display({
                 plotID: plotId,
-                transition: ac.SCENE_TRANSITION_TYPES.normal,
+                transition: ac.SCENE_TRANSITION_TYPES.fade,
+                duration: 1000,
             });
+            console.log(`[Map] after displayPlot: ${areaId}`);
+            // 保存访问记录, 用 ac.jump 走不到这里来
+            this.saveVisited(areaId);
         },
 
         // 点击地图区域
@@ -165,6 +182,8 @@ const MapSystem = createSystem(
 
         // 进入地图, MapSystem.enterMap()
         enterMap: async function () {
+            // 这里再保存一下
+            await this.saveVisited(this.getAreaId());
             await MapUI.createMapUI();
             await MapUI.onEnterMap();
         },

@@ -120,17 +120,16 @@ const HelloADVRes = {
     ui_desktop: 'cawn43cd',
     ui_forum: 'nw48gnat',
     ui_post_detail: 'dbjp9oun',
-    ui_map: 'j1u5e_wu',
     ui_bag: 'h_83r63s',
 
     // 剧情唯一 ID
     plot_forum_next: 13977507,
     plot_map: 13977507,
     plot_undercity: 13980816,
-    plot_area_2: 13980816,
-    plot_area_3: 13980816,
-    plot_area_4: 13980816,
-    plot_area_5: 13980816,
+    plot_circuit: 13980816,
+    plot_nezha_temple: 13980816,
+    plot_dragon_temple: 13980816,
+    plot_dexing_tower: 13980816,
     plot_map_next: 13946330,
 }
 
@@ -252,17 +251,16 @@ const DongHaiRes = {
     ui_desktop: '01ec9a548af54c2a86d86bd299d14003',
     ui_forum: 'dacbc56e73a94b3daa268f1a0616d8e2',
     ui_post_detail: '1af34c5623d74b82aa12ff9259621b91',
-    ui_map: 'ztyhx3u3',
     ui_bag: '',
     
     // 剧情唯一 ID
     plot_forum_next: 13977507,
     plot_map: 13980661,
-    plot_area_1: 13969535,
-    plot_area_2: 13974014,
-    plot_area_3: 13974015,
-    plot_area_4: 13974016,
-    plot_area_5: 13974017,
+    plot_undercity: 13969535,
+    plot_circuit: 13974014,
+    plot_nezha_temple: 13974015,
+    plot_dragon_temple: 13974016,
+    plot_dexing_tower: 13974017,
     plot_map_next: 13970354,
 };
 

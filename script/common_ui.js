@@ -104,7 +104,11 @@ const CommonUI = {
         console.log('[LOG] onTouchMask', this, params);
     },
 
-    // 弹窗
+    /**
+     * 弹窗
+     * @param {Object} config 配置项
+     * @param {string} config.onConfirm 确认回调函数
+     */
     showAlert: async function (content, config) {
         async function onClickBtnConfirm() {
             ac.remove({
