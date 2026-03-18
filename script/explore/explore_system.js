@@ -25,7 +25,7 @@ const ExploreSystem = createSystem(
          * @param {string} itemId - 物品/线索 ID
          * @returns {boolean}
          */
-        hasInspected: function (itemId) {
+        isInspected: function (itemId) {
             // 确保数据已加载
             const data = this.getData();
             // !! 是为了确保返回的是布尔值 true/false，而不是 undefined
@@ -51,12 +51,12 @@ const ExploreSystem = createSystem(
          * 是否已查看场景中的全部线索
          * @param {string} sceneId  - 场景 ID
          */
-        hasInspectedAll: function (sceneId) {
+        isInspectedAll: function (sceneId) {
             let sceneConfig = SceneConfig[sceneId];
             for (const [viewId, viewConfig] of Object.entries(sceneConfig.views)) {
                 if (!viewConfig.interact) continue;
                 for (const [itemId, interact] of Object.entries(viewConfig.interact)) {
-                    if (!this.hasInspected(itemId)) {
+                    if (!this.isInspected(itemId)) {
                         return false;
                     }
                 }
@@ -90,8 +90,8 @@ const ExploreSystem = createSystem(
             await CommonUI.showItemDetail(itemId);
             // 记录为已查看
             this.recordInspected(itemId);
-            let flag = this.hasInspectedAll(sceneId);
-            console.log('[LOG] hasInspectedAll', flag);
+            let flag = this.isInspectedAll(sceneId);
+            console.log('[LOG] isInspectedAll', flag);
             if (flag) {
                 await CommonUI.showSysDialog('场景里似乎没有什么可探索的了。');
                 await ac.delay({

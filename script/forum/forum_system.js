@@ -6,7 +6,7 @@ const _forumDefault = function () {
     return {
         postId: "",      // 当前阅读的帖子ID
         page: 1,    // 当前页码, 从1开始
-        visited: {},       // 已读历史，{id: true}
+        read: {},       // 已读历史，{id: true}
     };
 };
 
@@ -50,20 +50,20 @@ const ForumSystem = createSystem(
         },
 
         // 是否已经阅读过某个帖子
-        isPostVisited: function (postId) {
-            let visited = this.getData().visited;
+        isRead: function (postId) {
+            let read = this.getData().read;
             // !! 强制转换为布尔值，防止 undefined
-            return !!visited[postId];
+            return !!read[postId];
         },
 
-        savePostVisited: function (postId) {
+        saveRead: function (postId) {
             console.log(`[Forum] 标记帖子 ${postId} 为已读`);
             if (!postId) return;
             let data = this.getData();
 
             // 只有未读时才写入，避免重复 save
-            if (!data.visited[postId]) {
-                data.visited[postId] = true;
+            if (!data.read[postId]) {
+                data.read[postId] = true;
                 this.save();
                 console.log(`[Forum] 已标记帖子 ${postId} 为已读`);
             }
@@ -72,7 +72,7 @@ const ForumSystem = createSystem(
         // 是否看完了所有的帖子
         isAllPostVisited: function () {
             for (let post of Object.values(ForumData.postData)) {
-                if (!this.isPostVisited(post.id)) {
+                if (!this.isRead(post.id)) {
                     return false;
                 }
             }
@@ -151,7 +151,7 @@ const ForumSystem = createSystem(
             this.savePostId(postId);
             this.savePageIndex(pageIndex);
             // 标记为已读, 这个需要在 replaceUI 之前调用
-            this.savePostVisited(postId);
+            this.saveRead(postId);
             await ac.replaceUI({
                 name: 'replaceUI_post',
                 uiId: ResMap.ui_post_detail,

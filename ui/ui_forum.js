@@ -42,7 +42,7 @@ ac.createStyle({
 async function createItemTopic(post, index, posY) {
 
     let bgStyle = index % 2 == 0 ? ForumUI.topic.bgNormal : ForumUI.topic.bgHighlight;
-    let visited = ForumSystem.isPostVisited(post.id);
+    let visited = ForumSystem.isRead(post.id);
 
     await ac.createImage({
         name: `btn_topic_${post.id}`,
