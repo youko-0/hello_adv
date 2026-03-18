@@ -45,7 +45,7 @@ async function registerClickEvent() {
                         break;
                 }
             },
-            target: `img_area_${i}`,
+            target: `img_${i}`,
         });
     }
 }

@@ -58,7 +58,7 @@ const MapUI = {
         const btnConfig = areaConfig.btn;
         // 地块
         await ac.createImage({
-            name: `img_area_${areaIndex}`,
+            name: `img_${areaIndex}`,
             index: 2,
             inlayer: this.map.name,
             resId: resId,
@@ -72,12 +72,12 @@ const MapUI = {
             listener: async function () {
                 await MapSystem.onClickArea(areaIndex);
             },
-            target: `img_area_${areaIndex}`,
+            target: `img_${areaIndex}`,
         });
 
         // 按钮
         await ac.createOption({
-            name: `btn_area_${areaIndex}`,
+            name: `btn_${areaIndex}`,
             index: 5,
             inlayer: this.map.name,
             nResId: btnConfig.resIdNormal,
