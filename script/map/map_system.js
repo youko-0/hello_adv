@@ -147,7 +147,7 @@ const MapSystem = createSystem(
                     duration: 1000,
                 });
             }
-            await CommonUI.showAlert("全部区域探索完成", { onConfirm: onConfirm });
+            await CommonUI.showAlert("全部区域探索完成, 前往下一章", { onConfirm: onConfirm });
         },
 
         // 前往区域

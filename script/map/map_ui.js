@@ -85,7 +85,7 @@ const MapUI = {
             ac.hide({
                 name: 'img_map_bg',
                 effect: 'fadeout',
-                duration: 1200,
+                duration: 1500,
                 canskip: false,
             });
             await ac.show({
