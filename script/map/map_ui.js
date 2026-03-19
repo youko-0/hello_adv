@@ -45,6 +45,9 @@ const MapUI = {
         for (let area of areas) {
             await this._createMapArea(area);
         }
+
+        // 创建跳过按钮
+        await this.createSkipButton();
     },
 
     // 进入地图的刷新
@@ -110,8 +113,55 @@ const MapUI = {
             await ac.delay({
                 time: 1000
             });
-            await MapSystem.onAllAreaVisited();
+            await this.onClickBtnSkip();
         }
+    },
+
+    // 点击跳过按钮
+    onClickBtnSkip: async function () {
+        // 隐藏跳过按钮
+        await ac.hide({
+            name: 'btn_skip',
+            effect: 'normal',
+            duration: 0,
+        })
+        // 显示选项组
+        let flag = MapSystem.isAllAreaVisited();
+        let content = flag ? '全部区域探索完成, 是否前往下一章？' : '还有区域未探索完成, 是否仍然前往下一章？';
+        let options = [{
+            text: '前往下一章',
+            callback: MapSystem.onAllAreaVisited,
+        }, {
+            text: '继续探索',
+            callback: async function () {
+                await CommonUI.closeCustomOptionGroup();
+                // 显示跳过按钮
+                await ac.show({
+                    name: 'btn_skip',
+                    effect: 'normal',
+                    duration: 0,
+                })
+            },
+        }]
+        CommonUI.showCustomOptionGroup({
+            content: content,
+            options: options,
+        })
+
+    },
+
+    // 跳过按钮
+    createSkipButton: async function () {
+        await ac.createOption({
+            name: 'btn_skip',
+            index: 1,
+            inlayer: 'layer_map_area',
+            nResId: ResMap.btn_skip_normal,
+            sResId: ResMap.btn_skip_highlight,
+            pos: { x: GameConfig.width - 60, y: 120 },
+            anchor: { x: 50, y: 50 },
+            onTouchEnded: this.onClickBtnSkip,
+        });
     },
 
     // 单个地图块
@@ -131,7 +181,7 @@ const MapUI = {
             pos: areaConfig.pos,
             anchor: { x: 50, y: 50 },
             onTouchEnded: async function () {
-                await MapSystem.onClickArea(areaId);
+                await MapSystem.onGotoArea(areaId);
             },
         });
     },

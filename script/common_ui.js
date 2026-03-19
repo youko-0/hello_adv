@@ -77,6 +77,10 @@ const CommonUI = {
             color: '#d1d3df',
         },
     },
+    // 选项组
+    optionGroup: {
+        name: 'layer_option_group',
+    },
 
 
     // 找不到易次元的直接判断的接口，用 getPos 迂回一下
@@ -295,14 +299,14 @@ const CommonUI = {
         if (config.closeType == 1) {
             // 自动关闭：等待1秒后关闭
             await ac.delay({ time: 1000 });
-            await this._closeCustomDialog();
+            await this.closeCustomDialog();
         } else if (config.closeType == 2) {
             // 不关闭
         } else {
             // 默认手动关闭
             console.log('[LOG] 等待用户点击关闭...');
             await this._waitForUserClick();
-            await this._closeCustomDialog();
+            await this.closeCustomDialog();
         }
     },
 
@@ -479,7 +483,7 @@ const CommonUI = {
     /**
      * 关闭对话框
      */
-    _closeCustomDialog: async function () {
+    closeCustomDialog: async function () {
         console.log('[CustomDialog] 关闭对话框');
 
         // 移除UI（会自动移除绑定的事件）
@@ -494,46 +498,56 @@ const CommonUI = {
         this._dialogContext = null;
     },
 
-    // 添加全屏拦截点击的系统对话框
-    showSysDialog: async function (content) {
-        console.log('[LOG] showSysDialog', content);
-        async function onTouchMask(params) {
-            console.log('[LOG] onTouchMask', this, params);
-            await ac.sysDialogOff();
-            await ac.remove({
-                name: 'layer_sys_dialog_mask',
-                effect: 'normal',
-                duration: 0,
-            });
+    /**
+     * 带一个文本的自定义选项组
+     * @param {Object} config 配置项
+     * @param {string} config.content 文本内容
+     * @param {list} config.options [{text: '选项1', callback: () => {}}, {text: '取消'}, ]
+     */
+    showCustomOptionGroup: async function (config) {
+        console.log('[CustomOptionGroup] 显示自定义选项组:', config);
+        await this.showCustomDialog({
+            content: config.content,
+            closeType: 2,
+        });
+        let optionLs = [];
+        for (let i = 0; i < config.options.length; i++) {
+            let option = config.options[i];
+            optionLs.push({
+                textContent: option.text,
+                textStyle: this.dialog.style.name,
+                nResId: ResMap.img_selection_bg_normal,
+                sResId: ResMap.img_selection_bg_highlight,
+                x: GameConfig.centerX,
+                y: 420 - i * 120,
+                clickFunc: option.callback || this.closeCustomOptionGroup,
+            })
         }
-        await ac.createLayer({
-            name: 'layer_sys_dialog_mask',
-            index: 0,
+        await ac.createOptionGroup({
+            name: this.optionGroup.name,
+            defaultComposition: false,
+            index: ZORDER.CUSTOM_DIALOG,
             inlayer: 'window',
-            pos: { x: 0, y: 0 },
-            size: { width: GameConfig.width, height: GameConfig.height },
-            anchor: { x: 0, y: 0 },
-            clipMode: false,
+            anchor: { x: 50, y: 50 },
+            optionGroup: optionLs
         });
-        // 拦截点击
-        ac.addEventListener({
-            type: ac.EVENT_TYPES.onTouchBegan,
-            listener: onTouchMask,
-            target: 'layer_sys_dialog_mask',
-        });
-        // 文字描述
-        await ac.sysDialogOn({
-            content: content,
-            hasRoleName: false,
-            hasRoleAvatar: false,
-            hasBg: true,
-            tag: 'p',
-        });
+
+    },
+
+    // 关闭自定义选项组
+    closeCustomOptionGroup: async function () {
+        console.log('[CustomOptionGroup] 关闭自定义选项组');
+        await ac.remove({
+            name: CommonUI.optionGroup.name,
+            effect: 'normal',
+            duration: 0,
+        })
+        await this.closeCustomDialog();
     },
 
     // 播放拖尾特效
     playTrailEffect: async function (startPos, endPos) {
-        
+
         // startPos 和 endPos 需要偏移半个屏幕
         startPos.x -= GameConfig.centerX;
         startPos.y -= GameConfig.centerY;
@@ -541,7 +555,7 @@ const CommonUI = {
         endPos.y -= GameConfig.centerY;
 
         const moveSpeed = 0.5; // 移动速度, 像素/毫秒
-        let duration = Math.sqrt((startPos.x - endPos.x) ** 2 + (startPos.y - endPos.y) ** 2 ) / moveSpeed; // 飞行时间
+        let duration = Math.sqrt((startPos.x - endPos.x) ** 2 + (startPos.y - endPos.y) ** 2) / moveSpeed; // 飞行时间
         const containerName = 'trail_container';
         await ac.createLayer({
             name: containerName,
@@ -567,7 +581,7 @@ const CommonUI = {
             duration: duration * 0.9,   // 持续时间
             parpos: {           // 发射范围
                 xBase: 0, xDeviation: 2,
-                yBase: 0, yDeviation: 2 
+                yBase: 0, yDeviation: 2
             },
         });
 

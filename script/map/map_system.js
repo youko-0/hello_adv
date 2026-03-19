@@ -4,7 +4,7 @@ console.log('[LOAD] map_system');
 const _mapDefault = function () {
     return {
         areaId: "",      // 当前访问区域
-        visited: {},       // 已访问区域，{id: true}
+        visited: {},       // 已访问区域，{id: times}
     };
 };
 
@@ -25,7 +25,7 @@ const MapSystem = createSystem(
                     resIdHighlight: ResMap.btn_undercity_highlight,
                     pos: { x: -64, y: 20 },
                 },
-                plotNext: ResMap.plot_undercity,
+                plot: ResMap.plot_undercity,
             },
             area2: {
                 name: "赛车场",
@@ -38,7 +38,7 @@ const MapSystem = createSystem(
                     resIdHighlight: ResMap.btn_circuit_highlight,
                     pos: { x: -120, y: 0 },
                 },
-                plotNext: ResMap.plot_circuit,
+                plot: ResMap.plot_circuit,
             },
             area3: {
                 name: "哪吒庙",
@@ -51,7 +51,7 @@ const MapSystem = createSystem(
                     resIdHighlight: ResMap.btn_nezha_temple_highlight,
                     pos: { x: -48, y: 20 },
                 },
-                plotNext: ResMap.plot_nezha_temple,
+                plot: ResMap.plot_nezha_temple,
             },
             area4: {
                 name: "龙王庙",
@@ -64,7 +64,7 @@ const MapSystem = createSystem(
                     resIdHighlight: ResMap.btn_dragon_temple_highlight,
                     pos: { x: -48, y: 0 },
                 },
-                plotNext: ResMap.plot_dragon_temple,
+                plot: ResMap.plot_dragon_temple,
             },
             area5: {
                 name: "德兴大厦",
@@ -77,7 +77,7 @@ const MapSystem = createSystem(
                     resIdHighlight: ResMap.btn_dexing_tower_highlight,
                     pos: { x: 64, y: 20 },
                 },
-                plotNext: ResMap.plot_dexing_tower,
+                plot: ResMap.plot_dexing_tower,
             }
         },
 
@@ -112,19 +112,27 @@ const MapSystem = createSystem(
         // 是否访问过该区域
         isVisited: function (areaId) {
             let visited = this.getData().visited;
-            return !!visited[areaId];
+            return visited[areaId] && visited[areaId] > 0;
         },
 
         // 保存访问记录
         saveVisited: function (areaId) {
             if (!areaId) return;
             let data = this.getData();
-            // 只有未读时才写入，避免重复 save
+            // 增加访问次数
             if (!data.visited[areaId]) {
-                data.visited[areaId] = true;
-                this.save();
-                console.log(`[Map] 保存访问记录: ${areaId}`);
+                data.visited[areaId] = 1;
+            } else {
+                data.visited[areaId]++;
             }
+            this.save();
+            console.log(`[Map] 保存访问记录: ${areaId}, 访问次数: ${data.visited[areaId]}`);
+        },
+
+        // 获取区域访问次数
+        getVisitedTimes: function (areaId) {
+            let visited = this.getData().visited;
+            return visited[areaId] || 0;
         },
 
         // 全部区域探索完成
@@ -139,7 +147,6 @@ const MapSystem = createSystem(
 
         // 探索完成
         onAllAreaVisited: async function () {
-            await CommonUI.showSysDialog("全部区域探索完成, 即将前往下一章。");
             await ac.jump({
                 plotID: MapSystem.NEXT_PLOT,
                 transition: ac.SCENE_TRANSITION_TYPES.fade,
@@ -149,7 +156,7 @@ const MapSystem = createSystem(
 
         // 前往区域
         onGotoArea: async function (areaId) {
-            let plotId = this.getAreaConfig(areaId).plotNext;
+            let plotId = this.getAreaConfig(areaId).plot;
             this.saveAreaId(areaId);
             await ac.jump({
             // TODO: 这里看下能不能用插入剧情实现
@@ -159,27 +166,17 @@ const MapSystem = createSystem(
                 duration: 1000,
             });
             console.log(`[Map] after displayPlot: ${areaId}`);
-            // 保存访问记录, 用 ac.jump 走不到这里来
-            this.saveVisited(areaId);
-        },
-
-        // 点击地图区域
-        // 这里是回调函数, 不用 this 用 MapSystem
-        onClickArea: async function (areaId) {
-            if (MapSystem.isAllAreaVisited()) {
-                await MapSystem.onAllAreaVisited();
-                return;
-            }
-            if (MapSystem.isVisited(areaId)) {
-                await CommonUI.showAlert("该区域已查看！");
-                return;
-            }
-            await MapSystem.onGotoArea(areaId);
+            // // 保存访问记录, 用 ac.jump 走不到这里来
+            // this.saveVisited(areaId);
         },
 
         // 进入地图, MapSystem.enterMap()
         enterMap: async function () {
             // 这里再保存一下
+            // 如果已经全部访问过，清空当前访问区域(不需要再播放动效)
+            if (this.isAllAreaVisited()) {
+                this.saveAreaId("");
+            }
             await this.saveVisited(this.getAreaId());
             await MapUI.createMapUI();
             await MapUI.onEnterMap();
