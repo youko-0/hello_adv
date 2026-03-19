@@ -4,8 +4,8 @@ console.log('[LOAD] inventory_system');
 // 默认数据结构
 const _inventoryDefault = function () {
     return {
-        bag: {},      // 背包数据, {itemId: num}
-        history: {},    // 历史获得总量（用于判断 dropLimit）, {itemId: num}
+        bag: {},      // 背包数据, {itemId: itemNum}
+        history: {},    // 历史获得总量（用于判断 dropLimit）, {itemId: itemNum}
     };
 };
 
@@ -48,13 +48,13 @@ const InventorySystem = createSystem(
         
 
         /**
-        * 获得道具, InventorySystem.addItem(itemId, num)
+        * 获得道具, InventorySystem.addItem(itemId, itemNum)
         * @param {string} itemId 道具ID
-        * @param {number} num 欲添加数量
+        * @param {number} itemNum 欲添加数量
         * @returns {number} 实际添加的数量 (0表示失败)
         */
-        addItem: function (itemId, num = 1) {
-            if (num <= 0) return 0;
+        addItem: function (itemId, itemNum = 1) {
+            if (itemNum <= 0) return 0;
 
             let config = ItemConfig[itemId];
             if (!config) {
@@ -66,7 +66,7 @@ const InventorySystem = createSystem(
             const curBagNum = this.getItemCount(itemId);
             const curHistNum = this.getHistoryCount(itemId);
 
-            let actualAdd = num;
+            let actualAdd = itemNum;
 
             // 1. 检查历史掉落限制 (Unique 物品，比如只能获得一次的关键道具)
             // dropLimit: -1 无限制
@@ -110,17 +110,17 @@ const InventorySystem = createSystem(
          * 消耗/移除道具
          * @returns {boolean} 是否移除成功
          */
-        removeItem: function (itemId, num = 1) {
-            if (num <= 0) return false;
+        removeItem: function (itemId, itemNum = 1) {
+            if (itemNum <= 0) return false;
 
             const count = this.getItemCount(itemId);
-            if (count < num) {
-                console.warn(`[Inventory] 删除失败，数量不足: ${itemId} (拥有${count}, 需要${num})`);
+            if (count < itemNum) {
+                console.warn(`[Inventory] 删除失败，数量不足: ${itemId} (拥有${count}, 需要${itemNum})`);
                 return false;
             }
 
             const data = this.getData();
-            data.bag[itemId] = count - num;
+            data.bag[itemId] = count - itemNum;
 
             // 如果数量归零，删除 key 以减小存档体积
             if (data.bag[itemId] <= 0) {
@@ -128,7 +128,7 @@ const InventorySystem = createSystem(
             }
 
             this.save();
-            console.log(`[Inventory] 移除了 ${num} 个 ${itemId}`);
+            console.log(`[Inventory] 移除了 ${itemNum} 个 ${itemId}`);
             return true;
         },
 
@@ -136,12 +136,12 @@ const InventorySystem = createSystem(
         * 使用道具
         * @returns {boolean} 是否使用成功
         */
-        useItem: async function (itemId, num = 1) {
+        useItem: async function (itemId, itemNum = 1) {
             const config = ItemConfig[itemId];
             if (!config) return false;
 
             // 1. 检查数量
-            if (this.getItemCount(itemId) < num) {
+            if (this.getItemCount(itemId) < itemNum) {
                 await CommonUI.showAlert("物品数量不足！");
                 return false;
             }
@@ -167,10 +167,25 @@ const InventorySystem = createSystem(
             }
 
             // 4. 扣除物品
-            this.removeItem(itemId, num);
+            this.removeItem(itemId, itemNum);
 
-            await CommonUI.showAlert(`使用了 ${num} 个 ${config.name}`);
+            await CommonUI.showAlert(`使用了 ${itemNum} 个 ${config.name}`);
             return true;
+        },
+
+        /**
+         * 获得道具并播放提示效果, InventorySystem.gainItem(itemId, itemNum, itemName)
+         * @param {string} itemId 道具ID
+         * @param {number} itemNum 欲添加数量
+         * @param {string} itemName 场景中的控件名, 控件消失并播放拖尾特效
+         * @returns {number} 实际添加的数量 (0表示失败)
+         */
+        gainItem: async function (itemId, itemNum = 1, itemName='') {
+            let addCount = this.addItem(itemId, itemNum);
+            if (addCount > 0) {
+                await InventoryUI.onGainItem(itemId, itemNum, itemName);
+            }
+            return addCount;
         },
 
         /**

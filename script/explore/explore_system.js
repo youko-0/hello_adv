@@ -87,6 +87,12 @@ const ExploreSystem = createSystem(
             await InventoryUI.showItemDetail(itemId);
             // 记录为已查看
             this.recordInspected(itemId);
+            // 如果是 KEY 类型，需要获得道具
+            let itemConfig = InventorySystem.getItemConfig(itemId);
+            if (itemConfig.type === ItemType.KEY) {
+                await InventorySystem.gainItem(itemId, 1, `img_${itemId}`);
+            }
+
             let flag = this.isInspectedAll(sceneId);
             console.log('[LOG] isInspectedAll', flag);
             if (flag) {

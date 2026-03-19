@@ -21,7 +21,6 @@ ac.createStyle({
 
 ac.createStyle({
     name: 'style_name',
-    // font: '思源黑体',
     font: '汉仪小隶书简',
     bold: false,
     italic: false,

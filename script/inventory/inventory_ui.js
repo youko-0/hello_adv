@@ -3,15 +3,18 @@ console.log('[LOAD] inventory_ui');
 
 const InventoryUI = {
 
+    btnBag: {
+        name: 'global_btn_bag',
+    },
     // 物品详情
     itemDetail: {
         name: 'layer_item_detail',
     },
 
+    // 背包按钮
     createBtnBag: async function () {
-        // 背包按钮
         await ac.createImage({
-            name: 'global_btn_bag',
+            name: InventoryUI.btnBag.name,
             index: ZORDER.SYSTEM_UI,
             inlayer: 'window',
             resId: ResMap.btn_bag_normal,
@@ -24,6 +27,20 @@ const InventoryUI = {
             listener: BagUI.initBagUI,
             target: 'global_btn_bag'
         });
+    },
+
+    // 物品获得效果
+    onGainItem: async function (itemId, itemNum, itemName) {
+        // 从屏幕中心闪一个粒子飞去背包
+        let startPos = await ac.getPos({
+            name: itemName,
+        });
+        let endPos = await ac.getPos({
+            name: this.btnBag.name,
+        });
+        console.log('[LOG] onGainItem', startPos, endPos);
+        await CommonUI.playTrailEffect(startPos, endPos);
+
     },
 
     // 创建物品详情 UI, 大图 + 文字描述
