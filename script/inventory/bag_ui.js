@@ -331,7 +331,10 @@ const BagUI = {
     initBagUI: async function (selectedId = null) {
         await BagUI.createBagUI();
         let itemList = InventorySystem.getItemListByType(ItemType.KEY);
-        selectedId = selectedId || itemList[0];
+        // 如果 selectedId 不是 string, 取第一个道具id
+        if (typeof selectedId !== 'string' || !selectedId) {
+            selectedId = itemList[0];
+        }
         InventorySystem.saveSelectedId(selectedId);
         await BagUI.createItemList(itemList);
         await BagUI.refreshItemDetail(selectedId);

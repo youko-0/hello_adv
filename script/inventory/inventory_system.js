@@ -43,6 +43,7 @@ const InventorySystem = createSystem(
         },
 
         saveSelectedId: function (itemId) {
+            if (!itemId) return;
             let data = this.getData();
             if (data.selectedId !== itemId) {
                 console.log(`[Inventory] 切换选中道具: ${data.selectedId} -> ${itemId}`);

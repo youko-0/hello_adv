@@ -39,6 +39,14 @@ const InventoryUI = {
             // 换成屏幕中心
             startPos = { x: GameConfig.centerX, y: GameConfig.centerY };
         }
+        else {
+            // 删除物品
+            await ac.remove({
+                name: itemName,
+                effect: 'fadeout',
+                duration: 100,
+            })
+        }
         let endPos = await ac.getPos({
             name: this.btnBag.name,
         });
