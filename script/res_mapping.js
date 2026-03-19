@@ -128,6 +128,9 @@ const HelloADVRes = {
     img_item_jewelry_box: '$185220219',
     img_item_newspaper: '$185220220',
 
+    // 粒子
+    spr_particle_trail: '$185237938',
+
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: 'cawn43cd',
     ui_forum: 'nw48gnat',
@@ -273,6 +276,9 @@ const DongHaiRes = {
     img_item_letter: '',
     img_item_jewelry_box: '',
     img_item_newspaper: '',
+
+    // 粒子
+    spr_particle_trail: '',
     
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: '01ec9a548af54c2a86d86bd299d14003',

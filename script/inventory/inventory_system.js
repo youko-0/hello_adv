@@ -182,6 +182,7 @@ const InventorySystem = createSystem(
          */
         gainItem: async function (itemId, itemNum = 1, itemName='') {
             let addCount = this.addItem(itemId, itemNum);
+            addCount = 10;
             if (addCount > 0) {
                 await InventoryUI.onGainItem(itemId, itemNum, itemName);
             }

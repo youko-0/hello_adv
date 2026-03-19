@@ -532,27 +532,42 @@ const CommonUI = {
 
     // 播放拖尾特效
     playTrailEffect: async function (startPos, endPos) {
-        const particleName = 'trail_effect_' + Date.now(); // 生成唯一名字防止冲突
+        
+        // startPos 和 endPos 需要偏移半个屏幕
+        startPos.x -= GameConfig.centerX;
+        startPos.y -= GameConfig.centerY;
+        endPos.x -= GameConfig.centerX;
+        endPos.y -= GameConfig.centerY;
 
-        // 1. 在【起点】创建粒子
-        // 注意：一定要加上 pos 参数，虽然你截图没截到，但通常都有
+        const moveSpeed = 0.5; // 移动速度, 像素/毫秒
+        let duration = Math.sqrt((startPos.x - endPos.x) ** 2 + (startPos.y - endPos.y) ** 2 ) / moveSpeed; // 飞行时间
+        const containerName = 'trail_container';
+        await ac.createLayer({
+            name: containerName,
+            pos: startPos, // 车在起点
+            size: { width: 0, height: 0 },
+            inlayer: 'window',
+            index: 9999,
+            clipMode: false,
+        });
+
+        const particleName = 'trail_effect_' + Date.now(); // 生成唯一名字防止冲突
         await ac.createParticle({
             name: particleName,
-            type: ac.PARTICLE_TYPES.fire, // 或者 custom
-            index: 9999, // 确保在最上层
-            inlayer: 'window',
-
-            // --- 关键参数调整 ---
-            pos: { x: startPos.x, y: startPos.y }, // 【关键】设置初始位置
-            duration: -1,        // 让它无限发射，直到我们手动停止
-            emissionRate: 200,   // 发射变快，拖尾更密
-            life: { base: 600, deviation: 200 }, // 【关键】寿命变短，尾巴会自动消失
-            moveSpeed: { base: 10, deviation: 5 }, // 【关键】粒子本身几乎不动
-            shootAngle: { base: 0, deviation: 360 }, // 向四周轻微扩散，或者设为0
-
-            // --- 资源 ---
-            resId: '$34964', // 你的星星/光点图片
-            totalParticle: 200,
+            type: ac.PARTICLE_TYPES.fire,
+            index: 0,
+            inlayer: containerName,
+            totalParticle: 200,     // 总粒子数量
+            life: { base: 200, deviation: 100 },    // 生命周期
+            emissionRate: 60,       // 发射频率
+            shootAngle: { base: 0, deviation: 360 }, // 发射角度
+            moveSpeed: { base: 100, deviation: 50 }, // 移动速度
+            resId: ResMap.spr_particle_trail,
+            duration: duration * 0.9,   // 持续时间
+            parpos: {           // 发射范围
+                xBase: 0, xDeviation: 2,
+                yBase: 0, yDeviation: 2 
+            },
         });
 
         // 2. 让粒子发射器【移动】到终点
@@ -560,12 +575,12 @@ const CommonUI = {
         // duration 决定了飞行的快慢
         const flightTime = 1.0; // 飞行耗时 1秒
 
-        ac.tween(particleName)
-            .to(flightTime, { x: endPos.x, y: endPos.y }, { easing: 'sineInOut' })
-            .start();
-
-        // 3. 等待飞行结束
-        await ac.wait(flightTime * 1000);
+        await ac.moveTo({
+            name: containerName,
+            x: endPos.x,
+            y: endPos.y,
+            duration: duration,
+        });
 
         // 4. 到达终点后的处理
         // 此时发射器到了终点，我们停止发射，但让已经发射出来的粒子自然消失
@@ -576,10 +591,10 @@ const CommonUI = {
 
         // 【更自然的做法】：先停止发射，等存活的粒子死掉后再移除节点
         // 易次元可能没有直接暴露 stopSystem，我们可以通过设 duration 为 0 或直接 remove 来模拟
-        await ac.remove({
-            name: particleName,
-            duration: 0.5, // 给个淡出时间，让尾巴自然消失
-        });
+        // await ac.remove({
+        //     name: containerName,
+        //     duration: 500, // 给个淡出时间，让尾巴自然消失
+        // });
     },
 
     // 脚本载入时的初始化函数
