@@ -2,7 +2,8 @@
 console.log('[LOAD] common_ui');
 
 const ZORDER = {
-    BOTTOM: 0,      // 底层
+    BOTTOM_SCENE: 0,      // 底层, 需要显示系统UI的场景
+    SYSTEM_UI: 5,      // 系统UI, 背包按钮等
     SCENE: 10,      // 画布
     UI: 20,     // 普通 UI
     DIALOG: 50,     // 对话框
@@ -510,7 +511,7 @@ const CommonUI = {
         console.log('[LOG] showSysDialog', content);
         // 文字描述
         await ac.sysDialogOn({
-            content: `<tag style=style_item_info>${content}</tag>`,
+            content: content,
             tag: 'p',
             size: { width: 960, height: 80 },
             pos: { x: 160, y: 36 },

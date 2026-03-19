@@ -12,7 +12,7 @@ const InventoryUI = {
         // 背包按钮
         await ac.createImage({
             name: 'global_btn_bag',
-            index: ZORDER.BOTTOM + 1,       // UI 底层
+            index: ZORDER.SYSTEM_UI,
             inlayer: 'window',
             resId: ResMap.btn_bag_normal,
             pos: { x: GameConfig.width - 36, y: GameConfig.height - 186 },

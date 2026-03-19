@@ -11,19 +11,12 @@ const MapUI = {
     createMapUI: async function () {
         await ac.createLayer({
             name: this.map.name,
-            index: ZORDER.SCENE,
+            index: ZORDER.BOTTOM_SCENE,       // 把全局按钮露出来
             inlayer: 'window',
             pos: { x: 0, y: 0 },
             anchor: { x: 0, y: 0 },
             size: { width: GameConfig.width, height: GameConfig.height },
             clipMode: false,
-        });
-
-        // 拦截点击
-        ac.addEventListener({
-            type: ac.EVENT_TYPES.onTouchBegan,
-            listener: CommonUI.onTouchMask,
-            target: this.map.name,
         });
 
         // 没有地块的背景图
@@ -34,6 +27,17 @@ const MapUI = {
             resId: ResMap.pic_map_bg,
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             anchor: { x: 50, y: 50 },
+        });
+
+        // 地块层
+        await ac.createLayer({
+            name: 'layer_map_area',
+            index: 5,
+            inlayer: this.map.name,
+            pos: { x: 0, y: 0 },
+            anchor: { x: 0, y: 0 },
+            size: { width: GameConfig.width, height: GameConfig.height },
+            clipMode: false,
         });
 
         // 创建地块
@@ -53,15 +57,30 @@ const MapUI = {
             await ac.createImage({
                 name: `img_${areaId}_locked`,
                 index: 5,
-                inlayer: this.map.name,
+                inlayer: 'layer_map_area',
                 resId: areaConfig.resIdLocked,
                 pos: areaConfig.pos,
                 anchor: { x: 50, y: 50 },
             });
+            // 先隐藏
+            await ac.hide({
+                name: `img_${areaId}`,
+                effect: 'normal',
+                duration: 0,
+                canskip: false,
+            })
             // 等一下剧情切换
             await ac.delay({
                 time: 1000,
             });
+            // 当前区域(普通态)淡入
+            ac.show({
+                name: `img_${areaId}`,
+                effect: 'fadein',
+                duration: 500,
+                canskip: false,
+            })
+            // 锁定态淡出
             await ac.remove({
                 name: `img_${areaId}_locked`,
                 effect: 'fadeout',
@@ -75,18 +94,12 @@ const MapUI = {
             // 全解锁地图
             await ac.createImage({
                 name: 'img_map_bg_full',
-                index: 0,
+                index: 2,
                 inlayer: this.map.name,
                 resId: ResMap.pic_map_bg_full,
                 pos: { x: GameConfig.centerX, y: GameConfig.centerY },
                 anchor: { x: 50, y: 50 },
                 visible: false,
-            });
-            ac.hide({
-                name: 'img_map_bg',
-                effect: 'fadeout',
-                duration: 1500,
-                canskip: false,
             });
             await ac.show({
                 name: 'img_map_bg_full',
@@ -95,7 +108,7 @@ const MapUI = {
                 canskip: false,
             });
             await ac.delay({
-                time: 2000
+                time: 1000
             });
             await MapSystem.onAllAreaVisited();
         }
@@ -111,8 +124,8 @@ const MapUI = {
         let sResId = isVisited ? areaConfig.resIdNormal : areaConfig.resIdHighlight;
         await ac.createOption({
             name: `img_${areaId}`,
-            index: 4,
-            inlayer: this.map.name,
+            index: 1,
+            inlayer: 'layer_map_area',
             nResId: nResId,
             sResId: sResId,
             pos: areaConfig.pos,
