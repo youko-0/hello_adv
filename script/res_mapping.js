@@ -83,7 +83,7 @@ const HelloADVRes = {
     pic_broken_nezha_temple_left_hall: '$183954558',
     pic_broken_nezha_temple_back_hall: '$183954559',
     pic_broken_nezha_temple_right_hall: '$183954560',
-    pic_dragon_temple_main_hall: '$183954561',
+    pic_dragon_temple_main_hall: '$183954556',
     pic_dexing_tower_office: '$185220204',
 
     // 头像
@@ -105,10 +105,10 @@ const HelloADVRes = {
     spr_item_mural_jianzaoshenmiao: '$183946186',
     spr_item_mural_zhuzaosuxiang: '$183946189',
     spr_item_mural_lijingsb: '$183946190',
-    spr_item_letter: '$183946182',
-    spr_item_jewelry_box: '$183946182',
-    spr_item_newspaper: '$183946182',
-    spr_item_visa: '$183946182',
+    spr_item_letter: '$183722014',
+    spr_item_jewelry_box: '$185220219',
+    spr_item_newspaper: '$185220220',
+    spr_item_visa: '$185220221',
     // 详情大图
     img_item_pendent: '$183720948',
     img_item_armor: '$183720970',
@@ -124,9 +124,9 @@ const HelloADVRes = {
     img_item_mural_jianzaoshenmiao: '$183918605',
     img_item_mural_zhuzaosuxiang: '$183918606',
     img_item_mural_lijingsb: '$183918607',
-    img_item_letter: '$183918599',
-    img_item_jewelry_box: '$183918599',
-    img_item_newspaper: '$183918599',
+    img_item_letter: '$183722014',
+    img_item_jewelry_box: '$185220219',
+    img_item_newspaper: '$185220220',
 
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: 'cawn43cd',
@@ -140,14 +140,14 @@ const HelloADVRes = {
     plot_undercity: 14006475,
     plot_circuit: 13980816,
     plot_nezha_temple: 14005426,
-    plot_dragon_temple: 13980816,
-    plot_dexing_tower: 13980816,
+    plot_dragon_temple: 14082253,
+    plot_dexing_tower: 14081581,
     plot_map_next: 13946330,
-    plot_residence_next: 13946330,
-    plot_nezha_temple_next: 13946330,
-    plot_broken_nezha_temple_next: 13946330,
-    plot_dragon_temple_next: 13946330,
-    plot_dexing_tower_next: 13946330,
+    plot_residence_next: 13977507,
+    plot_nezha_temple_next: 13977507,
+    plot_broken_nezha_temple_next: 13977507,
+    plot_dragon_temple_next: 13977507,
+    plot_dexing_tower_next: 13977507,
 }
 
 const DongHaiRes = {

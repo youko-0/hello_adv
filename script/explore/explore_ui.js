@@ -47,7 +47,8 @@ const ExploreUI = {
             anchor: { x: 50, y: 50 },
         });
         // 交互物体
-        for (const [itemId, interact] of Object.entries(viewConfig.interact)) {
+        let interacts = viewConfig.interact || {};
+        for (const [itemId, interact] of Object.entries(interacts)) {
             let itemConfig = InventorySystem.getItemConfig(itemId);
             await ac.createOption({
                 name: `img_${itemId}`,
@@ -64,7 +65,8 @@ const ExploreUI = {
             });
         }
         // 导航按钮
-        for (const [direction, viewName] of Object.entries(viewConfig.nav)) {
+        let navs = viewConfig.nav || {};
+        for (const [direction, viewName] of Object.entries(navs)) {
             if (viewName == null) {
                 continue;
             }

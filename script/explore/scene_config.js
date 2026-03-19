@@ -13,7 +13,6 @@ const SceneConfig = {
             living_room: {
                 id: 'living_room',
                 bg: ResMap.pic_residence_living_room, // 背景图
-                nav: {},
                 interact: {
                     item_family_photo: { x: 693, y: 556 },
                     item_motorcycle_key: { x: 374, y: 315 },
@@ -38,7 +37,6 @@ const SceneConfig = {
                     right: 'right_hall',
                     down: 'back_hall'
                 },
-                interact: {}
             },
             // 左殿
             left_hall: {
@@ -100,7 +98,6 @@ const SceneConfig = {
                     right: 'right_hall',
                     down: 'back_hall'
                 },
-                interact: {}
             },
             // 左殿
             left_hall: {
@@ -156,7 +153,10 @@ const SceneConfig = {
             main_hall: {
                 id: 'main_hall',
                 bg: ResMap.pic_dragon_temple_main_hall, // 背景图
-            }
+                interact: {
+                    item_letter: { x: 600, y: 380 },
+                }
+            },
         }
     },
 
@@ -169,7 +169,6 @@ const SceneConfig = {
             office: {
                 id: 'office',
                 bg: ResMap.pic_dexing_tower_office, // 背景图
-                nav: {},
                 interact: {
                     item_jewelry_box: { x: 909, y: 443 },
                     item_newspaper: { x: 676, y: 215 },
