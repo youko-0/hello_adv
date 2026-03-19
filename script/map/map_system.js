@@ -25,7 +25,7 @@ const MapSystem = createSystem(
                     resIdHighlight: ResMap.btn_undercity_highlight,
                     pos: { x: -64, y: 20 },
                 },
-                plot: ResMap.plot_undercity,
+                plotNext: ResMap.plot_undercity,
             },
             area2: {
                 name: "赛车场",
@@ -38,7 +38,7 @@ const MapSystem = createSystem(
                     resIdHighlight: ResMap.btn_circuit_highlight,
                     pos: { x: -120, y: 0 },
                 },
-                plot: ResMap.plot_circuit,
+                plotNext: ResMap.plot_circuit,
             },
             area3: {
                 name: "哪吒庙",
@@ -51,7 +51,7 @@ const MapSystem = createSystem(
                     resIdHighlight: ResMap.btn_nezha_temple_highlight,
                     pos: { x: -48, y: 20 },
                 },
-                plot: ResMap.plot_nezha_temple,
+                plotNext: ResMap.plot_nezha_temple,
             },
             area4: {
                 name: "龙王庙",
@@ -64,7 +64,7 @@ const MapSystem = createSystem(
                     resIdHighlight: ResMap.btn_dragon_temple_highlight,
                     pos: { x: -48, y: 0 },
                 },
-                plot: ResMap.plot_dragon_temple,
+                plotNext: ResMap.plot_dragon_temple,
             },
             area5: {
                 name: "德兴大厦",
@@ -77,7 +77,7 @@ const MapSystem = createSystem(
                     resIdHighlight: ResMap.btn_dexing_tower_highlight,
                     pos: { x: 64, y: 20 },
                 },
-                plot: ResMap.plot_dexing_tower,
+                plotNext: ResMap.plot_dexing_tower,
             }
         },
 
@@ -149,7 +149,7 @@ const MapSystem = createSystem(
 
         // 前往区域
         onGotoArea: async function (areaId) {
-            let plotId = this.getAreaConfig(areaId).plot;
+            let plotId = this.getAreaConfig(areaId).plotNext;
             this.saveAreaId(areaId);
             await ac.jump({
             // TODO: 这里看下能不能用插入剧情实现

@@ -80,6 +80,11 @@ const HelloADVRes = {
     pic_nezha_temple_back_hall: '$183918195',
     pic_nezha_temple_right_hall: '$183918198',
     pic_broken_nezha_temple_main_hall: '$183954556',
+    pic_broken_nezha_temple_left_hall: '$183954558',
+    pic_broken_nezha_temple_back_hall: '$183954559',
+    pic_broken_nezha_temple_right_hall: '$183954560',
+    pic_dragon_temple_main_hall: '$183954561',
+    pic_dexing_tower_office: '$185220204',
 
     // 头像
     icon_forum_head_01: '$183114062',
@@ -100,6 +105,10 @@ const HelloADVRes = {
     spr_item_mural_jianzaoshenmiao: '$183946186',
     spr_item_mural_zhuzaosuxiang: '$183946189',
     spr_item_mural_lijingsb: '$183946190',
+    spr_item_letter: '$183946182',
+    spr_item_jewelry_box: '$183946182',
+    spr_item_newspaper: '$183946182',
+    spr_item_visa: '$183946182',
     // 详情大图
     img_item_pendent: '$183720948',
     img_item_armor: '$183720970',
@@ -115,6 +124,9 @@ const HelloADVRes = {
     img_item_mural_jianzaoshenmiao: '$183918605',
     img_item_mural_zhuzaosuxiang: '$183918606',
     img_item_mural_lijingsb: '$183918607',
+    img_item_letter: '$183918599',
+    img_item_jewelry_box: '$183918599',
+    img_item_newspaper: '$183918599',
 
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: 'cawn43cd',
@@ -215,6 +227,11 @@ const DongHaiRes = {
     pic_nezha_temple_back_hall: '',
     pic_nezha_temple_right_hall: '',
     pic_broken_nezha_temple_main_hall: '',
+    pic_broken_nezha_temple_left_hall: '',
+    pic_broken_nezha_temple_back_hall: '',
+    pic_broken_nezha_temple_right_hall: '',
+    pic_dragon_temple_main_hall: '',
+    pic_dexing_tower_office: '',
     
     // 头像
     icon_forum_head_01: '$183358120',
@@ -235,6 +252,10 @@ const DongHaiRes = {
     spr_item_mural_jianzaoshenmiao: '',
     spr_item_mural_zhuzaosuxiang: '',
     spr_item_mural_lijingsb: '',
+    spr_item_letter: '',
+    spr_item_jewelry_box: '',
+    spr_item_newspaper: '',
+    spr_item_visa: '',
     // 详情大图
     img_item_pendent: '',
     img_item_armor: '',
@@ -250,6 +271,9 @@ const DongHaiRes = {
     img_item_mural_jianzaoshenmiao: '',
     img_item_mural_zhuzaosuxiang: '',
     img_item_mural_lijingsb: '',
+    img_item_letter: '',
+    img_item_jewelry_box: '',
+    img_item_newspaper: '',
     
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: '01ec9a548af54c2a86d86bd299d14003',
@@ -266,6 +290,11 @@ const DongHaiRes = {
     plot_dragon_temple: 13974016,
     plot_dexing_tower: 13974017,
     plot_map_next: 13970354,
+    plot_residence_next: '',
+    plot_nezha_temple_next: '',
+    plot_broken_nezha_temple_next: '',
+    plot_dragon_temple_next: '',
+    plot_dexing_tower_next: '',
 };
 
 const ResMap = (RES_FLAG == 0) ? HelloADVRes : DongHaiRes;

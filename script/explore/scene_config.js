@@ -26,6 +26,7 @@ const SceneConfig = {
     // 哪吒庙
     nezha_temple: {
         defaultViewId: 'main_hall',
+        nextPlot: ResMap.plot_nezha_temple_next, // 下一个剧情
         views: {
             // 主殿
             main_hall: {
@@ -87,11 +88,12 @@ const SceneConfig = {
     // 破碎的哪吒庙
     broken_nezha_temple: {
         defaultViewId: 'main_hall',
+        nextPlot: ResMap.plot_broken_nezha_temple_next, // 下一个剧情
         views: {
             // 主殿
             main_hall: {
                 id: 'main_hall',
-                bg: ResMap.pic_broken_nezha_temple_hall, // 背景图
+                bg: ResMap.pic_broken_nezha_temple_main_hall, // 背景图
                 nav: {
                     up: null,
                     left: 'left_hall',
@@ -125,7 +127,7 @@ const SceneConfig = {
                     right: 'left_hall'
                 },
                 interact: {
-                    item_mural_ziwenguitian: { x: 600, y: 380 },
+                    item_mural_zhuzaosuxiang: { x: 600, y: 380 },
                 }
             },
             // 右殿
@@ -139,7 +141,7 @@ const SceneConfig = {
                     right: 'back_hall'
                 },
                 interact: {
-                    item_mural_lianhuatuosheng: { x: 600, y: 380 },
+                    item_mural_lijingsb: { x: 600, y: 380 },
                 }
             },
         },
@@ -148,14 +150,20 @@ const SceneConfig = {
     // 龙王庙
     dragon_temple: {
         defaultViewId: 'main_hall',
+        nextPlot: ResMap.plot_dragon_temple_next, // 下一个剧情
         views: {
-
+            // 主殿
+            main_hall: {
+                id: 'main_hall',
+                bg: ResMap.pic_dragon_temple_main_hall, // 背景图
+            }
         }
     },
 
     // 德兴大厦
     dexing_tower: {
         defaultViewId: 'office',
+        nextPlot: ResMap.plot_dexing_tower_next, // 下一个剧情
         views: {
             // 办公室
             office: {
@@ -163,9 +171,9 @@ const SceneConfig = {
                 bg: ResMap.pic_dexing_tower_office, // 背景图
                 nav: {},
                 interact: {
-                    item_motorcycle_key: { x: 800, y: 320 },
-                    item_cookie_box: { x: 500, y: 300 },
-
+                    item_jewelry_box: { x: 909, y: 443 },
+                    item_newspaper: { x: 676, y: 215 },
+                    item_visa: { x: 1000, y: 287 },
                 }
             }
         }

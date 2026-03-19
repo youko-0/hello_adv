@@ -242,6 +242,8 @@ def main():
     """主函数"""
     # 默认文件路径
     default_path = os.path.join('..', 'script', 'res_mapping.js')
+    if not os.path.exists(default_path):
+        default_path = os.path.join('script', 'res_mapping.js')
     
     # 检查命令行参数
     if len(sys.argv) > 1:
