@@ -71,9 +71,9 @@ const ExploreSystem = createSystem(
          */
         gotoView: async function (sceneId, viewId = null) {
             console.log('[LOG] gotoView', sceneId, viewId);
-            if (await CommonUI.isInterrupted()) {
-                return;
-            }
+            // if (await CommonUI.isInterrupted()) {
+            //     return;
+            // }
             if (viewId == null) {
                 viewId = this.getDefaultView(sceneId);
             }
@@ -87,7 +87,7 @@ const ExploreSystem = createSystem(
          */
         viewItem: async function (sceneId, itemId) {
             console.log('[LOG] viewItem', sceneId, itemId);
-            await CommonUI.showItemDetail(itemId);
+            await InventoryUI.showItemDetail(itemId);
             // 记录为已查看
             this.recordInspected(itemId);
             let flag = this.isInspectedAll(sceneId);
@@ -101,7 +101,8 @@ const ExploreSystem = createSystem(
                 if (nextPlot) {
                     await ac.jump({
                         plotID: nextPlot,
-                        transition: ac.SCENE_TRANSITION_TYPES.normal,
+                        transition: ac.SCENE_TRANSITION_TYPES.fade,
+                        duration: 1000,
                     });
                 }
             }

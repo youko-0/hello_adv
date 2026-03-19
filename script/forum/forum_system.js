@@ -18,6 +18,7 @@ const ForumSystem = createSystem(
         NAME: "东海论坛",
         PAGE_SIZE: 10,                          // 分页大小
         NOW_YEAR: 2034,                         // 当前年份
+        NEXT_PLOT: ResMap.plot_forum_next,      // 下一个剧情
 
         // 获取当前阅读的帖子ID
         getPostId: function () {
@@ -155,6 +156,15 @@ const ForumSystem = createSystem(
                 name: 'replaceUI_post',
                 uiId: ResMap.ui_post_detail,
             });
-        }
+        },
+
+        // 所有帖子已读
+        onAllPostRead: async function () {
+            await ac.jump({
+                plotID: this.NEXT_PLOT,
+                transition: ac.SCENE_TRANSITION_TYPES.fade,
+                duration: 1000,
+            });
+        },
     }
 );

@@ -29,9 +29,6 @@ const InventoryUI = {
     // 创建物品详情 UI, 大图 + 文字描述
     showItemDetail: async function (itemId) {
         console.log('[LOG] showItemDetail', itemId);
-        if (await CommonUI.isInterrupted()) {
-            return;
-        }
         let itemConfig = InventorySystem.getItemConfig(itemId);
         await ac.createImage({
             name: this.itemDetail.name,
@@ -41,6 +38,12 @@ const InventoryUI = {
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             anchor: { x: 50, y: 50 },
             opacity: 80,
+        });
+        // 拦截点击
+        ac.addEventListener({
+            type: ac.EVENT_TYPES.onTouchBegan,
+            listener: CommonUI.onTouchMask,
+            target: this.itemDetail.name,
         });
         // 大图
         await ac.createImage({

@@ -125,12 +125,17 @@ const HelloADVRes = {
     // 剧情唯一 ID
     plot_forum_next: 13977507,
     plot_map: 13977507,
-    plot_undercity: 13980816,
+    plot_undercity: 14006475,
     plot_circuit: 13980816,
-    plot_nezha_temple: 13980816,
+    plot_nezha_temple: 14005426,
     plot_dragon_temple: 13980816,
     plot_dexing_tower: 13980816,
     plot_map_next: 13946330,
+    plot_old_residence_next: 13946330,
+    plot_nezha_temple_next: 13946330,
+    plot_broken_nezha_temple_next: 13946330,
+    plot_dragon_temple_next: 13946330,
+    plot_dexing_tower_next: 13946330,
 }
 
 const DongHaiRes = {

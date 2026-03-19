@@ -139,15 +139,6 @@ const MapSystem = createSystem(
 
         // 探索完成
         onAllAreaVisited: async function () {
-            // async function onConfirm() {
-            //     console.log(`[Map] 探索完成, 前往下一章`, MapSystem.NEXT_PLOT);
-            //     await ac.jump({
-            //         plotID: MapSystem.NEXT_PLOT,
-            //         transition: ac.SCENE_TRANSITION_TYPES.fade,
-            //         duration: 1000,
-            //     });
-            // }
-            // await CommonUI.showAlert("全部区域探索完成, 即将前往下一章。", { onConfirm: onConfirm });
             await CommonUI.showSysDialog("全部区域探索完成, 即将前往下一章。");
             await ac.jump({
                 plotID: MapSystem.NEXT_PLOT,

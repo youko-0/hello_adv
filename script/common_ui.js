@@ -525,14 +525,7 @@ const CommonUI = {
     // 脚本载入时的初始化函数
     onLoad: async function () {
         console.log('[LOG] [CommonUI] onLoad');
-        ac.createStyle({
-            name: 'style_alert',
-            font: '汉仪小隶书简',
-            bold: false,
-            italic: false,
-            fontSize: 24,
-            color: '#d1d3df',
-        });
+        ac.createStyle(this.alert.style);
 
         ac.createStyle({
             name: 'style_item_info',
@@ -553,10 +546,7 @@ const CommonUI = {
 
     onLoadDelay: async function () {
         console.log('[LOG] [CommonUI] onLoadDelay');
-        // // 有 UI 弹出的时候不创建全局按钮
-        // if (this.isInterrupted()) {
-        //     return;
-        // }
+        // 创建全局背包按钮, 靠层级控制显示
         InventoryUI.createBtnBag();
     }
 

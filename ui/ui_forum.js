@@ -198,10 +198,7 @@ async function onClose() {
     if (!flag) {
         await CommonUI.showAlert("请先阅读所有帖子！");
     } else {
-        await ac.jump({
-            plotID: ResMap.plot_forum_next,
-            transition: ac.SCENE_TRANSITION_TYPES.normal,
-        });
+        await ForumSystem.onAllPostRead();
     }
 }
 

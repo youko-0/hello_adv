@@ -7,7 +7,7 @@ const SceneConfig = {
     old_residence: {
         // 客厅
         defaultViewId: 'living_room',
-        nextPlot: 14005426, // 下一关剧情
+        nextPlot: ResMap.plot_map, // 下一个剧情
         views: {
             // 客厅
             living_room: {
@@ -15,9 +15,9 @@ const SceneConfig = {
                 bg: ResMap.pic_old_residence_living_room, // 背景图
                 nav: {},
                 interact: {
-                    item_family_photo: { x: 200, y: 480 },
-                    item_motorcycle_key: { x: 800, y: 320 },
-                    item_cookie_box: { x: 500, y: 300 },
+                    item_family_photo: { x: 693, y: 556 },
+                    item_motorcycle_key: { x: 374, y: 315 },
+                    item_cookie_box: { x: 916, y: 341 },
                 }
             }
         }
@@ -143,5 +143,31 @@ const SceneConfig = {
                 }
             },
         },
+    },
+
+    // 龙王庙
+    dragon_temple: {
+        defaultViewId: 'main_hall',
+        views: {
+
+        }
+    },
+
+    // 德兴大厦
+    dexing_tower: {
+        defaultViewId: 'office',
+        views: {
+            // 办公室
+            office: {
+                id: 'office',
+                bg: ResMap.pic_dexing_tower_office, // 背景图
+                nav: {},
+                interact: {
+                    item_motorcycle_key: { x: 800, y: 320 },
+                    item_cookie_box: { x: 500, y: 300 },
+
+                }
+            }
+        }
     },
 };
