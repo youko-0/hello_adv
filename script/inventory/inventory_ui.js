@@ -21,7 +21,7 @@ const InventoryUI = {
         // 绑定事件
         ac.addEventListener({
             type: ac.EVENT_TYPES.onTouchEnded,
-            listener: InventorySystem.openBag,
+            listener: BagUI.initBagUI,
             target: 'global_btn_bag'
         });
     },

@@ -132,7 +132,6 @@ const HelloADVRes = {
     ui_desktop: 'cawn43cd',
     ui_forum: 'nw48gnat',
     ui_post_detail: 'dbjp9oun',
-    ui_bag: 'h_83r63s',
 
     // 剧情唯一 ID
     plot_forum_next: 13977507,
@@ -279,7 +278,6 @@ const DongHaiRes = {
     ui_desktop: '01ec9a548af54c2a86d86bd299d14003',
     ui_forum: 'dacbc56e73a94b3daa268f1a0616d8e2',
     ui_post_detail: '1af34c5623d74b82aa12ff9259621b91',
-    ui_bag: '',
     
     // 剧情唯一 ID
     plot_forum_next: 13977507,
