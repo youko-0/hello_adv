@@ -121,12 +121,12 @@ const BagUI = {
 
     // 创建单个道具UI
     createItemUI: async function (itemId, posX, posY) {
-        let tempId = InventorySystem.getTempViewId();
+        let selectedId = InventorySystem.getSelectedId();
         let itemConfig = InventorySystem.getItemConfig(itemId);
         let count = InventorySystem.getItemCount(itemId);
         
         // 背景
-        let resId = tempId === itemId ? this.bg.resIdHighlight : this.bg.resIdNormal;    
+        let resId = selectedId === itemId ? this.bg.resIdHighlight : this.bg.resIdNormal;    
         await ac.createOption({
             name: `bag_item_bg_${itemId}`,
             index: 1,
@@ -327,12 +327,14 @@ const BagUI = {
     },
 
     // 初始化背包界面
-    initBagUI: async function () {
+    // selectedId: 选中的道具ID，默认为第一个道具
+    initBagUI: async function (selectedId = null) {
         await BagUI.createBagUI();
         let itemList = InventorySystem.getItemListByType(ItemType.KEY);
-        let currentId = InventorySystem.getTempViewId() || itemList[0];
+        selectedId = selectedId || itemList[0];
+        InventorySystem.saveSelectedId(selectedId);
         await BagUI.createItemList(itemList);
-        await BagUI.refreshItemDetail(currentId);
+        await BagUI.refreshItemDetail(selectedId);
         // 打开动效
         await ac.show({
             name: BagUI.name,

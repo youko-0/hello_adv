@@ -9,6 +9,7 @@ const ZORDER = {
     CUSTOM_DIALOG: 50,     // 对话框
     POPUP: 100,     // 弹窗
     TOP: 500,       // 顶层
+    PARTICLE: 1000,     // 粒子
 }
 
 const CommonUI = {
@@ -547,7 +548,7 @@ const CommonUI = {
             pos: startPos, // 车在起点
             size: { width: 0, height: 0 },
             inlayer: 'window',
-            index: 9999,
+            index: ZORDER.PARTICLE,
             clipMode: false,
         });
 
@@ -570,31 +571,16 @@ const CommonUI = {
             },
         });
 
-        // 2. 让粒子发射器【移动】到终点
-        // 易次元通常用 tween 来移动对象
-        // duration 决定了飞行的快慢
-        const flightTime = 1.0; // 飞行耗时 1秒
-
         await ac.moveTo({
             name: containerName,
             x: endPos.x,
             y: endPos.y,
             duration: duration,
         });
-
-        // 4. 到达终点后的处理
-        // 此时发射器到了终点，我们停止发射，但让已经发射出来的粒子自然消失
-        // 通常引擎有一个 stopSystem() 或者直接移除
-
-        // 如果想要粒子瞬间消失：
-        // await ac.removeParticle(particleName); 
-
-        // 【更自然的做法】：先停止发射，等存活的粒子死掉后再移除节点
-        // 易次元可能没有直接暴露 stopSystem，我们可以通过设 duration 为 0 或直接 remove 来模拟
-        // await ac.remove({
-        //     name: containerName,
-        //     duration: 500, // 给个淡出时间，让尾巴自然消失
-        // });
+        await ac.remove({
+            name: containerName,
+            duration: 500, // 给个淡出时间，让尾巴自然消失
+        });
     },
 
     // 脚本载入时的初始化函数

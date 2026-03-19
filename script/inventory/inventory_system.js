@@ -4,6 +4,7 @@ console.log('[LOAD] inventory_system');
 // 默认数据结构
 const _inventoryDefault = function () {
     return {
+        selectedId: "",     // 当前选中的道具ID
         bag: {},      // 背包数据, {itemId: itemNum}
         history: {},    // 历史获得总量（用于判断 dropLimit）, {itemId: itemNum}
     };
@@ -37,15 +38,18 @@ const InventorySystem = createSystem(
             return itemList;
         },
 
-        getTempViewId: function () {
-            return ac.var['_temp_view_item_id'] || ""
+        getSelectedId: function () {
+            return this.getData().selectedId;
         },
 
-        saveTempViewId: function (itemId) {
-            console.log('saveTempViewId', itemId);
-            ac.var['_temp_view_item_id'] = itemId;
+        saveSelectedId: function (itemId) {
+            let data = this.getData();
+            if (data.selectedId !== itemId) {
+                console.log(`[Inventory] 切换选中道具: ${data.selectedId} -> ${itemId}`);
+                data.selectedId = itemId;
+                this.save();
+            }
         },
-        
 
         /**
         * 获得道具, InventorySystem.addItem(itemId, itemNum)
@@ -182,7 +186,6 @@ const InventorySystem = createSystem(
          */
         gainItem: async function (itemId, itemNum = 1, itemName='') {
             let addCount = this.addItem(itemId, itemNum);
-            addCount = 10;
             if (addCount > 0) {
                 await InventoryUI.onGainItem(itemId, itemNum, itemName);
             }

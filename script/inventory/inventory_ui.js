@@ -35,11 +35,17 @@ const InventoryUI = {
         let startPos = await ac.getPos({
             name: itemName,
         });
+        if (!startPos.x) {
+            // 换成屏幕中心
+            startPos = { x: GameConfig.centerX, y: GameConfig.centerY };
+        }
         let endPos = await ac.getPos({
             name: this.btnBag.name,
         });
         console.log('[LOG] onGainItem', startPos, endPos);
         await CommonUI.playTrailEffect(startPos, endPos);
+        // 打开背包界面
+        await BagUI.initBagUI(itemId);
 
     },
 
