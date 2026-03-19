@@ -159,11 +159,11 @@ const ItemConfig = {
         desc: "首饰盒里放着的是一支小指大小，类似鹿角之类脱落下来的东西，它是玉色的，静静躺在黑色绒布上，被好好珍藏着。",
     },
 
-    item_old_newspaper: {
+    item_newspaper: {
         name: "旧报纸",
         type: ItemType.CLUE,
-        sprite: ResMap.spr_item_old_newspaper,
-        illust: ResMap.img_item_old_newspaper,
+        sprite: ResMap.spr_item_newspaper,
+        illust: ResMap.img_item_newspaper,
         desc: "报纸上头条刊登着一则新闻：德兴集团年仅二十七岁的三公子敖丙个人全权承办的第一个工程顺利竣工。剪彩仪式上德兴董事长敖广亲自到场，笑容满面地与几位政府的嘉宾碰杯，对此非常骄傲。但主人公敖丙并没有出现在照片上，民间所说敖广不希望小儿子在公共媒体露面的传言似乎属实。",
     },
 

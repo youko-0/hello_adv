@@ -3,16 +3,16 @@ console.log('[LOAD] scene_config');
 
 const SceneConfig = {
 
-    // 旧居
-    old_residence: {
+    // 民居
+    residence: {
         // 客厅
         defaultViewId: 'living_room',
-        nextPlot: ResMap.plot_map, // 下一个剧情
+        nextPlot: ResMap.plot_residence_next, // 下一个剧情
         views: {
             // 客厅
             living_room: {
                 id: 'living_room',
-                bg: ResMap.pic_old_residence_living_room, // 背景图
+                bg: ResMap.pic_residence_living_room, // 背景图
                 nav: {},
                 interact: {
                     item_family_photo: { x: 693, y: 556 },

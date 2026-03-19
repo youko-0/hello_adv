@@ -6,7 +6,7 @@ const ZORDER = {
     SYSTEM_UI: 5,      // 系统UI, 背包按钮等
     SCENE: 10,      // 画布
     UI: 20,     // 普通 UI
-    DIALOG: 50,     // 对话框
+    CUSTOM_DIALOG: 50,     // 对话框
     POPUP: 100,     // 弹窗
     TOP: 500,       // 顶层
 }
@@ -85,19 +85,6 @@ const CommonUI = {
         })
         console.log('[LOG] isWidgetExist', name, v.x);
         return v.x != null;
-    },
-
-    // 是否是打断状态(有关键 UI 弹出), 不可操作
-    isInterrupted: async function () {
-        let uiName = [this.alert.name, this.dialog.name, 'layer_item_detail_info'];
-        for (let i = 0; i < uiName.length; i++) {
-            let flag = await this.isWidgetExist(uiName[i]);
-            console.log('[LOG] isInterrupted', uiName[i], flag);
-            if (flag) {
-                return true;
-            }
-        }
-        return false;
     },
 
     // 通用点击拦截函数
@@ -362,7 +349,7 @@ const CommonUI = {
         // 创建容器层
         await ac.createLayer({
             name: this.dialog.name,
-            index: ZORDER.DIALOG,
+            index: ZORDER.CUSTOM_DIALOG,
             inlayer: 'window',
             pos: { x: layout.dialogX, y: layout.dialogY },
             anchor: { x: 50, y: 50 },
@@ -506,20 +493,41 @@ const CommonUI = {
         this._dialogContext = null;
     },
 
-    // 自动关闭的系统文本框
+    // 添加全屏拦截点击的系统对话框
     showSysDialog: async function (content) {
         console.log('[LOG] showSysDialog', content);
+        async function onTouchMask (params) {
+            console.log('[LOG] onTouchMask', this, params);
+            await ac.sysDialogOff();
+            await ac.remove({
+                name: 'layer_sys_dialog_mask',
+                effect: 'normal',
+                duration: 0,
+            });
+        }
+        await ac.createLayer({
+            name: 'layer_sys_dialog_mask',
+            index: 0,
+            inlayer: 'window',
+            pos: { x: 0, y: 0 },
+            size: { width: GameConfig.width, height: GameConfig.height },
+            anchor: { x: 0, y: 0 },
+            clipMode: false,
+        });
+        // 拦截点击
+        ac.addEventListener({
+            type: ac.EVENT_TYPES.onTouchBegan,
+            listener: onTouchMask,
+            target: 'layer_sys_dialog_mask',
+        });
         // 文字描述
         await ac.sysDialogOn({
             content: content,
-            tag: 'p',
-            size: { width: 960, height: 80 },
-            pos: { x: 160, y: 36 },
             hasRoleName: false,
             hasRoleAvatar: false,
             hasBg: true,
+            tag: 'p',
         });
-        await ac.sysDialogOff();
     },
 
     // 脚本载入时的初始化函数

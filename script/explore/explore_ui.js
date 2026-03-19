@@ -40,7 +40,7 @@ const ExploreUI = {
         // 场景图
         await ac.createImage({
             name: "layer_explore_scene_bg",
-            index: ZORDER.SCENE,
+            index: ZORDER.BOTTOM_SCENE,
             inlayer: 'window',
             resId: viewConfig.bg,
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },

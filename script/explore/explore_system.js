@@ -71,9 +71,6 @@ const ExploreSystem = createSystem(
          */
         gotoView: async function (sceneId, viewId = null) {
             console.log('[LOG] gotoView', sceneId, viewId);
-            // if (await CommonUI.isInterrupted()) {
-            //     return;
-            // }
             if (viewId == null) {
                 viewId = this.getDefaultView(sceneId);
             }
@@ -93,10 +90,10 @@ const ExploreSystem = createSystem(
             let flag = this.isInspectedAll(sceneId);
             console.log('[LOG] isInspectedAll', flag);
             if (flag) {
-                await CommonUI.showSysDialog('场景里似乎没有什么可探索的了。');
-                await ac.delay({
-                    time: 1000,
-                })
+                let config = {
+                    content: '场景里似乎没有什么可探索的了。',
+                }
+                await CommonUI.showCustomDialog(config);
                 let nextPlot = SceneConfig[sceneId].nextPlot;
                 if (nextPlot) {
                     await ac.jump({
