@@ -327,24 +327,14 @@ const BagUI = {
         }
     },
 
-    // 初始化背包界面
-    // selectedId: 选中的道具ID，默认为第一个道具
-    initBagUI: async function (selectedId = null) {
-        await BagUI.createBagUI();
-        let itemList = InventorySystem.getItemListByType(ItemType.KEY);
-        // 如果 selectedId 不是 string, 取第一个道具id
-        if (typeof selectedId !== 'string' || !selectedId) {
-            selectedId = itemList[0];
-        }
-        InventorySystem.saveSelectedId(selectedId);
-        await BagUI.createItemList(itemList);
-        await BagUI.refreshItemDetail(selectedId);
+    onBagOpen: async function () {
         // 打开动效
         await ac.show({
-            name: BagUI.name,
+            name: this.name,
             effect: 'fadein',
             duration: 500,
             canskip: false,
         });
-    }
+        await CommonUI.waitForUIClosed(this.name);
+    },
 }

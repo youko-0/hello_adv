@@ -24,7 +24,7 @@ const InventoryUI = {
         // 绑定事件
         ac.addEventListener({
             type: ac.EVENT_TYPES.onTouchEnded,
-            listener: BagUI.initBagUI,
+            listener: InventorySystem.openBag,
             target: 'global_btn_bag'
         });
     },
@@ -52,8 +52,10 @@ const InventoryUI = {
         });
         console.log('[LOG] onGainItem', startPos, endPos);
         await CommonUI.playTrailEffect(startPos, endPos);
+        // 关闭对话框
+        await ac.sysDialogOff({});
         // 打开背包界面
-        await BagUI.initBagUI(itemId);
+        await InventorySystem.openBag(itemId);
 
     },
 
@@ -61,13 +63,25 @@ const InventoryUI = {
     showItemDetail: async function (itemId) {
         console.log('[LOG] showItemDetail', itemId);
         let itemConfig = InventorySystem.getItemConfig(itemId);
-        await ac.createImage({
+        // 背景层
+        await ac.createLayer({
             name: this.itemDetail.name,
             index: ZORDER.UI + 1,
             inlayer: 'window',
+            pos: { x: 0, y: 0 },
+            size: { width: GameConfig.width, height: GameConfig.height },
+            anchor: { x: 0, y: 0 },
+            clipMode: false,
+        })
+        await ac.createImage({
+            name: 'img_item_detail_bg',
+            index: 0,
+            inlayer: this.itemDetail.name,
             resId: ResMap.pic_common_bg_03,
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             anchor: { x: 50, y: 50 },
+            opacity: 80,
+
         });
         // 拦截点击
         ac.addEventListener({

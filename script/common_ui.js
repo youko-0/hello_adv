@@ -92,6 +92,28 @@ const CommonUI = {
         return v.x != null;
     },
 
+    /**
+     * 等待指定UI控件关闭（消失）
+     * @param {string} widgetName 要等待关闭的控件名称
+     * @param {number} checkInterval 检查间隔时间（毫秒），默认500ms
+     */
+    waitForUIClosed: async function (widgetName, checkInterval = 500) {
+        console.log(`[CommonUI] 开始等待 UI 关闭: ${widgetName}`);
+        
+        // 先检查一次是否存在，如果不存在就直接返回
+        if (!(await this.isWidgetExist(widgetName))) {
+            console.log(`[CommonUI] UI 不存在，无需等待: ${widgetName}`);
+            return;
+        }
+
+        // 循环检查直到UI关闭
+        while (await this.isWidgetExist(widgetName)) {
+            await ac.delay({time: checkInterval});
+        }
+        
+        console.log(`[CommonUI] UI 已关闭: ${widgetName}`);
+    },
+
     // 通用点击拦截函数
     onTouchMask: async function (params) {
         console.log('[LOG] onTouchMask', this, params);

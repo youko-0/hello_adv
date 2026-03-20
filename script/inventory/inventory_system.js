@@ -230,10 +230,28 @@ const InventorySystem = createSystem(
         },
 
         /**
-        * 打开背包界面, await InventorySystem.openBag()
-        * 这里用一个 while(true) 循环来实现背包自动打开
-        * 背包主循环：负责打开 UI -> 等关闭 -> 检查是不是要看详情 -> 循环
+        * 打开背包界面, await InventorySystem.openBag(itemId)
+        * @param {string} selectedId 默认选中的道具ID, 不传则默认选中第一个道具
         */
+        openBag: async function (selectedId =null) {
+            let itemList = this.getItemListByType(ItemType.KEY);
+            // 如果 selectedId 不是 string, 取第一个道具id
+            if (typeof selectedId !== 'string' || !selectedId) {
+                selectedId = itemList[0];
+            }
+            this.saveSelectedId(selectedId);
+            await BagUI.createBagUI();
+            await BagUI.createItemList(itemList);
+            await BagUI.refreshItemDetail(selectedId);
+            await BagUI.onBagOpen();
+        },
+
+
+        // /**
+        // * 打开背包界面, await InventorySystem.openBag()
+        // * 这里用一个 while(true) 循环来实现背包自动打开
+        // * 背包主循环：负责打开 UI -> 等关闭 -> 检查是不是要看详情 -> 循环
+        // */
         // openBag: async function () {
         //     let keepOpen = true;
         //     while (keepOpen) {
