@@ -77,19 +77,21 @@ const InventoryUI = {
             target: this.itemDetail.name,
         });
         // 大图
-        await ac.createImage({
-            name: 'img_item_info_pic',
-            index: 0,
-            inlayer: this.itemDetail.name,
-            resId: itemConfig.illust,
-            pos: { x: GameConfig.centerX, y: GameConfig.centerY + 100 },
-            anchor: { x: 50, y: 50 },
-        });
-        let config = {
+        if (itemConfig.illust) {
+            await ac.createImage({
+                name: 'img_item_info_pic',
+                index: 0,
+                inlayer: this.itemDetail.name,
+                resId: itemConfig.illust,
+                pos: { x: GameConfig.centerX, y: GameConfig.centerY + 100 },
+                anchor: { x: 50, y: 50 },
+            });
+        }
+        await CommonUI.showCustomDialog({
             content: itemConfig.desc,
             roleAvatarResId: itemConfig.icon,
-        }
-        await CommonUI.showCustomDialog(config);
+            hasBg: Boolean(itemConfig.illust),      // 没有配置大图就不显示背景
+        });
         await ac.remove({
             name: this.itemDetail.name,
             effect: 'fadeout',

@@ -90,7 +90,7 @@ const MapSystem = createSystem(
             }
         },
 
-        // 是不是当前区域
+        // 是不是当前访问区域
         isVisiting: function (areaId) {
             return this.getAreaId() === areaId;
         },
@@ -98,9 +98,6 @@ const MapSystem = createSystem(
         // 是否访问过该区域
         isVisited: function (areaId) {
             if (!areaId) return false;
-            // 因为涉及到剧情差分, 比较关键, 改成判断道具是否都获得了
-
-
             let visited = this.getData().visited;
             return visited[areaId] && visited[areaId] > 0;
         },
@@ -125,10 +122,23 @@ const MapSystem = createSystem(
             return visited[areaId] || 0;
         },
 
+        // 是否探索完成, 判断是否获得了所有关键道具
+        isCleared: function (areaId) {
+            if (!areaId) return false;
+            const inventory = this.getAreaConfig(areaId).inventory;
+            for (let item of inventory) {
+                // 这里判断历史获得数量, 因为道具可能被使用
+                if (InventorySystem.getHistoryCount(item) <= 0) {
+                    return false;
+                }
+            }
+            return true;
+        },
+
         // 全部区域探索完成
-        isAllAreaVisited: function () {
+        isClearedAll: function () {
             for (let area of Object.keys(this.area)) {
-                if (!this.isVisited(area)) {
+                if (!this.isCleared(area)) {
                     return false;
                 }
             }
@@ -147,8 +157,9 @@ const MapSystem = createSystem(
         // 前往区域
         onGotoArea: async function (areaId) {
             const areaConfig = this.getAreaConfig(areaId);
-            let visited = this.isVisited(areaId);
-            let plotId = visited ? areaConfig.plotLoop : areaConfig.plot;
+            let flag = this.isCleared(areaId);
+            let plotId = flag ? areaConfig.plotLoop : areaConfig.plot;
+            // 保存当前访问区域
             this.saveAreaId(areaId);
             await ac.jump({
             // TODO: 这里看下能不能用插入剧情实现
@@ -164,13 +175,8 @@ const MapSystem = createSystem(
 
         // 进入地图, MapSystem.enterMap()
         enterMap: async function () {
-            let flag = this.isVisited(this.getAreaId());
             // 保存访问记录(次数 + 1)
             this.saveVisited(this.getAreaId());
-            // 如果当前区域已经完成, 清空记录, 不播放完成动效
-            if (flag) {
-                this.saveAreaId('');
-            }
             await MapUI.createMapUI();
             await MapUI.onEnterMap();
         },

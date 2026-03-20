@@ -99,7 +99,6 @@ const ItemConfig = {
         name: "哪吒闹海",
         type: ItemType.CLUE,
         sprite: ResMap.spr_item_mural_nezhanaohai,
-        illust: ResMap.img_item_mural_nezhanaohai,
         desc: "海浪翻滚，画中哪吒脚踏风火轮，手持火尖枪，与东海龙王三太子缠斗。",
     },
 
@@ -107,7 +106,6 @@ const ItemConfig = {
         name: "自刎归天",
         type: ItemType.CLUE,
         sprite: ResMap.spr_item_mural_ziwenguitian,
-        illust: ResMap.img_item_mural_ziwenguitian,
         desc: "哪吒立于陈塘关城楼之上，一手握剑横于颈前，面容平静。城下殷母仰面伸手，神色悲恸。",
     },
 
@@ -115,7 +113,6 @@ const ItemConfig = {
         name: "莲花托生",
         type: ItemType.CLUE,
         sprite: ResMap.spr_item_mural_lianhuatuosheng,
-        illust: ResMap.img_item_mural_lianhuatuosheng,
         desc: "翠色莲茎从水中生出，托起一朵盛开的红莲，莲心端坐一个唇红齿白的小儿。莲池周围仙鹤翔集，祥云缭绕。",
     },
 
@@ -123,7 +120,6 @@ const ItemConfig = {
         name: "???",
         type: ItemType.CLUE,
         sprite: ResMap.spr_item_mural_jianzaoshenmiao,
-        illust: ResMap.img_item_mural_jianzaoshenmiao,
         desc: "第一面墙上，绘着殷母跪于山野，双手捧土，面前是一座刚起地基的小庙。她身后是成队的奴隶肩扛巨木，背负石料。远处有巫师披发跣足，手持骨笛吹奏，一旁有牺牲——牛、羊、人，一排排跪在祭坑前。天空阴沉，乌鸦盘旋。",
     },
 
@@ -131,7 +127,6 @@ const ItemConfig = {
         name: "???",
         type: ItemType.CLUE,
         sprite: ResMap.spr_item_mural_zhuzaosuxiang,
-        illust: ResMap.img_item_mural_zhuzaosuxiang,
         desc: "这一幅中，庙已建成，殿内立着未完工的泥胎。殷夫人亲手捧着一尊青铜爵，正往泥胎上浇。四周工匠手持木槌、石刀，在胎骨上雕琢。有人捧来金箔，有人端来朱砂。",
     },
 
@@ -139,7 +134,6 @@ const ItemConfig = {
         name: "???",
         type: ItemType.CLUE,
         sprite: ResMap.spr_item_mural_lijingsb,
-        illust: ResMap.img_item_mural_lijingsb,
         desc: "最后一幅壁画上，李靖立于庙门前，身披甲胄手持长剑，身后是持戈的兵卒。庙内金身已倒，断成数截，头颅滚落在地，六臂散落各处，身断处流出朱砂调成的、血一般的东西，庙外火光连天，工匠都被处死。",
     },
 

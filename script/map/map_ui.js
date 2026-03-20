@@ -54,8 +54,8 @@ const MapUI = {
     onEnterMap: async function () {
         let areaId = MapSystem.getAreaId();
         console.log(`[Map] onEnterMap, areaId: ${areaId}`);
-        // 正在探索的区域做一个切换动效
-        if (areaId) {
+        // 第一次完成的当前区域播放一个切换动效
+        if (areaId && MapSystem.getVisitedTimes(areaId) === 1) {
             const areaConfig = MapSystem.getAreaConfig(areaId);
             await ac.createImage({
                 name: `img_${areaId}_locked`,
@@ -93,7 +93,7 @@ const MapUI = {
         }
 
         // 全部区域探索完成前往下一章
-        if (MapSystem.isAllAreaVisited()) {
+        if (MapSystem.isClearedAll()) {
             // 全解锁地图
             await ac.createImage({
                 name: 'img_map_bg_full',
@@ -126,7 +126,7 @@ const MapUI = {
             duration: 0,
         })
         // 显示选项组
-        let flag = MapSystem.isAllAreaVisited();
+        let flag = MapSystem.isClearedAll();
         let content = flag ? '全部区域探索完成, 是否前往下一章？' : '还有区域未探索完成, 是否仍然前往下一章？';
         let options = [{
             text: '前往下一章',
@@ -167,11 +167,10 @@ const MapUI = {
     // 单个地图块
     _createMapArea: async function (areaId) {
         const areaConfig = MapSystem.getAreaConfig(areaId);
-        // let isVisiting = MapSystem.isVisiting(areaId);
-        let isVisited = MapSystem.isVisited(areaId);
-        // 地块, 已访问的用普通态 + 普通态, 未访问的用锁定态 + 高亮态
-        let nResId = isVisited ? areaConfig.resIdNormal : areaConfig.resIdLocked;
-        let sResId = isVisited ? areaConfig.resIdNormal : areaConfig.resIdHighlight;
+        let flag = MapSystem.isCleared(areaId);
+        // 地块, 已完成的用普通态 + 普通态, 未完成的用锁定态 + 高亮态
+        let nResId = flag ? areaConfig.resIdNormal : areaConfig.resIdLocked;
+        let sResId = flag ? areaConfig.resIdNormal : areaConfig.resIdHighlight;
         await ac.createOption({
             name: `img_${areaId}`,
             index: 1,
