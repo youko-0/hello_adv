@@ -90,6 +90,7 @@ const ExploreSystem = createSystem(
          */
         gotoView: async function (sceneId, viewId = null) {
             console.log('[LOG] gotoView', sceneId, viewId);
+            await ac.sysDialogOff({});
             if (viewId == null) {
                 viewId = this.getDefaultView(sceneId);
             }

@@ -124,6 +124,7 @@ const BagUI = {
         let selectedId = InventorySystem.getSelectedId();
         let itemConfig = InventorySystem.getItemConfig(itemId);
         let historyCount = InventorySystem.getHistoryCount(itemId);
+        let itemCount = InventorySystem.getItemCount(itemId);
         
         // 背景
         let resId = selectedId === itemId ? this.bg.resIdHighlight : this.bg.resIdNormal;    
@@ -181,7 +182,7 @@ const BagUI = {
             name: `lbl_item_count_${itemId}`,
             index: 4,
             inlayer: 'sv_items',
-            content: `${count}`,
+            content: `${itemCount}`,
             pos: { x: posX + 30, y: posY - 4 },
             size: { width: 40, height: 28 },
             halign: ac.HALIGN_TYPES.middle,
@@ -292,8 +293,8 @@ const BagUI = {
             style: 'style_detail',
         });
 
-        let count = InventorySystem.getItemCount(itemId);
-        if (count <= 0) {
+        let itemCount = InventorySystem.getItemCount(itemId);
+        if (itemCount <= 0) {
             // 创建查看按钮
             await ac.createOption({
                 name: 'btn_view_item',

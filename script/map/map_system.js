@@ -23,7 +23,7 @@ const MapSystem = createSystem(
                 plot: ResMap.plot_undercity,
                 plotLoop: ResMap.plot_undercity_loop,
                 // 关键道具
-                inventory: [item_pendant],
+                inventory: ['item_pendant'],
             },
             area2: {
                 name: "赛车场",
@@ -33,7 +33,7 @@ const MapSystem = createSystem(
                 pos: { x: 766, y: 197 },
                 plot: ResMap.plot_circuit,
                 plotLoop: ResMap.plot_circuit_loop,
-                inventory: [item_armor],
+                inventory: ['item_armor'],
             },
             area3: {
                 name: "哪吒庙",
@@ -43,7 +43,7 @@ const MapSystem = createSystem(
                 pos: { x: 629, y: 602 },
                 plot: ResMap.plot_nezha_temple,
                 plotLoop: ResMap.plot_nezha_temple_loop,
-                inventory: [item_compass],
+                inventory: ['item_compass'],
             },
             area4: {
                 name: "龙王庙",
@@ -53,7 +53,7 @@ const MapSystem = createSystem(
                 pos: { x: 514, y: 431 },
                 plot: ResMap.plot_dragon_temple,
                 plotLoop: ResMap.plot_dragon_temple_loop,
-                inventory: [item_blessing],
+                inventory: ['item_blessing'],
             },
             area5: {
                 name: "德兴大厦",
@@ -63,7 +63,7 @@ const MapSystem = createSystem(
                 pos: { x: 1098, y: 294 },
                 plot: ResMap.plot_dexing_tower,
                 plotLoop: ResMap.plot_dexing_tower_loop,
-                inventory: [item_visa],
+                inventory: ['item_visa'],
             }
         },
 
