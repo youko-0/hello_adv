@@ -129,7 +129,7 @@ const HelloADVRes = {
     plot_map: 13977507,
     plot_undercity: 14006475,
     plot_undercity_loop: 14084854,
-    plot_circuit: 13980816,
+    plot_circuit: 14087961,
     plot_circuit_loop: 14084854,
     plot_nezha_temple: 14005426,
     plot_nezha_temple_loop: 14084854,
