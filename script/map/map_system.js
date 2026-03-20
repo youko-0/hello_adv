@@ -20,13 +20,10 @@ const MapSystem = createSystem(
                 resIdHighlight: ResMap.img_undercity_highlight,
                 resIdNormal: ResMap.img_undercity,
                 pos: { x: 874, y: 389 },
-                btn: {
-                    resIdNormal: ResMap.btn_undercity_normal,
-                    resIdHighlight: ResMap.btn_undercity_highlight,
-                    pos: { x: -64, y: 20 },
-                },
                 plot: ResMap.plot_undercity,
                 plotLoop: ResMap.plot_undercity_loop,
+                // 关键道具
+                inventory: [item_pendant],
             },
             area2: {
                 name: "赛车场",
@@ -34,13 +31,9 @@ const MapSystem = createSystem(
                 resIdHighlight: ResMap.img_circuit_highlight,
                 resIdNormal: ResMap.img_circuit,
                 pos: { x: 766, y: 197 },
-                btn: {
-                    resIdNormal: ResMap.btn_circuit_normal,
-                    resIdHighlight: ResMap.btn_circuit_highlight,
-                    pos: { x: -120, y: 0 },
-                },
                 plot: ResMap.plot_circuit,
                 plotLoop: ResMap.plot_circuit_loop,
+                inventory: [item_armor],
             },
             area3: {
                 name: "哪吒庙",
@@ -48,13 +41,9 @@ const MapSystem = createSystem(
                 resIdHighlight: ResMap.img_nezha_temple_highlight,
                 resIdNormal: ResMap.img_nezha_temple,
                 pos: { x: 629, y: 602 },
-                btn: {
-                    resIdNormal: ResMap.btn_nezha_temple_normal,
-                    resIdHighlight: ResMap.btn_nezha_temple_highlight,
-                    pos: { x: -48, y: 20 },
-                },
                 plot: ResMap.plot_nezha_temple,
                 plotLoop: ResMap.plot_nezha_temple_loop,
+                inventory: [item_compass],
             },
             area4: {
                 name: "龙王庙",
@@ -62,13 +51,9 @@ const MapSystem = createSystem(
                 resIdHighlight: ResMap.img_dragon_temple_highlight,
                 resIdNormal: ResMap.img_dragon_temple,
                 pos: { x: 514, y: 431 },
-                btn: {
-                    resIdNormal: ResMap.btn_dragon_temple_normal,
-                    resIdHighlight: ResMap.btn_dragon_temple_highlight,
-                    pos: { x: -48, y: 0 },
-                },
                 plot: ResMap.plot_dragon_temple,
                 plotLoop: ResMap.plot_dragon_temple_loop,
+                inventory: [item_blessing],
             },
             area5: {
                 name: "德兴大厦",
@@ -76,13 +61,9 @@ const MapSystem = createSystem(
                 resIdHighlight: ResMap.img_dexing_tower_highlight,
                 resIdNormal: ResMap.img_dexing_tower,
                 pos: { x: 1098, y: 294 },
-                btn: {
-                    resIdNormal: ResMap.btn_dexing_tower_normal,
-                    resIdHighlight: ResMap.btn_dexing_tower_highlight,
-                    pos: { x: 64, y: 20 },
-                },
                 plot: ResMap.plot_dexing_tower,
                 plotLoop: ResMap.plot_dexing_tower_loop,
+                inventory: [item_visa],
             }
         },
 
@@ -116,6 +97,10 @@ const MapSystem = createSystem(
 
         // 是否访问过该区域
         isVisited: function (areaId) {
+            if (!areaId) return false;
+            // 因为涉及到剧情差分, 比较关键, 改成判断道具是否都获得了
+
+
             let visited = this.getData().visited;
             return visited[areaId] && visited[areaId] > 0;
         },
@@ -179,12 +164,13 @@ const MapSystem = createSystem(
 
         // 进入地图, MapSystem.enterMap()
         enterMap: async function () {
-            // 这里再保存一下
-            // 如果已经全部访问过，清空当前访问区域(不需要再播放动效)
-            if (this.isAllAreaVisited()) {
-                this.saveAreaId("");
+            let flag = this.isVisited(this.getAreaId());
+            // 保存访问记录(次数 + 1)
+            this.saveVisited(this.getAreaId());
+            // 如果当前区域已经完成, 清空记录, 不播放完成动效
+            if (flag) {
+                this.saveAreaId('');
             }
-            await this.saveVisited(this.getAreaId());
             await MapUI.createMapUI();
             await MapUI.onEnterMap();
         },
