@@ -3,6 +3,10 @@ console.log('[LOAD] explore_ui');
 
 const ExploreUI = {
 
+    scene: {
+        name: 'layer_explore_ui',
+    },
+
     Nav: {
         up: {
             x: GameConfig.centerX,
@@ -29,17 +33,10 @@ const ExploreUI = {
     // 创建场景UI
     createSceneUI: async function (sceneId, viewId) {
         console.log('[LOG] createSceneUI', sceneId, viewId);
-        // 先移除旧场景
-        await ac.remove({
-            name: "layer_explore_scene_bg",
-            effect: 'normal',
-            duration: 0,
-            canskip: false,
-        })
         let viewConfig = ExploreSystem.getViewConfig(sceneId, viewId);
         // 场景图
         await ac.createImage({
-            name: "layer_explore_scene_bg",
+            name: this.scene.name,
             index: ZORDER.BOTTOM_SCENE,
             inlayer: 'window',
             resId: viewConfig.bg,
@@ -53,7 +50,7 @@ const ExploreUI = {
             await ac.createOption({
                 name: `img_${itemId}`,
                 index: 0,
-                inlayer: "layer_explore_scene_bg",
+                inlayer: this.scene.name,
                 nResId: itemConfig.sprite,
                 sResId: itemConfig.sprite,
                 content: ``,
@@ -70,11 +67,11 @@ const ExploreUI = {
             if (viewName == null) {
                 continue;
             }
-            let navConfig = this.Nav[direction];
+            const navConfig = this.Nav[direction];
             await ac.createOption({
                 name: `btn_explore_arrow_${direction}`,
                 index: 5,
-                inlayer: "layer_explore_scene_bg",
+                inlayer: this.scene.name,
                 nResId: navConfig.resId,
                 sResId: navConfig.resId,
                 content: ``,
@@ -87,4 +84,12 @@ const ExploreUI = {
         }
 
     },
+
+    closeSceneUI: async function () {
+        await ac.remove({
+            name: this.scene.name,
+            effect: 'fadeout',
+            duration: 500,
+        })
+    }
 }

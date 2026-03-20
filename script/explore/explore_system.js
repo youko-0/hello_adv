@@ -64,6 +64,25 @@ const ExploreSystem = createSystem(
             return true;
         },
 
+        // 已查看全部线索
+        onInspectedAll: async function (sceneId) {
+            await CommonUI.showCustomDialog({
+                content: '场景里似乎没有什么可探索的了。',
+            });
+            // 跳去下一个剧情(用于独立剧情跳转)
+            let nextPlot = SceneConfig[sceneId].nextPlot;
+            if (nextPlot) {
+                await ac.jump({
+                    plotID: nextPlot,
+                    transition: ac.SCENE_TRANSITION_TYPES.fade,
+                    duration: 1000,
+                });
+            } else {
+                // 关闭场景 UI
+                await ExploreUI.closeSceneUI();
+            }
+        },
+
         /**
          * 跳转去场景
          * @param {string} sceneId  - 场景 ID
@@ -75,6 +94,13 @@ const ExploreSystem = createSystem(
                 viewId = this.getDefaultView(sceneId);
             }
             await ExploreUI.createSceneUI(sceneId, viewId);
+
+            // 等待直到所有线索都被查看完毕
+            while (!this.isInspectedAll(sceneId)) {
+                await ac.delay({ time: 500 });      // 等待 0.5 秒
+            }
+
+            await this.onInspectedAll(sceneId);
         },
 
         /**
@@ -91,23 +117,6 @@ const ExploreSystem = createSystem(
             let itemConfig = InventorySystem.getItemConfig(itemId);
             if (itemConfig.type === ItemType.KEY) {
                 await InventorySystem.gainItem(itemId, 1, `img_${itemId}`);
-            }
-
-            let flag = this.isInspectedAll(sceneId);
-            console.log('[LOG] isInspectedAll', flag);
-            if (flag) {
-                let config = {
-                    content: '场景里似乎没有什么可探索的了。',
-                }
-                await CommonUI.showCustomDialog(config);
-                let nextPlot = SceneConfig[sceneId].nextPlot;
-                if (nextPlot) {
-                    await ac.jump({
-                        plotID: nextPlot,
-                        transition: ac.SCENE_TRANSITION_TYPES.fade,
-                        duration: 1000,
-                    });
-                }
             }
         },
     }

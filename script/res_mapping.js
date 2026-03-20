@@ -104,7 +104,7 @@ const HelloADVRes = {
     spr_item_newspaper: '$185220220',
     spr_item_visa: '$185220221',
     // 详情大图
-    img_item_pendent: '$183720948',
+    img_item_pendant: '$183720948',
     img_item_armor: '$183720970',
     img_item_compass: '$183721506',
     img_item_blessing: '$183721672',
@@ -138,11 +138,6 @@ const HelloADVRes = {
     plot_dexing_tower: 14081581,
     plot_dexing_tower_loop: 14084854,
     plot_map_next: 13946330,
-    plot_residence_next: 13977507,
-    plot_nezha_temple_next: 14085044,
-    plot_broken_nezha_temple_next: 13977507,
-    plot_dragon_temple_next: 13977507,
-    plot_dexing_tower_next: 13977507,
 }
 
 const DongHaiRes = {
@@ -246,7 +241,7 @@ const DongHaiRes = {
     spr_item_newspaper: '',
     spr_item_visa: '',
     // 详情大图
-    img_item_pendent: '',
+    img_item_pendant: '',
     img_item_armor: '',
     img_item_compass: '',
     img_item_blessing: '',
@@ -280,11 +275,6 @@ const DongHaiRes = {
     plot_dexing_tower: 13974017,
     plot_dexing_tower_loop: '',
     plot_map_next: 13970354,
-    plot_residence_next: '',
-    plot_nezha_temple_next: '',
-    plot_broken_nezha_temple_next: '',
-    plot_dragon_temple_next: '',
-    plot_dexing_tower_next: '',
 };
 
 const ResMap = (RES_FLAG == 0) ? HelloADVRes : DongHaiRes;

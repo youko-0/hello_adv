@@ -123,7 +123,7 @@ const BagUI = {
     createItemUI: async function (itemId, posX, posY) {
         let selectedId = InventorySystem.getSelectedId();
         let itemConfig = InventorySystem.getItemConfig(itemId);
-        let count = InventorySystem.getItemCount(itemId);
+        let historyCount = InventorySystem.getHistoryCount(itemId);
         
         // 背景
         let resId = selectedId === itemId ? this.bg.resIdHighlight : this.bg.resIdNormal;    
@@ -152,7 +152,7 @@ const BagUI = {
         });
 
         // 道具名称
-        let itemName = count <= 0 ? "？？？" : itemConfig.name;
+        let itemName = historyCount <= 0 ? "？？？" : itemConfig.name;
         await ac.createText({
             name: `lbl_item_name_${itemId}`,
             index: 2,
@@ -191,7 +191,7 @@ const BagUI = {
         })
 
         // 压黑未获得的道具
-        if (count <= 0) {
+        if (historyCount <= 0) {
             ac.changeMaskTo({
             name: `bag_item_icon_${itemId}`,
             r: 0,

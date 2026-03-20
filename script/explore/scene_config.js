@@ -7,7 +7,6 @@ const SceneConfig = {
     residence: {
         // 客厅
         defaultViewId: 'living_room',
-        nextPlot: ResMap.plot_residence_next, // 下一个剧情
         views: {
             // 客厅
             living_room: {
@@ -25,7 +24,6 @@ const SceneConfig = {
     // 哪吒庙
     nezha_temple: {
         defaultViewId: 'main_hall',
-        nextPlot: ResMap.plot_nezha_temple_next, // 下一个剧情
         views: {
             // 主殿
             main_hall: {
@@ -86,7 +84,6 @@ const SceneConfig = {
     // 破碎的哪吒庙
     broken_nezha_temple: {
         defaultViewId: 'main_hall',
-        nextPlot: ResMap.plot_broken_nezha_temple_next, // 下一个剧情
         views: {
             // 主殿
             main_hall: {
@@ -147,7 +144,6 @@ const SceneConfig = {
     // 龙王庙
     dragon_temple: {
         defaultViewId: 'main_hall',
-        nextPlot: ResMap.plot_dragon_temple_next, // 下一个剧情
         views: {
             // 主殿
             main_hall: {
@@ -163,7 +159,6 @@ const SceneConfig = {
     // 德兴大厦
     dexing_tower: {
         defaultViewId: 'office',
-        nextPlot: ResMap.plot_dexing_tower_next, // 下一个剧情
         views: {
             // 办公室
             office: {

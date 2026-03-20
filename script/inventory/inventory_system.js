@@ -179,7 +179,7 @@ const InventorySystem = createSystem(
         },
 
         /**
-         * 获得道具并播放提示效果, InventorySystem.gainItem(itemId, itemNum, itemName)
+         * 获得道具并播放提示效果, await InventorySystem.gainItem(itemId, itemNum, itemName)
          * @param {string} itemId 道具ID
          * @param {number} itemNum 欲添加数量
          * @param {string} itemName 场景中的控件名, 控件消失并播放拖尾特效
