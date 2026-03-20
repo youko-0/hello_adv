@@ -94,15 +94,11 @@ const ExploreSystem = createSystem(
             await ac.sysDialogOff({});
             const viewId = this.getDefaultView(sceneId);
             
-            // 初始化场景探索状态
-            this._currentSceneId = sceneId;
-            this._itemViewInProgress = false;
-            
             // 初始化场景，显示初始视图
             await this.gotoView(sceneId, viewId);
 
-            // 等待直到所有线索都被查看完毕且查看物品详情操作完成
-            while (this._itemViewInProgress || !this.isInspectedAll(sceneId)) {
+            // 等待直到所有线索都查看完毕
+            while (!this.isInspectedAll(sceneId)) {
                 await ac.delay({ time: 500 });
             }
 
@@ -128,18 +124,14 @@ const ExploreSystem = createSystem(
         viewItem: async function (sceneId, itemId) {
             console.log('[LOG] viewItem', sceneId, itemId);
             await InventoryUI.showItemDetail(itemId);
-            // 记录为已查看
-            this.recordInspected(itemId);
             // 如果是 KEY 类型，需要获得道具
             let itemConfig = InventorySystem.getItemConfig(itemId);
             if (itemConfig.type === ItemType.KEY) {
-                // 标记道具查看操作正在进行中
-                this._itemViewInProgress = true;
                 // 这里会等待拖尾特效、背包打开和背包关闭全部完成
                 await InventorySystem.gainItem(itemId, 1, `img_${itemId}`);
-                // 清除标记
-                this._itemViewInProgress = false;
             }
+            // 记录为已查看, while 里面会判断是否全部完成
+            this.recordInspected(itemId);
         },
     }
 );

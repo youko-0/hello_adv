@@ -32,6 +32,9 @@ const BagUI = {
 
     // 创建背包主界面
     createBagUI: async function () {
+        // 当前选中的道具ID
+        this._selectedId = '';
+
         // 样式定义
         await ac.createStyle({
             name: 'style_item',
@@ -119,15 +122,31 @@ const BagUI = {
         });
     },
 
+    // 道具项点击回调函数
+    onItemSelect: async function (itemId) {
+        const selectedId = this._selectedId;
+        console.log(`[BagUI] onItemSelect: ${selectedId}, ${itemId}`);
+        if (!itemId || itemId === selectedId) return;
+        this._selectedId = itemId;
+
+        // 刷新道具项的选中状态
+        if (selectedId) {
+            this.refreshItemUI(selectedId);
+        }
+        this.refreshItemUI(itemId);
+
+        // 刷新道具详情显示
+        await this.refreshItemDetail(itemId);
+    },
+
     // 创建单个道具UI
     createItemUI: async function (itemId, posX, posY) {
-        let selectedId = InventorySystem.getSelectedId();
         let itemConfig = InventorySystem.getItemConfig(itemId);
         let historyCount = InventorySystem.getHistoryCount(itemId);
         let itemCount = InventorySystem.getItemCount(itemId);
-        
+
         // 背景
-        let resId = selectedId === itemId ? this.bg.resIdHighlight : this.bg.resIdNormal;    
+        let resId = this._selectedId === itemId ? this.bg.resIdHighlight : this.bg.resIdNormal;
         await ac.createOption({
             name: `bag_item_bg_${itemId}`,
             index: 1,
@@ -138,22 +157,23 @@ const BagUI = {
             pos: { x: posX, y: posY },
             anchor: { x: 50, y: 50 },
             onTouchEnded: async function () {
-                await BagUI.refreshItemDetail(itemId);     // 传递参数
+                await BagUI.onItemSelect(itemId);
             },
         });
 
         // 道具图标
+        const itemIcon = historyCount <= 0 ? itemConfig.iconLocked : itemConfig.icon;
         await ac.createImage({
             name: `bag_item_icon_${itemId}`,
             index: 2,
             inlayer: 'sv_items',
-            resId: itemConfig.icon,
+            resId: itemIcon,
             pos: { x: posX, y: posY + 20 },
             anchor: { x: 50, y: 50 },
         });
 
         // 道具名称
-        let itemName = historyCount <= 0 ? "？？？" : itemConfig.name;
+        const itemName = historyCount <= 0 ? "？？？" : itemConfig.name;
         await ac.createText({
             name: `lbl_item_name_${itemId}`,
             index: 2,
@@ -190,18 +210,18 @@ const BagUI = {
             anchor: { x: 50, y: 50 },
             style: 'style_item',
         })
+    },
 
-        // 压黑未获得的道具
-        if (historyCount <= 0) {
-            ac.changeMaskTo({
-            name: `bag_item_icon_${itemId}`,
-            r: 0,
-            g: 0,
-            b: 0,
-            opacity: 100,
-            duration: 0,
-            });
+    // 根据现有的位置刷新道具项
+    refreshItemUI: async function (itemId) {
+        let itemPos = await ac.getPos({
+            name: `bag_item_bg_${itemId}`,
+        });
+        if (!itemPos.x) {
+            // 控件不存在
+            return
         }
+        await this.createItemUI(itemId, itemPos.x, itemPos.y);
     },
 
     // 创建道具列表
@@ -322,6 +342,7 @@ const BagUI = {
                 anchor: { x: 50, y: 50 },
                 onTouchEnded: async function () {
                     await InventorySystem.useItem(itemId, 1);
+                    await this.refreshItemUI(itemId);
                 },
             });
         }

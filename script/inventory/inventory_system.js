@@ -38,20 +38,6 @@ const InventorySystem = createSystem(
             return itemList;
         },
 
-        getSelectedId: function () {
-            return this.getData().selectedId;
-        },
-
-        saveSelectedId: function (itemId) {
-            if (!itemId) return;
-            let data = this.getData();
-            if (data.selectedId !== itemId) {
-                console.log(`[Inventory] 切换选中道具: ${data.selectedId} -> ${itemId}`);
-                data.selectedId = itemId;
-                this.save();
-            }
-        },
-
         /**
          * 计算可以增加的道具数量
          * @param {string} itemId 道具ID
@@ -239,12 +225,11 @@ const InventorySystem = createSystem(
             if (typeof selectedId !== 'string' || !selectedId) {
                 selectedId = itemList[0];
             }
-            this.saveSelectedId(selectedId);
             // 关闭系统对话框
             await ac.sysDialogOff({});
             await BagUI.createBagUI();
             await BagUI.createItemList(itemList);
-            await BagUI.refreshItemDetail(selectedId);
+            await BagUI.onItemSelect(selectedId);
             await BagUI.onBagOpen();
         },
 

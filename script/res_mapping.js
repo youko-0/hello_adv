@@ -85,10 +85,15 @@ const HelloADVRes = {
     icon_forum_head_02: '$183113921',
     // 物品图标
     icon_item_pendant: '$183687836',
+    icon_item_pendant_locked: '$185357919',
     icon_item_armor: '$183720439',
+    icon_item_armor_locked: '$185357916',
     icon_item_compass: '$183720476',
+    icon_item_compass_locked: '$185357918',
     icon_item_blessing: '$183720595',
+    icon_item_blessing_locked: '$185357917',
     icon_item_visa: '$183720793',
+    icon_item_visa_locked: '$185357920',
     // 场景对象
     spr_item_family_photo: '$183946183',
     spr_item_motorcycle_key: '$183946184',
@@ -222,10 +227,15 @@ const DongHaiRes = {
     icon_forum_head_02: '$183358119',
     // 物品图标
     icon_item_pendant: '',
+    icon_item_pendant_locked: '',
     icon_item_armor: '',
+    icon_item_armor_locked: '',
     icon_item_compass: '',
+    icon_item_compass_locked: '',
     icon_item_blessing: '',
+    icon_item_blessing_locked: '',
     icon_item_visa: '',
+    icon_item_visa_locked: '',
     // 场景对象
     spr_item_family_photo: '',
     spr_item_motorcycle_key: '',
