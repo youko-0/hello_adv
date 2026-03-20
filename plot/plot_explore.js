@@ -24,7 +24,7 @@ await MapSystem.enterPlotMap()
 // -------------- 下城区旧居 -------------------
 
 
-// -------------------- 赛车场 ----------------
+// ----------------- 赛车场 ----------------
 await ac.sysDialogOn({
     content: `赛车场剧情, 获得道具云字铠甲`,
     hasRoleName: false,
@@ -36,7 +36,7 @@ await InventorySystem.gainItem('item_armor')
 
 await MapSystem.enterPlotMap()
 
-// -------------------- 赛车场 ----------------
+// ----------------- 赛车场 ----------------
 
 // ---------------- 哪吒庙 ------------------
 await ac.sysDialogOn({

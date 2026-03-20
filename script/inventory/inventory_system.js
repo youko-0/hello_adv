@@ -240,6 +240,8 @@ const InventorySystem = createSystem(
                 selectedId = itemList[0];
             }
             this.saveSelectedId(selectedId);
+            // 关闭系统对话框
+            await ac.sysDialogOff({});
             await BagUI.createBagUI();
             await BagUI.createItemList(itemList);
             await BagUI.refreshItemDetail(selectedId);
