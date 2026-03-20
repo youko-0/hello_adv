@@ -53,12 +53,12 @@ const InventorySystem = createSystem(
         },
 
         /**
-        * 获得道具, InventorySystem.addItem(itemId, itemNum)
-        * @param {string} itemId 道具ID
-        * @param {number} itemNum 欲添加数量
-        * @returns {number} 实际添加的数量 (0表示失败)
-        */
-        addItem: function (itemId, itemNum = 1) {
+         * 计算可以增加的道具数量
+         * @param {string} itemId 道具ID
+         * @param {number} itemNum 欲添加数量
+         * @returns {number} 实际可以添加的数量 (0表示无法添加)
+         */
+        calcCanAddAmount: function (itemId, itemNum = 1) {
             if (itemNum <= 0) return 0;
 
             let config = ItemConfig[itemId];
@@ -67,7 +67,6 @@ const InventorySystem = createSystem(
                 return 0;
             }
 
-            const data = this.getData(); // 获取核心数据引用
             const curBagNum = this.getItemCount(itemId);
             const curHistNum = this.getHistoryCount(itemId);
 
@@ -79,7 +78,6 @@ const InventorySystem = createSystem(
                 // 剩余可掉落额度 = 上限 - 历史总量
                 const remainingQuota = Math.max(0, config.dropLimit - curHistNum);
                 if (actualAdd > remainingQuota) {
-                    console.log(`[Inventory] ${config.name} 达到历史上限 (${config.dropLimit})，修正获取量: ${actualAdd} -> ${remainingQuota}`);
                     actualAdd = remainingQuota;
                 }
             }
@@ -89,13 +87,51 @@ const InventorySystem = createSystem(
             const maxStack = config.maxStack || 99;
             const spaceLeft = Math.max(0, maxStack - curBagNum);
             if (actualAdd > spaceLeft) {
-                console.log(`[Inventory] ${config.name} 达到堆叠上限 (${maxStack})，修正获取量: ${actualAdd} -> ${spaceLeft}`);
                 actualAdd = spaceLeft;
             }
 
+            return Math.max(0, actualAdd);
+        },
+
+        /**
+        * 获得道具, InventorySystem.addItem(itemId, itemNum)
+        * @param {string} itemId 道具ID
+        * @param {number} itemNum 欲添加数量
+        * @returns {number} 实际添加的数量 (0表示失败)
+        */
+        addItem: function (itemId, itemNum = 1) {
+            // 计算实际可添加数量
+            const actualAdd = this.calcCanAddAmount(itemId, itemNum);
+            
             if (actualAdd <= 0) {
-                console.log(`[Inventory] ${config.name} 已达上限`);
+                let config = ItemConfig[itemId];
+                if (config) {
+                    console.log(`[Inventory] ${config.name} 已达上限`);
+                } else {
+                    console.error(`未知的道具 ID: ${itemId}`);
+                }
                 return 0;
+            }
+
+            const data = this.getData();
+            const curBagNum = this.getItemCount(itemId);
+            const curHistNum = this.getHistoryCount(itemId);
+            const config = ItemConfig[itemId];
+
+            // 记录日志（如果数量被限制了）
+            if (actualAdd < itemNum) {
+                if (config.dropLimit && config.dropLimit !== -1) {
+                    const remainingQuota = Math.max(0, config.dropLimit - curHistNum);
+                    if (actualAdd === remainingQuota) {
+                        console.log(`[Inventory] ${config.name} 达到历史上限 (${config.dropLimit})，修正获取量: ${itemNum} -> ${actualAdd}`);
+                    }
+                }
+                
+                const maxStack = config.maxStack || 99;
+                const spaceLeft = Math.max(0, maxStack - curBagNum);
+                if (actualAdd === spaceLeft) {
+                    console.log(`[Inventory] ${config.name} 达到堆叠上限 (${maxStack})，修正获取量: ${itemNum} -> ${actualAdd}`);
+                }
             }
 
             // 更新背包

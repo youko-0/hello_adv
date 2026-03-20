@@ -162,8 +162,8 @@ const MapSystem = createSystem(
             // 保存当前访问区域
             this.saveAreaId(areaId);
             await ac.jump({
-            // TODO: 这里看下能不能用插入剧情实现
-            // await ac.display({
+                // TODO: 这里看下能不能用插入剧情实现
+                // await ac.display({
                 plotID: plotId,
                 transition: ac.SCENE_TRANSITION_TYPES.fade,
                 duration: 1000,
@@ -174,7 +174,10 @@ const MapSystem = createSystem(
         },
 
         // 进入地图, MapSystem.enterMap()
-        enterMap: async function () {
+        enterMap: async function (areaId = null) {
+            if (typeof areaId === 'string') {
+                this.saveAreaId(areaId);
+            }
             // 保存访问记录(次数 + 1)
             this.saveVisited(this.getAreaId());
             await MapUI.createMapUI();
