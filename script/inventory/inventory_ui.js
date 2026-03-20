@@ -68,7 +68,6 @@ const InventoryUI = {
             resId: ResMap.pic_common_bg_03,
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             anchor: { x: 50, y: 50 },
-            opacity: 80,
         });
         // 拦截点击
         ac.addEventListener({
