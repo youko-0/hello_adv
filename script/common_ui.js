@@ -577,7 +577,7 @@ const CommonUI = {
         endPos.x -= GameConfig.centerX;
         endPos.y -= GameConfig.centerY;
 
-        const moveSpeed = 0.5; // 移动速度, 像素/毫秒
+        const moveSpeed = 0.8; // 移动速度, 像素/毫秒
         let duration = Math.sqrt((startPos.x - endPos.x) ** 2 + (startPos.y - endPos.y) ** 2) / moveSpeed; // 飞行时间
         const containerName = 'trail_container';
         await ac.createLayer({
