@@ -173,7 +173,7 @@ const MapSystem = createSystem(
             // this.saveVisited(areaId);
         },
 
-        // 进入地图, MapSystem.enterMap()
+        // 进入地图, await MapSystem.enterMap(areaId)
         enterMap: async function (areaId = null) {
             if (typeof areaId === 'string') {
                 this.saveAreaId(areaId);
@@ -182,6 +182,15 @@ const MapSystem = createSystem(
             this.saveVisited(this.getAreaId());
             await MapUI.createMapUI();
             await MapUI.onEnterMap();
+        },
+
+        // 进入地图剧情, await MapSystem.enterPlotMap()
+        enterPlotMap: async function () {
+            await ac.jump({
+                plotID: ResMap.plot_map,
+                transition: ac.SCENE_TRANSITION_TYPES.fade,
+                duration: 1000,
+            });
         },
     }
 );

@@ -84,24 +84,35 @@ const ExploreSystem = createSystem(
         },
 
         /**
-         * 跳转去场景
-         * @param {string} sceneId  - 场景 ID
-         * @param {string} viewId   - 视图 ID（可选），如果不指定则使用场景配置中的默认视图
+         * 进入场景的 defaultView 进行探索（外部调用接口）
+         * @param {string} sceneId - 场景 ID
          */
-        gotoView: async function (sceneId, viewId = null) {
-            console.log('[LOG] gotoView', sceneId, viewId);
+        enterScene: async function (sceneId) {
+            console.log('[LOG] enterScene', sceneId);
+            
+            // 关闭系统对话框
             await ac.sysDialogOff({});
-            if (viewId == null) {
-                viewId = this.getDefaultView(sceneId);
-            }
-            await ExploreUI.createSceneUI(sceneId, viewId);
+            const viewId = this.getDefaultView(sceneId);
+            // 初始化场景，显示初始视图
+            await this.gotoView(sceneId, viewId);
 
             // 等待直到所有线索都被查看完毕
             while (!this.isInspectedAll(sceneId)) {
-                await ac.delay({ time: 500 });      // 等待 0.5 秒
+                await ac.delay({ time: 500 });
             }
 
+            // 探索完成
             await this.onInspectedAll(sceneId);
+        },
+
+        /**
+         * 跳转去场景视图（内部调用，不等待完成）
+         * @param {string} sceneId  - 场景 ID
+         * @param {string} viewId   - 视图 ID
+         */
+        gotoView: async function (sceneId, viewId) {
+            console.log('[LOG] gotoView', sceneId, viewId);
+            await ExploreUI.createSceneUI(sceneId, viewId);
         },
 
         /**
