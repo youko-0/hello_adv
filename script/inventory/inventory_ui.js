@@ -40,8 +40,8 @@ const InventoryUI = {
             startPos = { x: GameConfig.centerX, y: GameConfig.centerY };
         }
         else {
-            // 删除物品
-            await ac.remove({
+            // 删除物品, 这里和动效同步进行
+            ac.remove({
                 name: itemName,
                 effect: 'fadeout',
                 duration: 100,
