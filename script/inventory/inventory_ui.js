@@ -73,16 +73,7 @@ const InventoryUI = {
             anchor: { x: 0, y: 0 },
             clipMode: false,
         })
-        await ac.createImage({
-            name: 'img_item_detail_bg',
-            index: 0,
-            inlayer: this.itemDetail.name,
-            resId: ResMap.pic_common_bg_03,
-            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
-            anchor: { x: 50, y: 50 },
-            opacity: 80,
 
-        });
         // 拦截点击
         ac.addEventListener({
             type: ac.EVENT_TYPES.onTouchBegan,
@@ -91,6 +82,17 @@ const InventoryUI = {
         });
         // 大图
         if (itemConfig.illust) {
+            await ac.createImage({
+                name: 'img_item_detail_bg',
+                index: 0,
+                inlayer: this.itemDetail.name,
+                resId: ResMap.pic_common_bg_03,
+                pos: { x: GameConfig.centerX, y: GameConfig.centerY },
+                anchor: { x: 50, y: 50 },
+                opacity: 80,
+
+            });
+
             await ac.createImage({
                 name: 'img_item_info_pic',
                 index: 0,
@@ -103,7 +105,6 @@ const InventoryUI = {
         await CommonUI.showCustomDialog({
             content: itemConfig.desc,
             roleAvatarResId: itemConfig.icon,
-            hasBg: Boolean(itemConfig.illust),      // 没有配置大图就不显示背景
         });
         await ac.remove({
             name: this.itemDetail.name,

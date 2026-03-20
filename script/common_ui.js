@@ -237,6 +237,7 @@ const CommonUI = {
      * @param {boolean} [config.closeType] 关闭逻辑, 默认手动关闭, 1 自动关闭, 2 不关闭
      */
     showCustomDialog: async function (config) {
+        this.closeCustomDialog();
         // 配置验证
         if (!config || !config.content) {
             console.error('[CustomDialog] 错误: 缺少必要的 content 参数');
