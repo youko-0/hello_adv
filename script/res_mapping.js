@@ -272,7 +272,7 @@ const DongHaiRes = {
     ui_post_detail: '94d2303586e64ea396122dd9fa964f77',
     
     // 剧情唯一 ID
-    plot_forum_next: 13977507,
+    plot_forum_next: 13969471,
     plot_map: 13980661,
     plot_undercity: 13969535,
     plot_undercity_loop: 14084638,
