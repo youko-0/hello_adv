@@ -10,6 +10,18 @@ const ItemType = {
 
 const ItemConfig = {
 
+    item_spirit_eye: {
+        name: "灵视",
+        type: ItemType.KEY,
+        icon: ResMap.icon_item_spirit_eye,
+        iconLocked: ResMap.icon_item_spirit_eye_locked,
+        illust: ResMap.img_item_spirit_eye,
+        desc: "可与器灵沟通，回溯往事。",
+        maxStack: 1,  // 最多持有一个
+        dropLimit: 1,  // 只会掉落一次
+        sortIndex: 0,
+    },
+
     item_pendant: {
         name: "龙鳞吊坠",
         type: ItemType.KEY,
@@ -148,6 +160,7 @@ const ItemConfig = {
         sprite: ResMap.spr_item_letter,
         illust: ResMap.img_item_letter,
         desc: "这是一封落款人为敖烈，落款时间是2021年的书信。上面写着什么……仁兄台鉴……",
+
     },
 
     item_jewelry_box: {

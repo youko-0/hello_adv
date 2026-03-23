@@ -84,6 +84,8 @@ const HelloADVRes = {
     icon_forum_head_01: '$183114062',
     icon_forum_head_02: '$183113921',
     // 物品图标
+    icon_item_spirit_eye: '$183687835',
+    icon_item_spirit_eye_locked: '$185357914',
     icon_item_pendant: '$183687836',
     icon_item_pendant_locked: '$185357919',
     icon_item_armor: '$183720439',
@@ -109,6 +111,7 @@ const HelloADVRes = {
     spr_item_newspaper: '$185220220',
     spr_item_visa: '$185220221',
     // 详情大图
+    img_item_spirit_eye: '$183687835',
     img_item_pendant: '$183720948',
     img_item_armor: '$183720970',
     img_item_compass: '$183721506',
