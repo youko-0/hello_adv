@@ -17,6 +17,7 @@ const ItemConfig = {
         iconLocked: ResMap.icon_item_spirit_eye_locked,
         illust: ResMap.img_item_spirit_eye,
         desc: "可与器灵沟通，回溯往事。",
+        descLocked: "一副很奇怪的墨镜",
         maxStack: 1,  // 最多持有一个
         dropLimit: 1,  // 只会掉落一次
         sortIndex: 0,
@@ -27,8 +28,9 @@ const ItemConfig = {
         type: ItemType.KEY,
         icon: ResMap.icon_item_pendant,
         iconLocked: ResMap.icon_item_pendant_locked,
-        illust : ResMap.img_item_pendant,
+        illust: ResMap.img_item_pendant,
         desc: "李云祥出生时带来的一块“神玉”，陪伴他长大，仔细一看是鳞片的纹理，上面用古老的文字刻画着“云祥”二字。",
+        descLocked: "一个应该很值钱的东西。",
         maxStack: 1,  // 最多持有一个
         dropLimit: 1,  // 只会掉落一次
         sortIndex: 1,
@@ -46,6 +48,7 @@ const ItemConfig = {
         iconLocked: ResMap.icon_item_armor_locked,
         illust: ResMap.img_item_armor,
         desc: "一副火红色的铠甲，胸口用繁体写着“云”字。生了情的圣人在爱欲与怜悯面前丢盔卸甲，将它与英雄梦一同束之高阁。",
+        descLocked: "一个红红的，硬硬的东西，从楼上掉下来能砸死人。",
         maxStack: 1,  // 最多持有一个
         dropLimit: 1,  // 只会掉落一次
         sortIndex: 2,
@@ -58,6 +61,7 @@ const ItemConfig = {
         iconLocked: ResMap.icon_item_compass_locked,
         illust: ResMap.img_item_compass,
         desc: "佛门法器，用来兴旺避邪、镇室安宅。存放着李云祥前世的记忆。",
+        descLocked: "Star farming 之一？",
         maxStack: 1,  // 最多持有一个
         dropLimit: 1,  // 只会掉落一次
         sortIndex: 3,
@@ -70,6 +74,7 @@ const ItemConfig = {
         iconLocked: ResMap.icon_item_blessing_locked,
         illust: ResMap.img_item_blessing,
         desc: "龙三太子把你当自己人了，从此以后你可以在海里横着走。不过谁会没事去海里呢？",
+        descLocked: "好像不是东西。",
         maxStack: 1,  // 最多持有一个
         dropLimit: 1,  // 只会掉落一次
         sortIndex: 4,
@@ -83,9 +88,18 @@ const ItemConfig = {
         sprite: ResMap.spr_item_visa,
         illust: ResMap.img_item_visa,
         desc: "传说中能让飞机掉头的梅山银行信用卡。面向全球顶级富豪、政要及社会名流发卡，持卡人可享受无额度上限、生活出行各方面的顶级服务。可是对敖丙来说，daddy的爱比黑卡更有含金量，daddy也会为他做这些，并且不会因为他很优秀才爱他。",
+        descLocked: "钱本钱。",
         maxStack: 1,  // 最多持有一个
         dropLimit: 1,  // 只会掉落一次
         sortIndex: 5,
+        onView: async () => {
+            await ac.sysDialogOn({
+                content: `【我】（羡慕）可恶啊，是一生下来爱和钱都有了的家伙……`,
+                hasRoleName: false,
+                hasBg: true,
+                hasRoleAvatar: false,
+            });
+        }
     },
 
     item_family_photo: {
@@ -160,6 +174,14 @@ const ItemConfig = {
         sprite: ResMap.spr_item_letter,
         illust: ResMap.img_item_letter,
         desc: "这是一封落款人为敖烈，落款时间是2021年的书信。上面写着什么……仁兄台鉴……",
+        onView: async () => {
+            await ac.sysDialogOn({
+                content: `小白龙剧情巴拉巴拉`,
+                hasRoleName: false,
+                hasBg: true,
+                hasRoleAvatar: false,
+            });
+        }
 
     },
 

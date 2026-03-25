@@ -130,6 +130,9 @@ const ExploreSystem = createSystem(
                 // 这里会等待拖尾特效、背包打开和背包关闭全部完成
                 await InventorySystem.gainItem(itemId, 1, `img_${itemId}`);
             }
+            if (itemConfig.onView) {
+                await itemConfig.onView()
+            }
             // 记录为已查看, while 里面会判断是否全部完成
             this.recordInspected(itemId);
         },

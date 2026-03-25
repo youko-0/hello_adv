@@ -60,8 +60,8 @@ const InventoryUI = {
     },
 
     // 创建物品详情 UI, 大图 + 文字描述
-    showItemDetail: async function (itemId) {
-        console.log('[LOG] showItemDetail', itemId);
+    showItemDetail: async function (itemId, locked = false) {
+        console.log('[LOG] showItemDetail', itemId, locked);
         let itemConfig = InventorySystem.getItemConfig(itemId);
         // 背景层
         await ac.createLayer({
@@ -101,10 +101,24 @@ const InventoryUI = {
                 pos: { x: GameConfig.centerX, y: GameConfig.centerY + 100 },
                 anchor: { x: 50, y: 50 },
             });
+
+            if (locked) {
+                // 叠加一个黑色
+                ac.changeMaskTo({
+                    name: 'img_item_info_pic',
+                    r: 0,
+                    g: 0,
+                    b: 0,
+                    opacity: 100,
+                    duration: 0,
+                });
+            }
         }
+        const itemDesc = locked? itemConfig.descLocked: itemConfig.desc
+        const itemIcon = locked? itemConfig.iconLocked: itemConfig.icon
         await CommonUI.showCustomDialog({
-            content: itemConfig.desc,
-            roleAvatarResId: itemConfig.icon,
+            content: itemDesc,
+            roleAvatarResId: itemIcon,
         });
         await ac.remove({
             name: this.itemDetail.name,

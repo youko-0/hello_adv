@@ -268,13 +268,16 @@ const BagUI = {
     // 刷新右侧道具详情
     refreshItemDetail: async function (itemId) {
         let itemConfig = InventorySystem.getItemConfig(itemId);
+        let historyCount = InventorySystem.getHistoryCount(itemId);
+        let itemCount = InventorySystem.getItemCount(itemId);
 
         // 道具名称
+        const itemName = historyCount <= 0 ? "？？？" : itemConfig.name;
         await ac.createText({
             name: 'lbl_item_detail_name',
             index: 1,
             inlayer: this.name,
-            content: itemConfig.name,
+            content: itemName,
             pos: { x: 900, y: 486 },
             size: { width: this.itemDetail.width, height: 120 },
             direction: ac.TEXT_DIRECTION_TYPES.horizontal,
@@ -285,7 +288,8 @@ const BagUI = {
         });
 
         // 道具描述
-        let contentHeight = Utils.calcTextHeight(itemConfig.desc, this.itemDetail.fontSize, this.itemDetail.width, 1.2);
+        const itemDesc = historyCount <= 0 ? itemConfig.descLocked : itemConfig.desc;
+        let contentHeight = Utils.calcTextHeight(itemDesc, this.itemDetail.fontSize, this.itemDetail.width, 1.2);
         contentHeight = Math.max(contentHeight, this.svDetail.height);
         // 滚动层容器
         await ac.createScrollView({
@@ -302,7 +306,7 @@ const BagUI = {
             name: 'lbl_item_detail_desc',
             index: 0,
             inlayer: 'sv_item_detail_desc',
-            content: itemConfig.desc,
+            content: itemDesc,
             pos: { x: this.svDetail.width / 2, y: contentHeight / 2 },
             size: { width: this.itemDetail.width, height: contentHeight },
             direction: ac.TEXT_DIRECTION_TYPES.horizontal,
@@ -313,8 +317,7 @@ const BagUI = {
             style: 'style_detail',
         });
 
-        let itemCount = InventorySystem.getItemCount(itemId);
-        if (itemCount <= 0) {
+        if (true || itemCount <= 0) {
             // 创建查看按钮
             await ac.createOption({
                 name: 'btn_view_item',
@@ -326,7 +329,7 @@ const BagUI = {
                 pos: { x: 894, y: 228 },
                 anchor: { x: 50, y: 50 },
                 onTouchEnded: async function () {
-                    await InventoryUI.showItemDetail(itemId);
+                    await InventoryUI.showItemDetail(itemId, historyCount <= 0);
                 },
             });
         } else {
