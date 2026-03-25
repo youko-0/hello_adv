@@ -230,8 +230,8 @@ const DongHaiRes = {
     icon_forum_head_01: '$185360104',
     icon_forum_head_02: '$185360103',
     // 物品图标
-    icon_item_spirit_eye: '',
-    icon_item_spirit_eye_locked: '',
+    icon_item_spirit_eye: '$186018535',
+    icon_item_spirit_eye_locked: '$186018536',
     icon_item_pendant: '$185360085',
     icon_item_pendant_locked: '$185360029',
     icon_item_armor: '$185360083',
@@ -257,7 +257,7 @@ const DongHaiRes = {
     spr_item_newspaper: '$185360042',
     spr_item_visa: '$185360041',
     // 详情大图
-    img_item_spirit_eye: '',
+    img_item_spirit_eye: '$186018537',
     img_item_pendant: '$185360079',
     img_item_armor: '$185360078',
     img_item_compass: '$185360077',
@@ -292,7 +292,7 @@ const DongHaiRes = {
     plot_dexing_tower: 13974017,
     plot_dexing_tower_loop: 14084642,
     plot_map_next: 13970354,
-    plot_bad_end_without_spirit_eye: '',
+    plot_bad_end_without_spirit_eye: 14053516,
 };
 
 const ResMap = (RES_FLAG == 0) ? HelloADVRes : DongHaiRes;
