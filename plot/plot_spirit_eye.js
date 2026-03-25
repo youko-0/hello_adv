@@ -2,7 +2,8 @@ await CommonUI.showCustomDialog({
     content: '是否查看香灰',
     closeType: 2,
 });
-CommonUI.showCustomOptionGroup({
+
+await CommonUI.showCustomOptionGroup({
     options: [
         {
             text: '查看', callback: async () => {
