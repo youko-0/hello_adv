@@ -76,6 +76,14 @@ const CommonUI = {
             fontSize: 24,
             color: '#d1d3df',
         },
+        styleDisabled: {
+            name: 'style_dialog_disabled',
+            font: '汉仪小隶书简',
+            bold: false,
+            italic: false,
+            fontSize: 24,
+            color: '#63656d',
+        },
     },
     // 选项组
     optionGroup: {
@@ -524,22 +532,26 @@ const CommonUI = {
     /**
      * 自定义选项组
      * @param {Object} config 配置项
-     * @param {list} config.options [{text: '选项1', callback: () => {}}, {text: '取消'}, ]
+     * @param {list} config.options [option, option]
+     * @param {Object} option {text, callback, enabled=true}
      */
     showCustomOptionGroup: async function (config) {
         console.log('[CustomOptionGroup] 显示自定义选项组:', config);
         let optionLs = [];
         for (let i = 0; i < config.options.length; i++) {
             let option = config.options[i];
+            const enabled = option.enabled === null? true: option.enabled
+            const nResId = enabled? ResMap.img_selection_bg_normal: ResMap.img_selection_bg_disabled
+            const sResId = enabled? ResMap.img_selection_bg_highlight: ResMap.img_selection_bg_disabled
+            const styleName = enabled? this.dialog.style.name: this.dialog.styleDisabled.name
             optionLs.push({
                 textContent: option.text,
-                textStyle: this.dialog.style.name,
-                nResId: ResMap.img_selection_bg_normal,
-                sResId: ResMap.img_selection_bg_highlight,
+                textStyle: styleName,
+                nResId: nResId,
+                sResId: sResId,
                 x: GameConfig.centerX,
                 y: 420 - i * 120,
-                // 默认关闭选项组
-                clickFunc: option.callback || this.closeCustomOptionGroup,
+                clickFunc: option.callback
             })
         }
         await ac.createOptionGroup({
@@ -631,6 +643,7 @@ const CommonUI = {
         });
 
         ac.createStyle(this.dialog.style);
+        ac.createStyle(this.dialog.styleDisabled);
 
         await ac.delay({ time: 100 });
         await this.onLoadDelay();

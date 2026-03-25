@@ -18,6 +18,7 @@ const HelloADVRes = {
     btn_skip_highlight: '$185253970',
     img_selection_bg_normal: '$185253270',
     img_selection_bg_highlight: '$185253269',
+    img_selection_bg_disabled: '$186021901',
 
     // 论坛
     img_forum_topic_bg_normal: '$183003987',
@@ -164,6 +165,7 @@ const DongHaiRes = {
     btn_skip_highlight: '$185360037',
     img_selection_bg_normal: '$185360038',
     img_selection_bg_highlight: '$185360039',
+    img_selection_bg_disabled: '$186021889',
 
     // 论坛
     img_forum_topic_bg_normal: '$185360106',

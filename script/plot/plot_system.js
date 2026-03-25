@@ -3,34 +3,37 @@ console.log('[LOAD] plot_system');
 
 const PlotSystem = {
     /**
-     * 快捷接口：显示带有道具检查逻辑的单个选项, 有道具时执行 successBranch，无道具时执行 failBranch
+     * 快捷接口：显示带有道具检查逻辑的选项组, 有道具启用第一个选项, 否则启用第二个选项
      * @param {Object} config 配置项
      * @param {string} config.itemId 需要检查的道具ID (例如："item_spirit_vision")
-     * @param {string} config.optionText 选项的文本 (例如："尝试回溯")
-     * @param {Function} config.successBranch 拥有道具时的剧情回调
-     * @param {Function} config.failBranch 未拥有道具时的剧情回调
+     * @param {string} config.optionText1 拥有道具的选项文本
+     * @param {string} config.optionText2 未拥有道具的选项文本
+     * @param {Function} config.callback1 拥有道具的回调
+     * @param {Function} config.callback2 未拥有道具的回调
      */
     showItemCheckOption: async function (config) {
         const {
             itemId,
-            optionText,
-            successBranch,
-            failBranch,
+            optionText1,
+            optionText2,
+            callback1,
+            callback2,
         } = config;
+        const hasItem = InventorySystem.getItemCount(itemId) > 0;
+        console.log(`[Plot] 检查道具 ${itemId}, 是否拥有: ${hasItem}`);
         await CommonUI.showCustomOptionGroup({
             options: [
                 {
-                    text: optionText,
+                    text: optionText1,
                     callback: async () => {
-                        await CommonUI.closeCustomOptionGroup();
-                        const hasItem = InventorySystem.getItemCount(itemId) > 0;
-                        console.log(`[Plot] 检查道具 ${itemId}, 是否拥有: ${hasItem}`);
-                        if (hasItem) {
-                            if (successBranch) await successBranch();
-                        } else {
-                            if (failBranch) await failBranch();
-                        }
-                    }
+                        
+                    },
+                    enabled: hasItem,
+                },
+                {
+                    text: optionText2,
+                    callback: !hasItem? callback2: null,
+                    enabled: !hasItem,
                 },
             ]
         });
@@ -47,9 +50,10 @@ const PlotSystem = {
         })
         await this.showItemCheckOption({
             itemId: 'item_spirit_eye',
-            optionText: '进入回溯',
-            successBranch: null,        // 直接继续剧情
-            failBranch: async () => {
+            optionText1: '进入回溯',
+            callback1: null,        // 直接继续剧情
+            optionText2: '不进入回溯',
+            callback2: async () => {
                 await ac.jump({
                     plotID: ResMap.plot_bad_end_without_spirit_eye,
                     transition: ac.SCENE_TRANSITION_TYPES.fade,
