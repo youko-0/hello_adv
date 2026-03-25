@@ -24,6 +24,7 @@ const PlotSystem = {
                     callback: async () => {
                         await CommonUI.closeCustomOptionGroup();
                         const hasItem = InventorySystem.getItemCount(itemId) > 0;
+                        console.log(`[Plot] 检查道具 ${itemId}, 是否拥有: ${hasItem}`);
                         if (hasItem) {
                             if (successBranch) await successBranch();
                         } else {

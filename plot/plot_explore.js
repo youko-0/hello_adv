@@ -19,6 +19,15 @@ await ac.sysDialogOn({
 });
 await InventorySystem.gainItem('item_pendant')
 
+await PlotSystem.showSpiritEyeOption()
+
+await ac.sysDialogOn({
+    content: `回溯剧情balabala`,
+    hasRoleName: false,
+    hasBg: true,
+    hasRoleAvatar: false,
+});
+
 await MapSystem.enterPlotMap()
 
 // -------------- 下城区旧居 -------------------
