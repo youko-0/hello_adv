@@ -28,7 +28,7 @@ await ac.sysDialogOn({
     hasRoleAvatar: false,
 });
 
-await MapSystem.enterPlotMap()
+await PlotSystem.enterPlotMap()
 
 // -------------- 下城区旧居 -------------------
 
@@ -43,7 +43,7 @@ await ac.sysDialogOn({
 
 await InventorySystem.gainItem('item_armor')
 
-await MapSystem.enterPlotMap()
+await PlotSystem.enterPlotMap()
 
 // ----------------- 赛车场 ----------------
 
@@ -72,7 +72,7 @@ await ac.sysDialogOn({
 });
 await ExploreSystem.enterScene('broken_nezha_temple');
 
-await MapSystem.enterPlotMap()
+await PlotSystem.enterPlotMap()
 
 // ---------------- 哪吒庙 ------------------
 
@@ -93,7 +93,7 @@ await ac.sysDialogOn({
 });
 await InventorySystem.gainItem('item_blessing')
 
-await MapSystem.enterPlotMap()
+await PlotSystem.enterPlotMap()
 
 // ---------------- 龙王庙 ------------------
 
@@ -107,6 +107,6 @@ await ac.sysDialogOn({
 });
 await ExploreSystem.enterScene('dexing_tower');
 
-await MapSystem.enterPlotMap()
+await PlotSystem.enterPlotMap()
 
 // ---------------- 德兴大厦 ----------------

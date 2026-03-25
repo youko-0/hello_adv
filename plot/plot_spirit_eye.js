@@ -30,4 +30,4 @@ await ac.sysDialogOn({
     hasRoleAvatar: false,
 });
 
-await MapSystem.enterPlotMap()
+await PlotSystem.enterPlotMap()

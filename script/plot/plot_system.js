@@ -41,6 +41,10 @@ const PlotSystem = {
      * @param {Function} successBranch 拥有灵视时的剧情回调（继续剧情）
      */
     showSpiritEyeOption: async function () {
+        await CommonUI.showCustomDialog({
+            content: '是否进入回溯？',
+            closeType: 2,
+        })
         await this.showItemCheckOption({
             itemId: 'item_spirit_eye',
             optionText: '进入回溯',
@@ -52,6 +56,16 @@ const PlotSystem = {
                     duration: 1000,
                 });
             },
+        });
+        await CommonUI.closeCustomDialog();
+    },
+
+    // 进入地图剧情, await PlotSystem.enterPlotMap()
+    enterPlotMap: async function () {
+        await ac.jump({
+            plotID: ResMap.plot_map,
+            transition: ac.SCENE_TRANSITION_TYPES.fade,
+            duration: 1000,
         });
     },
 };

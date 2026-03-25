@@ -183,14 +183,5 @@ const MapSystem = createSystem(
             await MapUI.createMapUI();
             await MapUI.onEnterMap();
         },
-
-        // 进入地图剧情, await MapSystem.enterPlotMap()
-        enterPlotMap: async function () {
-            await ac.jump({
-                plotID: ResMap.plot_map,
-                transition: ac.SCENE_TRANSITION_TYPES.fade,
-                duration: 1000,
-            });
-        },
     }
 );
