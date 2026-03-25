@@ -146,6 +146,7 @@ const HelloADVRes = {
     plot_dexing_tower: 14081581,
     plot_dexing_tower_loop: 14084854,
     plot_map_next: 13946330,
+    plot_bad_end_without_spirit_eye: 14128131
 }
 
 const DongHaiRes = {
@@ -229,6 +230,8 @@ const DongHaiRes = {
     icon_forum_head_01: '$185360104',
     icon_forum_head_02: '$185360103',
     // 物品图标
+    icon_item_spirit_eye: '',
+    icon_item_spirit_eye_locked: '',
     icon_item_pendant: '$185360085',
     icon_item_pendant_locked: '$185360029',
     icon_item_armor: '$185360083',
@@ -254,6 +257,7 @@ const DongHaiRes = {
     spr_item_newspaper: '$185360042',
     spr_item_visa: '$185360041',
     // 详情大图
+    img_item_spirit_eye: '',
     img_item_pendant: '$185360079',
     img_item_armor: '$185360078',
     img_item_compass: '$185360077',
@@ -268,12 +272,12 @@ const DongHaiRes = {
 
     // 粒子
     spr_particle_trail: '$185360040',
-    
+
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: '5a63b4fc0a7041f38685971fcecfd962',
     ui_forum: '097c0cbdd8d44985b1b2933760da7c88',
     ui_post_detail: '94d2303586e64ea396122dd9fa964f77',
-    
+
     // 剧情唯一 ID
     plot_forum_next: 13969471,
     plot_map: 13980661,
@@ -288,6 +292,7 @@ const DongHaiRes = {
     plot_dexing_tower: 13974017,
     plot_dexing_tower_loop: 14084642,
     plot_map_next: 13970354,
+    plot_bad_end_without_spirit_eye: '',
 };
 
 const ResMap = (RES_FLAG == 0) ? HelloADVRes : DongHaiRes;

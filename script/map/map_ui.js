@@ -133,8 +133,9 @@ const MapUI = {
             callback: MapSystem.onAllAreaVisited,
         }, {
             text: '继续探索',
-            callback: async function () {
+            callback: async () => {
                 await CommonUI.closeCustomOptionGroup();
+                await CommonUI.closeCustomDialog();
                 // 显示跳过按钮
                 await ac.show({
                     name: 'btn_skip',
@@ -143,8 +144,11 @@ const MapUI = {
                 })
             },
         }]
-        CommonUI.showCustomOptionGroup({
+        await CommonUI.showCustomDialog({
             content: content,
+            closeType: 2,
+        });
+        CommonUI.showCustomOptionGroup({
             options: options,
         })
 

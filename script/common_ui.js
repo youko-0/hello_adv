@@ -522,17 +522,12 @@ const CommonUI = {
     },
 
     /**
-     * 带一个文本的自定义选项组
+     * 自定义选项组
      * @param {Object} config 配置项
-     * @param {string} config.content 文本内容
      * @param {list} config.options [{text: '选项1', callback: () => {}}, {text: '取消'}, ]
      */
     showCustomOptionGroup: async function (config) {
         console.log('[CustomOptionGroup] 显示自定义选项组:', config);
-        await this.showCustomDialog({
-            content: config.content,
-            closeType: 2,
-        });
         let optionLs = [];
         for (let i = 0; i < config.options.length; i++) {
             let option = config.options[i];
@@ -543,6 +538,7 @@ const CommonUI = {
                 sResId: ResMap.img_selection_bg_highlight,
                 x: GameConfig.centerX,
                 y: 420 - i * 120,
+                // 默认关闭选项组
                 clickFunc: option.callback || this.closeCustomOptionGroup,
             })
         }
@@ -565,7 +561,6 @@ const CommonUI = {
             effect: 'normal',
             duration: 0,
         })
-        await this.closeCustomDialog();
     },
 
     // 播放拖尾特效
