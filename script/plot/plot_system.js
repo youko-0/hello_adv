@@ -50,7 +50,10 @@ const PlotSystem = {
         await this.showItemCheckOption({
             itemId: 'item_spirit_eye',
             optionText1: '进入回溯',
-            callback1: null,        // 直接继续剧情
+            callback1: async () => {
+                await CommonUI.closeCustomOptionGroup();
+                // 然后会走后续剧情
+            },
             optionText2: '不进入回溯',
             callback2: async () => {
                 await ac.jump({
