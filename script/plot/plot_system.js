@@ -24,15 +24,13 @@ const PlotSystem = {
         await CommonUI.showCustomOptionGroup({
             options: [
                 {
-                    text: optionText1,
-                    callback: async () => {
-                        
-                    },
+                    content: optionText1,
+                    onTouchEnded: callback1,
                     enabled: hasItem,
                 },
                 {
-                    text: optionText2,
-                    callback: !hasItem? callback2: null,
+                    content: optionText2,
+                    onTouchEnded: callback2,
                     enabled: !hasItem,
                 },
             ]
@@ -44,6 +42,7 @@ const PlotSystem = {
      * @param {Function} successBranch 拥有灵视时的剧情回调（继续剧情）
      */
     showSpiritEyeOption: async function () {
+        await ac.sysDialogOff({});
         await CommonUI.showCustomDialog({
             content: '是否进入回溯？',
             closeType: 2,

@@ -245,7 +245,6 @@ const CommonUI = {
      * @param {boolean} [config.closeType] 关闭逻辑, 默认手动关闭, 1 自动关闭, 2 不关闭
      */
     showCustomDialog: async function (config) {
-        this.closeCustomDialog();
         // 配置验证
         if (!config || !config.content) {
             console.error('[CustomDialog] 错误: 缺少必要的 content 参数');
@@ -537,7 +536,9 @@ const CommonUI = {
      * @param {string} config.dStyle 禁用文本样式
      */
     createOption: async function (config) {
-        const enabled = config.enabled === null ? true : config.enabled
+        // ?? 空值合并运算符
+        const enabled = config.enabled ?? true;
+        console.log('enabledenabled', enabled);
         if (!enabled) {
             config.onTouchBegan = null
             config.onTouchEnded = null
@@ -581,6 +582,8 @@ const CommonUI = {
             option.dResId = ResMap.img_selection_bg_disabled;
             await this.createOption(option);
         }
+
+        await CommonUI.waitForUIClosed(this.optionGroup.name);
 
     },
 
