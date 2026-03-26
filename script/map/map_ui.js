@@ -129,11 +129,11 @@ const MapUI = {
         let flag = MapSystem.isClearedAll();
         let content = flag ? '全部区域探索完成, 是否前往下一章？' : '还有区域未探索完成, 是否仍然前往下一章？';
         let options = [{
-            text: '前往下一章',
-            callback: MapSystem.onAllAreaVisited,
+            content: '前往下一章',
+            onTouchEnded: MapSystem.onAllAreaVisited,
         }, {
-            text: '继续探索',
-            callback: async () => {
+            content: '继续探索',
+            onTouchEnded: async () => {
                 await CommonUI.closeCustomOptionGroup();
                 await CommonUI.closeCustomDialog();
                 // 显示跳过按钮
@@ -148,7 +148,7 @@ const MapUI = {
             content: content,
             closeType: 2,
         });
-        CommonUI.showCustomOptionGroup({
+        await CommonUI.showCustomOptionGroup({
             options: options,
         })
 
