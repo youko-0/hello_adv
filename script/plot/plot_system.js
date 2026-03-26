@@ -21,20 +21,21 @@ const PlotSystem = {
         } = config;
         const hasItem = InventorySystem.getItemCount(itemId) > 0;
         console.log(`[Plot] 检查道具 ${itemId}, 是否拥有: ${hasItem}`);
-        await CommonUI.showCustomOptionGroup({
+        let flag = await CommonUI.showCustomOptionGroup({
             options: [
                 {
                     content: optionText1,
-                    onTouchEnded: callback1,
+                    callback: callback1,
                     enabled: hasItem,
                 },
                 {
                     content: optionText2,
-                    onTouchEnded: callback2,
+                    callback: callback2,
                     enabled: !hasItem,
                 },
             ]
         });
+        return flag
     },
 
     /**
@@ -47,13 +48,10 @@ const PlotSystem = {
             content: '是否进入回溯？',
             closeType: 2,
         })
-        await this.showItemCheckOption({
+        let flag = await this.showItemCheckOption({
             itemId: 'item_spirit_eye',
             optionText1: '进入回溯',
-            callback1: async () => {
-                await CommonUI.closeCustomOptionGroup();
-                // 然后会走后续剧情
-            },
+            callback1: null,    // 然后会走后续剧情
             optionText2: '不进入回溯',
             callback2: async () => {
                 await ac.jump({
@@ -64,6 +62,12 @@ const PlotSystem = {
             },
         });
         await CommonUI.closeCustomDialog();
+        if (flag == 0) {
+            // 走后续剧情
+        }
+        else {
+            // 跳去失败剧情
+        }
     },
 
     // 进入地图剧情, await PlotSystem.enterPlotMap()

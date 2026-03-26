@@ -14,8 +14,6 @@ let choice = await CommonUI.showCustomOptionGroup({
     ],
 })
 
-console.log('choice11', choice)
-
 if (choice == 0) {
     await CommonUI.showCustomDialog({
         content: '获得道具灵视',

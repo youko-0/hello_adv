@@ -554,8 +554,8 @@ const CommonUI = {
      * 自定义选项组
      * @param {Object} config 配置项
      * @param {list} config.options [option, option]
-     * @param {Object} option {content, onTouchEnded, enabled=true}
-     * return 选项索引
+     * @param {Object} option {content, callback, enabled=true}
+     * @return {number} 选项索引, 从 0 开始
      */
     showCustomOptionGroup: async function (config) {
         console.log('[CustomOptionGroup] 显示自定义选项组:', config);
@@ -586,8 +586,8 @@ const CommonUI = {
             option.onTouchEnded = async () => {
                 flag = i;
                 await CommonUI.closeCustomOptionGroup();
-                if (option.onTouchEnded) {
-                    await option.onTouchEnded();
+                if (option.callback) {
+                    await option.callback();
                 }
             }
             await this.createOption(option);
