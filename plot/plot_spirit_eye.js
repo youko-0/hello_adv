@@ -4,14 +4,7 @@ await CommonUI.showCustomDialog({
 });
 
 let choice = await CommonUI.showCustomOptionGroup({
-    options: [
-        {
-            content: '查看'
-        },
-        {
-            content: '不看'
-        }
-    ],
+    options: [{ content: '查看' }, { content: '不看' }],
 })
 
 if (choice == 0) {

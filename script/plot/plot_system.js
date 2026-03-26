@@ -62,12 +62,12 @@ const PlotSystem = {
             },
         });
         await CommonUI.closeCustomDialog();
-        if (flag == 0) {
-            // 走后续剧情
-        }
-        else {
-            // 跳去失败剧情
-        }
+        // if (flag == 0) {
+        //     // 走后续剧情
+        // }
+        // else {
+        //     // 跳去失败剧情
+        // }
     },
 
     // 进入地图剧情, await PlotSystem.enterPlotMap()

@@ -551,7 +551,7 @@ const CommonUI = {
     },
 
     /**
-     * 自定义选项组
+     * 自定义选项组, 会返回选项索引
      * @param {Object} config 配置项
      * @param {list} config.options [option, option]
      * @param {Object} option {content, callback, enabled=true}
@@ -595,7 +595,6 @@ const CommonUI = {
 
         await CommonUI.waitForUIClosed(this.optionGroup.name);
         return flag;
-
     },
 
     // 关闭自定义选项组
