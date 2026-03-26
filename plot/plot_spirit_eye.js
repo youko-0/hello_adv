@@ -3,26 +3,20 @@ await CommonUI.showCustomDialog({
     closeType: 2,
 });
 
-let flagGain = false;
-await CommonUI.showCustomOptionGroup({
+let choice = await CommonUI.showCustomOptionGroup({
     options: [
         {
-            content: '查看', onTouchEnded: async () => {
-                await CommonUI.closeCustomOptionGroup();
-                flagGain = true;
-                
-            }
+            content: '查看'
         },
         {
-            content: '不看', onTouchEnded: async () => {
-                await CommonUI.closeCustomOptionGroup();
-                
-            }
+            content: '不看'
         }
     ],
 })
 
-if (flagGain) {
+console.log('choice11', choice)
+
+if (choice == 0) {
     await CommonUI.showCustomDialog({
         content: '获得道具灵视',
     })

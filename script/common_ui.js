@@ -555,9 +555,11 @@ const CommonUI = {
      * @param {Object} config 配置项
      * @param {list} config.options [option, option]
      * @param {Object} option {content, onTouchEnded, enabled=true}
+     * return 选项索引
      */
     showCustomOptionGroup: async function (config) {
         console.log('[CustomOptionGroup] 显示自定义选项组:', config);
+        let flag = -1;
         // 全屏层级
         await ac.createLayer({
             name: this.optionGroup.name,
@@ -580,10 +582,19 @@ const CommonUI = {
             option.nResId = ResMap.img_selection_bg_normal;
             option.sResId = ResMap.img_selection_bg_highlight;
             option.dResId = ResMap.img_selection_bg_disabled;
+            // 点击事件添加关闭逻辑
+            option.onTouchEnded = async () => {
+                flag = i;
+                await CommonUI.closeCustomOptionGroup();
+                if (option.onTouchEnded) {
+                    await option.onTouchEnded();
+                }
+            }
             await this.createOption(option);
         }
 
         await CommonUI.waitForUIClosed(this.optionGroup.name);
+        return flag;
 
     },
 
