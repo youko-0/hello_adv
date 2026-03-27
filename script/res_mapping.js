@@ -254,7 +254,7 @@ const DongHaiRes = {
     spr_item_mural_jianzaoshenmiao: '$185360035',
     spr_item_mural_zhuzaosuxiang: '$185360034',
     spr_item_mural_lijingsb: '$185360033',
-    spr_item_letter: '$185360501',
+    spr_item_letter: '$52125',
     spr_item_jewelry_box: '$185360043',
     spr_item_newspaper: '$185360042',
     spr_item_visa: '$185360041',
@@ -268,7 +268,7 @@ const DongHaiRes = {
     img_item_family_photo: '$185360073',
     img_item_motorcycle_key: '$185360072',
     img_item_cookie_box: '$185360074',
-    img_item_letter: '$185360501',
+    img_item_letter: '$52125',
     img_item_jewelry_box: '$185360469',
     img_item_newspaper: '$185360468',
 
