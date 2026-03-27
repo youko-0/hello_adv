@@ -63,8 +63,8 @@ const CommonUI = {
         },
         // 文本配置
         text: {
-            padding: { top: 20, bottom: 10, left: 100, right: 80 },
-            paddingWithAvatar: { top: 20, bottom: 10, left: 120, right: 80 },
+            padding: { top: 32, bottom: 10, left: 100, right: 80 },
+            paddingWithAvatar: { top: 32, bottom: 10, left: 120, right: 80 },
             typingSpeed: 0.03, // 每个字符显示间隔（秒）
         },
         // 文本样式

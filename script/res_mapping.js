@@ -113,11 +113,17 @@ const HelloADVRes = {
     spr_item_visa: '$185220221',
     // 详情大图
     img_item_spirit_eye: '$185428587',
+    img_item_spirit_eye_locked: '$185428587',
     img_item_pendant: '$183720948',
+    img_item_pendant_locked: '$186166856',
     img_item_armor: '$183720970',
+    img_item_armor_locked: '$186166851',
     img_item_compass: '$183721506',
+    img_item_compass_locked: '$186166854',
     img_item_blessing: '$183721672',
+    img_item_blessing_locked: '$186166853',
     img_item_visa: '$183722014',
+    img_item_visa_locked: '$186166858',
     img_item_family_photo: '$183918600',
     img_item_motorcycle_key: '$183918601',
     img_item_cookie_box: '$183918599',
@@ -166,7 +172,7 @@ const DongHaiRes = {
     img_selection_bg_normal: '$185360038',
     img_selection_bg_highlight: '$185360039',
     img_selection_bg_disabled: '$186021889',
-
+    
     // 论坛
     img_forum_topic_bg_normal: '$185360106',
     img_forum_topic_bg_highlight: '$185360105',
@@ -175,7 +181,7 @@ const DongHaiRes = {
     pic_desktop_bg: '$185360027',
     pic_browser_bg: '$185360026',
     btn_browser: '$185360107',
-
+    
     // UI - 背包
     btn_bag_normal: '$185360059',
     img_bag_title: '$185360088',
@@ -188,7 +194,7 @@ const DongHaiRes = {
     btn_item_view_highlight: '$185360092',
     btn_item_use_normal: '$185360093',
     btn_item_use_highlight: '$185360094',
-
+    
     // 地图
     pic_map_bg: '$185360025',
     pic_map_bg_full: '$185360015',
@@ -208,7 +214,7 @@ const DongHaiRes = {
     img_dexing_tower: '$185360055',
     img_dexing_tower_locked: '$185360053',
     img_dexing_tower_highlight: '$185360054',
-
+    
     // 探索
     btn_explore_view_normal: '$185360097',
     btn_explore_view_highlight: '$185360098',
@@ -227,7 +233,7 @@ const DongHaiRes = {
     pic_broken_nezha_temple_right_hall: '$185360018',
     pic_dragon_temple_main_hall: '$185360017',
     pic_dexing_tower_office: '$185360014',
-
+    
     // 头像
     icon_forum_head_01: '$185360104',
     icon_forum_head_02: '$185360103',
@@ -260,26 +266,32 @@ const DongHaiRes = {
     spr_item_visa: '$185360041',
     // 详情大图
     img_item_spirit_eye: '$186018537',
+    img_item_spirit_eye_locked: '$186018537',
     img_item_pendant: '$185360079',
+    img_item_pendant_locked: '$186167363',
     img_item_armor: '$185360078',
+    img_item_armor_locked: '$186167359',
     img_item_compass: '$185360077',
+    img_item_compass_locked: '$186167362',
     img_item_blessing: '$185360076',
+    img_item_blessing_locked: '$186167361',
     img_item_visa: '$185360075',
+    img_item_visa_locked: '$186167364',
     img_item_family_photo: '$185360073',
     img_item_motorcycle_key: '$185360072',
     img_item_cookie_box: '$185360074',
     img_item_letter: '$52125',
     img_item_jewelry_box: '$185360469',
     img_item_newspaper: '$185360468',
-
+    
     // 粒子
     spr_particle_trail: '$185360040',
-
+    
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: '5a63b4fc0a7041f38685971fcecfd962',
     ui_forum: '097c0cbdd8d44985b1b2933760da7c88',
     ui_post_detail: '94d2303586e64ea396122dd9fa964f77',
-
+    
     // 剧情唯一 ID
     plot_forum_next: 13969471,
     plot_map: 13980661,

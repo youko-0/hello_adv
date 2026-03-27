@@ -16,6 +16,7 @@ const ItemConfig = {
         icon: ResMap.icon_item_spirit_eye,
         iconLocked: ResMap.icon_item_spirit_eye_locked,
         illust: ResMap.img_item_spirit_eye,
+        illustLocked: ResMap.img_item_spirit_eye_locked,
         desc: "可与器灵沟通，回溯往事。",
         descLocked: "一副很奇怪的墨镜",
         maxStack: 1,  // 最多持有一个
@@ -29,6 +30,7 @@ const ItemConfig = {
         icon: ResMap.icon_item_pendant,
         iconLocked: ResMap.icon_item_pendant_locked,
         illust: ResMap.img_item_pendant,
+        illustLocked: ResMap.img_item_pendant_locked,
         desc: "李云祥出生时带来的一块“神玉”，陪伴他长大，仔细一看是鳞片的纹理，上面用古老的文字刻画着“云祥”二字。",
         descLocked: "这真的不是某种广*双马尾特产吗，你不要过来啊啊啊！",
         maxStack: 1,  // 最多持有一个
@@ -47,6 +49,7 @@ const ItemConfig = {
         icon: ResMap.icon_item_armor,
         iconLocked: ResMap.icon_item_armor_locked,
         illust: ResMap.img_item_armor,
+        illustLocked: ResMap.img_item_armor_locked,
         desc: "一副火红色的铠甲，胸口用繁体写着“云”字。生了情的圣人在爱欲与怜悯面前丢盔卸甲，将它与英雄梦一同束之高阁。",
         descLocked: "一个红红的东西，原来是琵琶虾！",
         maxStack: 1,  // 最多持有一个
@@ -60,6 +63,7 @@ const ItemConfig = {
         icon: ResMap.icon_item_compass,
         iconLocked: ResMap.icon_item_compass_locked,
         illust: ResMap.img_item_compass,
+        illustLocked: ResMap.img_item_compass_locked,
         desc: "佛门法器，用来兴旺避邪、镇室安宅。存放着李云祥前世的记忆。",
         descLocked: "好像叫八宝什么……不是八宝粥！",
         maxStack: 1,  // 最多持有一个
@@ -73,6 +77,7 @@ const ItemConfig = {
         icon: ResMap.icon_item_blessing,
         iconLocked: ResMap.icon_item_blessing_locked,
         illust: ResMap.img_item_blessing,
+        illustLocked: ResMap.img_item_blessing_locked,
         desc: "龙三太子把你当自己人了，从此以后你可以在海里横着走。不过谁会没事去海里呢？",
         descLocked: "一个很萌的小东西……",
         maxStack: 1,  // 最多持有一个
@@ -87,6 +92,7 @@ const ItemConfig = {
         iconLocked: ResMap.icon_item_visa_locked,
         sprite: ResMap.spr_item_visa,
         illust: ResMap.img_item_visa,
+        illustLocked: ResMap.img_item_visa_locked,
         desc: "传说中能让飞机掉头的梅山银行信用卡。面向全球顶级富豪、政要及社会名流发卡，持卡人可享受无额度上限、生活出行各方面的顶级服务。可是对敖丙来说，daddy的爱比黑卡更有含金量，daddy也会为他做这些，并且不会因为他很优秀才爱他。",
         descLocked: "什么东西黑黑的，硬硬的，有了它就会有很多钱？",
         maxStack: 1,  // 最多持有一个

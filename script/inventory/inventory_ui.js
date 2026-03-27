@@ -81,7 +81,8 @@ const InventoryUI = {
             target: this.itemDetail.name,
         });
         // 大图
-        if (itemConfig.illust) {
+        const illust = locked? itemConfig.illustLocked: itemConfig.illust
+        if (illust) {
             await ac.createImage({
                 name: 'img_item_detail_bg',
                 index: 0,
@@ -97,22 +98,10 @@ const InventoryUI = {
                 name: 'img_item_info_pic',
                 index: 0,
                 inlayer: this.itemDetail.name,
-                resId: itemConfig.illust,
-                pos: { x: GameConfig.centerX, y: GameConfig.centerY + 100 },
+                resId: illust,
+                pos: { x: GameConfig.centerX, y: GameConfig.centerY + 80 },
                 anchor: { x: 50, y: 50 },
             });
-
-            if (locked) {
-                // 叠加一个黑色
-                ac.changeMaskTo({
-                    name: 'img_item_info_pic',
-                    r: 0,
-                    g: 0,
-                    b: 0,
-                    opacity: 100,
-                    duration: 0,
-                });
-            }
         }
         const itemDesc = locked? itemConfig.descLocked: itemConfig.desc
         const itemIcon = locked? itemConfig.iconLocked: itemConfig.icon
