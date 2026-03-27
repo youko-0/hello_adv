@@ -280,9 +280,9 @@ const DongHaiRes = {
     img_item_family_photo: '$185360073',
     img_item_motorcycle_key: '$185360072',
     img_item_cookie_box: '$185360074',
-    img_item_letter: '$52125',
-    img_item_jewelry_box: '$185360469',
-    img_item_newspaper: '$185360468',
+    img_item_letter: '$186184083',
+    img_item_jewelry_box: '$186183778',
+    img_item_newspaper: '$186183780',
     
     // 粒子
     spr_particle_trail: '$185360040',
