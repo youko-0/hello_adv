@@ -123,8 +123,8 @@ const MapSystem = createSystem(
         },
 
         /**
-         * 某个场景是否探索完成, isVisited && 获得所有关键道具
-         * @param {string} areaId - 地区 ID
+         * 某个区域是否探索完成, isVisited && 获得所有关键道具
+         * @param {string} areaId - 区域 ID
          */
         isCleared: function (areaId) {
             if (!areaId) return false;
