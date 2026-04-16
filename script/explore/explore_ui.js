@@ -40,25 +40,60 @@ const ExploreUI = {
 
     Nav: {
         up: {
+            name: 'btn_explore_nav_up',
             x: GameConfig.centerX,
             y: GameConfig.height - 40,
             resId: ResMap.btn_explore_arrow_up,
         },
         down: {
+            name: 'btn_explore_nav_down',
             x: GameConfig.centerX,
             y: 40,
             resId: ResMap.btn_explore_arrow_down,
         },
         left: {
+            name: 'btn_explore_nav_left',
             x: 40,
             y: GameConfig.centerY,
             resId: ResMap.btn_explore_arrow_left,
         },
         right: {
+            name: 'btn_explore_nav_right',
             x: GameConfig.width - 40,
             y: GameConfig.centerY,
             resId: ResMap.btn_explore_arrow_right,
         },
+    },
+
+    // 移除所有导航按钮
+    removeNavButtons: async function () {
+        for (const [direction, navConfig] of Object.entries(this.Nav)) {
+            await ac.remove({ name: navConfig.name });
+        }
+    },
+
+    // 创建导航按钮（在 root 下，高 index 确保在最上层）
+    createNavButtons: async function (sceneId, viewConfig) {
+        let navs = viewConfig.nav || {};
+        for (const [direction, viewName] of Object.entries(navs)) {
+            if (viewName == null) {
+                continue;
+            }
+            const navConfig = this.Nav[direction];
+            await ac.createOption({
+                name: navConfig.name,
+                index: 1000,  // 高 index 确保在所有 view 层之上
+                inlayer: this.root.name,
+                nResId: navConfig.resId,
+                sResId: navConfig.resId,
+                content: ``,
+                pos: { x: navConfig.x, y: navConfig.y },
+                anchor: { x: 50, y: 50 },
+                onTouchEnded: async function () {
+                    await ExploreSystem.gotoView(sceneId, viewName, direction);
+                },
+            });
+        }
     },
 
     // 方向对应的位移配置（旧层滑出方向）
@@ -101,6 +136,13 @@ const ExploreUI = {
         
         // 保存旧层名称
         const oldLayerName = this.currentLayer;
+        
+        // ═══════════════════════════════════════════
+        // 过渡开始前：移除导航按钮
+        // ═══════════════════════════════════════════
+        if (needTransition) {
+            await this.removeNavButtons();
+        }
         
         // 创建新层（index 递减，确保新层在旧层之下）
         this.layerIndex--;
@@ -184,31 +226,14 @@ const ExploreUI = {
         }
         
         // ═══════════════════════════════════════════
-        // 创建导航按钮（切换完成后出现）
+        // 过渡完成后：创建导航按钮（在 root 下）
         // ═══════════════════════════════════════════
-        let navs = viewConfig.nav || {};
-        for (const [navDirection, viewName] of Object.entries(navs)) {
-            if (viewName == null) {
-                continue;
-            }
-            const navConfig = this.Nav[navDirection];
-            await ac.createOption({
-                name: `btn_explore_arrow_${navDirection}`,
-                index: 5,
-                inlayer: newLayerName,
-                nResId: navConfig.resId,
-                sResId: navConfig.resId,
-                content: ``,
-                pos: { x: navConfig.x, y: navConfig.y },
-                anchor: { x: 50, y: 50 },
-                onTouchEnded: async function () {
-                    await ExploreSystem.gotoView(sceneId, viewName, navDirection);
-                },
-            });
-        }
+        await this.createNavButtons(sceneId, viewConfig);
     },
 
     closeSceneUI: async function () {
+        // 移除导航按钮
+        await this.removeNavButtons();
         // 关闭当前层
         if (this.currentLayer) {
             await ac.remove({
