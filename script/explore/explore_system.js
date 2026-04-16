@@ -108,12 +108,13 @@ const ExploreSystem = createSystem(
 
         /**
          * 跳转去场景视图（内部调用，不等待完成）
-         * @param {string} sceneId  - 场景 ID
-         * @param {string} viewId   - 视图 ID
+         * @param {string} sceneId    - 场景 ID
+         * @param {string} viewId     - 视图 ID
+         * @param {string} direction  - 导航方向 (up/down/left/right)，首次进入时为空
          */
-        gotoView: async function (sceneId, viewId) {
-            console.log('[LOG] gotoView', sceneId, viewId);
-            await ExploreUI.createSceneUI(sceneId, viewId);
+        gotoView: async function (sceneId, viewId, direction) {
+            console.log('[LOG] gotoView', sceneId, viewId, direction);
+            await ExploreUI.createSceneUI(sceneId, viewId, direction);
         },
 
         /**
