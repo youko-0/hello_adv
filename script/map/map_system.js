@@ -122,9 +122,13 @@ const MapSystem = createSystem(
             return visited[areaId] || 0;
         },
 
-        // 是否探索完成, 判断是否获得了所有关键道具
+        /**
+         * 某个场景是否探索完成, isVisited && 获得所有关键道具
+         * @param {string} areaId - 地区 ID
+         */
         isCleared: function (areaId) {
             if (!areaId) return false;
+            if (!this.isVisited(areaId)) return false;
             const inventory = this.getAreaConfig(areaId).inventory;
             for (let item of inventory) {
                 // 这里判断历史获得数量, 因为道具可能被使用
