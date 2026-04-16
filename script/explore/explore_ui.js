@@ -9,7 +9,6 @@ const ViewTransition = {
         max: 1.00,          // 正常大小
     },
     offset: 100,            // 屏幕外偏移
-    newViewDelay: 50,       // 新视图延迟启动
 };
 
 const ExploreUI = {
@@ -119,61 +118,7 @@ const ExploreUI = {
         await ac.createImage(newLayerConfig);
         
         // ═══════════════════════════════════════════
-        // 执行过渡动画
-        // ═══════════════════════════════════════════
-        if (needTransition) {
-            // 旧层动画：滑出 + 缩小 + 淡出
-            const oldAnimations = [
-                ac.moveTo({
-                    name: oldLayerName,
-                    x: dirConfig.oldEnd.x,
-                    y: dirConfig.oldEnd.y,
-                    duration: cfg.duration,
-                }),
-                ac.scaleTo({
-                    name: oldLayerName,
-                    scale: { x: cfg.scale.min * 100, y: cfg.scale.min * 100 },
-                    duration: cfg.duration * 0.7,
-                }),
-                ac.fadeTo({
-                    name: oldLayerName,
-                    opacity: 0,
-                    duration: cfg.duration * 0.8,
-                }),
-            ];
-            
-            // 延迟后启动新层动画
-            await ac.delay({ time: cfg.newViewDelay });
-            
-            // 新层动画：滑入 + 放大 + 淡入
-            const newAnimations = [
-                ac.moveTo({
-                    name: newLayerName,
-                    x: center.x,
-                    y: center.y,
-                    duration: cfg.duration - cfg.newViewDelay,
-                }),
-                ac.scaleTo({
-                    name: newLayerName,
-                    scale: { x: cfg.scale.max * 100, y: cfg.scale.max * 100 },
-                    duration: cfg.duration - cfg.newViewDelay,
-                }),
-                ac.fadeTo({
-                    name: newLayerName,
-                    opacity: 255,
-                    duration: (cfg.duration - cfg.newViewDelay) * 0.5,
-                }),
-            ];
-            
-            // 等待所有动画完成
-            await Promise.all([...oldAnimations, ...newAnimations]);
-            
-            // 移除旧层
-            await ac.remove({ name: oldLayerName });
-        }
-        
-        // ═══════════════════════════════════════════
-        // 创建交互物体
+        // 创建交互物体（在动画前创建，跟着新层一起移动）
         // ═══════════════════════════════════════════
         let interacts = viewConfig.interact || {};
         for (const [itemId, interact] of Object.entries(interacts)) {
@@ -194,7 +139,58 @@ const ExploreUI = {
         }
         
         // ═══════════════════════════════════════════
-        // 创建导航按钮
+        // 执行过渡动画
+        // ═══════════════════════════════════════════
+        if (needTransition) {
+            // 新旧层同时开始动画，增加重叠时间避免黑屏
+            
+            // 旧层动画：滑出 + 缩小 + 淡出
+            ac.moveTo({
+                name: oldLayerName,
+                x: dirConfig.oldEnd.x,
+                y: dirConfig.oldEnd.y,
+                duration: cfg.duration,
+            });
+            ac.scaleTo({
+                name: oldLayerName,
+                scale: { x: cfg.scale.min * 100, y: cfg.scale.min * 100 },
+                duration: cfg.duration * 0.7,
+            });
+            // 旧层淡出延后开始，增加重叠时间
+            ac.fadeTo({
+                name: oldLayerName,
+                opacity: 0,
+                duration: cfg.duration * 0.6,
+            });
+            
+            // 新层动画：滑入 + 放大 + 淡入（同时开始）
+            ac.moveTo({
+                name: newLayerName,
+                x: center.x,
+                y: center.y,
+                duration: cfg.duration,
+            });
+            ac.scaleTo({
+                name: newLayerName,
+                scale: { x: cfg.scale.max * 100, y: cfg.scale.max * 100 },
+                duration: cfg.duration,
+            });
+            // 新层快速淡入，尽早可见
+            ac.fadeTo({
+                name: newLayerName,
+                opacity: 255,
+                duration: cfg.duration * 0.3,
+            });
+            
+            // 等待最长的动画完成（moveTo 是最长的）
+            await ac.delay({ time: cfg.duration });
+            
+            // 移除旧层
+            await ac.remove({ name: oldLayerName });
+        }
+        
+        // ═══════════════════════════════════════════
+        // 创建导航按钮（切换完成后出现）
         // ═══════════════════════════════════════════
         let navs = viewConfig.nav || {};
         for (const [navDirection, viewName] of Object.entries(navs)) {
