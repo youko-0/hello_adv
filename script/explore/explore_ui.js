@@ -20,41 +20,15 @@ const ExploreUI = {
     
     sceneRoot: {
         name: 'layer_explore_scene_root',
-        created: false,
     },
     
     viewRoot: {
         name: 'layer_explore_view_root',
-        created: false,
     },
     
     // 当前状态
     sceneId: null,
     currentViewId: null,
-    createdViews: {},  // 记录已创建的 view { viewId: true }
-
-    // 初始化 scene_root 层
-    initSceneRoot: async function () {
-        if (this.sceneRoot.created) return;
-        await ac.createLayer({
-            name: this.sceneRoot.name,
-            index: ZORDER.BOTTOM_SCENE,
-            inlayer: 'window',
-        });
-        this.sceneRoot.created = true;
-    },
-
-    // 初始化 view_root 层（原点容器）
-    initViewRoot: async function () {
-        if (this.viewRoot.created) return;
-        await ac.createLayer({
-            name: this.viewRoot.name,
-            index: 0,
-            inlayer: this.sceneRoot.name,
-            pos: { x: 0, y: 0 },  // 原点
-        });
-        this.viewRoot.created = true;
-    },
 
     // 导航按钮配置（包含方向偏移量）
     Nav: {
@@ -94,18 +68,49 @@ const ExploreUI = {
     },
 
     // 检查 view 是否已创建
-    isViewCreated: function (viewId) {
-        return !!this.createdViews[viewId];
+    isViewCreated: async function (viewId) {
+        return await CommonUI.isWidgetExist(this.getViewName(viewId));
     },
 
-    // 移除所有导航按钮
+    // ═══════════════════════════════════════════════════════════════
+    // 场景初始化（enterScene 调用）
+    // ═══════════════════════════════════════════════════════════════
+    
+    /**
+     * 创建场景 UI 容器（sceneRoot + viewRoot）
+     * 由 enterScene 唯一入口调用，无需判断是否已创建
+     */
+    createSceneUI: async function (sceneId) {
+        console.log('[LOG] createSceneUI', sceneId);
+        
+        // 创建 scene_root
+        await ac.createLayer({
+            name: this.sceneRoot.name,
+            index: ZORDER.BOTTOM_SCENE,
+            inlayer: 'window',
+        });
+        
+        // 创建 view_root（原点容器）
+        await ac.createLayer({
+            name: this.viewRoot.name,
+            index: 0,
+            inlayer: this.sceneRoot.name,
+            pos: { x: 0, y: 0 },
+        });
+        
+        this.sceneId = sceneId;
+    },
+
+    // ═══════════════════════════════════════════════════════════════
+    // 导航按钮
+    // ═══════════════════════════════════════════════════════════════
+
     removeNavButtons: async function () {
         for (const [direction, navConfig] of Object.entries(this.Nav)) {
             await ac.remove({ name: navConfig.name });
         }
     },
 
-    // 创建导航按钮
     createNavButtons: async function (sceneId, viewId) {
         let viewConfig = ExploreSystem.getViewConfig(sceneId, viewId);
         let navs = viewConfig.nav || {};
@@ -115,7 +120,7 @@ const ExploreUI = {
             await ac.createOption({
                 name: navConfig.name,
                 index: 1000,
-                inlayer: this.sceneRoot.name,  // 导航按钮在 scene_root 下
+                inlayer: this.sceneRoot.name,
                 nResId: navConfig.resId,
                 sResId: navConfig.resId,
                 content: ``,
@@ -128,7 +133,13 @@ const ExploreUI = {
         }
     },
 
-    // 创建单个 view（背景 + 交互物体）
+    // ═══════════════════════════════════════════════════════════════
+    // View 创建
+    // ═══════════════════════════════════════════════════════════════
+
+    /**
+     * 创建单个 view（背景 + 交互物体）
+     */
     createView: async function (sceneId, viewId, posX, posY) {
         console.log('[LOG] createView', viewId, 'at', posX, posY);
         
@@ -175,33 +186,33 @@ const ExploreUI = {
                 },
             });
         }
-        
-        // 记录已创建
-        this.createdViews[viewId] = true;
     },
 
-    // 创建场景UI（入口方法）
-    createSceneUI: async function (sceneId, viewId, direction) {
-        console.log('[LOG] createSceneUI', sceneId, viewId, direction);
+    // ═══════════════════════════════════════════════════════════════
+    // View 切换（gotoView 调用）
+    // ═══════════════════════════════════════════════════════════════
+
+    /**
+     * 切换到目标 view（创建 view + 过渡动画）
+     * @param {string} sceneId - 场景 ID
+     * @param {string} viewId - 目标 view ID
+     * @param {string} direction - 导航方向（首次进入时为 null）
+     */
+    switchToView: async function (sceneId, viewId, direction) {
+        console.log('[LOG] switchToView', viewId, direction);
         
         const cfg = ViewTransition;
         
-        // 首次进入：初始化场景
-        if (!this.sceneRoot.created) {
-            await this.initSceneRoot();
-            await this.initViewRoot();
-            
-            // 第一个 view 放在屏幕中心
+        // 首次进入（无方向）：直接创建 view 在屏幕中心
+        if (!direction) {
             await this.createView(sceneId, viewId, GameConfig.centerX, GameConfig.centerY);
-            
-            this.sceneId = sceneId;
             this.currentViewId = viewId;
             await this.createNavButtons(sceneId, viewId);
             return;
         }
         
-        // 切换 view
-        if (direction && this.currentViewId !== viewId) {
+        // 切换 view（有方向）
+        if (this.currentViewId !== viewId) {
             // 移除导航按钮
             await this.removeNavButtons();
             
@@ -215,12 +226,11 @@ const ExploreUI = {
             const targetPosY = currentPos.y + offset.y * GameConfig.height;
             
             // 如果目标 view 还没创建，先创建它
-            if (!this.isViewCreated(viewId)) {
+            if (!(await this.isViewCreated(viewId))) {
                 await this.createView(sceneId, viewId, targetPosX, targetPosY);
             }
             
             // 计算 view_root 需要移动的偏移量
-            // 让目标 view 居中显示，即 view_root 需要移动使得 targetPos 对齐屏幕中心
             const viewRootPos = await ac.getPos({ name: this.viewRoot.name });
             const deltaX = GameConfig.centerX - targetPosX;
             const deltaY = GameConfig.centerY - targetPosY;
@@ -261,11 +271,15 @@ const ExploreUI = {
         await this.createNavButtons(sceneId, viewId);
     },
 
+    // ═══════════════════════════════════════════════════════════════
+    // 场景关闭
+    // ═══════════════════════════════════════════════════════════════
+
     closeSceneUI: async function () {
         // 移除导航按钮
         await this.removeNavButtons();
         // 移除 scene_root（会一起移除所有子层）
-        if (this.sceneRoot.created) {
+        if (await CommonUI.isWidgetExist(this.sceneRoot.name)) {
             await ac.remove({
                 name: this.sceneRoot.name,
                 effect: 'fadeout',
@@ -275,8 +289,5 @@ const ExploreUI = {
         // 重置状态
         this.sceneId = null;
         this.currentViewId = null;
-        this.createdViews = {};
-        this.sceneRoot.created = false;
-        this.viewRoot.created = false;
     }
 }
