@@ -62,12 +62,20 @@ const ExploreUI = {
         },
     },
 
-    // 获取 view 的控件名称
+    /**
+     * 获取 view 的控件名称
+     * @param {string} viewId - 视图 ID
+     * @returns {string} 控件名称
+     */
     getViewName: function (viewId) {
         return `layer_explore_view_${viewId}`;
     },
 
-    // 检查 view 是否已创建
+    /**
+     * 检查 view 是否已创建
+     * @param {string} viewId - 视图 ID
+     * @returns {Promise<boolean>} 是否已创建
+     */
     isViewCreated: async function (viewId) {
         return await CommonUI.isWidgetExist(this.getViewName(viewId));
     },
@@ -79,6 +87,7 @@ const ExploreUI = {
     /**
      * 创建场景 UI 容器（sceneRoot + viewRoot）
      * 由 enterScene 唯一入口调用，无需判断是否已创建
+     * @param {string} sceneId - 场景 ID
      */
     createSceneUI: async function (sceneId) {
         console.log('[LOG] createSceneUI', sceneId);
@@ -105,12 +114,20 @@ const ExploreUI = {
     // 导航按钮
     // ═══════════════════════════════════════════════════════════════
 
+    /**
+     * 移除所有导航按钮
+     */
     removeNavButtons: async function () {
         for (const [direction, navConfig] of Object.entries(this.Nav)) {
             await ac.remove({ name: navConfig.name });
         }
     },
 
+    /**
+     * 创建导航按钮
+     * @param {string} sceneId - 场景 ID
+     * @param {string} viewId - 当前视图 ID
+     */
     createNavButtons: async function (sceneId, viewId) {
         let viewConfig = ExploreSystem.getViewConfig(sceneId, viewId);
         let navs = viewConfig.nav || {};
@@ -139,6 +156,10 @@ const ExploreUI = {
 
     /**
      * 创建单个 view（背景 + 交互物体）
+     * @param {string} sceneId - 场景 ID
+     * @param {string} viewId - 视图 ID
+     * @param {number} posX - view 中心 X 坐标
+     * @param {number} posY - view 中心 Y 坐标
      */
     createView: async function (sceneId, viewId, posX, posY) {
         console.log('[LOG] createView', viewId, 'at', posX, posY);
@@ -275,6 +296,9 @@ const ExploreUI = {
     // 场景关闭
     // ═══════════════════════════════════════════════════════════════
 
+    /**
+     * 关闭场景 UI
+     */
     closeSceneUI: async function () {
         // 移除导航按钮
         await this.removeNavButtons();

@@ -12,10 +12,21 @@ const ExploreSystem = createSystem(
     'str_explore_data', // 变量名
     _exploreDefault,    // 默认数据生成器
     {
+        /**
+         * 获取场景的默认视图 ID
+         * @param {string} sceneId - 场景 ID
+         * @returns {string} 默认视图 ID
+         */
         getDefaultView: function (sceneId) {
             return SceneConfig[sceneId].defaultViewId;
         },
 
+        /**
+         * 获取视图配置
+         * @param {string} sceneId - 场景 ID
+         * @param {string} viewId - 视图 ID
+         * @returns {Object} 视图配置对象
+         */
         getViewConfig: function (sceneId, viewId) {
             return SceneConfig[sceneId].views[viewId];
         },
@@ -64,7 +75,10 @@ const ExploreSystem = createSystem(
             return true;
         },
 
-        // 已查看全部线索
+        /**
+         * 已查看全部线索时的回调处理
+         * @param {string} sceneId - 场景 ID
+         */
         onInspectedAll: async function (sceneId) {
             await CommonUI.showCustomDialog({
                 content: '场景里似乎没有什么可探索的了。',
