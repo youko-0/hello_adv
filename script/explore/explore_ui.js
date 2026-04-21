@@ -241,22 +241,30 @@ const ExploreUI = {
             const currentViewName = this.getViewName(this.currentViewId);
             const currentPos = await ac.getPos({ name: currentViewName });
             
-            // 计算目标 view 的位置
-            const offset = this.Nav[direction].offset;
-            const targetPosX = currentPos.x + offset.x * GameConfig.width;
-            const targetPosY = currentPos.y + offset.y * GameConfig.height;
+            // 获取目标 view 的名称
+            const targetViewName = this.getViewName(viewId);
             
-            // 如果目标 view 还没创建，先创建它
-            if (!(await this.isViewCreated(viewId))) {
+            let targetPosX, targetPosY;
+            
+            // 判断目标 view 是否已存在
+            if (await this.isViewCreated(viewId)) {
+                // 目标 view 已存在，获取其实际位置
+                const existingPos = await ac.getPos({ name: targetViewName });
+                targetPosX = existingPos.x;
+                targetPosY = existingPos.y;
+            } else {
+                // 目标 view 不存在，通过偏移量计算位置并创建
+                const offset = this.Nav[direction].offset;
+                targetPosX = currentPos.x + offset.x * GameConfig.width;
+                targetPosY = currentPos.y + offset.y * GameConfig.height;
                 await this.createView(sceneId, viewId, targetPosX, targetPosY);
             }
             
-            // 计算 view_root 需要移动的偏移量
-            const viewRootPos = await ac.getPos({ name: this.viewRoot.name });
-            const deltaX = GameConfig.centerX - targetPosX;
-            const deltaY = GameConfig.centerY - targetPosY;
-            const newViewRootX = viewRootPos.x + deltaX;
-            const newViewRootY = viewRootPos.y + deltaY;
+            // 计算 view_root 的目标位置
+            // 要让 targetPos 出现在屏幕中心: centerX = newViewRootX + targetPosX
+            // 所以: newViewRootX = centerX - targetPosX
+            const newViewRootX = GameConfig.centerX - targetPosX;
+            const newViewRootY = GameConfig.centerY - targetPosY;
             
             // 动画：移动 view_root + 先放大后缩小
             const halfDuration = cfg.duration / 2;
