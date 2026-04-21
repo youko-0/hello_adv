@@ -33,7 +33,7 @@ const SceneConfig = {
                     up: null,
                     left: 'left_hall',
                     right: 'right_hall',
-                    down: null
+                    down: 'back_hall'
                 },
             },
             // 左殿
@@ -53,6 +53,7 @@ const SceneConfig = {
                 id: 'back_hall',
                 bg: ResMap.pic_nezha_temple_back_hall,
                 nav: {
+                    up: 'main_hall',
                     left: 'right_hall',
                     right: 'left_hall',
                 },

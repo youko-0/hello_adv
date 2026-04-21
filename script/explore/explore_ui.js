@@ -1,12 +1,25 @@
 // 探索场景 UI
 console.log('[LOAD] explore_ui');
 
-// 过渡效果配置
-const ViewTransition = {
-    duration: 500,          // 总时长 ms
-    scale: {
-        peak: 1.05,         // 放大峰值
-        normal: 1.00,       // 正常大小
+// 方向性过渡效果配置
+const DirectionalTransition = {
+    duration: 400,          // 总时长 ms
+    
+    left: {
+        rotate: { peak: -2 },               // 向左倾斜 2°
+        scale: null,                        // 无缩放
+    },
+    right: {
+        rotate: { peak: 2 },                // 向右倾斜 2°
+        scale: null,
+    },
+    up: {
+        rotate: null,
+        scale: { start: 0.95, end: 1.0 },   // 缩小→正常（走近）- 轻微效果
+    },
+    down: {
+        rotate: null,
+        scale: { start: 1.05, end: 1.0 },   // 放大→正常（退远）- 轻微效果
     },
 };
 
@@ -222,8 +235,6 @@ const ExploreUI = {
     switchToView: async function (sceneId, viewId, direction) {
         console.log('[LOG] switchToView', viewId, direction);
         
-        const cfg = ViewTransition;
-        
         // 首次进入（无方向）：直接创建 view 在屏幕中心
         if (!direction) {
             await this.createView(sceneId, viewId, GameConfig.centerX, GameConfig.centerY);
@@ -266,31 +277,53 @@ const ExploreUI = {
             const newViewRootX = GameConfig.centerX - targetPosX;
             const newViewRootY = GameConfig.centerY - targetPosY;
             
-            // 动画：移动 view_root + 先放大后缩小
-            const halfDuration = cfg.duration / 2;
+            // 获取方向性动效配置
+            const transitionCfg = DirectionalTransition[direction];
+            const duration = DirectionalTransition.duration;
+            const halfDuration = duration / 2;
             
             // 移动 view_root
             ac.moveTo({
                 name: this.viewRoot.name,
                 x: newViewRootX,
                 y: newViewRootY,
-                duration: cfg.duration,
+                duration: duration,
             });
             
-            // 放大阶段
-            ac.scaleTo({
-                name: this.viewRoot.name,
-                scale: { x: cfg.scale.peak * 100, y: cfg.scale.peak * 100 },
-                duration: halfDuration,
-            });
+            // 第一阶段：旋转到峰值 / 缩放到起始值
+            if (transitionCfg.rotate) {
+                ac.rotateTo({
+                    name: this.viewRoot.name,
+                    angle1: transitionCfg.rotate.peak,
+                    duration: halfDuration,
+                });
+            }
+            if (transitionCfg.scale) {
+                ac.scaleTo({
+                    name: this.viewRoot.name,
+                    x: transitionCfg.scale.start * 100,
+                    y: transitionCfg.scale.start * 100,
+                    duration: halfDuration,
+                });
+            }
             await ac.delay({ time: halfDuration });
             
-            // 缩小阶段
-            ac.scaleTo({
-                name: this.viewRoot.name,
-                scale: { x: cfg.scale.normal * 100, y: cfg.scale.normal * 100 },
-                duration: halfDuration,
-            });
+            // 第二阶段：旋转回 0 / 缩放回正常
+            if (transitionCfg.rotate) {
+                ac.rotateTo({
+                    name: this.viewRoot.name,
+                    angle1: 0,
+                    duration: halfDuration,
+                });
+            }
+            if (transitionCfg.scale) {
+                ac.scaleTo({
+                    name: this.viewRoot.name,
+                    x: transitionCfg.scale.end * 100,
+                    y: transitionCfg.scale.end * 100,
+                    duration: halfDuration,
+                });
+            }
             await ac.delay({ time: halfDuration });
             
             this.currentViewId = viewId;
