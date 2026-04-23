@@ -45,6 +45,34 @@ cd tools
 python generate_api_docs.py
 ```
 
+### 4. 变量语义重命名（可选）
+
+反混淆后的源码仍包含大量 `_0x` 形式的混淆变量名。使用 `rename_variables.py` 脚本可以根据代码上下文推断并恢复部分变量的语义名称：
+
+```bash
+python tools/rename_variables.py
+```
+
+**重命名策略**：
+- 从对象属性赋值推断：`'EASE_TYPES': _0xabc` → `EASE_TYPES`
+- 从命令类定义推断：`commandName = 'jump'` → `JumpCmd`
+- 从变量赋值推断：`var xxx = _0xabc` → 继承 `xxx` 的名称
+
+**统计结果**：
+- 原始 `_0x` 变量：13,332 个
+- 成功重命名：1,977 个（14.8%）
+- 包括 116 个命令类名
+
+### 5. 提取核心 API 代码
+
+原始文件前 6500+ 行是 polyfill/core-js 代码，与易次元 API 无关。使用 `extract_api_code.py` 提取纯净的 API 代码：
+
+```bash
+python tools/extract_api_code.py
+```
+
+输出 `docs/game.api-only.js`，仅包含易次元引擎核心实现。
+
 ## 生成结果
 
 ### 产出文件
@@ -52,8 +80,11 @@ python generate_api_docs.py
 | 文件 | 位置 | 说明 |
 |---|---|---|
 | `game.deobfuscated.js` | `docs/` | 反混淆后的引擎源码（3.8MB，64267 行） |
+| `game.api-only.js` | `docs/` | 精简版：仅易次元核心 API（移除 polyfill，55000+ 行） |
 | `ac-api.md` | `docs/` | 自动生成的 API 参考文档 |
 | `generate_api_docs.py` | `tools/` | API 文档生成脚本 |
+| `rename_variables.py` | `tools/` | 变量语义重命名脚本 |
+| `extract_api_code.py` | `tools/` | 提取核心 API 代码脚本 |
 
 ### 统计数据
 
