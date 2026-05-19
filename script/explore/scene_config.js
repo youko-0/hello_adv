@@ -45,7 +45,7 @@ const SceneConfig = {
                     right: 'main_hall'
                 },
                 interact: {
-                    item_mural_nezhanaohai: { x: 600, y: 380 },
+                    item_mural_nezhanaohai: { x: 640, y: 360 },
                 }
             },
             // 后殿
@@ -58,7 +58,7 @@ const SceneConfig = {
                     right: 'left_hall',
                 },
                 interact: {
-                    item_mural_ziwenguitian: { x: 600, y: 380 },
+                    item_mural_ziwenguitian: { x: 640, y: 360 },
                 }
             },
             // 右殿
@@ -70,7 +70,7 @@ const SceneConfig = {
                     right: 'back_hall'
                 },
                 interact: {
-                    item_mural_lianhuatuosheng: { x: 600, y: 380 },
+                    item_mural_lianhuatuosheng: { x: 640, y: 360 },
                 }
             },
         },
@@ -100,7 +100,7 @@ const SceneConfig = {
                     right: 'main_hall'
                 },
                 interact: {
-                    item_mural_jianzaoshenmiao: { x: 600, y: 380 },
+                    item_mural_jianzaoshenmiao: { x: 640, y: 360 },
                 }
             },
             // 后殿
@@ -112,7 +112,7 @@ const SceneConfig = {
                     right: 'left_hall',
                 },
                 interact: {
-                    item_mural_zhuzaosuxiang: { x: 600, y: 380 },
+                    item_mural_zhuzaosuxiang: { x: 640, y: 360 },
                 }
             },
             // 右殿
@@ -124,7 +124,7 @@ const SceneConfig = {
                     right: 'back_hall'
                 },
                 interact: {
-                    item_mural_lijingsb: { x: 600, y: 380 },
+                    item_mural_lijingsb: { x: 640, y: 360 },
                 }
             },
         },
