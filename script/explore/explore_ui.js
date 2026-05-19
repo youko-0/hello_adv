@@ -8,16 +8,33 @@ const ExploreUI = {
     //    └── view_root
     //    │     └── view（当前 view，固定控件名，原地替换）
     //    └── nav buttons
-    
+
     sceneRoot: {
         name: 'layer_explore_scene_root',
     },
-    
+
     viewRoot: {
         name: 'layer_explore_view_root',
     },
 
     viewName: 'layer_explore_view', // 固定 view 控件名，同一时刻只存在一个
+
+    // 眨眼过渡配置
+    Blink: {
+        duration: 240,  // 单次开/闭时长 ms
+        // pic_mask_iris 尺寸 1280×2160（= 3× 屏幕高），scaleY 33% 时图片高度刚好覆盖屏幕
+        // 此时镂空椭圆高度缩至 240px，视觉上接近闭合
+        minScaleY: 33,
+        iris: {
+            name: 'img_explore_iris_mask',
+            resId: ResMap.pic_mask_iris,    // 1280×2160，中央镂空椭圆 1280×720
+        },
+        black: {
+            name: 'img_explore_black_mask',
+            resId: ResMap.img_mask_black,   // 32×32 纯黑，缩放至全屏覆盖残余椭圆区域
+            srcSize: 32,
+        },
+    },
 
     // 导航按钮配置
     Nav: {
@@ -176,22 +193,81 @@ const ExploreUI = {
     // ═══════════════════════════════════════════════════════════════
 
     /**
-     * 切换到目标 view（移除旧 view → 原地创建新 view）
+     * 眨眼过渡动效：虹膜闭合 → 执行回调（黑屏期间切换内容）→ 虹膜张开
+     * @param {Function} onBlackScreen - 完全黑屏时执行的异步回调
+     */
+    performBlink: async function (onBlackScreen) {
+        const { duration, minScaleY, iris, black } = this.Blink;
+
+        // 创建虹膜遮罩（初始张开：scaleY = 100）
+        await ac.createImage({
+            name: iris.name,
+            index: 500,
+            inlayer: this.sceneRoot.name,
+            resId: iris.resId,
+            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
+            anchor: { x: 50, y: 50 },
+            scale: { x: 100, y: 100 },
+        });
+
+        // 闭合：scaleY 100 → minScaleY（X 轴不动）
+        await ac.scaleTo({ name: iris.name, x: 100, y: minScaleY, duration: duration });
+
+        // 叠加纯黑遮罩，覆盖残余椭圆区域，实现完全黑屏
+        await ac.createImage({
+            name: black.name,
+            index: 600,
+            inlayer: this.sceneRoot.name,
+            resId: black.resId,
+            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
+            anchor: { x: 50, y: 50 },
+            scale: {
+                x: GameConfig.width * 100 / black.srcSize,
+                y: GameConfig.height * 100 / black.srcSize,
+            },
+        });
+
+        // 黑屏期间执行切换回调
+        await onBlackScreen();
+
+        // 移除纯黑遮罩
+        ac.remove({
+            name: black.name,
+            effect: 'fadeout',
+            duration: duration,
+            canskip: false,
+        });
+
+        // 张开：scaleY minScaleY → 100
+        ac.scaleTo({ name: iris.name, x: 100, y: 100, duration: duration });
+
+        // 移除虹膜遮罩
+        await ac.remove({
+            name: iris.name,
+            effect: 'fadeout',
+            duration: duration,
+            canskip: false,
+        });
+    },
+
+    /**
+     * 切换到目标 view（眨眼过渡）
      * @param {string} sceneId - 场景 ID
      * @param {string} viewId  - 目标 view ID
      */
     switchToView: async function (sceneId, viewId) {
         console.log('[LOG] switchToView', viewId);
 
-        // 移除导航按钮和当前 view（ac.remove 自行处理不存在的控件）
+        // 移除导航按钮（ac.remove 自行处理不存在的控件）
         await this.removeNavButtons();
-        await ac.remove({ name: this.viewName });
 
-        // 创建新 view
-        await this.createView(sceneId, viewId);
-
-        // 创建导航按钮
-        await this.createNavButtons(sceneId, viewId);
+        // 眨眼过渡：黑屏期间替换 view
+        await this.performBlink(async () => {
+            await ac.remove({ name: this.viewName });
+            await this.createView(sceneId, viewId);
+            // 创建导航按钮
+            await this.createNavButtons(sceneId, viewId);
+        });
     },
 
     // ═══════════════════════════════════════════════════════════════

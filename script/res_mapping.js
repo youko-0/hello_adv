@@ -7,6 +7,7 @@ const HelloADVRes = {
     // 通用
     img_mask_black: '$183470049',
     img_mask_round: '$183502801',
+    pic_mask_iris: '$191123170',
     img_dialog_bg_no_head: '$184489241',
     img_dialog_bg_with_head: '$184489243',
     btn_common_close_normal: '$183658478',
@@ -160,6 +161,7 @@ const DongHaiRes = {
     // 通用
     img_mask_black: '$185360100',
     img_mask_round: '$185360099',
+    pic_mask_iris: '$191123170',
     img_dialog_bg_no_head: '$185360061',
     img_dialog_bg_with_head: '$185360060',
     btn_common_close_normal: '$185360095',
