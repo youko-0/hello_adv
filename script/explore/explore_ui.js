@@ -19,10 +19,6 @@ const ExploreUI = {
 
     viewName: 'layer_explore_view', // 固定 view 控件名，同一时刻只存在一个
 
-    // 当前状态
-    sceneId: null,
-    currentViewId: null,
-
     // 导航按钮配置
     Nav: {
         up: {
@@ -77,8 +73,6 @@ const ExploreUI = {
             inlayer: this.sceneRoot.name,
             pos: { x: 0, y: 0 },
         });
-
-        this.sceneId = sceneId;
     },
 
     // ═══════════════════════════════════════════════════════════════
@@ -189,16 +183,12 @@ const ExploreUI = {
     switchToView: async function (sceneId, viewId) {
         console.log('[LOG] switchToView', viewId);
 
-        if (this.currentViewId !== null) {
-            // 移除导航按钮
-            await this.removeNavButtons();
-            // 移除当前 view
-            await ac.remove({ name: this.viewName });
-        }
+        // 移除导航按钮和当前 view（ac.remove 自行处理不存在的控件）
+        await this.removeNavButtons();
+        await ac.remove({ name: this.viewName });
 
         // 创建新 view
         await this.createView(sceneId, viewId);
-        this.currentViewId = viewId;
 
         // 创建导航按钮
         await this.createNavButtons(sceneId, viewId);
@@ -212,18 +202,11 @@ const ExploreUI = {
      * 关闭场景 UI
      */
     closeSceneUI: async function () {
-        // 移除导航按钮
-        await this.removeNavButtons();
-        // 移除 scene_root（会一起移除所有子层）
-        if (await CommonUI.isWidgetExist(this.sceneRoot.name)) {
-            await ac.remove({
-                name: this.sceneRoot.name,
-                effect: 'fadeout',
-                duration: 500,
-            });
-        }
-        // 重置状态
-        this.sceneId = null;
-        this.currentViewId = null;
+        // 移除 scene_root（含所有子层：view_root、view、导航按钮）
+        await ac.remove({
+            name: this.sceneRoot.name,
+            effect: 'fadeout',
+            duration: 500,
+        });
     }
 }
