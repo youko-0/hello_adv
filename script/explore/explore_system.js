@@ -112,7 +112,7 @@ const ExploreSystem = createSystem(
             
             // 进入默认视图
             const viewId = this.getDefaultView(sceneId);
-            await ExploreUI.switchToView(sceneId, viewId, null);
+            await ExploreUI.switchToView(sceneId, viewId);
 
             // 等待直到所有线索都查看完毕
             while (!this.isInspectedAll(sceneId)) {
@@ -125,13 +125,12 @@ const ExploreSystem = createSystem(
 
         /**
          * 跳转去场景视图（导航按钮调用）
-         * @param {string} sceneId    - 场景 ID
-         * @param {string} viewId     - 视图 ID
-         * @param {string} direction  - 导航方向 (up/down/left/right)
+         * @param {string} sceneId - 场景 ID
+         * @param {string} viewId  - 视图 ID
          */
-        gotoView: async function (sceneId, viewId, direction) {
-            console.log('[LOG] gotoView', sceneId, viewId, direction);
-            await ExploreUI.switchToView(sceneId, viewId, direction);
+        gotoView: async function (sceneId, viewId) {
+            console.log('[LOG] gotoView', sceneId, viewId);
+            await ExploreUI.switchToView(sceneId, viewId);
         },
 
         /**
