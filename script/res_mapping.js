@@ -161,7 +161,7 @@ const DongHaiRes = {
     // 通用
     img_mask_black: '$185360100',
     img_mask_round: '$185360099',
-    pic_mask_iris: '$191123170',
+    pic_mask_iris: '$191126322',
     img_dialog_bg_no_head: '$185360061',
     img_dialog_bg_with_head: '$185360060',
     btn_common_close_normal: '$185360095',
