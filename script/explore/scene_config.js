@@ -41,7 +41,7 @@ const SceneConfig = {
                 id: 'left_hall',
                 bg: ResMap.pic_nezha_temple_left_hall,
                 nav: {
-                    left: 'back_hall',
+                    // left: 'back_hall',
                     right: 'main_hall'
                 },
                 interact: {
@@ -54,8 +54,8 @@ const SceneConfig = {
                 bg: ResMap.pic_nezha_temple_back_hall,
                 nav: {
                     up: 'main_hall',
-                    left: 'right_hall',
-                    right: 'left_hall',
+                    // left: 'right_hall',
+                    // right: 'left_hall',
                 },
                 interact: {
                     item_mural_ziwenguitian: { x: 640, y: 360 },
@@ -67,7 +67,7 @@ const SceneConfig = {
                 bg: ResMap.pic_nezha_temple_right_hall,
                 nav: {
                     left: 'main_hall',
-                    right: 'back_hall'
+                    // right: 'back_hall'
                 },
                 interact: {
                     item_mural_lianhuatuosheng: { x: 640, y: 360 },
