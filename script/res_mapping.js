@@ -132,6 +132,16 @@ const HelloADVRes = {
     img_item_jewelry_box: '$185220219',
     img_item_newspaper: '$185220220',
 
+    img_divine_coin_yang: '$191882997',
+    img_divine_coin_yin: '$191882998',
+    img_divine_yao_yang_white: '$191884020',
+    img_divine_yao_yang_red: '$191884019',
+    img_divine_yao_yin_white: '$191884022',
+    img_divine_yao_yin_red: '$191884021',
+    btn_divine_normal: '$191887673',
+    btn_divine_pressed: '$191887675',
+    img_divine_result_bg: '$191888534',
+
     // 粒子
     spr_particle_trail: '$185237938',
 
