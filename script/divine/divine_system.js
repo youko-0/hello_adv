@@ -8,6 +8,7 @@ const DivineSystem = {
     onComplete: null,     // 占卜完成回调
     currentRound: 0,      // 当前轮次（0~5）
     busy: false,          // 单轮动画进行中标志，防止重复点击
+    _done: false,         // 全流程结束标志（六轮占卜 + 结果阅读 + 关闭后置 true）
 
     /**
      * 启动占卜流程
@@ -28,12 +29,20 @@ const DivineSystem = {
         this.onComplete = onComplete;
         this.currentRound = 0;
         this.busy = false;
+        this._done = false;
 
         // 关闭系统对话框
         await ac.sysDialogOff({});
 
         // 创建占卜界面
         await DivineUI.createDivineUI();
+
+        // 等待全流程结束（六轮占卜 + 结果阅读 + 点击关闭）
+        while (!this._done) {
+            await ac.delay({ time: 200 });
+        }
+
+        if (this.onComplete) await this.onComplete();
     },
 
     /**
@@ -87,15 +96,16 @@ const DivineSystem = {
             // 6 轮完成，过渡到结果界面
             await ac.delay({ time: 600 });
             await DivineUI.closeDivineUI();
+            // showResultUI 内部处理分页翻页 + 点击关闭，await 直到结果界面关闭
             await DivineUI.showResultUI(this.resultText);
-
+            // 结果界面已关闭，通知 startDivine 的 while 循环退出
+            this._done = true;
             this.busy = false;
-            if (this.onComplete) await this.onComplete();
         }
     },
 
     /**
-     * 关闭结果界面（外部调用）
+     * 关闭结果界面（外部调用，仅在特殊情况需要手动关闭时使用）
      */
     closeResult: async function () {
         await DivineUI.closeResultUI();

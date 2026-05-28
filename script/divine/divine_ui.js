@@ -47,14 +47,19 @@ const DivineConfig = {
             normal: ResMap.btn_divine_normal,
             pressed: ResMap.btn_divine_pressed,
         },
-        // 结果界面文本框背景
-        resultBg: ResMap.img_divine_result_bg,
+        // 结果界面文本框背景（32×32 纯色小图，缩放铺满）
+        resultBg: {
+            resId: ResMap.img_divine_result_bg,
+            srcWidth: 32,
+            srcHeight: 32,
+        },
     },
 
-    // 文本样式
+    // 文本样式（需在易次元工程中预定义）
     style: {
-        yaoLabel: 'style_divine_yao_label',     // 爻名称样式
-        resultText: 'style_divine_result_text', // 结果文本样式
+        yaoLabel: 'style_divine_yao_label',       // 爻名称样式
+        resultText: 'style_divine_result_text',   // 结果文本样式
+        resultFontSize: 28,                       // 结果文本字号（用于分页计算）
     },
 
     // 布局
@@ -83,20 +88,18 @@ const DivineConfig = {
             y: GameConfig.centerY,
             width: 900,
             height: 540,
-            bgWidth: 32,        // 若 resultBg 是小图通过缩放铺满则用这个
-            bgHeight: 32,
             textPadding: { top: 60, bottom: 60, left: 80, right: 80 },
         },
     },
 
-    // 动画时长
+    // 动画时长（ms）
     anim: {
-        flipHalfDuration: 120,  // 硬币翻转单段时长（ms），全程 = halfDuration × 2 × flipCount
+        flipHalfDuration: 120,  // 硬币翻转单段时长，全程 = halfDuration × 2 × flipCount
         flipCount: 5,           // 翻转次数
-        coinFadeDuration: 400,  // 硬币淡出时长
-        yaoFadeDuration: 400,   // 爻图淡入时长
-        resultFadeDuration: 600,// 结果界面淡入时长
-        sceneFadeDuration: 500, // 占卜界面淡出时长
+        coinFadeDuration: 400,  // 硬币淡出
+        yaoFadeDuration: 400,   // 爻图淡入
+        resultFadeDuration: 600,// 结果界面淡入
+        sceneFadeDuration: 500, // 占卜界面淡出
     },
 };
 
@@ -122,6 +125,11 @@ const DivineUI = {
     yao: {
         label: idx => `txt_divine_yao_label_${idx}`,
         image: idx => `img_divine_yao_${idx}`,
+    },
+
+    // 结果界面点击状态（供 _waitForResultClick 轮询）
+    _resultState: {
+        waitingForClick: false,
     },
 
     // ───────────────────────────────────────────────────────────────
@@ -197,7 +205,6 @@ const DivineUI = {
     },
 
     hideButton: async function () {
-        // ac.remove 自行处理不存在控件
         await ac.remove({ name: this.button.name });
     },
 
@@ -207,8 +214,7 @@ const DivineUI = {
 
     /**
      * 播放三枚硬币翻转动画，最终停留在 coins 指定的面
-     * 实现方式：每枚硬币创建正反两张图叠在同一位置，翻转过程中通过
-     * scaleX 100→0 收缩 + show/hide 切换显示面 + scaleX 0→100 展开
+     * 每枚硬币创建正反两张图叠在同一位置，通过 scaleX 收缩→切换显示面→展开模拟翻转
      * @param {Array<number>} coins - [0/1, 0/1, 0/1]，0=阴 1=阳
      */
     playCoinAnimation: async function (coins) {
@@ -218,7 +224,7 @@ const DivineUI = {
         const half = DivineConfig.anim.flipHalfDuration;
         const flipCount = DivineConfig.anim.flipCount;
 
-        // 创建三枚硬币的两面
+        // 创建三枚硬币的正反面
         for (let i = 0; i < 3; i++) {
             const x = cx + (i - 1) * sx;
 
@@ -250,32 +256,32 @@ const DivineUI = {
         for (let f = 0; f < flipCount; f++) {
             const isLast = f === flipCount - 1;
 
-            // ── 阶段 1：当前可见面 scaleX 100 → 0（缩成边缘）──
+            // 阶段 1：当前可见面 scaleX 100 → 0（缩成边缘）
             for (let i = 0; i < 3; i++) {
                 const visible = currentFace[i] === 1 ? this.coin.front(i) : this.coin.back(i);
                 ac.scaleTo({ name: visible, x: 0, y: 100, duration: half });
             }
             await ac.delay({ time: half });
 
-            // ── 切换显示面 ──
+            // 切换显示面
             for (let i = 0; i < 3; i++) {
                 const oldVisible = currentFace[i] === 1 ? this.coin.front(i) : this.coin.back(i);
 
-                // 决定新面：最后一次锁定为目标结果，否则继续翻
+                // 最后一次翻转锁定为目标结果，否则继续翻
                 const newFace = isLast ? coins[i] : (1 - currentFace[i]);
                 currentFace[i] = newFace;
 
                 const newVisible = newFace === 1 ? this.coin.front(i) : this.coin.back(i);
 
                 if (oldVisible !== newVisible) {
-                    // 隐藏旧面，将新面初始化到 scaleX=0 后显示
+                    // 将新面预设为 scaleX=0 再显示，避免切换瞬间出现 scaleX=100 的跳变
                     ac.scaleTo({ name: newVisible, x: 0, y: 100, duration: 0 });
                     await ac.hide({ name: oldVisible });
                     await ac.show({ name: newVisible });
                 }
             }
 
-            // ── 阶段 2：新面 scaleX 0 → 100（展开）──
+            // 阶段 2：新面 scaleX 0 → 100（展开）
             for (let i = 0; i < 3; i++) {
                 const visible = currentFace[i] === 1 ? this.coin.front(i) : this.coin.back(i);
                 ac.scaleTo({ name: visible, x: 100, y: 100, duration: half });
@@ -290,14 +296,12 @@ const DivineUI = {
     fadeOutCoins: async function () {
         const dur = DivineConfig.anim.coinFadeDuration;
 
-        // 同时淡出所有硬币图（隐藏的图 fadeTo 也安全，无视即可）
         for (let i = 0; i < 3; i++) {
             ac.fadeTo({ name: this.coin.front(i), opacity: 0, duration: dur });
             ac.fadeTo({ name: this.coin.back(i), opacity: 0, duration: dur });
         }
         await ac.delay({ time: dur });
 
-        // 移除
         for (let i = 0; i < 3; i++) {
             await ac.remove({ name: this.coin.front(i) });
             await ac.remove({ name: this.coin.back(i) });
@@ -335,18 +339,21 @@ const DivineUI = {
     },
 
     // ───────────────────────────────────────────────────────────────
-    // 结果界面
+    // 结果界面（分页翻页 + 点击关闭）
     // ───────────────────────────────────────────────────────────────
 
     /**
-     * 显示结果界面（文本框淡入）
+     * 显示结果界面，支持分页翻页，全部页面浏览完并点击关闭后才返回
+     * 流程：淡入背景 → 逐页显示文本 → 每页等待点击翻页 → 最后一页点击后关闭
      * @param {string} text - 结果文本
      */
     showResultUI: async function (text) {
         const cfg = DivineConfig.layout.result;
-        const dur = DivineConfig.anim.resultFadeDuration;
+        const fadeDur = DivineConfig.anim.resultFadeDuration;
+        const fontSize = DivineConfig.style.resultFontSize;
+        const bg = DivineConfig.res.resultBg;
 
-        // 容器层
+        // ── 创建结果界面容器 ──
         await ac.createLayer({
             name: this.layer.result,
             index: ZORDER.UI,
@@ -357,32 +364,80 @@ const DivineUI = {
             clipMode: false,
         });
 
-        // 背景（缩放铺满文本框尺寸）
+        // 背景（初始透明，稍后淡入）
         await ac.createImage({
             name: 'img_divine_result_bg',
             index: 0,
             inlayer: this.layer.result,
-            resId: DivineConfig.res.resultBg,
+            resId: bg.resId,
             pos: { x: cfg.width / 2, y: cfg.height / 2 },
             anchor: { x: 50, y: 50 },
             scale: {
-                x: cfg.width * 100 / cfg.bgWidth,
-                y: cfg.height * 100 / cfg.bgHeight,
+                x: cfg.width * 100 / bg.srcWidth,
+                y: cfg.height * 100 / bg.srcHeight,
             },
             opacity: 0,
         });
 
-        // 文本
+        // 全屏点击拦截层（index 高于内容层，捕获所有翻页点击）
+        await ac.createLayer({
+            name: 'layer_divine_result_mask',
+            index: 100,
+            inlayer: this.layer.result,
+            pos: { x: 0, y: 0 },
+            size: { width: GameConfig.width, height: GameConfig.height },
+            anchor: { x: 0, y: 0 },
+            clipMode: false,
+        });
+
+        // 绑定点击处理（点击 → 清除等待标志）
+        const self = this;
+        this._resultState.waitingForClick = false;
+        ac.addEventListener({
+            type: ac.EVENT_TYPES.onTouchEnded,
+            listener: async function () {
+                self._resultState.waitingForClick = false;
+            },
+            target: 'layer_divine_result_mask',
+        });
+
+        // ── 分页计算 ──
+        const textWidth = cfg.width - cfg.textPadding.left - cfg.textPadding.right;
+        const textHeight = cfg.height - cfg.textPadding.top - cfg.textPadding.bottom;
+        const maxLines = Math.floor(textHeight / (fontSize * 1.5));
+        const pages = Utils.paginateText(text, fontSize, textWidth, maxLines);
+
+        // ── 背景淡入 ──
+        ac.fadeTo({ name: 'img_divine_result_bg', opacity: 100, duration: fadeDur });
+        await ac.delay({ time: fadeDur });
+
+        // ── 逐页显示，每页等待点击 ──
+        for (let i = 0; i < pages.length; i++) {
+            console.log(`[DivineUI] 显示结果第 ${i + 1}/${pages.length} 页`);
+            await this._updateResultText(pages[i]);
+            await this._waitForResultClick();
+        }
+
+        // ── 关闭结果界面 ──
+        await this.closeResultUI();
+    },
+
+    /**
+     * 创建或更新结果文本控件（同名 createText 即覆盖更新）
+     * @param {string} content - 当前页文本
+     */
+    _updateResultText: async function (content) {
+        const cfg = DivineConfig.layout.result;
         await ac.createText({
             name: 'txt_divine_result',
             index: 1,
             inlayer: this.layer.result,
-            content: text,
+            content: content,
             pos: {
                 x: cfg.textPadding.left,
                 y: cfg.height - cfg.textPadding.top,
             },
-            anchor: { x: 0, y: 100 },  // 左上角对齐
+            anchor: { x: 0, y: 100 },
             size: {
                 width: cfg.width - cfg.textPadding.left - cfg.textPadding.right,
                 height: cfg.height - cfg.textPadding.top - cfg.textPadding.bottom,
@@ -390,17 +445,22 @@ const DivineUI = {
             style: DivineConfig.style.resultText,
             halign: ac.HALIGN_TYPES.left,
             valign: ac.VALIGN_TYPES.top,
-            opacity: 0,
+            opacity: 100,
         });
-
-        // 淡入
-        ac.fadeTo({ name: 'img_divine_result_bg', opacity: 100, duration: dur });
-        ac.fadeTo({ name: 'txt_divine_result', opacity: 100, duration: dur });
-        await ac.delay({ time: dur });
     },
 
     /**
-     * 关闭结果界面
+     * 等待用户点击结果界面（轮询 _resultState.waitingForClick 标志）
+     */
+    _waitForResultClick: async function () {
+        this._resultState.waitingForClick = true;
+        while (this._resultState.waitingForClick) {
+            await ac.delay({ time: 100 });
+        }
+    },
+
+    /**
+     * 关闭结果界面（淡出移除）
      */
     closeResultUI: async function () {
         await ac.remove({
