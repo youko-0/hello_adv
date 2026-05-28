@@ -35,12 +35,10 @@ const DivineConfig = {
             front: ResMap.img_divine_coin_yang,   // 阳面（1）
             back: ResMap.img_divine_coin_yin,     // 阴面（0）
         },
-        // 单轮爻的四种结果图
+        // 单轮爻的两种结果图
         yao: {
-            yang_static: ResMap.img_divine_yao_yang_white,   // 少阳：白色长横线
-            yang_change: ResMap.img_divine_yao_yang_red,     // 老阳：红色长横线（变爻）
-            yin_static: ResMap.img_divine_yao_yin_white,     // 少阴：白色双短横线
-            yin_change: ResMap.img_divine_yao_yin_red,       // 老阴：红色双短横线（变爻）
+            yang: ResMap.img_divine_yao_yang,   // 长横线（阳爻）
+            yin: ResMap.img_divine_yao_yin,     // 双短线（阴爻）
         },
         // 占卜按钮
         button: {

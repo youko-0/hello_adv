@@ -48,14 +48,12 @@ const DivineSystem = {
     /**
      * 计算单轮爻类型
      * @param {Array<number>} coins - [0/1, 0/1, 0/1]
-     * @returns {string} 爻类型 key（对应 DivineConfig.res.yao）
+     * @returns {string} 'yang'（长横线）或 'yin'（双短线）
      */
     calcYaoType: function (coins) {
+        // 多数决：阳数 >= 2 为阳爻，否则为阴爻
         const sum = coins[0] + coins[1] + coins[2];
-        if (sum === 3) return 'yang_change';   // 老阳：红色长横线（变爻）
-        if (sum === 2) return 'yang_static';   // 少阳：白色长横线
-        if (sum === 1) return 'yin_static';    // 少阴：白色双短横线
-        return 'yin_change';                    // 老阴：红色双短横线（变爻）
+        return sum >= 2 ? 'yang' : 'yin';
     },
 
     /**
