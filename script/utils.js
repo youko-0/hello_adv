@@ -172,9 +172,19 @@ const Utils = {
         let currentLine = "";  // 当前正在拼凑的行
 
         for (let char of text) {
+            // \n 强制换行：不计入行宽，直接推送当前行
+            if (char === '\n') {
+                currentLines.push(currentLine);
+                currentLine = "";
+                if (currentLines.length >= maxLines) {
+                    pages.push(currentLines.join('\n'));
+                    currentLines = [];
+                }
+                continue;
+            }
+
             // 试探性加上这个字
             let testLine = currentLine + char;
-
             let w = this.calcTextWidth(testLine, fontSize);
 
             if (w > maxW) {
