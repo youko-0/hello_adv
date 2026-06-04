@@ -64,17 +64,20 @@ const DivineConfig = {
     // 视觉从上到下：爻线区 → 硬币区 → 按钮
     // 传统爻序：初爻在视觉底部（小 engine y），上爻在视觉顶部（大 engine y）
     layout: {
-        // ── 爻槽 ──
-        // 初爻 engine y = yaoStartY，上爻 engine y = yaoStartY + 5 × yaoSpacingY
-        // 视觉底部留给硬币+按钮，爻线区从 y=320 开始
-        yaoStartY:      320,    // 初爻 engine y（视觉偏下）
+        // ── 爻槽（掷币阶段）──
+        // 初爻 engine y = yaoStartY，上爻 = yaoStartY + 5 × yaoSpacingY
+        yaoStartY:      320,    // 初爻 engine y
         yaoSpacingY:     60,    // 上爻 = 320 + 5×60 = 620
-        yaoLabelX:       120,   // 爻名标签中心 X
+        // ── 爻槽（结果阶段，卦名顶部出现后整体下移）──
+        // 卦名底边 ≈ y=580，留 40px 间距，上爻 = 540，初爻 = 540 - 5×60 = 240
+        yaoResultStartY: 240,
+
+        yaoLabelX:       316,   // 标签中心 X，(1280-728)/2 + 40
         // 爻图：anchor x=100（右边缘固定），scaleTo x:0 → 从左至右擦除
-        yaoImageRightX:  788,   // 标签右边缘(160) + 爻线宽(628) = 788
-        // 爻辞打字机起点（anchor x=0，左对齐）
-        yaoTextX:         80,
-        yaoTextWidth:    1100,
+        yaoImageRightX: 1004,   // 标签右边缘(356) + 间距(20) + 爻线宽(628) = 1004
+        // 爻辞打字机起点（anchor x=0，左对齐，与标签左边缘对齐）
+        yaoTextX:        276,
+        yaoTextWidth:     728,  // 与爻线区整体同宽
 
         // ── 卦名大标题（结果阶段，视觉顶部 = 大 engine y）──
         hexNamePos:  { x: GameConfig.centerX, y: 630 },
@@ -104,6 +107,7 @@ const DivineConfig = {
         yaoFadeDuration:       400,
         yaoEraseDuration:      350,   // 爻线左→右擦除时长
         typewriterDelay:        40,   // 打字机每字间隔 ms
+        yaoSlideDuration:      500,   // 爻线区下移动画时长
         hexNameFadeDuration:   800,
         judgmentFadeDuration:  600,
         sceneFadeDuration:     500,
@@ -136,15 +140,16 @@ const DivineUI = {
     },
 
     _state: {
-        waitingForClick: false,
-        maskCreated:     false,
-        // 每枚硬币当前朝上面（1=正/front, 0=背/back），createDivineUI 初始化
-        coinFace: [1, 1, 1],
+        waitingForClick:  false,
+        maskCreated:      false,
+        coinFace:         [1, 1, 1],
+        // 爻线区当前起始 Y（掷币阶段=yaoStartY，结果阶段=yaoResultStartY）
+        currentYaoStartY: 0,
     },
 
-    // 计算第 idx 爻的 engine Y（初爻在底，上爻在顶）
+    // 计算第 idx 爻的 engine Y（使用运行时 currentYaoStartY）
     _yaoY: function (idx) {
-        return DivineConfig.layout.yaoStartY + idx * DivineConfig.layout.yaoSpacingY;
+        return this._state.currentYaoStartY + idx * DivineConfig.layout.yaoSpacingY;
     },
 
     // ───────────────────────────────────────────────────────────────
@@ -203,8 +208,9 @@ const DivineUI = {
 
         await this.showButton();
 
-        this._state.waitingForClick = false;
-        this._state.maskCreated     = false;
+        this._state.waitingForClick  = false;
+        this._state.maskCreated      = false;
+        this._state.currentYaoStartY = DivineConfig.layout.yaoStartY;
     },
 
     closeDivineUI: async function () {
@@ -251,6 +257,30 @@ const DivineUI = {
 
     hideButton: async function () {
         await ac.remove({ name: this.button.name });
+    },
+
+    // ───────────────────────────────────────────────────────────────
+    // 爻线区下移动画（结果阶段：腾出顶部空间给卦名）
+    // ───────────────────────────────────────────────────────────────
+
+    /**
+     * 将所有爻标签 + 爻图同步平移到结果阶段位置
+     * 调用后 _state.currentYaoStartY 更新为 yaoResultStartY
+     */
+    slideYaoAreaDown: async function () {
+        const newStartY = DivineConfig.layout.yaoResultStartY;
+        const dur       = DivineConfig.anim.yaoSlideDuration;
+
+        for (let i = 0; i < 6; i++) {
+            const newY = newStartY + i * DivineConfig.layout.yaoSpacingY;
+            // 标签和爻图并行移动（不 await，让 6 条同时动）
+            ac.moveTo({ name: this.yao.label(i), x: DivineConfig.layout.yaoLabelX, y: newY, duration: dur });
+            ac.moveTo({ name: this.yao.image(i), x: DivineConfig.layout.yaoImageRightX, y: newY, duration: dur });
+        }
+        await ac.delay({ time: dur });
+
+        // 更新运行时起始 Y，后续 _yaoY 返回新位置
+        this._state.currentYaoStartY = newStartY;
     },
 
     // ───────────────────────────────────────────────────────────────

@@ -97,10 +97,14 @@ const DivineSystem = {
             await DivineUI.showButton();
             this.busy = false;
         } else {
-            // 6 轮完成：淡出硬币 + 移除禁用按钮 → 结果展示
+            // 6 轮完成：淡出硬币 + 移除禁用按钮
             await DivineUI.fadeOutCoins();
             await DivineUI.hideButton();
-            await ac.delay({ time: 600 });
+
+            // 爻线区整体下移，腾出顶部空间
+            await DivineUI.slideYaoAreaDown();
+
+            await ac.delay({ time: 300 });
 
             // 卦名顶部淡入 → 爻线逐条擦除+打字机 → 卦辞底部淡入 → 等待点击
             await DivineUI.showDivineResult(
