@@ -296,6 +296,16 @@ const DongHaiRes = {
     img_item_jewelry_box: '$186183778',
     img_item_newspaper: '$186183780',
     
+    // 占卜
+    pic_divine_bg: '$192586943',
+    img_divine_coin_yang: '$192586954',
+    img_divine_coin_yin: '$192586955',
+    img_divine_yao_yang: '$192586955',
+    img_divine_yao_yin: '$192586955',
+    btn_divine_normal: '$192586952',
+    btn_divine_pressed: '$192586953',
+    btn_divine_disabled: '$192586951',
+    
     // 粒子
     spr_particle_trail: '$185360040',
     

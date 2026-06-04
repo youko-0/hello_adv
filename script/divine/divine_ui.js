@@ -83,8 +83,8 @@ const DivineConfig = {
         hexNamePos:  { x: GameConfig.centerX, y: 630 },
         hexNameSize: { width: 800, height: 100 },
 
-        // ── 卦辞（结果阶段，视觉底部 = 小 engine y）──
-        judgmentPos:  { x: GameConfig.centerX, y: 50 },
+        // ── 卦辞（结果阶段，视觉底部 = 小 engine y；硬币按钮已消失，可上移）──
+        judgmentPos:  { x: GameConfig.centerX, y: 160 },
         judgmentSize: { width: 1100, height: 60 },
 
         // ── 占卜按钮（视觉最底部）──
@@ -163,6 +163,9 @@ const DivineUI = {
             name: this.layer.scene, index: ZORDER.UI, inlayer: 'window',
         });
 
+        // 初始化运行时爻线起始 Y（必须在创建标签前赋值）
+        this._state.currentYaoStartY = DivineConfig.layout.yaoStartY;
+
         // 全屏背景
         await ac.createImage({
             name: 'img_divine_scene_bg', index: 0, inlayer: this.layer.scene,
@@ -208,9 +211,8 @@ const DivineUI = {
 
         await this.showButton();
 
-        this._state.waitingForClick  = false;
-        this._state.maskCreated      = false;
-        this._state.currentYaoStartY = DivineConfig.layout.yaoStartY;
+        this._state.waitingForClick = false;
+        this._state.maskCreated     = false;
     },
 
     closeDivineUI: async function () {
@@ -218,7 +220,6 @@ const DivineUI = {
             name: this.layer.scene, effect: 'fadeout',
             duration: DivineConfig.anim.sceneFadeDuration,
         });
-        await ac.delay({ time: DivineConfig.anim.sceneFadeDuration });
         this._state.maskCreated = false;
     },
 
@@ -368,8 +369,7 @@ const DivineUI = {
             anchor:  { x: 100, y: 50 },
             opacity: 0,
         });
-        ac.fadeTo({ name, opacity: 100, duration: dur });
-        await ac.delay({ time: dur });
+        await ac.fadeTo({ name, opacity: 100, duration: dur });
     },
 
     // ───────────────────────────────────────────────────────────────
@@ -390,8 +390,7 @@ const DivineUI = {
             halign: ac.HALIGN_TYPES.middle, valign: ac.VALIGN_TYPES.center,
             opacity: 0,
         });
-        ac.fadeTo({ name: this.hex.name, opacity: 100, duration: A.hexNameFadeDuration });
-        await ac.delay({ time: A.hexNameFadeDuration });
+        await ac.fadeTo({ name: this.hex.name, opacity: 100, duration: A.hexNameFadeDuration });
 
         // ② 逐条处理（初爻 i=0 → 上爻 i=5）
         for (let i = 0; i < 6; i++) {
@@ -401,12 +400,11 @@ const DivineUI = {
             ac.hide({ name: this.yao.label(i) });
 
             // 爻线从左至右擦除（anchor x=100，scaleX 100→0）
-            ac.scaleTo({
+            await ac.scaleTo({
                 name: yaoImgName,
                 x: 0, y: 100,
                 duration: A.yaoEraseDuration,
             });
-            await ac.delay({ time: A.yaoEraseDuration });
             await ac.remove({ name: yaoImgName });
 
             // 打字机效果浮现爻辞
@@ -423,8 +421,7 @@ const DivineUI = {
             halign: ac.HALIGN_TYPES.middle, valign: ac.VALIGN_TYPES.center,
             opacity: 0,
         });
-        ac.fadeTo({ name: this.hex.judgment, opacity: 100, duration: A.judgmentFadeDuration });
-        await ac.delay({ time: A.judgmentFadeDuration });
+        await ac.fadeTo({ name: this.hex.judgment, opacity: 100, duration: A.judgmentFadeDuration });
 
         // ④ 等待点击关闭
         await this._waitForClick();
