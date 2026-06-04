@@ -242,7 +242,7 @@ const CommonUI = {
      * @param {string} [config.roleAvatarResId] 角色头像资源ID，有值则显示头像
      * @param {boolean} [config.hasBg] 是否显示背景
      * @param {Function} [config.onComplete] 对话完成回调
-     * @param {boolean} [config.closeType] 关闭逻辑, 默认手动关闭, 1 自动关闭, 2 不关闭
+     * @param {boolean} [config.closeType] 关闭逻辑, 默认手动关闭, 1 自动关闭, 2 不关闭, 3 等待点击后不关闭（保留对话框，由外部手动关闭）
      */
     showCustomDialog: async function (config) {
         // 配置验证
@@ -332,6 +332,10 @@ const CommonUI = {
             await this.closeCustomDialog();
         } else if (config.closeType == 2) {
             // 不关闭
+        } else if (config.closeType == 3) {
+            // 等待点击后不关闭（对话框保留，由外部手动调用 closeCustomDialog）
+            console.log('[LOG] closeType=3，等待用户点击后保留对话框...');
+            await this._waitForUserClick();
         } else {
             // 默认手动关闭
             console.log('[LOG] 等待用户点击关闭...');

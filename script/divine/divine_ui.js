@@ -191,13 +191,11 @@ const DivineUI = {
                 name: this.coin.front(i), index: 100, inlayer: this.layer.scene,
                 resId: DivineConfig.res.coin.front,
                 pos: { x, y: cy }, anchor: { x: 50, y: 50 },
-                scale: { x: 80, y: 80 },
             });
             await ac.createImage({
                 name: this.coin.back(i), index: 100, inlayer: this.layer.scene,
                 resId: DivineConfig.res.coin.back,
                 pos: { x, y: cy }, anchor: { x: 50, y: 50 },
-                scale: { x: 80, y: 80 },
             });
             await ac.hide({ name: this.coin.back(i) });
         }
@@ -228,7 +226,7 @@ const DivineUI = {
             name: this.button.name, index: 10, inlayer: this.layer.scene,
             nResId: DivineConfig.res.button.normal,
             sResId: DivineConfig.res.button.pressed,
-            content: '占卜',
+            content: '',
             pos: { x: cfg.x, y: cfg.y }, anchor: { x: 50, y: 50 },
             size: { width: cfg.width, height: cfg.height },
             onTouchEnded: async function () {
@@ -244,7 +242,7 @@ const DivineUI = {
             name: this.button.name, index: 10, inlayer: this.layer.scene,
             nResId: DivineConfig.res.button.disabled,
             sResId: DivineConfig.res.button.disabled,
-            content: '占卜',
+            content: '',
             pos: { x: cfg.x, y: cfg.y }, anchor: { x: 50, y: 50 },
             size: { width: cfg.width, height: cfg.height },
             // 无 onTouchEnded → 点击无响应

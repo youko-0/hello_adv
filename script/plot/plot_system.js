@@ -113,8 +113,8 @@ const PlotSystem = {
             anchor:  { x: 50, y: 50 },
         });
 
-        // 2. 提问对话框（closeType:2 = 不自动关闭，等选项选择后手动关闭）
-        await CommonUI.showCustomDialog({ content: prompt});
+        // 2. 提问对话框（closeType:3 = 等待玩家点击后保留，不自动关闭）
+        await CommonUI.showCustomDialog({ content: prompt, closeType: 3 });
 
         // 3. 单选项（对话框保持显示，等待玩家选择）
         await CommonUI.showCustomOptionGroup({
@@ -122,6 +122,9 @@ const PlotSystem = {
                 { content: question, callback: null, enabled: true },
             ],
         });
+
+        // 4. 选项关闭后手动关闭对话框
+        await CommonUI.closeCustomDialog();
 
         // 4. 完整占卜流程
         await DivineSystem.startDivine({ coinResults, hexagram, onComplete });
