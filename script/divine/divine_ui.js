@@ -71,7 +71,7 @@ const DivineConfig = {
         yaoSpacingY:     60,    // 上爻 = 320 + 5×60 = 620
         yaoLabelX:       120,   // 爻名标签中心 X
         // 爻图：anchor x=100（右边缘固定），scaleTo x:0 → 从左至右擦除
-        yaoImageRightX:  500,   // 爻图右边缘 X
+        yaoImageRightX:  788,   // 标签右边缘(160) + 爻线宽(628) = 788
         // 爻辞打字机起点（anchor x=0，左对齐）
         yaoTextX:         80,
         yaoTextWidth:    1100,
@@ -191,11 +191,13 @@ const DivineUI = {
                 name: this.coin.front(i), index: 100, inlayer: this.layer.scene,
                 resId: DivineConfig.res.coin.front,
                 pos: { x, y: cy }, anchor: { x: 50, y: 50 },
+                scale: { x: 80, y: 80 },
             });
             await ac.createImage({
                 name: this.coin.back(i), index: 100, inlayer: this.layer.scene,
                 resId: DivineConfig.res.coin.back,
                 pos: { x, y: cy }, anchor: { x: 50, y: 50 },
+                scale: { x: 80, y: 80 },
             });
             await ac.hide({ name: this.coin.back(i) });
         }

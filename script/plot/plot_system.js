@@ -114,7 +114,7 @@ const PlotSystem = {
         });
 
         // 2. 提问对话框（closeType:2 = 不自动关闭，等选项选择后手动关闭）
-        await CommonUI.showCustomDialog({ content: prompt, closeType: 2 });
+        await CommonUI.showCustomDialog({ content: prompt});
 
         // 3. 单选项（对话框保持显示，等待玩家选择）
         await CommonUI.showCustomOptionGroup({
@@ -123,13 +123,10 @@ const PlotSystem = {
             ],
         });
 
-        // 4. 选项关闭后手动关闭对话框
-        await CommonUI.closeCustomDialog();
-
         // 4. 完整占卜流程
         await DivineSystem.startDivine({ coinResults, hexagram, onComplete });
 
-        // 5. 移除全屏占卜背景
-        await ac.remove({ name: 'img_chapter_divine_bg' });
+        // 5. 淡出移除全屏占卜背景
+        await ac.remove({ name: 'img_chapter_divine_bg', effect: 'fadeout', duration: 500, canskip: false });
     },
 };
