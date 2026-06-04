@@ -61,37 +61,40 @@ const DivineConfig = {
 
     // ── 布局 ──────────────────────────────────────────────────────
     // 引擎坐标系：y=0 在屏幕底部，y=720 在屏幕顶部
+    // 视觉从上到下：爻线区 → 硬币区 → 按钮
     // 传统爻序：初爻在视觉底部（小 engine y），上爻在视觉顶部（大 engine y）
     layout: {
-        // 爻槽（初爻 y 最小=视觉底，上爻 y 最大=视觉顶）
-        yaoStartY:      140,    // 初爻 engine y
-        yaoSpacingY:    70,     // 上爻 = 140 + 5×70 = 490
-        yaoLabelX:      120,    // "X爻" 标签中心 X
-        // 爻图右边缘 X（anchor x=100，scaleTo x:0 → 从左至右擦除）
-        yaoImageRightX: 480,
-        // 爻辞打字机起点（anchor x=0，左对齐，覆盖标签位置）
-        yaoTextX:        80,
-        yaoTextWidth:   1100,
+        // ── 爻槽 ──
+        // 初爻 engine y = yaoStartY，上爻 engine y = yaoStartY + 5 × yaoSpacingY
+        // 视觉底部留给硬币+按钮，爻线区从 y=320 开始
+        yaoStartY:      320,    // 初爻 engine y（视觉偏下）
+        yaoSpacingY:     60,    // 上爻 = 320 + 5×60 = 620
+        yaoLabelX:       120,   // 爻名标签中心 X
+        // 爻图：anchor x=100（右边缘固定），scaleTo x:0 → 从左至右擦除
+        yaoImageRightX:  500,   // 爻图右边缘 X
+        // 爻辞打字机起点（anchor x=0，左对齐）
+        yaoTextX:         80,
+        yaoTextWidth:    1100,
 
-        // 卦名大标题（视觉顶部 = 大 engine y）
+        // ── 卦名大标题（结果阶段，视觉顶部 = 大 engine y）──
         hexNamePos:  { x: GameConfig.centerX, y: 630 },
         hexNameSize: { width: 800, height: 100 },
 
-        // 卦辞（视觉底部 = 小 engine y）
-        judgmentPos:  { x: GameConfig.centerX, y: 90 },
+        // ── 卦辞（结果阶段，视觉底部 = 小 engine y）──
+        judgmentPos:  { x: GameConfig.centerX, y: 50 },
         judgmentSize: { width: 1100, height: 60 },
 
-        // 占卜按钮（视觉底部）
+        // ── 占卜按钮（视觉最底部）──
         button: {
             x: GameConfig.centerX,
-            y: 70,
+            y: 50,
             width: 200,
             height: 60,
         },
 
-        // 硬币动画（视觉上方，不同 X，不与爻槽重叠）
-        coinY:       380,
-        coinSpacingX:200,
+        // ── 硬币（按钮正上方，3 枚等间距）──
+        coinY:        170,
+        coinSpacingX: 200,
     },
 
     anim: {
@@ -125,7 +128,6 @@ const DivineUI = {
     yao: {
         label: idx => `txt_divine_yao_label_${idx}`,
         image: idx => `img_divine_yao_${idx}`,
-        // 打字机字符名：txt_divine_yao_char_<yaoIdx>_<charIdx>
         char:  (yaoIdx, charIdx) => `txt_divine_yao_char_${yaoIdx}_${charIdx}`,
     },
     hex: {
@@ -136,6 +138,8 @@ const DivineUI = {
     _state: {
         waitingForClick: false,
         maskCreated:     false,
+        // 每枚硬币当前朝上面（1=正/front, 0=背/back），createDivineUI 初始化
+        coinFace: [1, 1, 1],
     },
 
     // 计算第 idx 爻的 engine Y（初爻在底，上爻在顶）
@@ -176,6 +180,26 @@ const DivineUI = {
                 valign:  ac.VALIGN_TYPES.center,
             });
         }
+
+        // 3 枚硬币常驻（初始显示正面）
+        const cx = GameConfig.centerX;
+        const cy = DivineConfig.layout.coinY;
+        const sx = DivineConfig.layout.coinSpacingX;
+        for (let i = 0; i < 3; i++) {
+            const x = cx + (i - 1) * sx;
+            await ac.createImage({
+                name: this.coin.front(i), index: 100, inlayer: this.layer.scene,
+                resId: DivineConfig.res.coin.front,
+                pos: { x, y: cy }, anchor: { x: 50, y: 50 },
+            });
+            await ac.createImage({
+                name: this.coin.back(i), index: 100, inlayer: this.layer.scene,
+                resId: DivineConfig.res.coin.back,
+                pos: { x, y: cy }, anchor: { x: 50, y: 50 },
+            });
+            await ac.hide({ name: this.coin.back(i) });
+        }
+        this._state.coinFace = [1, 1, 1];
 
         await this.showButton();
 
@@ -230,46 +254,36 @@ const DivineUI = {
     },
 
     // ───────────────────────────────────────────────────────────────
-    // 硬币翻转动画
+    // 硬币翻转动画（复用 createDivineUI 时已创建的硬币控件）
     // ───────────────────────────────────────────────────────────────
 
+    /**
+     * 对常驻硬币执行翻转动画，结束后停在 coins[] 指定的面
+     * @param {Array<number>} coins  [0/1, 0/1, 0/1]，1=正面/yang，0=背面/yin
+     */
     playCoinAnimation: async function (coins) {
-        const cx        = GameConfig.centerX;
-        const cy        = DivineConfig.layout.coinY;
-        const sx        = DivineConfig.layout.coinSpacingX;
         const half      = DivineConfig.anim.flipHalfDuration;
         const flipCount = DivineConfig.anim.flipCount;
 
-        for (let i = 0; i < 3; i++) {
-            const x = cx + (i - 1) * sx;
-            await ac.createImage({
-                name: this.coin.front(i), index: 100, inlayer: this.layer.scene,
-                resId: DivineConfig.res.coin.front,
-                pos: { x, y: cy }, anchor: { x: 50, y: 50 },
-            });
-            await ac.createImage({
-                name: this.coin.back(i), index: 100, inlayer: this.layer.scene,
-                resId: DivineConfig.res.coin.back,
-                pos: { x, y: cy }, anchor: { x: 50, y: 50 },
-            });
-            await ac.hide({ name: this.coin.back(i) });
-        }
+        // currentFace 从上次状态继承（常驻硬币）
+        const currentFace = this._state.coinFace;
 
-        const currentFace = [1, 1, 1];
         for (let f = 0; f < flipCount; f++) {
             const isLast = f === flipCount - 1;
 
+            // 压扁阶段
             for (let i = 0; i < 3; i++) {
                 const vis = currentFace[i] === 1 ? this.coin.front(i) : this.coin.back(i);
                 ac.scaleTo({ name: vis, x: 0, y: 100, duration: half });
             }
             await ac.delay({ time: half });
 
+            // 换面
             for (let i = 0; i < 3; i++) {
-                const oldVis = currentFace[i] === 1 ? this.coin.front(i) : this.coin.back(i);
+                const oldVis  = currentFace[i] === 1 ? this.coin.front(i) : this.coin.back(i);
                 const newFace = isLast ? coins[i] : (1 - currentFace[i]);
                 currentFace[i] = newFace;
-                const newVis = newFace === 1 ? this.coin.front(i) : this.coin.back(i);
+                const newVis  = newFace === 1 ? this.coin.front(i) : this.coin.back(i);
                 if (oldVis !== newVis) {
                     ac.scaleTo({ name: newVis, x: 0, y: 100, duration: 0 });
                     await ac.hide({ name: oldVis });
@@ -277,14 +291,19 @@ const DivineUI = {
                 }
             }
 
+            // 还原阶段
             for (let i = 0; i < 3; i++) {
                 const vis = currentFace[i] === 1 ? this.coin.front(i) : this.coin.back(i);
                 ac.scaleTo({ name: vis, x: 100, y: 100, duration: half });
             }
             await ac.delay({ time: half });
         }
+
+        // 更新持久状态
+        this._state.coinFace = currentFace.slice();
     },
 
+    /** 6 轮结束后淡出并移除所有硬币 */
     fadeOutCoins: async function () {
         const dur = DivineConfig.anim.coinFadeDuration;
         for (let i = 0; i < 3; i++) {
@@ -299,7 +318,7 @@ const DivineUI = {
     },
 
     // ───────────────────────────────────────────────────────────────
-    // 爻线显示（page 2）
+    // 爻线显示
     // ───────────────────────────────────────────────────────────────
 
     /**
@@ -324,16 +343,9 @@ const DivineUI = {
     },
 
     // ───────────────────────────────────────────────────────────────
-    // 结果展示（page 3+4 合并）
+    // 结果展示（卦名 → 爻辞逐条 → 卦辞 → 等待点击）
     // ───────────────────────────────────────────────────────────────
 
-    /**
-     * 完整结果展示流程：
-     *   1. 卦名顶部淡入
-     *   2. 逐条擦除爻线（左→右）+ 打字机浮现爻辞
-     *   3. 卦辞底部淡入
-     *   4. 等待点击关闭
-     */
     showDivineResult: async function (hexagramName, judgment, yaoTexts) {
         const L = DivineConfig.layout;
         const A = DivineConfig.anim;
@@ -355,7 +367,7 @@ const DivineUI = {
         for (let i = 0; i < 6; i++) {
             const yaoImgName = this.yao.image(i);
 
-            // 隐藏本行爻名标签（爻辞会从同一起点打出）
+            // 隐藏本行爻名标签
             ac.hide({ name: this.yao.label(i) });
 
             // 爻线从左至右擦除（anchor x=100，scaleX 100→0）
@@ -401,9 +413,9 @@ const DivineUI = {
 
         let xOffset = 0;
         for (let ci = 0; ci < text.length; ci++) {
-            const char      = text[ci];
-            const charW     = Utils.measureCharWidth(char, fontSize);
-            const charName  = this.yao.char(yaoIdx, ci);  // 唯一名称
+            const char     = text[ci];
+            const charW    = Utils.measureCharWidth(char, fontSize);
+            const charName = this.yao.char(yaoIdx, ci);
 
             await ac.createText({
                 name:    charName,

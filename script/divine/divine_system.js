@@ -85,9 +85,6 @@ const DivineSystem = {
         // 停留 1 秒
         await ac.delay({ time: 1000 });
 
-        // 硬币淡出移除
-        await DivineUI.fadeOutCoins();
-
         // 在对应爻槽淡入显示本轮结果
         const yaoType = this.calcYaoType(coins);
         await DivineUI.showYao(round, yaoType);
@@ -100,7 +97,8 @@ const DivineSystem = {
             await DivineUI.showButton();
             this.busy = false;
         } else {
-            // 6 轮完成：移除禁用按钮 → 结果展示
+            // 6 轮完成：淡出硬币 + 移除禁用按钮 → 结果展示
+            await DivineUI.fadeOutCoins();
             await DivineUI.hideButton();
             await ac.delay({ time: 600 });
 
