@@ -75,8 +75,9 @@ const DivineSystem = {
         const coins = this.coinResults[round];
         console.log(`[LOG] 第 ${round + 1} 轮占卜，硬币:`, coins);
 
-        // 隐藏按钮
+        // 隐藏按钮 → 显示禁用态按钮（掷硬币期间无点击响应）
         await DivineUI.hideButton();
+        await DivineUI.showDisabledButton();
 
         // 硬币翻转动画
         await DivineUI.playCoinAnimation(coins);
@@ -94,25 +95,23 @@ const DivineSystem = {
         this.currentRound++;
 
         if (this.currentRound < 6) {
-            // 还有下一轮，恢复按钮等待点击
+            // 还有下一轮：移除禁用按钮 → 恢复正常按钮
+            await DivineUI.hideButton();
             await DivineUI.showButton();
             this.busy = false;
         } else {
-            // 6 轮完成 → page 3 卦名+卦辞 → page 4 爻辞擦除浮现 → 关闭
+            // 6 轮完成：移除禁用按钮 → 结果展示
+            await DivineUI.hideButton();
             await ac.delay({ time: 600 });
 
-            // page 3：卦名大标题 + 卦辞
-            await DivineUI.showHexagramReveal(
+            // 卦名顶部淡入 → 爻线逐条擦除+打字机 → 卦辞底部淡入 → 等待点击
+            await DivineUI.showDivineResult(
                 this.hexagram.name,
-                this.hexagram.judgment
+                this.hexagram.judgment,
+                this.hexagram.yaoTexts
             );
 
-            // page 4：爻线擦除 + 爻辞浮现
-            await DivineUI.playYaoTextReveal(this.hexagram.yaoTexts);
-
-            // 关闭整个占卜界面
             await DivineUI.closeDivineUI();
-
             this._done = true;
             this.busy  = false;
         }

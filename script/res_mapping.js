@@ -140,7 +140,7 @@ const HelloADVRes = {
     img_divine_yao_yin: '$191884022',
     btn_divine_normal: '$191887673',
     btn_divine_pressed: '$191887675',
-    img_divine_result_bg: '$191888534',
+    btn_divine_disabled: '$192581284',
 
     // 粒子
     spr_particle_trail: '$185237938',

@@ -103,27 +103,30 @@ const PlotSystem = {
 
         await ac.sysDialogOff({});
 
-        // 1. 提问对话框（不自动关闭）
-        await CommonUI.showCustomDialog({
-            content:   prompt,
-            closeType: 2,
+        // 1. 加载全屏占卜背景（在对话框出现之前）
+        await ac.createImage({
+            name:    'img_chapter_divine_bg',
+            index:   ZORDER.BOTTOM_SCENE,
+            inlayer: 'window',
+            resId:   ResMap.pic_divine_bg,
+            pos:     { x: GameConfig.centerX, y: GameConfig.centerY },
+            anchor:  { x: 50, y: 50 },
         });
 
-        // 2. 单选项
+        // 2. 提问对话框（默认 closeType → 等待玩家点击后自动关闭）
+        await CommonUI.showCustomDialog({ content: prompt });
+
+        // 3. 单选项（对话框已关闭，选项出现在空白背景上）
         await CommonUI.showCustomOptionGroup({
             options: [
                 { content: question, callback: null, enabled: true },
             ],
         });
 
-        // 3. 关掉提问对话框
-        await CommonUI.closeCustomDialog();
+        // 4. 完整占卜流程
+        await DivineSystem.startDivine({ coinResults, hexagram, onComplete });
 
-        // 4. 完整占卜流程（六轮 + 卦名卦辞 + 爻辞擦除浮现 + 关闭）
-        await DivineSystem.startDivine({
-            coinResults,
-            hexagram,
-            onComplete,
-        });
+        // 5. 移除全屏占卜背景
+        await ac.remove({ name: 'img_chapter_divine_bg' });
     },
 };
