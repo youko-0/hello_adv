@@ -132,6 +132,8 @@ const HelloADVRes = {
     img_item_jewelry_box: '$185220219',
     img_item_newspaper: '$185220220',
 
+    // 占卜
+    pic_divine_bg: '$192575950',
     img_divine_coin_yang: '$191882997',
     img_divine_coin_yin: '$191882998',
     img_divine_yao_yang: '$191884020',

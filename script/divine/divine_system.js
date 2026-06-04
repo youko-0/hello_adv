@@ -3,41 +3,49 @@ console.log('[LOAD] divine_system');
 
 const DivineSystem = {
     // 运行时状态
-    coinResults: null,    // [[0,1,1], ...] 6 轮 × 3 枚硬币结果，0=阴 1=阳
-    resultText: null,     // 占卜完成后显示的结果文本
-    onComplete: null,     // 占卜完成回调
-    currentRound: 0,      // 当前轮次（0~5）
-    busy: false,          // 单轮动画进行中标志，防止重复点击
-    _done: false,         // 全流程结束标志（六轮占卜 + 结果阅读 + 关闭后置 true）
+    coinResults:   null,    // [[0,1,1], ...] 6 轮 × 3 枚硬币结果，0=阴 1=阳
+    hexagram:      null,    // { name, judgment, yaoTexts:[6] }
+    onComplete:    null,    // 占卜完成回调
+    currentRound:  0,       // 当前轮次（0~5）
+    busy:          false,   // 单轮动画进行中标志，防止重复点击
+    _done:         false,   // 全流程结束标志
 
     /**
      * 启动占卜流程
-     * @param {Array<Array<number>>} coinResults - 6 轮 × 3 枚硬币结果，0=阴 1=阳
-     * @param {string} resultText - 占卜结束后的结果文本
-     * @param {Function} [onComplete] - 全部流程结束后的回调
+     * @param {Object}  config
+     * @param {Array<Array<number>>} config.coinResults - 6 轮 × 3 枚硬币结果，0=阴 1=阳
+     * @param {Object}  config.hexagram                 - 卦数据
+     * @param {string}  config.hexagram.name            - 卦名（如 "火水未济卦"）
+     * @param {string}  config.hexagram.judgment        - 卦辞
+     * @param {Array<string>} config.hexagram.yaoTexts  - 6 条爻辞，索引 0=初爻
+     * @param {Function} [config.onComplete]            - 全部流程结束后回调
      */
-    startDivine: async function (coinResults, resultText, onComplete) {
-        console.log('[LOG] startDivine', coinResults);
+    startDivine: async function (config) {
+        console.log('[LOG] startDivine', config);
+
+        const { coinResults, hexagram, onComplete } = config || {};
 
         if (!Array.isArray(coinResults) || coinResults.length !== 6) {
             console.error('[DivineSystem] coinResults 必须是长度为 6 的数组');
             return;
         }
+        if (!hexagram || !hexagram.name || !hexagram.judgment
+            || !Array.isArray(hexagram.yaoTexts) || hexagram.yaoTexts.length !== 6) {
+            console.error('[DivineSystem] hexagram 必须包含 name/judgment/yaoTexts(长度6)');
+            return;
+        }
 
-        this.coinResults = coinResults;
-        this.resultText = resultText;
-        this.onComplete = onComplete;
+        this.coinResults  = coinResults;
+        this.hexagram     = hexagram;
+        this.onComplete   = onComplete;
         this.currentRound = 0;
-        this.busy = false;
-        this._done = false;
+        this.busy         = false;
+        this._done        = false;
 
-        // 关闭系统对话框
         await ac.sysDialogOff({});
-
-        // 创建占卜界面
         await DivineUI.createDivineUI();
 
-        // 等待全流程结束（六轮占卜 + 结果阅读 + 点击关闭）
+        // 等待全流程结束（六轮 + 卦名卦辞 + 爻辞 + 关闭）
         while (!this._done) {
             await ac.delay({ time: 200 });
         }
@@ -51,7 +59,6 @@ const DivineSystem = {
      * @returns {string} 'yang'（长横线）或 'yin'（双短线）
      */
     calcYaoType: function (coins) {
-        // 多数决：阳数 >= 2 为阳爻，否则为阴爻
         const sum = coins[0] + coins[1] + coins[2];
         return sum >= 2 ? 'yang' : 'yin';
     },
@@ -71,7 +78,7 @@ const DivineSystem = {
         // 隐藏按钮
         await DivineUI.hideButton();
 
-        // 硬币翻转动画（最终停在 coins）
+        // 硬币翻转动画
         await DivineUI.playCoinAnimation(coins);
 
         // 停留 1 秒
@@ -91,21 +98,23 @@ const DivineSystem = {
             await DivineUI.showButton();
             this.busy = false;
         } else {
-            // 6 轮完成，过渡到结果界面
+            // 6 轮完成 → page 3 卦名+卦辞 → page 4 爻辞擦除浮现 → 关闭
             await ac.delay({ time: 600 });
-            await DivineUI.closeDivineUI();
-            // showResultUI 内部处理分页翻页 + 点击关闭，await 直到结果界面关闭
-            await DivineUI.showResultUI(this.resultText);
-            // 结果界面已关闭，通知 startDivine 的 while 循环退出
-            this._done = true;
-            this.busy = false;
-        }
-    },
 
-    /**
-     * 关闭结果界面（外部调用，仅在特殊情况需要手动关闭时使用）
-     */
-    closeResult: async function () {
-        await DivineUI.closeResultUI();
+            // page 3：卦名大标题 + 卦辞
+            await DivineUI.showHexagramReveal(
+                this.hexagram.name,
+                this.hexagram.judgment
+            );
+
+            // page 4：爻线擦除 + 爻辞浮现
+            await DivineUI.playYaoTextReveal(this.hexagram.yaoTexts);
+
+            // 关闭整个占卜界面
+            await DivineUI.closeDivineUI();
+
+            this._done = true;
+            this.busy  = false;
+        }
     },
 };

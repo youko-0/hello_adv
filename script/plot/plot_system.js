@@ -86,23 +86,26 @@ const PlotSystem = {
      * @param {string} [config.prompt='你想占卜什么？'] 提问对话框文本
      * @param {string} config.question 玩家选择的占卜内容（选项文本）
      * @param {Array<Array<number>>} config.coinResults 6 轮 × 3 枚硬币结果
-     * @param {string} config.resultText 占卜结果文本
-     * @param {Function} [config.onComplete] 全部结束后的回调
+     * @param {Object} config.hexagram 卦数据
+     * @param {string} config.hexagram.name      卦名（如 '火水未济卦'）
+     * @param {string} config.hexagram.judgment  卦辞
+     * @param {Array<string>} config.hexagram.yaoTexts 6 条爻辞，索引 0=初爻
+     * @param {Function} [config.onComplete] 全部结束后回调
      */
     playChapterDivine: async function (config) {
         const {
             prompt = '你想占卜什么？',
             question,
             coinResults,
-            resultText,
+            hexagram,
             onComplete,
         } = config;
 
         await ac.sysDialogOff({});
 
-        // 1. 提问对话框（不自动关闭，等选项选完后再关）
+        // 1. 提问对话框（不自动关闭）
         await CommonUI.showCustomDialog({
-            content: prompt,
+            content:   prompt,
             closeType: 2,
         });
 
@@ -116,7 +119,11 @@ const PlotSystem = {
         // 3. 关掉提问对话框
         await CommonUI.closeCustomDialog();
 
-        // 4. 完整占卜流程（六轮 + 结果阅读 + 关闭）
-        await DivineSystem.startDivine(coinResults, resultText, onComplete);
+        // 4. 完整占卜流程（六轮 + 卦名卦辞 + 爻辞擦除浮现 + 关闭）
+        await DivineSystem.startDivine({
+            coinResults,
+            hexagram,
+            onComplete,
+        });
     },
 };
