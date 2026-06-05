@@ -31,6 +31,13 @@ const InventoryUI = {
 
     // 物品获得效果
     onGainItem: async function (itemId, itemNum, itemName) {
+        ac.playAudio({
+            name: 'audio_gain_item',
+            resId: ResMap.audio_gain_item,
+            vol: 50,
+            effect: 'normal',
+            loop: false,
+        });
         // 从屏幕中心闪一个粒子飞去背包
         let startPos = await ac.getPos({
             name: itemName,

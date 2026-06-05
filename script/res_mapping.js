@@ -164,7 +164,10 @@ const HelloADVRes = {
     plot_dexing_tower: 14081581,
     plot_dexing_tower_loop: 14084854,
     plot_map_next: 13946330,
-    plot_bad_end_without_spirit_eye: 14128131
+    plot_bad_end_without_spirit_eye: 14128131,
+
+    // 音效
+    audio_gain_item: '$64652470',
 }
 
 const DongHaiRes = {
@@ -243,7 +246,7 @@ const DongHaiRes = {
     pic_broken_nezha_temple_left_hall: '$185360019',
     pic_broken_nezha_temple_back_hall: '$185360021',
     pic_broken_nezha_temple_right_hall: '$185360018',
-    pic_dragon_temple_main_hall: '$185360017',
+    pic_dragon_temple_main_hall: '$191532549',
     pic_dexing_tower_office: '$185360014',
     
     // 头像
@@ -272,7 +275,7 @@ const DongHaiRes = {
     spr_item_mural_jianzaoshenmiao: '$185360035',
     spr_item_mural_zhuzaosuxiang: '$185360034',
     spr_item_mural_lijingsb: '$185360033',
-    spr_item_letter: '$52125',
+    spr_item_letter: '$192656036',
     spr_item_jewelry_box: '$185360043',
     spr_item_newspaper: '$185360042',
     spr_item_visa: '$185360041',
@@ -329,6 +332,9 @@ const DongHaiRes = {
     plot_dexing_tower_loop: 14084642,
     plot_map_next: 13970354,
     plot_bad_end_without_spirit_eye: 14053516,
+
+    // 音效
+    audio_gain_item: '$64652470',
 };
 
 const ResMap = (RES_FLAG == 0) ? HelloADVRes : DongHaiRes;
