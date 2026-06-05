@@ -66,13 +66,13 @@ const DivineConfig = {
     layout: {
         // ── 爻槽（掷币阶段）──
         // 初爻 engine y = yaoStartY，上爻 = yaoStartY + 5 × yaoSpacingY
-        yaoStartY:      320,    // 初爻 engine y
-        yaoSpacingY:     60,    // 上爻 = 320 + 5×60 = 620
+        yaoStartY:      330,    // 初爻 engine y
+        yaoSpacingY: 60,    // 上爻 = yaoStartY + 5×60 = 630
         // ── 爻槽（结果阶段，卦名顶部出现后整体下移）──
         // 卦名底边 ≈ y=580，留 40px 间距，上爻 = 540，初爻 = 540 - 5×60 = 240
         yaoResultStartY: 240,
 
-        yaoLabelX:       316,   // 标签中心 X，(1280-728)/2 + 40
+        yaoLabelX:       276,   // 标签左边缘 X（anchor x=0），与 yaoTextX 对齐
         yaoLineWidth:    628,   // 爻线图片宽度（用于 clip layer 计算）
         yaoClipHeight:    40,   // clip layer 高度（略大于爻线图片高度 24px）
         // 爻线区 clip layer 左边缘 X = yaoImageRightX - yaoLineWidth
@@ -92,13 +92,13 @@ const DivineConfig = {
         // ── 占卜按钮（视觉最底部）──
         button: {
             x: GameConfig.centerX,
-            y: 50,
+            y: 100,
             width: 200,
             height: 60,
         },
 
         // ── 硬币（按钮正上方，3 枚等间距）──
-        coinY:        170,
+        coinY:        230,
         coinSpacingX: 200,
     },
 
@@ -109,6 +109,8 @@ const DivineConfig = {
         yaoFadeDuration:       400,
         yaoEraseDuration:      350,   // 爻线左→右擦除时长
         typewriterDelay:        40,   // 打字机每字间隔 ms
+        typewriterFloatOffset:  4,   // 字符浮现时向上移动量（engine y 增大 = 视觉上移）
+        typewriterFloatDuration:180,  // 浮现动画时长 ms
         yaoSlideDuration:      500,   // 爻线区下移动画时长
         hexNameFadeDuration:   800,
         judgmentFadeDuration:  600,
@@ -184,10 +186,10 @@ const DivineUI = {
                 index:   1, inlayer: this.layer.scene,
                 content: DivineConfig.yaoLabels[i],
                 pos:     { x: DivineConfig.layout.yaoLabelX, y: this._yaoY(i) },
-                anchor:  { x: 50, y: 50 },
+                anchor:  { x: 0, y: 50 },
                 size:    { width: 80, height: 40 },
                 style:   DivineConfig.style.yaoLabel,
-                halign:  ac.HALIGN_TYPES.middle,
+                halign:  ac.HALIGN_TYPES.left,
                 valign:  ac.VALIGN_TYPES.center,
             });
         }
@@ -453,10 +455,12 @@ const DivineUI = {
      * @param {number} yaoIdx   爻索引 0~5
      */
     _typewriterLine: async function (text, yaoIdx) {
-        const y        = this._yaoY(yaoIdx);
-        const startX   = DivineConfig.layout.yaoTextX;
-        const fontSize = DivineConfig.style.yaoTextFontSize;
-        const delay    = DivineConfig.anim.typewriterDelay;
+        const y           = this._yaoY(yaoIdx);
+        const startX      = DivineConfig.layout.yaoTextX;
+        const fontSize    = DivineConfig.style.yaoTextFontSize;
+        const delay       = DivineConfig.anim.typewriterDelay;
+        const floatOffset = DivineConfig.anim.typewriterFloatOffset;
+        const floatDur    = DivineConfig.anim.typewriterFloatDuration;
 
         let xOffset = 0;
         for (let ci = 0; ci < text.length; ci++) {
@@ -464,17 +468,23 @@ const DivineUI = {
             const charW    = Utils.measureCharWidth(char, fontSize);
             const charName = this.yao.char(yaoIdx, ci);
 
+            // 在目标位置下方 floatOffset 处创建，透明
             await ac.createText({
                 name:    charName,
                 index:   2, inlayer: this.layer.scene,
                 content: char,
-                pos:     { x: startX + xOffset, y },
+                pos:     { x: startX + xOffset, y: y - floatOffset },
                 anchor:  { x: 0, y: 50 },
                 size:    { width: Math.ceil(charW) + 4, height: 50 },
                 style:   DivineConfig.style.yaoText,
                 halign:  ac.HALIGN_TYPES.left,
                 valign:  ac.VALIGN_TYPES.center,
+                opacity: 100,
             });
+
+            // 淡入 + 向上浮动（并行，不 await）
+            ac.show({ name: charName });
+            ac.moveBy({ name: charName, x: 0, y: floatOffset, duration: floatDur });
 
             xOffset += charW;
             await ac.delay({ time: delay });
