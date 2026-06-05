@@ -73,8 +73,10 @@ const DivineConfig = {
         yaoResultStartY: 240,
 
         yaoLabelX:       316,   // 标签中心 X，(1280-728)/2 + 40
-        // 爻图：anchor x=100（右边缘固定），scaleTo x:0 → 从左至右擦除
-        yaoImageRightX: 1004,   // 标签右边缘(356) + 间距(20) + 爻线宽(628) = 1004
+        yaoLineWidth:    628,   // 爻线图片宽度（用于 clip layer 计算）
+        yaoClipHeight:    40,   // clip layer 高度（略大于爻线图片高度 24px）
+        // 爻线区 clip layer 左边缘 X = yaoImageRightX - yaoLineWidth
+        yaoImageRightX: 1004,   // 爻线右边缘世界坐标 X
         // 爻辞打字机起点（anchor x=0，左对齐，与标签左边缘对齐）
         yaoTextX:        276,
         yaoTextWidth:     728,  // 与爻线区整体同宽
@@ -131,6 +133,7 @@ const DivineUI = {
     },
     yao: {
         label: idx => `txt_divine_yao_label_${idx}`,
+        clip:  idx => `layer_divine_yao_clip_${idx}`,   // clip layer 容器
         image: idx => `img_divine_yao_${idx}`,
         char:  (yaoIdx, charIdx) => `txt_divine_yao_char_${yaoIdx}_${charIdx}`,
     },
@@ -269,18 +272,19 @@ const DivineUI = {
      * 调用后 _state.currentYaoStartY 更新为 yaoResultStartY
      */
     slideYaoAreaDown: async function () {
-        const newStartY = DivineConfig.layout.yaoResultStartY;
+        const L         = DivineConfig.layout;
+        const newStartY = L.yaoResultStartY;
         const dur       = DivineConfig.anim.yaoSlideDuration;
+        const leftEdgeX = L.yaoImageRightX - L.yaoLineWidth;
 
         for (let i = 0; i < 6; i++) {
-            const newY = newStartY + i * DivineConfig.layout.yaoSpacingY;
-            // 标签和爻图并行移动（不 await，让 6 条同时动）
-            ac.moveTo({ name: this.yao.label(i), x: DivineConfig.layout.yaoLabelX, y: newY, duration: dur });
-            ac.moveTo({ name: this.yao.image(i), x: DivineConfig.layout.yaoImageRightX, y: newY, duration: dur });
+            const newY = newStartY + i * L.yaoSpacingY;
+            // 标签 + clip layer 并行移动，图片随 clip layer 一起移动无需单独处理
+            ac.moveTo({ name: this.yao.label(i), x: L.yaoLabelX,  y: newY, duration: dur });
+            ac.moveTo({ name: this.yao.clip(i),  x: leftEdgeX,    y: newY, duration: dur });
         }
         await ac.delay({ time: dur });
 
-        // 更新运行时起始 Y，后续 _yaoY 返回新位置
         this._state.currentYaoStartY = newStartY;
     },
 
@@ -353,23 +357,38 @@ const DivineUI = {
     // ───────────────────────────────────────────────────────────────
 
     /**
-     * 淡入显示爻图（右边缘锚定，为后续左→右擦除做准备）
+     * 淡入显示爻图（clip layer 包裹，为后续无变形擦除做准备）
      * @param {number} roundIdx  0~5（0=初爻）
      * @param {string} yaoType   'yang' / 'yin'
      */
     showYao: async function (roundIdx, yaoType) {
-        const name = this.yao.image(roundIdx);
-        const dur  = DivineConfig.anim.yaoFadeDuration;
+        const L         = DivineConfig.layout;
+        const dur       = DivineConfig.anim.yaoFadeDuration;
+        const clipName  = this.yao.clip(roundIdx);
+        const imgName   = this.yao.image(roundIdx);
+        const leftEdgeX = L.yaoImageRightX - L.yaoLineWidth;
+        const yaoY      = this._yaoY(roundIdx);
 
-        // anchor x=100（右边缘固定）→ scaleTo x:0 时从左向右缩进
+        // clip layer：宽度 = 爻线宽，clipMode=true，anchor 左边缘中心
+        await ac.createLayer({
+            name: clipName, index: 1, inlayer: this.layer.scene,
+            pos:    { x: leftEdgeX, y: yaoY },
+            anchor: { x: 0, y: 50 },
+            size:   { width: L.yaoLineWidth, height: L.yaoClipHeight },
+            clipMode: true,
+        });
+
+        // 爻图放在 clip layer 内，局部坐标左边缘对齐，初始透明
         await ac.createImage({
-            name, index: 1, inlayer: this.layer.scene,
+            name: imgName, index: 0, inlayer: clipName,
             resId:   DivineConfig.res.yao[yaoType],
-            pos:     { x: DivineConfig.layout.yaoImageRightX, y: this._yaoY(roundIdx) },
-            anchor:  { x: 100, y: 50 },
+            pos:     { x: 0, y: L.yaoClipHeight / 2 },
+            anchor:  { x: 0, y: 50 },
             opacity: 0,
         });
-        await ac.fadeTo({ name, opacity: 100, duration: dur });
+
+        // 淡入爻图（clip layer 本身不设透明，对图片淡入）
+        await ac.fadeTo({ name: imgName, opacity: 100, duration: dur });
     },
 
     // ───────────────────────────────────────────────────────────────
@@ -394,18 +413,19 @@ const DivineUI = {
 
         // ② 逐条处理（初爻 i=0 → 上爻 i=5）
         for (let i = 0; i < 6; i++) {
-            const yaoImgName = this.yao.image(i);
+            const clipName = this.yao.clip(i);
+            const imgName  = this.yao.image(i);
 
             // 隐藏本行爻名标签
             ac.hide({ name: this.yao.label(i) });
 
-            // 爻线从左至右擦除（anchor x=100，scaleX 100→0）
-            await ac.scaleTo({
-                name: yaoImgName,
-                x: 0, y: 100,
-                duration: A.yaoEraseDuration,
-            });
-            await ac.remove({ name: yaoImgName });
+            // 无变形擦除：clip layer 右移 + 图片左移（等量抵消，图片世界坐标不变）
+            // clip layer x：leftEdgeX → yaoImageRightX（向右移动一个爻线宽）
+            // 图片局部 x：0 → -yaoLineWidth（向左移动同等距离）
+            ac.moveTo({ name: clipName, x: L.yaoImageRightX,  y: this._yaoY(i), duration: A.yaoEraseDuration });
+            ac.moveTo({ name: imgName,  x: -L.yaoLineWidth,   y: L.yaoClipHeight / 2, duration: A.yaoEraseDuration });
+            await ac.delay({ time: A.yaoEraseDuration });
+            await ac.remove({ name: clipName });  // 同时移除子节点 imgName
 
             // 打字机效果浮现爻辞
             await this._typewriterLine(yaoTexts[i], i);
