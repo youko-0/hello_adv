@@ -19,15 +19,15 @@ ac.createStyle({
 });
 ac.createStyle({
     name: 'style_divine_judgment',
-    font: '汉仪小隶书简',
+    font: '民国行楷超大字库',
     bold: false, italic: false,
-    fontSize: 28, color: '#f0eeff',
+    fontSize: 28, color: '#efefe3',
 });
 ac.createStyle({
     name: 'style_divine_yao_text',
-    font: '汉仪小隶书简',
+    font: '民国行楷超大字库',
     bold: false, italic: false,
-    fontSize: 24, color: '#f0eeff',
+    fontSize: 24, color: '#efefe3',
 });
 
 const DivineConfig = {
@@ -98,7 +98,7 @@ const DivineConfig = {
         },
 
         // ── 硬币（按钮正上方，3 枚等间距）──
-        coinY:        230,
+        coinY:        224,
         coinSpacingX: 200,
     },
 
