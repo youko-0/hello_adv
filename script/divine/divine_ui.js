@@ -9,25 +9,25 @@ ac.createStyle({
     name: 'style_divine_yao_label',
     font: '汉仪小隶书简',
     bold: false, italic: false,
-    fontSize: 28, color: '#f0eeff',
+    fontSize: 30, color: '#f0eeff',
 });
 ac.createStyle({
     name: 'style_divine_hex_name',
     font: '汉仪小隶书简',
     bold: true, italic: false,
-    fontSize: 60, color: '#f5e6a3',
+    fontSize: 48, color: '#f5e6a3',
 });
 ac.createStyle({
     name: 'style_divine_judgment',
     font: '民国行楷超大字库',
     bold: false, italic: false,
-    fontSize: 28, color: '#efefe3',
+    fontSize: 30, color: '#efefe3',
 });
 ac.createStyle({
     name: 'style_divine_yao_text',
     font: '民国行楷超大字库',
     bold: false, italic: false,
-    fontSize: 24, color: '#efefe3',
+    fontSize: 30, color: '#efefe3',
 });
 
 const DivineConfig = {
@@ -56,7 +56,7 @@ const DivineConfig = {
         hexName:         'style_divine_hex_name',
         judgment:        'style_divine_judgment',
         yaoText:         'style_divine_yao_text',
-        yaoTextFontSize: 24,
+        yaoTextFontSize: 30,
     },
 
     // ── 布局 ──────────────────────────────────────────────────────
