@@ -60,7 +60,7 @@ const DesktopUI = {
             let flag = ForumSystem.isAllPostRead();
             console.log(`是否全部已读：${flag}`);
             if (!flag) {
-                await CommonUI.showAlert('请先阅读所有帖子！');
+                await CommonUI.showCustomDialog({ content: '请先阅读所有帖子！' });
             } else {
                 await ForumSystem.onAllPostRead();
             }
