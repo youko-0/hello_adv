@@ -176,7 +176,7 @@ const DongHaiRes = {
     img_mask_black: '$185360100',
     img_mask_round: '$185360099',
     pic_mask_iris: '$191126322',
-    img_dialog_bg_no_head: '$192871721',
+    img_dialog_bg_no_head: '$185360061',
     img_dialog_bg_with_head: '$192810191',
     btn_common_close_normal: '$192810165',
     btn_common_close_highlight: '$192810164',
@@ -185,9 +185,9 @@ const DongHaiRes = {
     pic_common_bg_03: '$185360022',
     btn_skip_normal: '$185360036',
     btn_skip_highlight: '$185360037',
-    img_selection_bg_normal: '$192810189',
-    img_selection_bg_highlight: '$192872427',
-    img_selection_bg_disabled: '$192872427',
+    img_selection_bg_normal: '$185360038',
+    img_selection_bg_highlight: '$185360039',
+    img_selection_bg_disabled: '$186021889',
 
     // 论坛
     img_forum_topic_bg_normal: '$185360106',

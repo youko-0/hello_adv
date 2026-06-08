@@ -70,19 +70,9 @@ const CommonUI = {
         // 文本样式
         style: {
             name: 'style_common_dialog',
-            font: '思源宋体',
-            bold: false,
-            italic: false,
-            fontSize: 24,
-            color: '#d1d3df',
         },
         styleDisabled: {
             name: 'style_common_dialog_disabled',
-            font: '思源宋体',
-            bold: false,
-            italic: false,
-            fontSize: 24,
-            color: '#63656d',
         },
     },
     // 选项组
@@ -142,10 +132,8 @@ const CommonUI = {
             });
 
             // 如果传了回调函数，就执行它
-            if (finalConfig.onConfirm) await finalConfig.onConfirm();
+            if (config.onConfirm) await config.onConfirm();
         }
-
-        const finalConfig = { ...this.alert, ...config };
 
         // 容器
         await ac.createLayer({
@@ -153,7 +141,7 @@ const CommonUI = {
             index: ZORDER.POPUP,
             inlayer: 'window',
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },
-            size: { width: finalConfig.width, height: finalConfig.height },
+            size: { width: this.alert.width, height: this.alert.height },
             anchor: { x: 50, y: 50 },
             clipMode: false,
         });
@@ -162,12 +150,12 @@ const CommonUI = {
             name: "layer_alert_mask",
             index: 0,
             inlayer: this.alert.name,
-            resId: finalConfig.mask.resId,
-            pos: { x: finalConfig.width / 2, y: finalConfig.height / 2 },
+            resId: this.alert.mask.resId,
+            pos: { x: this.alert.width / 2, y: this.alert.height / 2 },
             anchor: { x: 50, y: 50 },
             scale: {
-                x: GameConfig.width * 100 / finalConfig.mask.width,
-                y: GameConfig.height * 100 / finalConfig.mask.height,
+                x: GameConfig.width * 100 / this.alert.mask.width,
+                y: GameConfig.height * 100 / this.alert.mask.height,
             },
             opacity: 60,
         });
@@ -176,15 +164,15 @@ const CommonUI = {
             name: "img_alert_bg",
             index: 1,
             inlayer: this.alert.name,
-            resId: finalConfig.bg.resId,
+            resId: this.alert.bg.resId,
             pos: {
-                x: finalConfig.width / 2,
-                y: finalConfig.height / 2
+                x: this.alert.width / 2,
+                y: this.alert.height / 2
             },
             anchor: { x: 50, y: 50 },
             scale: {
-                x: finalConfig.width * 100 / finalConfig.bg.width,
-                y: finalConfig.height * 100 / finalConfig.bg.height,
+                x: this.alert.width * 100 / this.alert.bg.width,
+                y: this.alert.height * 100 / this.alert.bg.height,
             },
             opacity: 100,
         });
@@ -195,12 +183,12 @@ const CommonUI = {
             inlayer: this.alert.name,
             content: content,
             pos: {
-                x: finalConfig.width / 2,
-                y: finalConfig.height / 2 + 60
+                x: this.alert.width / 2,
+                y: this.alert.height / 2 + 60
             },
             anchor: { x: 50, y: 50 },
-            size: { width: finalConfig.width - 80, height: finalConfig.height - 100 },
-            style: finalConfig.style.name,
+            size: { width: this.alert.width - 80, height: this.alert.height - 100 },
+            style: this.alert.style.name,
             valign: ac.VALIGN_TYPES.center,
             halign: ac.HALIGN_TYPES.middle,
         });
@@ -211,12 +199,12 @@ const CommonUI = {
             inlayer: this.alert.name,
             content: "确定",
             pos: {
-                x: finalConfig.width / 2,
-                y: finalConfig.height / 2 - 60
+                x: this.alert.width / 2,
+                y: this.alert.height / 2 - 60
             },
             anchor: { x: 50, y: 50 },
             size: { width: 100, height: 60 },
-            style: finalConfig.style.name,
+            style: this.alert.style.name,
             halign: ac.HALIGN_TYPES.middle,
         });
 
