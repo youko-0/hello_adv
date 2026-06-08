@@ -132,30 +132,22 @@ const ForumSystem = createSystem(
          */
         viewForum: async function () {
             console.log('[Forum] 查看论坛主页');
-            this.savePostId("");
-            await ac.replaceUI({
-                name: 'replaceUI_forum',
-                uiId: ResMap.ui_forum
-            });
+            this.savePostId('');
+            await DesktopUI.showForumPage();
         },
 
         /**
          * 查看帖子
-         * @param {string} postId  - 帖子id, 默认为当前帖子
-         * @param {int} pageIndex   - 页码, 默认为 1
+         * @param {string} postId    帖子 id，默认为当前帖子
+         * @param {number} pageIndex 页码，默认为 1
          */
-        viewPost: async function (postId=null, pageIndex=1) {
-            if (postId == null) {
-                postId = this.getPostId();
-            }
+        viewPost: async function (postId, pageIndex) {
+            if (postId == null) postId = this.getPostId();
+            if (pageIndex == null) pageIndex = 1;
             this.savePostId(postId);
             this.savePageIndex(pageIndex);
-            // 标记为已读, 这个需要在 replaceUI 之前调用
             this.saveRead(postId);
-            await ac.replaceUI({
-                name: 'replaceUI_post',
-                uiId: ResMap.ui_post_detail,
-            });
+            await DesktopUI.showPostPage();
         },
 
         // 所有帖子已读
