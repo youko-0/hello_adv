@@ -5,6 +5,7 @@ console.log('[LOAD] bag_ui');
 const BagUI = {
     name: 'layer_bag_ui',
     _selectedId: '',
+    _isOpen: false,
 
     horiCount: 3,
     vertCount: 2,
@@ -35,14 +36,19 @@ const BagUI = {
     // ── 场景框架 ──────────────────────────────────────────────────
 
     createBagUI: async function () {
-        // 主背景（callUI 层级自动盖住系统菜单，不需要 onTouchMask）
+        // 主背景（拦截穿透点击）
         await ac.createImage({
-            name:   this.name,
-            index:  ZORDER.UI,
+            name:    this.name,
+            index:   ZORDER.UI,
             inlayer: 'window',
-            resId:  ResMap.pic_common_bg_02,
-            pos:    { x: GameConfig.centerX, y: GameConfig.centerY },
-            anchor: { x: 50, y: 50 },
+            resId:   ResMap.pic_common_bg_02,
+            pos:     { x: GameConfig.centerX, y: GameConfig.centerY },
+            anchor:  { x: 50, y: 50 },
+        });
+        ac.addEventListener({
+            type:     ac.EVENT_TYPES.onTouchBegan,
+            listener: CommonUI.onTouchMask,
+            target:   this.name,
         });
 
         // 标题
@@ -55,7 +61,7 @@ const BagUI = {
             anchor:  { x: 0, y: 50 },
         });
 
-        // 关闭按钮（ac.removeCurrentUI 结束 callUI，无需 waitForUIClosed）
+        // 关闭按钮
         await ac.createOption({
             name:    'btn_ui_close',
             index:   0,
@@ -66,8 +72,13 @@ const BagUI = {
             pos:     { x: 1220, y: 72 },
             anchor:  { x: 50, y: 50 },
             onTouchEnded: async function () {
-                await ac.fadeTo({ name: BagUI.name, opacity: 0, duration: 500 });
-                await ac.removeCurrentUI({});
+                await ac.remove({
+                    name:     BagUI.name,
+                    effect:   'fadeout',
+                    duration: 500,
+                    canskip:  false,
+                });
+                BagUI._isOpen = false;
             },
         });
 
@@ -92,7 +103,7 @@ const BagUI = {
         });
     },
 
-    // 入场动效（UI 文件末尾 await，callUI 在此期间自然阻塞）
+    // 入场淡入并阻塞直到关闭
     onBagOpen: async function () {
         await ac.show({
             name:     this.name,
@@ -100,6 +111,10 @@ const BagUI = {
             duration: 500,
             canskip:  false,
         });
+        this._isOpen = true;
+        while (this._isOpen) {
+            await ac.delay({ time: 100 });
+        }
     },
 
     // ── 道具列表 ──────────────────────────────────────────────────

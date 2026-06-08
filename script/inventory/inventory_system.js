@@ -226,12 +226,12 @@ const InventorySystem = createSystem(
             }
             await ac.sysDialogOff({});
             BagUI._selectedId = selectedId;
-            await ac.callUI({ name: 'callUI_bag', uiId: '097c0cbdd8d44985b1b2933760da7c88' });
-            // if (RES_FLAG == 0) {
-            //     await ac.callUI({ name: 'callUI_bag', uiId: '' }); // TODO: 填入 HelloADVRes ui_bag uiId
-            // } else {
-            //     await ac.callUI({ name: 'callUI_bag', uiId: '097c0cbdd8d44985b1b2933760da7c88' });
-            // }
+            await BagUI.createBagUI();
+            await BagUI.createItemList(itemList);
+            if (BagUI._selectedId) {
+                await BagUI.refreshItemDetail(BagUI._selectedId);
+            }
+            await BagUI.onBagOpen();
         },
 
 
