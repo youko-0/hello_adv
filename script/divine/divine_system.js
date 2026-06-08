@@ -2,28 +2,23 @@
 console.log('[LOAD] divine_system');
 
 const DivineSystem = {
-    // 运行时状态
-    coinResults:   null,    // [[0,1,1], ...] 6 轮 × 3 枚硬币结果，0=阴 1=阳
-    hexagram:      null,    // { name, judgment, yaoTexts:[6] }
-    onComplete:    null,    // 占卜完成回调
-    currentRound:  0,       // 当前轮次（0~5）
-    busy:          false,   // 单轮动画进行中标志，防止重复点击
-    _done:         false,   // 全流程结束标志
+    coinResults:  null,
+    hexagram:     null,
+    currentRound: 0,
+    busy:         false,
+    _done:        false,
 
     /**
-     * 启动占卜流程
-     * @param {Object}  config
-     * @param {Array<Array<number>>} config.coinResults - 6 轮 × 3 枚硬币结果，0=阴 1=阳
-     * @param {Object}  config.hexagram                 - 卦数据
-     * @param {string}  config.hexagram.name            - 卦名（如 "火水未济卦"）
-     * @param {string}  config.hexagram.judgment        - 卦辞
-     * @param {Array<string>} config.hexagram.yaoTexts  - 6 条爻辞，索引 0=初爻
-     * @param {Function} [config.onComplete]            - 全部流程结束后回调
+     * 第一步：验证参数、存储数据、创建占卜场景（背景 + 爻标签，不含硬币）
+     * 调用方可在此之后插入对话框、选项等内容
+     * @param {Object} config
+     * @param {Array<Array<number>>} config.coinResults
+     * @param {Object}  config.hexagram  { name, judgment, yaoTexts:[6] }
      */
-    startDivine: async function (config) {
-        console.log('[LOG] startDivine', config);
+    prepareDivine: async function (config) {
+        console.log('[LOG] prepareDivine', config);
 
-        const { coinResults, hexagram, onComplete } = config || {};
+        const { coinResults, hexagram } = config || {};
 
         if (!Array.isArray(coinResults) || coinResults.length !== 6) {
             console.error('[DivineSystem] coinResults 必须是长度为 6 的数组');
@@ -37,37 +32,38 @@ const DivineSystem = {
 
         this.coinResults  = coinResults;
         this.hexagram     = hexagram;
-        this.onComplete   = onComplete;
         this.currentRound = 0;
         this.busy         = false;
         this._done        = false;
 
         await DivineUI.createDivineUI();
-
-        // 提示对话（浮于占卜界面之上，点击后自动关闭）
-        await CommonUI.showCustomDialog({ content: '点击硬币开始占卜' });
-
-        // 等待全流程结束（六轮 + 卦名卦辞 + 爻辞 + 关闭）
-        while (!this._done) {
-            await ac.delay({ time: 200 });
-        }
-
-        if (this.onComplete) await this.onComplete();
     },
 
     /**
-     * 计算单轮爻类型
-     * @param {Array<number>} coins - [0/1, 0/1, 0/1]
-     * @returns {string} 'yang'（长横线）或 'yin'（双短线）
+     * 第二步：显示提示对话 → 硬币淡入 → 等待玩家完成六轮 + 结果展示
+     * 函数返回时整个占卜流程结束，调用方可继续后续剧情
      */
+    runDivine: async function () {
+        
+        // 对话关闭后：创建爻标签 + 硬币出现
+        await DivineUI.createYaoLabels();
+        await DivineUI.showCoins();
+
+        // 提示对话（bg 已存在，yao 标签和硬币还未创建）
+        await CommonUI.showCustomDialog({ content: '点击硬币开始占卜' });
+
+
+        // 等待全流程结束
+        while (!this._done) {
+            await ac.delay({ time: 200 });
+        }
+    },
+
     calcYaoType: function (coins) {
         const sum = coins[0] + coins[1] + coins[2];
         return sum >= 2 ? 'yang' : 'yin';
     },
 
-    /**
-     * 占卜按钮点击处理（每次点击执行一轮）
-     */
     onClickDivineButton: async function () {
         if (this.busy) return;
         if (this.currentRound >= 6) return;
@@ -77,42 +73,29 @@ const DivineSystem = {
         const coins = this.coinResults[round];
         console.log(`[LOG] 第 ${round + 1} 轮占卜，硬币:`, coins);
 
-        // 第一轮：先展开左右两枚硬币
         if (round === 0) {
             await DivineUI.spreadCoins();
         }
 
-        // 硬币翻转动画
         await DivineUI.playCoinAnimation(coins);
-
-        // 停留 1 秒
         await ac.delay({ time: 1000 });
 
-        // 在对应爻槽淡入显示本轮结果
         const yaoType = this.calcYaoType(coins);
         await DivineUI.showYao(round, yaoType);
 
         this.currentRound++;
 
         if (this.currentRound < 6) {
-            // 还有下一轮：解锁点击
             this.busy = false;
         } else {
-            // 6 轮完成：淡出硬币
             await DivineUI.fadeOutCoins();
-
-            // 爻线区整体下移，腾出顶部空间
             await DivineUI.slideYaoAreaDown();
-
             await ac.delay({ time: 300 });
-
-            // 卦名顶部淡入 → 爻线逐条擦除+打字机 → 卦辞底部淡入 → 等待点击
             await DivineUI.showDivineResult(
                 this.hexagram.name,
                 this.hexagram.judgment,
                 this.hexagram.yaoTexts
             );
-
             await DivineUI.closeDivineUI();
             this._done = true;
             this.busy  = false;

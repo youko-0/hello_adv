@@ -80,7 +80,7 @@ const PlotSystem = {
     },
 
     /**
-     * 章节开篇占卜流程：对话框提问 → 选项 → 完整占卜
+     * 章节开篇占卜流程：创建占卜场景 → 对话框提问 → 选项 → 占卜
      * await PlotSystem.playChapterDivine({...})
      * @param {Object} config
      * @param {string} [config.prompt='你想占卜什么？'] 提问对话框文本
@@ -90,7 +90,6 @@ const PlotSystem = {
      * @param {string} config.hexagram.name      卦名（如 '火水未济卦'）
      * @param {string} config.hexagram.judgment  卦辞
      * @param {Array<string>} config.hexagram.yaoTexts 6 条爻辞，索引 0=初爻
-     * @param {Function} [config.onComplete] 全部结束后回调
      */
     playChapterDivine: async function (config) {
         const {
@@ -98,38 +97,27 @@ const PlotSystem = {
             question,
             coinResults,
             hexagram,
-            onComplete,
         } = config;
 
         await ac.sysDialogOff({});
 
-        // 1. 加载全屏占卜背景（在对话框出现之前）
-        await ac.createImage({
-            name:    'img_chapter_divine_bg',
-            index:   ZORDER.BOTTOM_SCENE,
-            inlayer: 'window',
-            resId:   ResMap.pic_divine_bg,
-            pos:     { x: GameConfig.centerX, y: GameConfig.centerY },
-            anchor:  { x: 50, y: 50 },
-        });
+        // 1. 创建占卜场景（背景），不含硬币
+        await DivineSystem.prepareDivine({ coinResults, hexagram });
 
-        // 2. 提问对话框（closeType:3 = 等待玩家点击后保留，不自动关闭）
+        // 2. 提问对话框（closeType:3 = 等待点击后保留不关闭）
         await CommonUI.showCustomDialog({ content: prompt, closeType: 3 });
 
-        // 3. 单选项（对话框保持显示，等待玩家选择）
+        // 3. 单选项
         await CommonUI.showCustomOptionGroup({
             options: [
                 { content: question, callback: null, enabled: true },
             ],
         });
 
-        // 4. 选项关闭后手动关闭对话框
+        // 4. 关闭提问对话框
         await CommonUI.closeCustomDialog();
 
-        // 4. 完整占卜流程
-        await DivineSystem.startDivine({ coinResults, hexagram, onComplete });
-
-        // 5. 淡出移除全屏占卜背景
-        await ac.remove({ name: 'img_chapter_divine_bg', effect: 'fadeout', duration: 500, canskip: false });
+        // 5. 提示"点击硬币"→ 硬币淡入 → 等待六轮完成 + 结果展示
+        await DivineSystem.runDivine();
     },
 };

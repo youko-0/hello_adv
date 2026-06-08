@@ -9,7 +9,7 @@ ac.createStyle({
     name: 'style_divine_yao_label',
     font: '汉仪小隶书简',
     bold: false, italic: false,
-    fontSize: 30, color: '#f0eeff',
+    fontSize: 30, color: '#efefe3',
 });
 ac.createStyle({
     name: 'style_divine_hex_name',
@@ -90,7 +90,7 @@ const DivineConfig = {
         judgmentSize: { width: 1100, height: 60 },
 
         // ── 硬币（点击触发投掷，3 枚展开后位置；初始叠在中心）──
-        coinY:        224,
+        coinY:        160,
         coinSpacingX: 200,
     },
 
@@ -160,7 +160,7 @@ const DivineUI = {
             name: this.layer.scene, index: ZORDER.UI, inlayer: 'window',
         });
 
-        // 初始化运行时爻线起始 Y（必须在创建标签前赋值）
+        // 初始化运行时爻线起始 Y
         this._state.currentYaoStartY = DivineConfig.layout.yaoStartY;
 
         // 全屏背景
@@ -171,7 +171,12 @@ const DivineUI = {
             anchor: { x: 50, y: 50 },
         });
 
-        // 6 个爻名称标签
+        this._state.waitingForClick = false;
+        this._state.maskCreated     = false;
+    },
+
+    /** 创建 6 个爻名称标签（在提示对话关闭后、硬币出现前调用）*/
+    createYaoLabels: async function () {
         for (let i = 0; i < 6; i++) {
             await ac.createText({
                 name:    this.yao.label(i),
@@ -185,11 +190,28 @@ const DivineUI = {
                 valign:  ac.VALIGN_TYPES.center,
             });
         }
+    },
 
-        // 3 枚硬币初始叠在屏幕中央，只显示中间那枚（idx=1）正面
-        // 第一轮点击时左右两枚展开到各自位置
+    closeDivineUI: async function () {
+        await ac.remove({
+            name: this.layer.scene, effect: 'fadeout',
+            duration: DivineConfig.anim.sceneFadeDuration,
+        });
+        this._state.maskCreated = false;
+    },
+
+    // ───────────────────────────────────────────────────────────────
+    // 硬币创建与展开
+    // ───────────────────────────────────────────────────────────────
+
+    /**
+     * 创建硬币并淡入中间那枚（提示对话关闭后调用）
+     * 左右两枚隐藏，等第一轮点击时由 spreadCoins 展开
+     */
+    showCoins: async function () {
         const cx = GameConfig.centerX;
         const cy = DivineConfig.layout.coinY;
+
         for (let i = 0; i < 3; i++) {
             await ac.createImage({
                 name: this.coin.front(i), index: 100, inlayer: this.layer.scene,
@@ -201,14 +223,17 @@ const DivineUI = {
                 resId: DivineConfig.res.coin.back,
                 pos: { x: cx, y: cy }, anchor: { x: 50, y: 50 },
             });
+            // 背面全部隐藏，正面只保留中间那枚可见
             await ac.hide({ name: this.coin.back(i) });
             if (i !== 1) {
                 await ac.hide({ name: this.coin.front(i) });
+            } else {
+                await ac.show({ name: this.coin.front(i) });
             }
         }
         this._state.coinFace = [1, 1, 1];
 
-        // 所有硬币面绑定点击事件（busy 标志防重复）
+        // 绑定点击事件（busy 标志防重复）
         for (let i = 0; i < 3; i++) {
             ac.addEventListener({
                 type: ac.EVENT_TYPES.onTouchEnded,
@@ -221,22 +246,7 @@ const DivineUI = {
                 target: this.coin.back(i),
             });
         }
-
-        this._state.waitingForClick = false;
-        this._state.maskCreated     = false;
     },
-
-    closeDivineUI: async function () {
-        await ac.remove({
-            name: this.layer.scene, effect: 'fadeout',
-            duration: DivineConfig.anim.sceneFadeDuration,
-        });
-        this._state.maskCreated = false;
-    },
-
-    // ───────────────────────────────────────────────────────────────
-    // 硬币展开动画（第一轮点击时触发）
-    // ───────────────────────────────────────────────────────────────
 
     /**
      * 左右两枚硬币从中心飞向各自位置，同时旋转一圈
