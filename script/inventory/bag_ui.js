@@ -27,11 +27,11 @@ const BagUI = {
     itemDetail: {
         x:        229,  // 详情区中心 x（对应 img_bag_detail_bg）
         width:    240,  // 文本框宽度
-        fontSize: 24,
+        fontSize: 22,
     },
     svDetail: {
         width:  280,
-        height: 150,   // 缩小描述区高度，留出名字与描述之间的间距
+        height: 140,   // 缩小描述区高度，留出名字与描述之间的间距
     },
 
     // ── 场景框架 ──────────────────────────────────────────────────
@@ -264,15 +264,17 @@ const BagUI = {
         });
 
         const itemDesc      = historyCount <= 0 ? itemConfig.descLocked : itemConfig.desc;
+        // calcTextHeight 是近似估算，额外加一行高度防止最后一行被裁切
+        const extraLine     = this.itemDetail.fontSize * 1.2;
         const contentHeight = Math.max(
-            Utils.calcTextHeight(itemDesc, this.itemDetail.fontSize, this.itemDetail.width, 1.2),
+            Utils.calcTextHeight(itemDesc, this.itemDetail.fontSize, this.itemDetail.width, 1.2) + extraLine,
             this.svDetail.height
         );
         await ac.createScrollView({
             name:      'sv_item_detail_desc',
             index:     2,
             inlayer:   this.name,
-            pos:       { x: cx, y: 255 },
+            pos:       { x: cx, y: 268 },
             anchor:    { x: 50, y: 50 },
             size:      { width: this.svDetail.width, height: this.svDetail.height },
             innerSize: { width: this.svDetail.width, height: contentHeight },
