@@ -35,17 +35,24 @@ ac.createStyle({
 
 // ── Bag UI ────────────────────────────────────────────────────────
 ac.createStyle({
-    name: 'style_bag_item',
+    name: 'style_bag_item_count',
     font: '思源宋体',
     bold: false, italic: false,
-    fontSize: 20, color: '#d1d3df',
+    fontSize: 20, color: '#000000',   // 道具数量徽标
 });
 
 ac.createStyle({
-    name: 'style_bag_detail',
+    name: 'style_bag_detail_name',
     font: '思源宋体',
     bold: false, italic: false,
-    fontSize: 24, color: '#d1d3df',
+    fontSize: 26, color: '#ebebf0',
+});
+
+ac.createStyle({
+    name: 'style_bag_detail_desc',
+    font: '思源宋体',
+    bold: false, italic: false,
+    fontSize: 22, color: '#b1b1ba',
 });
 
 // ── Browser UI ────────────────────────────────────────────────────
