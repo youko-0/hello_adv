@@ -49,13 +49,13 @@ const CommonUI = {
         margin: { bottom: 24 }, // 底部留边
         bg: {
             resId: ResMap.img_dialog_bg_no_head,
-            width: 1241,
-            height: 150,
+            width: 1208,
+            height: 158,
         },
         bgWithAvatar: {
             resId: ResMap.img_dialog_bg_with_head,
-            width: 1241,
-            height: 150,
+            width: 1208,
+            height: 158,
         },
         // 角色头像配置
         roleAvatar: {
@@ -63,21 +63,21 @@ const CommonUI = {
         },
         // 文本配置
         text: {
-            padding: { top: 32, bottom: 10, left: 100, right: 80 },
+            padding:          { top: 32, bottom: 10, left: 100, right: 80 },
             paddingWithAvatar: { top: 32, bottom: 10, left: 120, right: 80 },
-            typingSpeed: 0.03, // 每个字符显示间隔（秒）
+            typingSpeed: 0.03,  // 每个字符显示间隔（秒）
+            fontSize:    24,    // 用于分页行高估算，需与 style_common_dialog 保持一致
         },
-        // 文本样式
+        // 文本样式（对话框正文）
         style: {
             name: 'style_common_dialog',
-        },
-        styleDisabled: {
-            name: 'style_common_dialog_disabled',
         },
     },
     // 选项组
     optionGroup: {
-        name: 'layer_option_group',
+        name:         'layer_option_group',
+        style:        'style_common_dialog',
+        styleDisabled: 'style_common_dialog_disabled',
     },
 
 
@@ -226,132 +226,84 @@ const CommonUI = {
     /**
      * 可以在 UI 之上弹出的自定义对话框, 模拟 sysDialogOn
      * @param {Object} config 配置项
-     * @param {string} config.content 要显示的文本内容
-     * @param {string} [config.roleAvatarResId] 角色头像资源ID，有值则显示头像
-     * @param {boolean} [config.hasBg] 是否显示背景
-     * @param {Function} [config.onComplete] 对话完成回调
-     * @param {boolean} [config.closeType] 关闭逻辑, 默认手动关闭, 1 自动关闭, 2 不关闭, 3 等待点击后不关闭（保留对话框，由外部手动关闭）
+     * @param {string}   config.content          要显示的文本内容
+     * @param {string}   [config.roleAvatarResId] 角色头像资源ID，有值则显示头像
+     * @param {boolean}  [config.hasBg]           是否显示背景，默认 true
+     * @param {Function} [config.onComplete]      对话完成回调
+     * @param {number}   [config.closeType]       关闭逻辑：默认=等待点击后关闭，1=自动关闭，2=不关闭，3=等待点击后保留
      */
     showCustomDialog: async function (config) {
-        // 配置验证
         if (!config || !config.content) {
             console.error('[CustomDialog] 错误: 缺少必要的 content 参数');
             return;
         }
 
-        const finalConfig = { ...this.dialog, ...config };
-
-        // 统一的对话框状态管理
+        // 资源/尺寸配置完全来自 this.dialog，content 参数只包含内容相关字段
         this._dialogContext = {
-            config: finalConfig,
+            content:       config.content,
+            roleAvatarResId: config.roleAvatarResId || null,
+            hasBg:         config.hasBg !== false,
+            closeType:     config.closeType,
+            onComplete:    config.onComplete || null,
             state: {
-                currentPage: 0,
-                pages: [],
+                currentPage:    0,
+                pages:          [],
                 waitingForClick: false,
             },
-            layout: {
-                textStartX: 0,
-                textWidth: 0,
-            },
+            layout: {},
         };
 
-        // 事件处理函数
         const onTouchDialog = async () => {
-            const state = this._dialogContext.state;
-            console.log('[LOG] onTouchDialog, currentPage:', state.currentPage, 'waitingForClick:', state.waitingForClick);
-            // 这句判断其实没必要，本来是 false 只是赋一次相同值
-            // if (state.waitingForClick)
-            state.waitingForClick = false;
+            this._dialogContext.state.waitingForClick = false;
         };
 
-        console.log('[CustomDialog] 显示对话框:', finalConfig.content);
-
-        // 计算文本布局（需要在创建UI前计算）
+        console.log('[CustomDialog] 显示对话框:', config.content);
         this._calculateTextLayout();
-
-        // 创建UI组件
         await this._createDialogUI();
-
-        // 绑定事件
         ac.addEventListener({
-            type: ac.EVENT_TYPES.onTouchEnded,
+            type:     ac.EVENT_TYPES.onTouchEnded,
             listener: onTouchDialog,
-            target: 'layer_dialog_mask'
+            target:   'layer_dialog_mask',
         });
-
-        // 文本分页处理
         await this._prepareDialogContent();
-
-        // 循环播放所有页面
         await this._playAllPages();
     },
 
-    /**
-     * 循环播放所有页面（新版本实现）
-     */
     _playAllPages: async function () {
-        const { state, config } = this._dialogContext;
+        const { state, closeType, onComplete } = this._dialogContext;
 
-        // 循环播放每一页
         for (let pageIndex = 0; pageIndex < state.pages.length; pageIndex++) {
             state.currentPage = pageIndex;
-            console.log('[LOG] 播放第', pageIndex + 1, '页，共', state.pages.length, '页');
-
-            // 播放当前页
             await this._playPageContent(state.pages[pageIndex]);
-
-            // 如果不是最后一页，等待用户点击翻页
             if (pageIndex < state.pages.length - 1) {
-                console.log('[LOG] 等待用户点击翻页...');
                 await this._waitForUserClick();
             }
         }
         console.log('[LOG] 所有页面播放完成');
 
-        // 执行完成回调
-        if (config.onComplete) {
-            await config.onComplete();
-        }
+        if (onComplete) await onComplete();
 
-        // 处理对话框关闭
-        if (config.closeType == 1) {
-            // 自动关闭：等待1秒后关闭
+        if (closeType == 1) {
             await ac.delay({ time: 1000 });
             await this.closeCustomDialog();
-        } else if (config.closeType == 2) {
+        } else if (closeType == 2) {
             // 不关闭
-        } else if (config.closeType == 3) {
-            // 等待点击后不关闭（对话框保留，由外部手动调用 closeCustomDialog）
-            console.log('[LOG] closeType=3，等待用户点击后保留对话框...');
+        } else if (closeType == 3) {
             await this._waitForUserClick();
         } else {
-            // 默认手动关闭
-            console.log('[LOG] 等待用户点击关闭...');
             await this._waitForUserClick();
             await this.closeCustomDialog();
         }
     },
 
-    /**
-     * 播放单页内容（打字机效果）
-     */
     _playPageContent: async function (pageContent) {
-        console.log('[LOG] 播放页面内容:', pageContent);
-        const { state, config } = this._dialogContext;
+        const state = this._dialogContext.state;
         state.waitingForClick = true;
-
-        // 打字机效果
-        for (let charIndex = 0; charIndex < pageContent.length; charIndex++) {
-            // 检查是否需要跳过打字效果
-            if (!state.waitingForClick) {
-                break;
-            }
-
-            await this._updateDialogText(pageContent.slice(0, charIndex + 1));
-            await ac.delay({ time: config.text.typingSpeed * 1000 });
+        for (let i = 0; i < pageContent.length; i++) {
+            if (!state.waitingForClick) break;
+            await this._updateDialogText(pageContent.slice(0, i + 1));
+            await ac.delay({ time: this.dialog.text.typingSpeed * 1000 });
         }
-
-        // 确保最终显示完整内容
         await this._updateDialogText(pageContent);
     },
 
@@ -366,139 +318,98 @@ const CommonUI = {
         }
     },
 
-    /**
-     * 创建对话框UI组件
-     */
     _createDialogUI: async function () {
-        const config = this._dialogContext.config;
-        const layout = this._dialogContext.layout;
+        const { layout, roleAvatarResId, hasBg } = this._dialogContext;
+        const D = this.dialog;
 
-        // 创建容器层
         await ac.createLayer({
-            name: this.dialog.name,
-            index: ZORDER.CUSTOM_DIALOG,
+            name:    D.name,
+            index:   ZORDER.CUSTOM_DIALOG,
             inlayer: 'window',
-            pos: { x: layout.dialogX, y: layout.dialogY },
-            anchor: { x: 50, y: 50 },
-            size: { width: config.width, height: config.height },
+            pos:     { x: layout.dialogX, y: layout.dialogY },
+            anchor:  { x: 50, y: 50 },
+            size:    { width: D.width, height: D.height },
             clipMode: false,
         });
 
-        // 创建全屏点击层同时拦截点击
         await ac.createLayer({
-            name: 'layer_dialog_mask',
-            index: 0,
-            inlayer: this.dialog.name,
-            pos: { x: 0, y: 0 },
-            size: { width: GameConfig.width, height: GameConfig.height },
-            anchor: { x: 0, y: 0 },
+            name:    'layer_dialog_mask',
+            index:   0,
+            inlayer: D.name,
+            pos:     { x: 0, y: 0 },
+            size:    { width: GameConfig.width, height: GameConfig.height },
+            anchor:  { x: 0, y: 0 },
             clipMode: false,
         });
 
-        // 创建对话框背景
-        if (config.hasBg !== false) {
-            const bgConfig = config.roleAvatarResId ? config.bgWithAvatar : config.bg;
+        if (hasBg) {
+            const bgConfig = roleAvatarResId ? D.bgWithAvatar : D.bg;
             await ac.createImage({
-                name: "img_dialog_bg",
-                index: 1,
-                inlayer: this.dialog.name,
-                resId: bgConfig.resId,
-                pos: { x: config.width / 2, y: config.height / 2 },
-                anchor: { x: 50, y: 50 },
-                scale: {
-                    x: config.width * 100 / bgConfig.width,
-                    y: config.height * 100 / bgConfig.height,
-                },
+                name:    'img_dialog_bg',
+                index:   1,
+                inlayer: D.name,
+                resId:   bgConfig.resId,
+                pos:     { x: D.width / 2, y: D.height / 2 },
+                anchor:  { x: 50, y: 50 },
             });
         }
 
-        // 创建角色头像
-        if (config.roleAvatarResId) {
+        if (roleAvatarResId) {
             await ac.createImage({
-                name: "img_dialog_avatar",
-                index: 2,
-                inlayer: this.dialog.name,
-                resId: config.roleAvatarResId,
-                pos: { x: layout.avatarX, y: layout.avatarY },
-                anchor: { x: 50, y: 50 },
+                name:    'img_dialog_avatar',
+                index:   2,
+                inlayer: D.name,
+                resId:   roleAvatarResId,
+                pos:     { x: layout.avatarX, y: layout.avatarY },
+                anchor:  { x: 50, y: 50 },
             });
         }
     },
 
-    /**
-     * 计算文本显示区域布局
-     */
     _calculateTextLayout: function () {
-        const config = this._dialogContext.config;
+        const D   = this.dialog;
+        const ctx = this._dialogContext;
+        const padding = ctx.roleAvatarResId ? D.text.paddingWithAvatar : D.text.padding;
 
-        // 对话框位置：左右居中，底部贴边
-        const dialogX = (GameConfig.width - config.width) / 2 + config.width / 2;
-        const dialogY = (config.margin.bottom || 0) + config.height / 2;
-
-        const textPadding = config.roleAvatarResId ? config.text.paddingWithAvatar : config.text.padding;
-
-        // 头像位置（相对于对话框背景，易次元坐标系左下角为原点）
-        const avatarX = config.roleAvatar.size / 2 + 20; // 头像居中于左边距区域
-        const avatarY = config.height / 2; // 垂直居中
-
-        // 文本区域：根据 padding 计算实际位置和大小
-        const textX = textPadding.left;
-        const textY = config.height - textPadding.top;
-        const textWidth = config.width - textPadding.left - textPadding.right;
-        const textHeight = config.height - textPadding.top - textPadding.bottom;
-
-        // 保存布局信息
-        this._dialogContext.layout = {
-            dialogX: dialogX,
-            dialogY: dialogY,
-            avatarX: avatarX,
-            avatarY: avatarY,
-            textX: textX,
-            textY: textY,
-            textWidth: textWidth,
-            textHeight: textHeight,
+        ctx.layout = {
+            dialogX: (GameConfig.width - D.width) / 2 + D.width / 2,
+            dialogY: (D.margin.bottom || 0) + D.height / 2,
+            avatarX: D.roleAvatar.size / 2 + 20,
+            avatarY: D.height / 2,
+            textX:   padding.left,
+            textY:   D.height - padding.top,
+            textWidth:  D.width  - padding.left - padding.right,
+            textHeight: D.height - padding.top  - padding.bottom,
         };
-        console.log('[CustomDialog] 对话框布局:', this._dialogContext.layout);
     },
 
-    /**
-     * 准备对话框内容（分页处理）
-     */
     _prepareDialogContent: async function () {
-        const config = this._dialogContext.config;
+        const D      = this.dialog;
         const layout = this._dialogContext.layout;
-
-        const content = config.content || "";
-        // 使用字体大小的1.5倍作为行高估算（易次元没有明确的lineHeight支持）
-        const estimatedLineHeight = config.style.fontSize * 1.5;
-        const maxLines = Math.floor(layout.textHeight / estimatedLineHeight);
+        const lineH  = D.text.fontSize * 1.5;
+        const maxLines = Math.floor(layout.textHeight / lineH);
 
         this._dialogContext.state.pages = Utils.paginateText(
-            content,
-            config.style.fontSize,
+            this._dialogContext.content,
+            D.text.fontSize,
             layout.textWidth,
             maxLines
         );
     },
 
-    /**
-     * 创建或更新文本显示
-     */
     _updateDialogText: async function (content) {
-        const config = this._dialogContext.config;
         const layout = this._dialogContext.layout;
-
         await ac.createText({
-            name: "txt_dialog_content",
-            index: 3,
+            name:    'txt_dialog_content',
+            index:   3,
             inlayer: this.dialog.name,
             content: content,
-            pos: { x: layout.textX, y: layout.textY },
-            anchor: { x: 0, y: 100 },
-            size: { width: layout.textWidth, height: layout.textHeight },
-            style: config.style.name,
-            halign: ac.HALIGN_TYPES.left,
-            valign: ac.VALIGN_TYPES.top,
+            pos:     { x: layout.textX, y: layout.textY },
+            anchor:  { x: 0, y: 100 },
+            size:    { width: layout.textWidth, height: layout.textHeight },
+            style:   this.dialog.style.name,
+            halign:  ac.HALIGN_TYPES.left,
+            valign:  ac.VALIGN_TYPES.top,
         });
     },
 
@@ -569,8 +480,8 @@ const CommonUI = {
             option.inlayer = this.optionGroup.name;
             option.pos = { x: GameConfig.centerX, y: 420 - i * 120 };
             option.anchor = { x: 50, y: 50 };
-            option.style = this.dialog.style.name;
-            option.dStyle = this.dialog.styleDisabled.name;
+            option.style  = this.optionGroup.style;
+            option.dStyle = this.optionGroup.styleDisabled;
             option.nResId = ResMap.img_selection_bg_normal;
             option.sResId = ResMap.img_selection_bg_highlight;
             option.dResId = ResMap.img_selection_bg_disabled;
@@ -655,7 +566,7 @@ const CommonUI = {
     onLoad: async function () {
         console.log('[LOG] [CommonUI] onLoad');
 
-        await ac.delay({ time: 100 });
+        await ac.delay({ time: 10 });
         await this.onLoadDelay();
 
     },
