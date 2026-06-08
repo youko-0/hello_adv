@@ -42,8 +42,10 @@ const DivineSystem = {
         this.busy         = false;
         this._done        = false;
 
-        await ac.sysDialogOff({});
         await DivineUI.createDivineUI();
+
+        // 提示对话（浮于占卜界面之上，点击后自动关闭）
+        await CommonUI.showCustomDialog({ content: '点击硬币开始占卜' });
 
         // 等待全流程结束（六轮 + 卦名卦辞 + 爻辞 + 关闭）
         while (!this._done) {
@@ -75,9 +77,10 @@ const DivineSystem = {
         const coins = this.coinResults[round];
         console.log(`[LOG] 第 ${round + 1} 轮占卜，硬币:`, coins);
 
-        // 隐藏按钮 → 显示禁用态按钮（掷硬币期间无点击响应）
-        await DivineUI.hideButton();
-        await DivineUI.showDisabledButton();
+        // 第一轮：先展开左右两枚硬币
+        if (round === 0) {
+            await DivineUI.spreadCoins();
+        }
 
         // 硬币翻转动画
         await DivineUI.playCoinAnimation(coins);
@@ -92,14 +95,11 @@ const DivineSystem = {
         this.currentRound++;
 
         if (this.currentRound < 6) {
-            // 还有下一轮：移除禁用按钮 → 恢复正常按钮
-            await DivineUI.hideButton();
-            await DivineUI.showButton();
+            // 还有下一轮：解锁点击
             this.busy = false;
         } else {
-            // 6 轮完成：淡出硬币 + 移除禁用按钮
+            // 6 轮完成：淡出硬币
             await DivineUI.fadeOutCoins();
-            await DivineUI.hideButton();
 
             // 爻线区整体下移，腾出顶部空间
             await DivineUI.slideYaoAreaDown();

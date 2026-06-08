@@ -89,15 +89,7 @@ const DivineConfig = {
         judgmentPos:  { x: GameConfig.centerX, y: 160 },
         judgmentSize: { width: 1100, height: 60 },
 
-        // ── 占卜按钮（视觉最底部）──
-        button: {
-            x: GameConfig.centerX,
-            y: 100,
-            width: 200,
-            height: 60,
-        },
-
-        // ── 硬币（按钮正上方，3 枚等间距）──
+        // ── 硬币（点击触发投掷，3 枚展开后位置；初始叠在中心）──
         coinY:        224,
         coinSpacingX: 200,
     },
@@ -111,6 +103,7 @@ const DivineConfig = {
         typewriterDelay:        40,   // 打字机每字间隔 ms
         typewriterFloatOffset:  4,   // 字符浮现时向上移动量（engine y 增大 = 视觉上移）
         typewriterFloatDuration:180,  // 浮现动画时长 ms
+        coinSpreadDuration:    600,   // 硬币展开动画时长 ms
         yaoSlideDuration:      500,   // 爻线区下移动画时长
         hexNameFadeDuration:   800,
         judgmentFadeDuration:  600,
@@ -128,7 +121,6 @@ const DivineUI = {
         scene:     'layer_divine_scene',
         clickMask: 'layer_divine_click_mask',
     },
-    button: { name: 'btn_divine_start' },
     coin: {
         front: idx => `img_divine_coin_front_${idx}`,
         back:  idx => `img_divine_coin_back_${idx}`,
@@ -194,27 +186,41 @@ const DivineUI = {
             });
         }
 
-        // 3 枚硬币常驻（初始显示正面）
+        // 3 枚硬币初始叠在屏幕中央，只显示中间那枚（idx=1）正面
+        // 第一轮点击时左右两枚展开到各自位置
         const cx = GameConfig.centerX;
         const cy = DivineConfig.layout.coinY;
-        const sx = DivineConfig.layout.coinSpacingX;
         for (let i = 0; i < 3; i++) {
-            const x = cx + (i - 1) * sx;
             await ac.createImage({
                 name: this.coin.front(i), index: 100, inlayer: this.layer.scene,
                 resId: DivineConfig.res.coin.front,
-                pos: { x, y: cy }, anchor: { x: 50, y: 50 },
+                pos: { x: cx, y: cy }, anchor: { x: 50, y: 50 },
             });
             await ac.createImage({
                 name: this.coin.back(i), index: 100, inlayer: this.layer.scene,
                 resId: DivineConfig.res.coin.back,
-                pos: { x, y: cy }, anchor: { x: 50, y: 50 },
+                pos: { x: cx, y: cy }, anchor: { x: 50, y: 50 },
             });
             await ac.hide({ name: this.coin.back(i) });
+            if (i !== 1) {
+                await ac.hide({ name: this.coin.front(i) });
+            }
         }
         this._state.coinFace = [1, 1, 1];
 
-        await this.showButton();
+        // 所有硬币面绑定点击事件（busy 标志防重复）
+        for (let i = 0; i < 3; i++) {
+            ac.addEventListener({
+                type: ac.EVENT_TYPES.onTouchEnded,
+                listener: async function () { await DivineSystem.onClickDivineButton(); },
+                target: this.coin.front(i),
+            });
+            ac.addEventListener({
+                type: ac.EVENT_TYPES.onTouchEnded,
+                listener: async function () { await DivineSystem.onClickDivineButton(); },
+                target: this.coin.back(i),
+            });
+        }
 
         this._state.waitingForClick = false;
         this._state.maskCreated     = false;
@@ -229,40 +235,32 @@ const DivineUI = {
     },
 
     // ───────────────────────────────────────────────────────────────
-    // 占卜按钮（正常 / 禁用 / 隐藏）
+    // 硬币展开动画（第一轮点击时触发）
     // ───────────────────────────────────────────────────────────────
 
-    showButton: async function () {
-        const cfg = DivineConfig.layout.button;
-        await ac.createOption({
-            name: this.button.name, index: 10, inlayer: this.layer.scene,
-            nResId: DivineConfig.res.button.normal,
-            sResId: DivineConfig.res.button.pressed,
-            content: '',
-            pos: { x: cfg.x, y: cfg.y }, anchor: { x: 50, y: 50 },
-            size: { width: cfg.width, height: cfg.height },
-            onTouchEnded: async function () {
-                await DivineSystem.onClickDivineButton();
-            },
-        });
-    },
+    /**
+     * 左右两枚硬币从中心飞向各自位置，同时旋转一圈
+     * easeExponentialOut：快速弹出后减速，带有弹性感
+     */
+    spreadCoins: async function () {
+        const cx  = GameConfig.centerX;
+        const cy  = DivineConfig.layout.coinY;
+        const sx  = DivineConfig.layout.coinSpacingX;
+        const dur = DivineConfig.anim.coinSpreadDuration;
 
-    /** 显示禁用态按钮（掷硬币期间，点击无反馈） */
-    showDisabledButton: async function () {
-        const cfg = DivineConfig.layout.button;
-        await ac.createOption({
-            name: this.button.name, index: 10, inlayer: this.layer.scene,
-            nResId: DivineConfig.res.button.disabled,
-            sResId: DivineConfig.res.button.disabled,
-            content: '',
-            pos: { x: cfg.x, y: cfg.y }, anchor: { x: 50, y: 50 },
-            size: { width: cfg.width, height: cfg.height },
-            // 无 onTouchEnded → 点击无响应
-        });
-    },
+        // 先显示左右两枚（原本叠在中心隐藏）
+        await ac.show({ name: this.coin.front(0) });
+        await ac.show({ name: this.coin.front(2) });
 
-    hideButton: async function () {
-        await ac.remove({ name: this.button.name });
+        // 展开 + 旋转（所有动画并行）
+        // 正面和背面一起移动，确保翻面时位置正确
+        ac.moveTo({ name: this.coin.front(0), x: cx - sx, y: cy, duration: dur, ease: 'easeExponentialOut' });
+        ac.moveTo({ name: this.coin.back(0),  x: cx - sx, y: cy, duration: dur, ease: 'easeExponentialOut' });
+        ac.moveTo({ name: this.coin.front(2), x: cx + sx, y: cy, duration: dur, ease: 'easeExponentialOut' });
+        ac.moveTo({ name: this.coin.back(2),  x: cx + sx, y: cy, duration: dur, ease: 'easeExponentialOut' });
+        ac.rotateTo({ name: this.coin.front(0), rotation: 720,  duration: dur });
+        ac.rotateTo({ name: this.coin.front(2), rotation: -720, duration: dur });
+        await ac.delay({ time: dur });
     },
 
     // ───────────────────────────────────────────────────────────────
