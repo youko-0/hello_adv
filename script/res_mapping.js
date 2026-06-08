@@ -175,19 +175,19 @@ const DongHaiRes = {
     img_mask_black: '$185360100',
     img_mask_round: '$185360099',
     pic_mask_iris: '$191126322',
-    img_dialog_bg_no_head: '$185360061',
-    img_dialog_bg_with_head: '$185360060',
-    btn_common_close_normal: '$185360095',
-    btn_common_close_highlight: '$185360096',
+    img_dialog_bg_no_head: '$192871721',
+    img_dialog_bg_with_head: '$192810191',
+    btn_common_close_normal: '$192810165',
+    btn_common_close_highlight: '$192810164',
     pic_common_bg_01: '$185360024',
     pic_common_bg_02: '$185360023',
     pic_common_bg_03: '$185360022',
     btn_skip_normal: '$185360036',
     btn_skip_highlight: '$185360037',
-    img_selection_bg_normal: '$185360038',
-    img_selection_bg_highlight: '$185360039',
-    img_selection_bg_disabled: '$186021889',
-    
+    img_selection_bg_normal: '$192810189',
+    img_selection_bg_highlight: '$192872427',
+    img_selection_bg_disabled: '$192872427',
+
     // 论坛
     img_forum_topic_bg_normal: '$185360106',
     img_forum_topic_bg_highlight: '$185360105',
@@ -196,7 +196,7 @@ const DongHaiRes = {
     pic_desktop_bg: '$185360027',
     pic_browser_bg: '$185360026',
     btn_browser: '$185360107',
-    
+
     // UI - 背包
     btn_bag_normal: '$185360059',
     img_bag_title: '$185360088',
@@ -209,7 +209,7 @@ const DongHaiRes = {
     btn_item_view_highlight: '$185360092',
     btn_item_use_normal: '$185360093',
     btn_item_use_highlight: '$185360094',
-    
+
     // 地图
     pic_map_bg: '$185360025',
     pic_map_bg_full: '$185360015',
@@ -229,7 +229,7 @@ const DongHaiRes = {
     img_dexing_tower: '$185360055',
     img_dexing_tower_locked: '$185360053',
     img_dexing_tower_highlight: '$185360054',
-    
+
     // 探索
     btn_explore_view_normal: '$185360097',
     btn_explore_view_highlight: '$185360098',
@@ -248,7 +248,7 @@ const DongHaiRes = {
     pic_broken_nezha_temple_right_hall: '$185360018',
     pic_dragon_temple_main_hall: '$191532549',
     pic_dexing_tower_office: '$185360014',
-    
+
     // 头像
     icon_forum_head_01: '$185360104',
     icon_forum_head_02: '$185360103',
@@ -298,7 +298,7 @@ const DongHaiRes = {
     img_item_letter: '$186184083',
     img_item_jewelry_box: '$186183778',
     img_item_newspaper: '$186183780',
-    
+
     // 占卜
     pic_divine_bg: '$192586943',
     img_divine_coin_yang: '$192586954',
@@ -308,15 +308,15 @@ const DongHaiRes = {
     btn_divine_normal: '$192586952',
     btn_divine_pressed: '$192586953',
     btn_divine_disabled: '$192586951',
-    
+
     // 粒子
     spr_particle_trail: '$185360040',
-    
+
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: '5a63b4fc0a7041f38685971fcecfd962',
     ui_forum: '097c0cbdd8d44985b1b2933760da7c88',
     ui_post_detail: '94d2303586e64ea396122dd9fa964f77',
-    
+
     // 剧情唯一 ID
     plot_forum_next: 13969471,
     plot_map: 13980661,
