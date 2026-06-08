@@ -118,8 +118,8 @@ const DivineConfig = {
 const DivineUI = {
 
     layer: {
-        scene:     'layer_divine_scene',
-        clickMask: 'layer_divine_click_mask',
+        scene: 'layer_divine_scene',
+        mask:  'layer_divine_mask',   // 全程唯一蒙层，mode 决定行为
     },
     coin: {
         front: idx => `img_divine_coin_front_${idx}`,
@@ -139,6 +139,7 @@ const DivineUI = {
     _state: {
         waitingForClick:  false,
         maskCreated:      false,
+        maskMode:         null,   // 'swipe' | 'click' | null
         coinFace:         [1, 1, 1],
         // 爻线区当前起始 Y（掷币阶段=yaoStartY，结果阶段=yaoResultStartY）
         currentYaoStartY: 0,
@@ -230,19 +231,30 @@ const DivineUI = {
         }
         this._state.coinFace = [1, 1, 1];
 
-        // 绑定点击事件（busy 标志防重复）
-        for (let i = 0; i < 3; i++) {
-            ac.addEventListener({
-                type: ac.EVENT_TYPES.onTouchEnded,
-                listener: async function () { await DivineSystem.onClickDivineButton(); },
-                target: this.coin.front(i),
-            });
-            ac.addEventListener({
-                type: ac.EVENT_TYPES.onTouchEnded,
-                listener: async function () { await DivineSystem.onClickDivineButton(); },
-                target: this.coin.back(i),
-            });
-        }
+        // 创建全程蒙层（尚未创建时建立）
+        await this._setupMask();
+
+        // ── 切换交互方式（注释掉其中一个）──
+        this._bindCoinTap();
+        // this._bindCoinSwipe();
+    },
+
+    /**
+     * 交互方式 A：点击任意硬币触发投掷
+     * 蒙层 mode='swipe'，但 onTouchEnded 无论有没有移动都触发
+     */
+    _bindCoinTap: function () {
+        this._state.maskMode = 'swipe';
+        this._state.maskMoveFlag = true;   // tap 模式忽略 move flag，始终触发
+    },
+
+    /**
+     * 交互方式 B：在屏幕上原地滑动触发投掷
+     * 蒙层统一捕获手势，onTouchMoved 设 flag，onTouchEnded 检查 flag
+     */
+    _bindCoinSwipe: function () {
+        this._state.maskMode = 'swipe';
+        this._state.maskMoveFlag = false;
     },
 
     /**
@@ -497,28 +509,59 @@ const DivineUI = {
     },
 
     // ───────────────────────────────────────────────────────────────
-    // 全屏点击拦截（result 阶段启用）
+    // 全程唯一蒙层（投掷阶段=swipe，结果阶段=click）
     // ───────────────────────────────────────────────────────────────
 
-    _setupClickMask: async function () {
+    /**
+     * 创建全程蒙层并注册统一事件处理。
+     * 根据 _state.maskMode 的当前值决定行为：
+     *   'swipe'  → onTouchMoved 置 flag，onTouchEnded 有 flag 才触发投掷
+     *   'click'  → onTouchEnded 直接通知等待
+     * mode 在运行时可改（_state.maskMode = 'click'）无需重新注册。
+     */
+    _setupMask: async function () {
         if (this._state.maskCreated) return;
         await ac.createLayer({
-            name: this.layer.clickMask, index: 100, inlayer: this.layer.scene,
-            pos:  { x: 0, y: 0 },
-            size: { width: GameConfig.width, height: GameConfig.height },
+            name:   this.layer.mask, index: 150, inlayer: this.layer.scene,
+            pos:    { x: 0, y: 0 },
+            size:   { width: GameConfig.width, height: GameConfig.height },
             anchor: { x: 0, y: 0 }, clipMode: false,
         });
+
         const self = this;
+        let swipeMoved = false;
+
         ac.addEventListener({
-            type:    ac.EVENT_TYPES.onTouchEnded,
-            listener: async function () { self._state.waitingForClick = false; },
-            target:  this.layer.clickMask,
+            type:     ac.EVENT_TYPES.onTouchBegan,
+            listener: function () { swipeMoved = false; },
+            target:   self.layer.mask,
         });
+        ac.addEventListener({
+            type:     ac.EVENT_TYPES.onTouchMoved,
+            listener: function () { swipeMoved = true; },
+            target:   self.layer.mask,
+        });
+        ac.addEventListener({
+            type:     ac.EVENT_TYPES.onTouchEnded,
+            listener: async function () {
+                if (self._state.maskMode === 'swipe') {
+                    // tap 模式：maskMoveFlag=true 表示忽略 move 检查（点击即触发）
+                    if (self._state.maskMoveFlag || swipeMoved) {
+                        swipeMoved = false;
+                        await DivineSystem.onClickDivineButton();
+                    }
+                } else if (self._state.maskMode === 'click') {
+                    self._state.waitingForClick = false;
+                }
+            },
+            target:   self.layer.mask,
+        });
+
         this._state.maskCreated = true;
     },
 
     _waitForClick: async function () {
-        await this._setupClickMask();
+        this._state.maskMode = 'click';
         this._state.waitingForClick = true;
         while (this._state.waitingForClick) {
             await ac.delay({ time: 100 });
