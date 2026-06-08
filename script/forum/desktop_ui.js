@@ -1,21 +1,15 @@
-// 电脑桌面 UI 与页面路由
+// 论坛页面路由（桌面 UI 已由 ui/ui_desktop.js 通过 ac.callUI 创建）
 console.log('[LOAD] desktop_ui');
 
 const DesktopUI = {
 
-    layer: {
-        desktop: 'layer_desktop',
-    },
-
-    // ── 桌面场景入口 ──────────────────────────────────────────────
-
     /**
      * 创建桌面场景（背景 + 浏览器图标 + 系统时间）
-     * 替代原来的 ac.callUI({ uiId: ResMap.ui_desktop })
+     * 由 ui/ui_desktop.js 调用
      */
     createDesktop: async function () {
         await ac.createLayer({
-            name: this.layer.desktop,
+            name: 'layer_desktop',
             index: ZORDER.SCENE,
             inlayer: 'window',
             pos: { x: 0, y: 0 },
@@ -27,7 +21,7 @@ const DesktopUI = {
         await ac.createImage({
             name: 'img_desktop',
             index: 0,
-            inlayer: this.layer.desktop,
+            inlayer: 'layer_desktop',
             resId: ResMap.pic_desktop_bg,
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             anchor: { x: 50, y: 50 },
@@ -36,7 +30,7 @@ const DesktopUI = {
         await ac.createOption({
             name: 'btn_browser',
             index: 1,
-            inlayer: this.layer.desktop,
+            inlayer: 'layer_desktop',
             nResId: ResMap.btn_browser,
             sResId: ResMap.btn_browser,
             content: '',
@@ -48,10 +42,9 @@ const DesktopUI = {
         await BrowserUI.createSystemTimeLoop();
     },
 
-    // ── 页面切换（替代 ac.replaceUI）────────────────────────────
-
-    /** 清除当前浏览器页内容（browser 框架保留，只移除内容层） */
+    /** 清除当前浏览器页内容（browser 框架 + 系统时间），保留桌面底层 */
     _clearPage: async function () {
+        try { await ac.remove({ name: 'layer_browser_ui' }); } catch (e) {}
         try { await ac.remove({ name: 'layer_forum_ui' }); } catch (e) {}
         try { await ac.remove({ name: 'lbl_system_time' }); } catch (e) {}
     },
