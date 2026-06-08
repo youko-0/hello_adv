@@ -5,31 +5,6 @@ console.log('[LOAD] divine_ui');
 // 占卜界面配置（资源 / 样式 / 布局）
 // ════════════════════════════════════════════════════════════════════
 
-ac.createStyle({
-    name: 'style_divine_yao_label',
-    font: '汉仪小隶书简',
-    bold: false, italic: false,
-    fontSize: 30, color: '#efefe3',
-});
-ac.createStyle({
-    name: 'style_divine_hex_name',
-    font: '汉仪小隶书简',
-    bold: true, italic: false,
-    fontSize: 48, color: '#f5e6a3',
-});
-ac.createStyle({
-    name: 'style_divine_judgment',
-    font: '民国行楷超大字库',
-    bold: false, italic: false,
-    fontSize: 30, color: '#efefe3',
-});
-ac.createStyle({
-    name: 'style_divine_yao_text',
-    font: '民国行楷超大字库',
-    bold: false, italic: false,
-    fontSize: 30, color: '#efefe3',
-});
-
 const DivineConfig = {
 
     yaoLabels: ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'],

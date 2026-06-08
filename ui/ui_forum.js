@@ -3,7 +3,7 @@ console.log('[LOAD] ui_main_page');
 
 ac.createStyle({
     name: 'style_topic',
-    font: '汉仪小隶书简',
+    font: '思源宋体',
     bold: false,
     italic: false,
     fontSize: 24,
@@ -12,7 +12,7 @@ ac.createStyle({
 
 ac.createStyle({
     name: 'style_topic_read',
-    font: '汉仪小隶书简',
+    font: '思源宋体',
     bold: false,
     italic: false,
     fontSize: 24,
@@ -21,7 +21,7 @@ ac.createStyle({
 
 ac.createStyle({
     name: 'style_name',
-    font: '汉仪小隶书简',
+    font: '思源宋体',
     bold: false,
     italic: false,
     fontSize: 18,
@@ -30,7 +30,7 @@ ac.createStyle({
 
 ac.createStyle({
     name: 'style_time',
-    font: '汉仪小隶书简',
+    font: '思源宋体',
     bold: false,
     italic: false,
     fontSize: 18,

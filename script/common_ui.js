@@ -33,8 +33,8 @@ const CommonUI = {
             height: 32,
         },
         style: {
-            name: 'style_alert',
-            font: '汉仪小隶书简',
+            name: 'style_common_alert',
+            font: '思源宋体',
             bold: false,
             italic: false,
             fontSize: 24,
@@ -69,16 +69,16 @@ const CommonUI = {
         },
         // 文本样式
         style: {
-            name: 'style_dialog',
-            font: '汉仪小隶书简',
+            name: 'style_common_dialog',
+            font: '思源宋体',
             bold: false,
             italic: false,
             fontSize: 24,
             color: '#d1d3df',
         },
         styleDisabled: {
-            name: 'style_dialog_disabled',
-            font: '汉仪小隶书简',
+            name: 'style_common_dialog_disabled',
+            font: '思源宋体',
             bold: false,
             italic: false,
             fontSize: 24,
@@ -666,20 +666,6 @@ const CommonUI = {
     // 脚本载入时的初始化函数
     onLoad: async function () {
         console.log('[LOG] [CommonUI] onLoad');
-        ac.createStyle(this.alert.style);
-
-        ac.createStyle({
-            name: 'style_item_info',
-            font: '汉仪小隶书简',
-            bold: false,
-            italic: false,
-            fontSize: 24,
-            color: '#d1d3df',
-            speed: 9,
-        });
-
-        ac.createStyle(this.dialog.style);
-        ac.createStyle(this.dialog.styleDisabled);
 
         await ac.delay({ time: 100 });
         await this.onLoadDelay();

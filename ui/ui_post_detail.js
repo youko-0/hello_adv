@@ -3,7 +3,7 @@ console.log('[LOAD] ui_post_detail');
 
 ac.createStyle({
     name: 'style_title',
-    font: '汉仪小隶书简',
+    font: '思源宋体',
     bold: false,
     italic: false,
     fontSize: 28,
@@ -12,7 +12,7 @@ ac.createStyle({
 
 ac.createStyle({
     name: 'style_content',
-    font: '汉仪小隶书简',
+    font: '思源宋体',
     bold: false,
     italic: false,
     fontSize: 24,
@@ -21,7 +21,7 @@ ac.createStyle({
 
 ac.createStyle({
     name: 'style_name',
-    font: '汉仪小隶书简',
+    font: '思源宋体',
     bold: false,
     italic: false,
     fontSize: 20,
@@ -30,7 +30,7 @@ ac.createStyle({
 
 ac.createStyle({
     name: 'style_time',
-    font: '汉仪小隶书简',
+    font: '思源宋体',
     bold: false,
     italic: false,
     fontSize: 18,
@@ -39,7 +39,7 @@ ac.createStyle({
 
 ac.createStyle({
     name: 'style_pagination',
-    font: '汉仪小隶书简',
+    font: '思源宋体',
     bold: true,
     italic: false,
     fontSize: 20,
@@ -48,7 +48,7 @@ ac.createStyle({
 
 ac.createStyle({
     name: 'style_pagination_active',
-    font: '汉仪小隶书简',
+    font: '思源宋体',
     bold: true,
     italic: false,
     fontSize: 22,

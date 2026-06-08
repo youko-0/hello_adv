@@ -49,7 +49,7 @@ const BrowserUI = {
             pos: { x: 94, y: GameConfig.height - 24 },
             anchor: { x: 0, y: 50 },
             size: { width: 220, height: 26 },
-            style: 'style_status_bar',
+            style: 'style_browser_status_bar',
             halign: ac.HALIGN_TYPES.left,
             valign: ac.VALIGN_TYPES.top,
         });
@@ -63,7 +63,7 @@ const BrowserUI = {
             pos: { x: 200, y: GameConfig.height - 78 },
             anchor: { x: 0, y: 50 },
             size: { width: 480, height: 26 },
-            style: 'style_status_bar',
+            style: 'style_browser_status_bar',
             halign: ac.HALIGN_TYPES.left,
             valign: ac.VALIGN_TYPES.top,
         });
@@ -93,7 +93,7 @@ const BrowserUI = {
             pos: { x: GameConfig.width - 20, y: 12 },
             anchor: { x: 100, y: 0 },
             size: { width: 120, height: 64 },
-            style: 'style_system_time',
+            style: 'style_browser_system_time',
             halign: ac.HALIGN_TYPES.right,
             valign: ac.VALIGN_TYPES.bottom,
         });
@@ -117,20 +117,3 @@ const BrowserUI = {
 
 };
 
-ac.createStyle({
-    name: 'style_status_bar',
-    font: '微软雅黑',
-    bold: false,
-    italic: false,
-    fontSize: 18,
-    color: '#fefefe',
-});
-
-ac.createStyle({
-    name: 'style_system_time',
-    font: '微软雅黑',
-    bold: false,
-    italic: false,
-    fontSize: 14,
-    color: '#fdf4f4',
-});

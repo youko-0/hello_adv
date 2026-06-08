@@ -35,25 +35,6 @@ const BagUI = {
         // 当前选中的道具ID
         this._selectedId = '';
 
-        // 样式定义
-        await ac.createStyle({
-            name: 'style_item',
-            font: '汉仪小隶书简',
-            bold: false,
-            italic: false,
-            fontSize: 20,
-            color: '#d1d3df',
-        });
-
-        await ac.createStyle({
-            name: 'style_detail',
-            font: '汉仪小隶书简',
-            bold: false,
-            italic: false,
-            fontSize: this.itemDetail.fontSize,
-            color: '#d1d3df',
-        });
-
         // 主背景
         await ac.createImage({
             name: this.name,
@@ -184,7 +165,7 @@ const BagUI = {
             halign: ac.HALIGN_TYPES.middle,
             valign: ac.VALIGN_TYPES.center,
             anchor: { x: 50, y: 50 },
-            style: 'style_item',
+            style: 'style_bag_item',
         });
 
         // 道具数量底框
@@ -208,7 +189,7 @@ const BagUI = {
             halign: ac.HALIGN_TYPES.middle,
             valign: ac.VALIGN_TYPES.center,
             anchor: { x: 50, y: 50 },
-            style: 'style_item',
+            style: 'style_bag_item',
         })
     },
 
@@ -284,7 +265,7 @@ const BagUI = {
             halign: ac.HALIGN_TYPES.middle,
             valign: ac.VALIGN_TYPES.center,
             anchor: { x: 50, y: 50 },
-            style: 'style_detail',
+            style: 'style_bag_detail',
         });
 
         // 道具描述
@@ -314,7 +295,7 @@ const BagUI = {
             valign: ac.VALIGN_TYPES.top,
             spacing: 1.2,
             anchor: { x: 50, y: 50 },
-            style: 'style_detail',
+            style: 'style_bag_detail',
         });
 
         if (true || itemCount <= 0) {

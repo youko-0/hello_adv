@@ -114,7 +114,7 @@ const InventoryUI = {
         const itemIcon = locked? itemConfig.iconLocked: itemConfig.icon
         await CommonUI.showCustomDialog({
             content: itemDesc,
-            roleAvatarResId: itemIcon,
+            // roleAvatarResId: itemIcon,   // 不显示小图标
         });
         await ac.remove({
             name: this.itemDetail.name,
