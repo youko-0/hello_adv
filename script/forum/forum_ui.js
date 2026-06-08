@@ -51,6 +51,7 @@ const ForumUI = {
     },
     pagination: {
         height: 40,
+        separatorHeight: 8,
     },
 
     // ── 高度计算 ──────────────────────────────────────────────────
@@ -82,7 +83,7 @@ const ForumUI = {
         let replyList = ForumSystem.getReplyListAtPage(post, pageIndex || 1);
         let contentHeight = this.calcReplyListHeight(replyList);
         contentHeight += this.header.height + this.header.marginBottom;
-        contentHeight += this.pagination.height;
+        contentHeight += this.pagination.separatorHeight + this.pagination.height;
         return contentHeight;
     },
 
@@ -413,6 +414,24 @@ const ForumUI = {
     },
 
     _createPagination: async function (pageCount, currentPage) {
+        const separatorH = this.pagination.separatorHeight;
+        const paginationH = this.pagination.height;
+        const bgStyle = this.topic.bgNormal;
+
+        // 深色分隔条，位于分页导航正上方
+        await ac.createImage({
+            name: 'img_pagination_separator',
+            index: 0,
+            inlayer: this.sv.name,
+            resId: bgStyle.resId,
+            pos: { x: 0, y: paginationH },
+            anchor: { x: 0, y: 0 },
+            scale: {
+                x: this.page.width * 100 / bgStyle.width,
+                y: separatorH * 100 / bgStyle.height,
+            },
+        });
+
         for (let i = 1; i <= pageCount; i++) {
             let x = 100 + (i - 1) * 56;
             let isCurrent = i === currentPage;
