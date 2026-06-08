@@ -219,18 +219,19 @@ const InventorySystem = createSystem(
         * 打开背包界面, await InventorySystem.openBag(itemId)
         * @param {string} selectedId 默认选中的道具ID, 不传则默认选中第一个道具
         */
-        openBag: async function (selectedId =null) {
+        openBag: async function (selectedId = null) {
             let itemList = this.getItemListByType(ItemType.KEY);
-            // 如果 selectedId 不是 string, 取第一个道具id
             if (typeof selectedId !== 'string' || !selectedId) {
                 selectedId = itemList[0];
             }
-            // 关闭系统对话框
             await ac.sysDialogOff({});
-            await BagUI.createBagUI();
-            await BagUI.createItemList(itemList);
-            await BagUI.onItemSelect(selectedId);
-            await BagUI.onBagOpen();
+            BagUI._selectedId = selectedId;
+            await ac.callUI({ name: 'callUI_bag', uiId: '097c0cbdd8d44985b1b2933760da7c88' });
+            // if (RES_FLAG == 0) {
+            //     await ac.callUI({ name: 'callUI_bag', uiId: '' }); // TODO: 填入 HelloADVRes ui_bag uiId
+            // } else {
+            //     await ac.callUI({ name: 'callUI_bag', uiId: '097c0cbdd8d44985b1b2933760da7c88' });
+            // }
         },
 
 

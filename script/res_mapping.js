@@ -9,7 +9,7 @@ const HelloADVRes = {
     img_mask_round: '$183502801',
     pic_mask_iris: '$191123170',
     img_dialog_bg_no_head: '$184489241',
-    img_dialog_bg_with_head: '$184489243',
+    img_dialog_bg_with_head: '$192871721',
     btn_common_close_normal: '$183658478',
     btn_common_close_highlight: '$183658477',
     pic_common_bg_01: '$183658447',
