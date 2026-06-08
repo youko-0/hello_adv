@@ -189,6 +189,7 @@ const DivineUI = {
                 halign:  ac.HALIGN_TYPES.left,
                 valign:  ac.VALIGN_TYPES.center,
             });
+            await ac.hide({ name: this.yao.label(i) });
         }
     },
 
@@ -223,13 +224,9 @@ const DivineUI = {
                 resId: DivineConfig.res.coin.back,
                 pos: { x: cx, y: cy }, anchor: { x: 50, y: 50 },
             });
-            // 背面全部隐藏，正面只保留中间那枚可见
+            // 所有正面和背面全部隐藏，由入场动效统一显示
             await ac.hide({ name: this.coin.back(i) });
-            if (i !== 1) {
-                await ac.hide({ name: this.coin.front(i) });
-            } else {
-                await ac.show({ name: this.coin.front(i) });
-            }
+            await ac.hide({ name: this.coin.front(i) });
         }
         this._state.coinFace = [1, 1, 1];
 

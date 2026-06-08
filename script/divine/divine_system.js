@@ -44,14 +44,20 @@ const DivineSystem = {
      * 函数返回时整个占卜流程结束，调用方可继续后续剧情
      */
     runDivine: async function () {
-        
-        // 对话关闭后：创建爻标签 + 硬币出现
+        // 创建爻标签和硬币（全部隐藏）
         await DivineUI.createYaoLabels();
         await DivineUI.showCoins();
 
-        // 提示对话（bg 已存在，yao 标签和硬币还未创建）
-        await CommonUI.showCustomDialog({ content: '点击硬币开始占卜' });
+        // 入场：从上爻到初爻逐条淡入，再是中间硬币
+        for (let i = 5; i >= 0; i--) {
+            ac.show({ name: DivineUI.yao.label(i), effect: 'fadein', duration: 500, canskip: false });
+            await ac.delay({ time: 100 });
+        }
+        // 等硬币淡入完成后再弹提示
+        await ac.show({ name: DivineUI.coin.front(1), effect: 'fadein', duration: 500, canskip: false });
 
+        // 提示对话（元素已全部显示后弹出）
+        await CommonUI.showCustomDialog({ content: '点击硬币进行占卜' });
 
         // 等待全流程结束
         while (!this._done) {
