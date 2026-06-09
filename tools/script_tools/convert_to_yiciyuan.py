@@ -24,6 +24,18 @@ DIALOG_PRESET_ID = 10456181
 CONTENT_STYLE = 'style_common_dialog'  # 文本样式名，留空则不添加 tag 包裹
 CONTENT_STYLE = ''
 
+# 测试用白色背景，留空则不添加
+TEST_BG_CODE = """await ac.createImage({
+  name: 'imagebg111',
+  index: 0,
+  inlayer: 'window',
+  resId: '$185360022',
+  pos: { x: 640, y: 360 },
+  anchor: { x: 50, y: 50 },
+});"""
+
+# TEST_BG_CODE = ''
+
 # 主角立绘资源配置
 # 位置映射: 左=left 中=center 右=right
 # 每个槽位维护当前显示的图片状态
@@ -59,7 +71,7 @@ PROTAGONIST_RESOURCES = {
 SLOT_ANCHOR = {'x': 50, 'y': 0}
 SLOT_CONFIG = {
     '左': {'pos_x': 320, 'pos_y': 0, 'scale_x':  100, 'scale_y': 100},
-    '中': {'pos_x': 640, 'pos_y': 0, 'scale_x': -100, 'scale_y': 100},
+    '中': {'pos_x': 640, 'pos_y': 0, 'scale_x':  100, 'scale_y': 100},
     '右': {'pos_x': 960, 'pos_y': 0, 'scale_x': -100, 'scale_y': 100},
 }
 
@@ -210,6 +222,10 @@ def convert(input_path, output_path):
     emit('// 自动生成，请勿手动修改格式')
     emit(f'// 对话框预设ID: {DIALOG_PRESET_ID}')
     emit_blank()
+    if TEST_BG_CODE:
+        emit('// 白色背景（测试用）')
+        emit(TEST_BG_CODE)
+        emit_blank()
 
     while i < len(lines):
         raw = lines[i].rstrip('\r\n')
