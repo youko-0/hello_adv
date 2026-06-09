@@ -131,10 +131,10 @@ def convert(input_path, output_path):
         emit('')
 
     def remove_slot_image(slot):
-        """Emit removeImage for a slot if occupied"""
+        """Emit remove for a slot if occupied"""
         if slot_state[slot] is not None:
             img_id = slot_image_id(slot)
-            emit(f'ac.removeImage({{ id: \'{img_id}\' }});')
+            emit(f"await ac.remove({{ name: '{img_id}' }});")
             slot_state[slot] = None
 
     def create_slot_image(slot, role, emotion, res_id):
