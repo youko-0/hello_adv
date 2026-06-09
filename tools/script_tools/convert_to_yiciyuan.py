@@ -17,6 +17,7 @@
 """
 
 INPUT_FILE = 'res/东海市怪谈：这里没有雨20260608.txt'
+INPUT_FILE = 'res/李云祥立绘配置剧本.txt'
 OUTPUT_FILE = 'res/东海市怪谈_易次元脚本.js'
 
 DIALOG_PRESET_ID = 10456181
@@ -47,11 +48,19 @@ PROTAGONIST_RESOURCES = {
     }
 }
 
-# 立绘槽位坐标配置（以屏幕宽高比1080p为基准，易次元坐标）
+# 立绘槽位坐标配置
+# 屏幕 1280x720，坐标原点左下角，y 轴向上为正
+# 对话框背景 1208x158，底部留边 margin_bottom=24，立绘底边对齐对话框顶部：y = 24 + 158 = 182
+# 立绘宽度约 400，anchor (50, 0) = 底部居中锚点
+# scale 范围 1~100，负值翻转；立绘资源默认朝右
+#   左槽：x = 1280/4 = 320，朝右面向中心，scale.x = 100（不翻转）
+#   中槽：x = 1280/2 = 640，默认朝左，scale.x = -100（翻转）
+#   右槽：x = 1280*3/4 = 960，朝左面向中心，scale.x = -100（翻转）
+SLOT_ANCHOR = {'x': 50, 'y': 0}
 SLOT_CONFIG = {
-    '左': {'x': -300, 'y': 0, 'scaleX': 1},   # 朝右，面向中间
-    '中': {'x': 0,    'y': 0, 'scaleX': -1},   # 默认朝左
-    '右': {'x': 300,  'y': 0, 'scaleX': -1},   # 朝左，面向中间
+    '左': {'pos_x': 320, 'pos_y': 0, 'scale_x':  100, 'scale_y': 100},
+    '中': {'pos_x': 640, 'pos_y': 0, 'scale_x': -100, 'scale_y': 100},
+    '右': {'pos_x': 960, 'pos_y': 0, 'scale_x': -100, 'scale_y': 100},
 }
 
 # 配角头像资源配置
@@ -98,8 +107,10 @@ def get_res_id_str(res_id):
     return f"'{res_id}'"
 
 
+_SLOT_ID_MAP = {'左': 'sprite_slot_l', '中': 'sprite_slot_c', '右': 'sprite_slot_r'}
+
 def slot_image_id(slot):
-    return f'img_{slot}'
+    return _SLOT_ID_MAP[slot]
 
 
 def parse_protagonist_line(inner):
@@ -143,8 +154,10 @@ def convert(input_path, output_path):
         cfg = SLOT_CONFIG[slot]
         res_str = get_res_id_str(res_id)
         emit(
-            f'ac.createImage({{ id: \'{img_id}\', resId: {res_str}, '
-            f'x: {cfg["x"]}, y: {cfg["y"]}, scaleX: {cfg["scaleX"]} }});'
+            f"await ac.createImage({{ name: '{img_id}', resId: {res_str}, "
+            f"pos: {{ x: {cfg['pos_x']}, y: {cfg['pos_y']} }}, "
+            f"anchor: {{ x: {SLOT_ANCHOR['x']}, y: {SLOT_ANCHOR['y']} }}, "
+            f"scale: {{ x: {cfg['scale_x']}, y: {cfg['scale_y']} }} }});"
         )
         slot_state[slot] = (role, emotion, res_id)
 
