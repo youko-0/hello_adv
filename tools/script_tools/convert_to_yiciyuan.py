@@ -56,19 +56,23 @@ SLOT_CONFIG = {
 
 # 配角头像资源配置
 NPC_AVATARS = {
-    '老李':     192897732,
-    '李金祥':   192897214,
-    '大舅':     192897214,  # 同李金祥
-    '喀莎':     192897216,
-    '面具人':   192897731,
-    '李艮':     192897730,
-    '敖广':     192897160,
-    '鱼女':     192897217,
-    '敖烈':     192897165,
+    '老李':       192897732,
+    '外公':       192897732,  # 老李
+    '李金祥':     192897214,
+    '大舅':       192897218,  # 中年李金祥
+    '妈妈':       192897728,  # 中年喀莎
+    '喀莎':       192897216,
+    '面具人':     192897731,
+    '李艮':       192897730,
+    '敖广':       192897160,
+    '鱼女':       192897217,
+    '敖烈':       192897165,
     '金鼻白毛鼠': 192897202,
-    '老鼠':     192897202,  # 同金鼻白毛鼠（变身前）
-    '小龙':     192805888,
-    '？？？':   192813735,
+    '老鼠':       192897202,  # 同金鼻白毛鼠（变身前）
+    '小龙':       192805888,
+    '？？？':     192813735,
+    '？？':       192813735,  # 同？？？
+    '？':         192813735,  # 同？？？
 }
 
 # 旁白角色（不显示姓名和头像）
@@ -76,9 +80,8 @@ NARRATOR_ROLES = {'角色名', '', None}
 
 # 仅显示姓名的角色（无头像）
 NAME_ONLY_ROLES = {
-    '我', '？', '？？',
-    '喀莎',  # 仅出现几句无头像配置需求时
-    '妈妈', '外公', '大舅', '陈教授', '小孩', '女人', '少女', '小道士',
+    '我',
+    '陈教授', '小孩', '女人', '少女', '小道士',
     '轿夫', '道长', '李靖', '灵珠子', '元始天尊', '哪吒', '杨戬',
     '天兵', '村民甲', '村民乙', '行刑官', '云祥', '诛仙台', '斩龙台',
     '附天庭文告四海皆知', '恭喜达成梦结局人间正',
@@ -151,11 +154,11 @@ def convert(input_path, output_path):
             return f'<tag style={CONTENT_STYLE}>{safe}</tag>'
         return safe
 
-    def dialog_protagonist(content):
-        """Emit protagonist dialog (no name, no avatar)"""
+    def dialog_protagonist(config_str, content):
+        """Emit protagonist dialog (no visible name, no avatar, roleName keeps full config for reference)"""
         emit(
             f'await ac.sysDialogOn({{ id: {DIALOG_PRESET_ID}, '
-            f'hasRoleName: false, hasRoleAvatar: false, '
+            f'hasRoleName: false, roleName: `{config_str}`, hasRoleAvatar: false, '
             f'content: `{wrap_content(content)}` }});'
         )
 
@@ -248,7 +251,7 @@ def convert(input_path, output_path):
                     create_slot_image(position, role_name, emotion, res_id)
                 # else: same resource already showing, no change needed
 
-                current_role = (role_name, emotion, position, res_id)
+                current_role = (role_name, emotion, position, res_id, inner)
                 current_role_type = 'protagonist'
                 continue
 
@@ -271,8 +274,8 @@ def convert(input_path, output_path):
 
         # Dialogue content line (not starting with 【)
         if current_role_type == 'protagonist':
-            role_name, emotion, position, res_id = current_role
-            dialog_protagonist(stripped)
+            role_name, emotion, position, res_id, config_str = current_role
+            dialog_protagonist(config_str, stripped)
         elif current_role_type == 'narrator':
             dialog_narrator(stripped)
         elif current_role_type == 'npc':
