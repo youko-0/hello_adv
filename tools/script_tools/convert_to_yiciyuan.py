@@ -17,7 +17,7 @@
 """
 
 INPUT_FILE = 'res/东海市怪谈：这里没有雨20260608.txt'
-INPUT_FILE = 'res/李云祥立绘配置剧本.txt'
+# INPUT_FILE = 'res/李云祥立绘配置剧本.txt'
 OUTPUT_FILE = 'res/东海市怪谈_易次元脚本.js'
 
 DIALOG_PRESET_ID = 10456181
