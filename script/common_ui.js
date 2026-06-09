@@ -68,16 +68,10 @@ const CommonUI = {
             typingSpeed: 0.03,  // 每个字符显示间隔（秒）
             fontSize:    24,    // 用于分页行高估算，需与 style_common_dialog 保持一致
         },
-        // 文本样式（对话框正文）
-        style: {
-            name: 'style_common_dialog',
-        },
     },
     // 选项组
     optionGroup: {
         name:         'layer_option_group',
-        style:        'style_common_dialog',
-        styleDisabled: 'style_common_dialog_disabled',
     },
 
 
@@ -407,7 +401,7 @@ const CommonUI = {
             pos:     { x: layout.textX, y: layout.textY },
             anchor:  { x: 0, y: 100 },
             size:    { width: layout.textWidth, height: layout.textHeight },
-            style:   this.dialog.style.name,
+            style:   'style_common_dialog',
             halign:  ac.HALIGN_TYPES.left,
             valign:  ac.VALIGN_TYPES.top,
         });
@@ -480,8 +474,8 @@ const CommonUI = {
             option.inlayer = this.optionGroup.name;
             option.pos = { x: GameConfig.centerX, y: 420 - i * 120 };
             option.anchor = { x: 50, y: 50 };
-            option.style  = this.optionGroup.style;
-            option.dStyle = this.optionGroup.styleDisabled;
+            option.style  = 'style_common_option';
+            option.dStyle = 'style_common_option_disabled';
             option.nResId = ResMap.img_selection_bg_normal;
             option.sResId = ResMap.img_selection_bg_highlight;
             option.dResId = ResMap.img_selection_bg_disabled;

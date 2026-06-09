@@ -15,11 +15,18 @@ ac.createStyle({
     name: 'style_common_dialog',
     font: '思源宋体',
     bold: false, italic: false,
-    fontSize: 24, color: '#d1d3df',
+    fontSize: 24, color: '#ebebf0',
 });
 
 ac.createStyle({
-    name: 'style_common_dialog_disabled',
+    name: 'style_common_option',
+    font: '思源宋体',
+    bold: false, italic: false,
+    fontSize: 24, color: '#ebebf0',
+});
+
+ac.createStyle({
+    name: 'style_common_option_disabled',
     font: '思源宋体',
     bold: false, italic: false,
     fontSize: 24, color: '#63656d',
