@@ -268,8 +268,10 @@ def convert(input_path, output_path):
                 current_role_type = 'protagonist'
                 continue
 
-            # Narrator
+            # Narrator: clear all sprite slots (dialogue considered ended)
             if inner in NARRATOR_ROLES:
+                for s in ('左', '中', '右'):
+                    remove_slot_image(s)
                 current_role = None
                 current_role_type = 'narrator'
                 continue
