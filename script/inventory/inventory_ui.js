@@ -58,7 +58,7 @@ const InventoryUI = {
             name: this.btnBag.name,
         });
         console.log('[LOG] onGainItem', startPos, endPos);
-        await CommonUI.playTrailEffect(startPos, endPos);
+        await UIEffect.playTrailEffect(startPos, endPos);
         // 关闭对话框
         await ac.sysDialogOff({});
         // 打开背包界面

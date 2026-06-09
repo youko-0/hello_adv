@@ -504,58 +504,6 @@ const CommonUI = {
         })
     },
 
-    // 播放拖尾特效
-    playTrailEffect: async function (startPos, endPos) {
-
-        // startPos 和 endPos 需要偏移半个屏幕
-        startPos.x -= GameConfig.centerX;
-        startPos.y -= GameConfig.centerY;
-        endPos.x -= GameConfig.centerX;
-        endPos.y -= GameConfig.centerY;
-
-        const moveSpeed = 0.8; // 移动速度, 像素/毫秒
-        let duration = Math.sqrt((startPos.x - endPos.x) ** 2 + (startPos.y - endPos.y) ** 2) / moveSpeed; // 飞行时间
-        const containerName = 'trail_container';
-        await ac.createLayer({
-            name: containerName,
-            pos: startPos, // 车在起点
-            size: { width: 0, height: 0 },
-            inlayer: 'window',
-            index: ZORDER.PARTICLE,
-            clipMode: false,
-        });
-
-        const particleName = 'trail_effect_' + Date.now(); // 生成唯一名字防止冲突
-        await ac.createParticle({
-            name: particleName,
-            type: ac.PARTICLE_TYPES.fire,
-            index: 0,
-            inlayer: containerName,
-            totalParticle: 200,     // 总粒子数量
-            life: { base: 200, deviation: 100 },    // 生命周期
-            emissionRate: 60,       // 发射频率
-            shootAngle: { base: 0, deviation: 360 }, // 发射角度
-            moveSpeed: { base: 100, deviation: 50 }, // 移动速度
-            resId: ResMap.spr_particle_trail,
-            duration: duration * 0.9,   // 持续时间
-            parpos: {           // 发射范围
-                xBase: 0, xDeviation: 2,
-                yBase: 0, yDeviation: 2
-            },
-        });
-
-        await ac.moveTo({
-            name: containerName,
-            x: endPos.x,
-            y: endPos.y,
-            duration: duration,
-        });
-        await ac.remove({
-            name: containerName,
-            duration: 500, // 给个淡出时间，让尾巴自然消失
-        });
-    },
-
     // 脚本载入时的初始化函数
     onLoad: async function () {
         console.log('[LOG] [CommonUI] onLoad');
