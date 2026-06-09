@@ -23,6 +23,7 @@ OUTPUT_FILE = 'res/东海市怪谈_易次元脚本.js'
 DIALOG_PRESET_ID = 10456181
 CONTENT_STYLE = 'style_common_dialog'  # 文本样式名，留空则不添加 tag 包裹
 CONTENT_STYLE = ''
+SPRITE_DIM_OPACITY = 60  # 非当前发言立绘的压黑遮罩透明度 (0=透明, 100=不透明)
 
 # 测试用白色背景，留空则不添加
 TEST_BG_CODE = """await ac.createImage({
@@ -49,14 +50,13 @@ PROTAGONIST_RESOURCES = {
         '悲伤': 192973221,
     },
     '敖丙': {
-        # 占位资源，等待实际资源替换
-        '正常': 'PLACEHOLDER_AOBING_NORMAL',
-        '疑惑': 'PLACEHOLDER_AOBING_CONFUSED',
-        '生气': 'PLACEHOLDER_AOBING_ANGRY',
-        '开心': 'PLACEHOLDER_AOBING_HAPPY',
-        '高兴': 'PLACEHOLDER_AOBING_HAPPY',
-        '害羞': 'PLACEHOLDER_AOBING_SHY',
-        '悲伤': 'PLACEHOLDER_AOBING_SAD',
+        '正常': 193056862,
+        '疑惑': 193056860,
+        '生气': 193056859,
+        '开心': 193056858,
+        '高兴': 193056855,
+        '害羞': 193056857,
+        '悲伤': 193056854,
     }
 }
 
@@ -173,6 +173,16 @@ def convert(input_path, output_path):
         )
         slot_state[slot] = (role, emotion, res_id)
 
+    def update_slot_masks(active_slot):
+        """压黑非当前发言的立绘，高亮当前发言立绘"""
+        for s in ('左', '中', '右'):
+            if slot_state[s] is not None:
+                img_id = slot_image_id(s)
+                if s == active_slot:
+                    emit(f"await ac.changeMaskTo({{ name: '{img_id}', opacity: 0 }});")
+                else:
+                    emit(f"await ac.changeMaskTo({{ name: '{img_id}', r: 0, g: 0, b: 0, opacity: {SPRITE_DIM_OPACITY} }});")
+
     def wrap_content(text):
         safe = text.replace('`', '\\`')
         if CONTENT_STYLE:
@@ -279,6 +289,8 @@ def convert(input_path, output_path):
                     remove_slot_image(position)
                     create_slot_image(position, role_name, emotion, res_id)
                 # else: same resource already showing, no change needed
+
+                update_slot_masks(position)
 
                 current_role = (role_name, emotion, position, res_id, inner)
                 current_role_type = 'protagonist'
