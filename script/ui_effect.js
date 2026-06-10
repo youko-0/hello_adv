@@ -298,9 +298,10 @@ const UIEffect = {
             if (!stopped) spawnDrop();
         };
 
-        // 初始批量生成，错开出生时机
+        // 初始批量生成：分层采样，保证各雨滴均匀散开
+        const slot = dropDur / count;
         for (let i = 0; i < count; i++) {
-            spawnDrop(Math.random() * dropDur);
+            spawnDrop(i * slot + Math.random() * slot);
         }
 
         // 定时停止
