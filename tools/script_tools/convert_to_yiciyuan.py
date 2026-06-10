@@ -342,4 +342,12 @@ def convert(input_path, output_path):
 
 
 if __name__ == '__main__':
-    convert(INPUT_FILE, OUTPUT_FILE)
+    import sys, os
+    if len(sys.argv) > 1:
+        input_path = sys.argv[1]
+        base, _ = os.path.splitext(input_path)
+        output_path = base + '.js'
+    else:
+        input_path = INPUT_FILE
+        output_path = OUTPUT_FILE
+    convert(input_path, output_path)
