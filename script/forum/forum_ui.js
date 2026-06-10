@@ -94,7 +94,7 @@ const ForumUI = {
 
         await ac.createLayer({
             name: 'layer_forum_ui',
-            index: ZORDER.SCENE,
+            index: ZORDER.OVERLAY,
             inlayer: 'window',
             pos: { x: GameConfig.centerX, y: 60 },
             anchor: { x: 50, y: 0 },

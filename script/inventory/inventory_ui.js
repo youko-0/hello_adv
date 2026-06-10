@@ -15,7 +15,7 @@ const InventoryUI = {
     createBtnBag: async function () {
         await ac.createImage({
             name: InventoryUI.btnBag.name,
-            index: ZORDER.SYSTEM_UI,
+            index: ZORDER.HUD,
             inlayer: 'window',
             resId: ResMap.btn_bag_normal,
             pos: { x: GameConfig.width - 36, y: GameConfig.height - 186 },

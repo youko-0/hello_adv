@@ -2,14 +2,13 @@
 console.log('[LOAD] common_ui');
 
 const ZORDER = {
-    BOTTOM_SCENE: 0,      // 底层, 需要显示系统UI的场景
-    SYSTEM_UI: 5,      // 系统UI, 背包按钮等
-    SCENE: 10,      // 画布
-    UI: 20,     // 普通 UI
-    CUSTOM_DIALOG: 50,     // 对话框
-    POPUP: 100,     // 弹窗
-    TOP: 500,       // 顶层
-    PARTICLE: 1000,     // 粒子
+    SCENE:   0,    // 场景底层（地图、探索等，HUD 可见）
+    HUD:     5,    // 系统常驻 UI（背包按钮等）
+    OVERLAY: 10,   // 全屏覆盖场景（论坛桌面、浏览器等）
+    UI:      20,   // 普通面板（背包面板、占卜等）
+    DIALOG:  50,   // 对话框
+    POPUP:   100,  // 模态弹窗
+    EFFECT:  500,  // 特效与全屏转场（粒子、眨眼遮罩）
 }
 
 const CommonUI = {
@@ -318,7 +317,7 @@ const CommonUI = {
 
         await ac.createLayer({
             name:    D.name,
-            index:   ZORDER.CUSTOM_DIALOG,
+            index:   ZORDER.DIALOG,
             inlayer: 'window',
             pos:     { x: layout.dialogX, y: layout.dialogY },
             anchor:  { x: 50, y: 50 },
@@ -460,7 +459,7 @@ const CommonUI = {
         // 全屏层级
         await ac.createLayer({
             name: this.optionGroup.name,
-            index: ZORDER.CUSTOM_DIALOG,
+            index: ZORDER.DIALOG,
             inlayer: 'window',
             pos: { x: GameConfig.centerX, y: GameConfig.centerY },
             size: { width: GameConfig.width, height: GameConfig.height },

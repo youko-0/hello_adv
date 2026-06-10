@@ -10,7 +10,7 @@ const DesktopUI = {
     createDesktop: async function () {
         await ac.createLayer({
             name: 'layer_desktop',
-            index: ZORDER.SCENE,
+            index: ZORDER.OVERLAY,
             inlayer: 'window',
             pos: { x: 0, y: 0 },
             anchor: { x: 0, y: 0 },

@@ -26,7 +26,7 @@ const UIEffect = {
             pos:      { x: sx, y: sy },
             size:     { width: 0, height: 0 },
             inlayer:  'window',
-            index:    ZORDER.PARTICLE,
+            index:    ZORDER.EFFECT,
             clipMode: false,
         });
 
@@ -115,7 +115,7 @@ const UIEffect = {
             const debugName = 'debug_arc_path_' + name;
             await ac.createDrawNode({
                 name:    debugName,
-                index:   ZORDER.TOP + 1,
+                index:   ZORDER.EFFECT + 1,
                 inlayer: 'window',
                 pos:     { x: 0, y: 0 },
             });
@@ -196,5 +196,60 @@ const UIEffect = {
         }
 
         await ac.remove({ name: name });
+    },
+
+    // ─── 眨眼转场 ─────────────────────────────────────────────────────────────
+
+    _blink: {
+        duration:  240,   // 单次开/闭时长 ms
+        minScaleY: 33,    // pic_mask_iris 高 2160（= 3× 屏幕高），scaleY 33% 时椭圆接近闭合
+        iris: {
+            name:  'img_blink_iris',
+            resId: ResMap.pic_mask_iris,   // 1280×2160，中央镂空椭圆
+        },
+        black: {
+            name:    'img_blink_black',
+            resId:   ResMap.img_mask_black, // 32×32 纯黑，缩放至全屏
+            srcSize: 32,
+        },
+    },
+
+    /**
+     * 眨眼转场：虹膜闭合 → 执行回调（黑屏期间切换内容）→ 虹膜张开
+     * @param {Function} onBlackScreen 完全黑屏时执行的异步回调
+     */
+    playBlinkTransition: async function (onBlackScreen) {
+        const { duration, minScaleY, iris, black } = this._blink;
+
+        await ac.createImage({
+            name:    iris.name,
+            index:   ZORDER.EFFECT,
+            inlayer: 'window',
+            resId:   iris.resId,
+            pos:     { x: GameConfig.centerX, y: GameConfig.centerY },
+            anchor:  { x: 50, y: 50 },
+            scale:   { x: 100, y: 100 },
+        });
+
+        await ac.scaleTo({ name: iris.name, x: 100, y: minScaleY, duration });
+
+        await ac.createImage({
+            name:    black.name,
+            index:   ZORDER.EFFECT + 1,
+            inlayer: 'window',
+            resId:   black.resId,
+            pos:     { x: GameConfig.centerX, y: GameConfig.centerY },
+            anchor:  { x: 50, y: 50 },
+            scale: {
+                x: GameConfig.width  * 100 / black.srcSize,
+                y: GameConfig.height * 100 / black.srcSize,
+            },
+        });
+
+        await onBlackScreen();
+
+        ac.remove({ name: black.name, effect: 'fadeout', duration, canskip: false });
+        ac.scaleTo({ name: iris.name, x: 100, y: 100, duration });
+        await ac.remove({ name: iris.name, effect: 'fadeout', duration, canskip: false });
     },
 }

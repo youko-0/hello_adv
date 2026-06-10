@@ -11,7 +11,7 @@ const MapUI = {
     createMapUI: async function () {
         await ac.createLayer({
             name: this.map.name,
-            index: ZORDER.BOTTOM_SCENE,       // 把全局按钮露出来
+            index: ZORDER.SCENE,       // 把全局按钮露出来
             inlayer: 'window',
             pos: { x: 0, y: 0 },
             anchor: { x: 0, y: 0 },
