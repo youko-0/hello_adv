@@ -340,7 +340,7 @@ const ForumUI = {
             index: 0,
             inlayer: this.sv.name,
             resId: UserSystem.getUserIcon(reply.authorId),
-            pos: { x: 100, y: posY + contentHeight - 42 },
+            pos: { x: 100, y: posY + contentHeight - 48 },
             anchor: { x: 50, y: 50 },
         });
 
@@ -350,7 +350,7 @@ const ForumUI = {
             index: 1,
             inlayer: this.sv.name,
             content: UserSystem.getUserName(reply.authorId),
-            pos: { x: 100, y: posY + contentHeight - 76 },
+            pos: { x: 100, y: posY + contentHeight - 88 },
             anchor: { x: 50, y: 50 },
             size: { width: 200, height: this.reply.fontSize },
             style: 'style_post_author',
