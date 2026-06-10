@@ -80,28 +80,28 @@ ac.createStyle({
 // ── Forum UI ──────────────────────────────────────────────────────
 ac.createStyle({
     name: 'style_forum_topic',
-    font: '思源宋体',
+    font: '微软雅黑',
     bold: false, italic: false,
     fontSize: 24, color: '#d1d3df',
 });
 
 ac.createStyle({
     name: 'style_forum_topic_read',
-    font: '思源宋体',
+    font: '微软雅黑',
     bold: false, italic: false,
     fontSize: 24, color: '#b33411',
 });
 
 ac.createStyle({
     name: 'style_forum_author',
-    font: '思源宋体',
+    font: '微软雅黑',
     bold: false, italic: false,
     fontSize: 18, color: '#cbd6dc',
 });
 
 ac.createStyle({
     name: 'style_forum_time',
-    font: '思源宋体',
+    font: '微软雅黑',
     bold: false, italic: false,
     fontSize: 18, color: '#c6cbce',
 });
@@ -109,42 +109,42 @@ ac.createStyle({
 // ── Post Detail UI ────────────────────────────────────────────────
 ac.createStyle({
     name: 'style_post_title',
-    font: '思源宋体',
+    font: '微软雅黑',
     bold: false, italic: false,
     fontSize: 28, color: '#cbd6dc',
 });
 
 ac.createStyle({
     name: 'style_post_content',
-    font: '思源宋体',
+    font: '微软雅黑',
     bold: false, italic: false,
     fontSize: 24, color: '#d1d3df',
 });
 
 ac.createStyle({
     name: 'style_post_author',
-    font: '思源宋体',
+    font: '微软雅黑',
     bold: false, italic: false,
     fontSize: 20, color: '#cbd6dc',
 });
 
 ac.createStyle({
     name: 'style_post_time',
-    font: '思源宋体',
+    font: '微软雅黑',
     bold: false, italic: false,
     fontSize: 18, color: '#c6cbce',
 });
 
 ac.createStyle({
     name: 'style_post_pagination',
-    font: '思源宋体',
+    font: '微软雅黑',
     bold: true, italic: false,
     fontSize: 20, color: '#cbd6dc',
 });
 
 ac.createStyle({
     name: 'style_post_pagination_active',
-    font: '思源宋体',
+    font: '微软雅黑',
     bold: true, italic: false,
     fontSize: 22, color: '#b33411',
 });

@@ -86,6 +86,8 @@ const HelloADVRes = {
     // 头像
     icon_forum_head_01: '$183114062',
     icon_forum_head_02: '$183113921',
+    icon_forum_head_03: '$183114062',
+    icon_forum_head_04: '$183113921',
     // 物品图标
     icon_item_spirit_eye: '$185428486',
     icon_item_spirit_eye_locked: '$185906593',
@@ -254,6 +256,8 @@ const DongHaiRes = {
     // 头像
     icon_forum_head_01: '$185360104',
     icon_forum_head_02: '$185360103',
+    icon_forum_head_03: '$193117402',
+    icon_forum_head_04: '$193117403',
     // 物品图标
     icon_item_spirit_eye: '$186018535',
     icon_item_spirit_eye_locked: '$186018536',

@@ -297,7 +297,7 @@ const ForumUI = {
                 index: 1,
                 inlayer: this.sv.name,
                 content: post.topic,
-                pos: { x: 42, y: startY },
+                pos: { x: 42, y: startY + 6 },
                 anchor: { x: 0, y: 100 },
                 size: { width: this.reply.width, height: this.post.title.height },
                 style: 'style_post_title',
@@ -378,7 +378,7 @@ const ForumUI = {
             content: `${reply.index}楼`,
             pos: { x: this.page.width - 136, y: posY + 10 },
             anchor: { x: 100, y: 0 },
-            size: { width: 40, height: this.reply.fontSize },
+            size: { width: 60, height: this.reply.fontSize },
             style: 'style_post_time',
             halign: ac.HALIGN_TYPES.right,
         });

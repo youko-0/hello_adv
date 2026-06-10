@@ -6,12 +6,9 @@ import os
 import datetime
 
 # ================= 配置区域 =================
-INPUT_FILE = 'data.txt'
+INPUT_FILE = '../data.txt'
 # 目标 JS 文件名
-JS_TARGET_FILE = 'forum_data.js'
-
-# 可用的用户ID列表
-AUTHOR_IDS = ["user_001", "user_002", "user_003", "user_004", "user_010"]
+JS_TARGET_FILE = '../../script/forum/forum_data.js'
 
 # 起始帖子ID
 START_ID = 1001
@@ -128,12 +125,12 @@ def parse_forum_data():
 
     # 当作 2034 年运行
     static_timestamp = change_timestamp_year(time.time(), NOW_YEAR)
-    posts_map = {} # 使用字典存储，key为id
+    posts_map = {}
     current_post = None
     current_reply_list = []
-    random_author_list = []
-    
+
     post_id_counter = START_ID
+    author_id_counter = 1  # 每个帖子楼主依次为 user_001, user_002, ...
 
     # 正则表达式预编译
     # 匹配标题：[标题内容]
@@ -161,11 +158,9 @@ def parse_forum_data():
             topic_content = topic_match.group(1)
             p_id = str(post_id_counter)
             post_id_counter += 1
-            
-            # 为楼主随机分配一个ID
-            topic_author = random.choice(AUTHOR_IDS)
-            # 随机列表里剔除楼主
-            random_author_list = [id for id in AUTHOR_IDS if id != topic_author] or AUTHOR_IDS
+
+            topic_author = f"user_{author_id_counter:03d}"
+            author_id_counter += 1
             
             # 时间控制变量
             # 设定脚本运行时间前 120 ~ 180 分钟的时间戳作为基准时间
@@ -205,8 +200,7 @@ def parse_forum_data():
                 if is_author:
                     r_author = current_post['authorId']
                 else:
-                    # 其他楼层随机分配
-                    r_author = random.choice(random_author_list)
+                    r_author = 'user_momo'
                 # 时间递增 30s ~ 600s
                 add_seconds = random.randint(30, 600)
                 current_timestamp += add_seconds

@@ -294,7 +294,7 @@ const BagUI = {
             style:     'style_bag_detail_desc',
         });
 
-        if (true || itemCount <= 0) {
+        if (itemCount <= 99999) {
             await ac.createOption({
                 name:    'btn_view_item',
                 index:   2,
