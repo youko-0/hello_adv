@@ -35,7 +35,7 @@ TEST_BG_CODE = """await ac.createImage({
   anchor: { x: 50, y: 50 },
 });"""
 
-# TEST_BG_CODE = ''
+TEST_BG_CODE = ''
 
 # 主角立绘资源配置
 # 位置映射: 左=left 中=center 右=right
@@ -127,12 +127,19 @@ def slot_image_id(slot):
 
 def parse_protagonist_line(inner):
     """
-    Parse 【role|emotion|position】 inner content.
+    Parse protagonist role line inner content.
     Returns (role, emotion, position) or None.
+      【role|emotion|position】 → (role, emotion, position)
+      【role|position】        → (role, 正常, position)
+      【role】                 → (role, 正常, 中)
     """
     parts = [p.strip() for p in inner.split('|')]
     if len(parts) == 3 and parts[0] in PROTAGONIST_RESOURCES:
         return parts[0], parts[1], parts[2]
+    if len(parts) == 2 and parts[0] in PROTAGONIST_RESOURCES:
+        return parts[0], '正常', parts[1]
+    if len(parts) == 1 and parts[0] in PROTAGONIST_RESOURCES:
+        return parts[0], '正常', '中'
     return None
 
 
@@ -267,55 +274,77 @@ def convert(input_path, output_path):
             emit_comment(f'[选项] {stripped[5:]}')
             continue
 
-        # Role line: 【...】
-        m = re.match(r'^【([^】]*)】\s*$', stripped)
+        # Role line: 【...】 或 【...】内联对话
+        # inline_content: 跟在 】后面的对话内容（可能为空）
+        m = re.match(r'^【([^】]*)】(.*)$', stripped)
         if m:
             inner = m.group(1)
+            inline_content = m.group(2).strip()
 
-            # Check if protagonist config line
-            proto = parse_protagonist_line(inner)
-            if proto:
-                role_name, emotion, position = proto
-                res_id = PROTAGONIST_RESOURCES[role_name].get(emotion,
-                         PROTAGONIST_RESOURCES[role_name].get('正常'))
+            def handle_role(inner_str, inline_str):
+                """处理角色行，若有内联内容则直接输出对话，否则只切换当前角色状态"""
+                nonlocal current_role, current_role_type
 
-                # Manage slot image
-                prev = slot_state[position]
-                if prev is None:
-                    # Empty slot: create image
-                    create_slot_image(position, role_name, emotion, res_id)
-                elif prev[0] != role_name or prev[2] != res_id:
-                    # Same slot, different resource: remove old, create new
-                    remove_slot_image(position)
-                    create_slot_image(position, role_name, emotion, res_id)
-                # else: same resource already showing, no change needed
+                # Check if protagonist config line
+                proto = parse_protagonist_line(inner_str)
+                if proto:
+                    role_name, emotion, position = proto
+                    res_id = PROTAGONIST_RESOURCES[role_name].get(emotion,
+                             PROTAGONIST_RESOURCES[role_name].get('正常'))
 
-                update_slot_masks(position)
+                    prev = slot_state[position]
+                    if prev is None:
+                        create_slot_image(position, role_name, emotion, res_id)
+                    elif prev[0] != role_name or prev[2] != res_id:
+                        remove_slot_image(position)
+                        create_slot_image(position, role_name, emotion, res_id)
 
-                current_role = (role_name, emotion, position, res_id, inner)
-                current_role_type = 'protagonist'
-                continue
+                    update_slot_masks(position)
 
-            # Narrator: clear all sprite slots (dialogue considered ended)
-            if inner in NARRATOR_ROLES:
-                for s in ('左', '中', '右'):
-                    remove_slot_image(s)
-                current_role = None
-                current_role_type = 'narrator'
-                continue
+                    current_role = (role_name, emotion, position, res_id, inner_str)
+                    current_role_type = 'protagonist'
+                    if inline_str:
+                        dialog_protagonist(inner_str, inline_str)
+                    return
 
-            # NPC with avatar
-            if inner in NPC_AVATARS:
-                current_role = inner
-                current_role_type = 'npc'
-                continue
+                # Narrator: clear all sprite slots
+                if inner_str in NARRATOR_ROLES:
+                    for s in ('左', '中', '右'):
+                        remove_slot_image(s)
+                    current_role = None
+                    current_role_type = 'narrator'
+                    if inline_str:
+                        dialog_narrator(inline_str)
+                    return
 
-            # Name only (including 我, ？？？ etc.)
-            current_role = inner
-            current_role_type = 'name_only'
+                # NPC with avatar
+                if inner_str in NPC_AVATARS:
+                    current_role = inner_str
+                    current_role_type = 'npc'
+                    if inline_str:
+                        dialog_npc_with_avatar(inner_str, NPC_AVATARS[inner_str], inline_str)
+                    return
+
+                # Name only
+                current_role = inner_str
+                current_role_type = 'name_only'
+                if inline_str:
+                    dialog_name_only(inner_str, inline_str)
+
+            handle_role(inner, inline_content)
             continue
 
-        # Dialogue content line (not starting with 【)
+        # Bare text line (no 【】): treat as narrator content
+        # Includes narrative description, internal monologue, etc.
+        if not stripped.startswith('【'):
+            for s in ('左', '中', '右'):
+                remove_slot_image(s)
+            current_role = None
+            current_role_type = 'narrator'
+            dialog_narrator(stripped)
+            continue
+
+        # Dialogue content line (not starting with 【, legacy fallback)
         if current_role_type == 'protagonist':
             role_name, emotion, position, res_id, config_str = current_role
             dialog_protagonist(config_str, stripped)
@@ -326,7 +355,6 @@ def convert(input_path, output_path):
         elif current_role_type == 'name_only':
             dialog_name_only(current_role, stripped)
         else:
-            # No role set yet (bare option text like "勇敢地套近乎")
             emit_comment(f'[选项] {stripped}')
 
     # Clean up any remaining images at end
@@ -345,8 +373,9 @@ if __name__ == '__main__':
     import sys, os
     if len(sys.argv) > 1:
         input_path = sys.argv[1]
-        base, _ = os.path.splitext(input_path)
-        output_path = base + '.js'
+        base_name = os.path.splitext(os.path.basename(input_path))[0]
+        out_dir = os.path.dirname(os.path.abspath(input_path))
+        output_path = os.path.join(out_dir, base_name + '.js')
     else:
         input_path = INPUT_FILE
         output_path = OUTPUT_FILE
