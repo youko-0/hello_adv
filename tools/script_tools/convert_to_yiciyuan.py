@@ -341,28 +341,23 @@ def convert(input_path, output_path):
             handle_role(inner, inline_content)
             continue
 
-        # Bare text line (no 【】): treat as narrator content
-        # Includes narrative description, internal monologue, etc.
+        # Bare text line (no 【】): route by current role type
         if not stripped.startswith('【'):
-            for s in ('左', '中', '右'):
-                remove_slot_image(s)
-            current_role = None
-            current_role_type = 'narrator'
-            dialog_narrator(stripped)
+            if current_role_type == 'protagonist':
+                role_name, emotion, position, res_id, config_str = current_role
+                dialog_protagonist(config_str, stripped)
+            elif current_role_type == 'npc':
+                dialog_npc_with_avatar(current_role, NPC_AVATARS[current_role], stripped)
+            elif current_role_type == 'name_only':
+                dialog_name_only(current_role, stripped)
+            else:
+                # narrator or None: clear sprites and emit as narrator
+                for s in ('左', '中', '右'):
+                    remove_slot_image(s)
+                current_role = None
+                current_role_type = 'narrator'
+                dialog_narrator(stripped)
             continue
-
-        # Dialogue content line (not starting with 【, legacy fallback)
-        if current_role_type == 'protagonist':
-            role_name, emotion, position, res_id, config_str = current_role
-            dialog_protagonist(config_str, stripped)
-        elif current_role_type == 'narrator':
-            dialog_narrator(stripped)
-        elif current_role_type == 'npc':
-            dialog_npc_with_avatar(current_role, NPC_AVATARS[current_role], stripped)
-        elif current_role_type == 'name_only':
-            dialog_name_only(current_role, stripped)
-        else:
-            emit_comment(f'[选项] {stripped}')
 
     # Clean up any remaining images at end
     emit_blank()
