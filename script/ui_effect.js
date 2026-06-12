@@ -313,11 +313,11 @@ const UIEffect = {
         }
 
         const handle = {
-            stop: () => {
+            stop: (duration = fadeOutDur) => {
                 stopped = true;
                 const toFade = [...activeDrops];
                 activeDrops.clear();
-                toFade.forEach(id => ac.remove({ name: id, effect: 'fadeout', duration: fadeOutDur }));
+                toFade.forEach(id => ac.remove({ name: id, effect: 'fadeout', duration }));
             },
         };
 
@@ -433,11 +433,11 @@ const UIEffect = {
         }
 
         const handle = {
-            stop: () => {
+            stop: (duration = fadeOutDur) => {
                 stopped = true;
                 const toFade = [...activeDrops];
                 activeDrops.clear();
-                toFade.forEach(id => ac.remove({ name: id, effect: 'fadeout', duration: fadeOutDur }));
+                toFade.forEach(id => ac.remove({ name: id, effect: 'fadeout', duration }));
             },
         };
 
