@@ -315,8 +315,129 @@ const UIEffect = {
         const handle = {
             stop: () => {
                 stopped = true;
-                activeDrops.forEach(id => ac.remove({ name: id }));
+                const toFade = [...activeDrops];
                 activeDrops.clear();
+                toFade.forEach(id => ac.remove({ name: id, effect: 'fadeout', duration: fadeOutDur }));
+            },
+        };
+
+        return handle;
+    },
+
+    // ─── 分区下落特效 ────────────────────────────────────────────────────────
+
+    /**
+     * 分区下落特效：屏幕横向分成 N 个区域，每区域循环间隔落下一张随机图片
+     * 图片 anchor 为 (50, 0)，从屏幕顶部出发，以固定速度下落，
+     * 在随机存活时长内淡出并移除
+     *
+     * @param {Object}   config
+     * @param {string[]} config.resIds       图片 resId 数组，每颗随机取一张
+     * @param {number}   [config.columns]    横向分区数，默认 8
+     * @param {number}   [config.speed]      下落速度（px/ms），默认 0.15
+     * @param {number}   [config.interval]   每区域两次发射的间隔（毫秒），默认 2000
+     * @param {number}   [config.intervalDev] 间隔随机偏差（毫秒），默认 1000
+     * @param {number}   [config.fadeOutDur] 淡出时长（毫秒），默认 600
+     * @param {number}   [config.lifeMin]    存活距离下限（屏高倍数），默认 0.5
+     * @param {number}   [config.lifeMax]    存活距离上限（屏高倍数），默认 1.5
+     * @param {number}   [config.scaleBase]  缩放基准值（%），默认 100
+     * @param {number}   [config.scaleDev]   缩放随机偏差（%），默认 20
+     * @param {number}   [config.index]      层级，默认 ZORDER.EFFECT
+     * @param {string}   [config.inlayer]    所属层，默认 'window'
+     * @returns {{ stop: Function }}         返回控制句柄，调用 stop() 停止并清理
+     */
+    playFallingEffect: function (config) {
+        const {
+            resIds,
+            columns     = 8,
+            speed       = 0.15,
+            interval    = 2000,
+            intervalDev = 1000,
+            fadeOutDur  = 600,
+            lifeMin     = 0.5,
+            lifeMax     = 1.5,
+            scaleBase   = 100,
+            scaleDev    = 20,
+            index       = ZORDER.EFFECT,
+            inlayer     = 'window',
+        } = config;
+
+        const W = GameConfig.width;
+        const H = GameConfig.height;
+        const colWidth = W / columns;
+
+        let stopped   = false;
+        let dropIndex = 0;
+        const activeDrops = new Set();
+
+        // 单区域循环：每次随机间隔发射一颗
+        const runColumn = async (col) => {
+            // 首次发射错开，避免所有区域同时出发
+            await ac.delay({ time: col * (interval / columns) + Math.random() * intervalDev });
+
+            while (!stopped) {
+                const id    = 'falling_drop_' + (dropIndex++);
+                const resId = resIds[Math.floor(Math.random() * resIds.length)];
+                const scale = scaleBase + (Math.random() * 2 - 1) * scaleDev;
+
+                // 区域内随机 X
+                const x = col * colWidth + Math.random() * colWidth;
+
+                // 随机存活时长：图片能落多远由随机比例决定
+                const lifeFraction = lifeMin + Math.random() * (lifeMax - lifeMin);
+                const lifeDur = (H * lifeFraction) / speed;
+
+                activeDrops.add(id);
+
+                await ac.createImage({
+                    name:    id,
+                    resId:   resId,
+                    index:   index,
+                    inlayer: inlayer,
+                    pos:     { x, y: H },
+                    anchor:  { x: 50, y: 0 },
+                    scale:   { x: scale, y: scale },
+                    opacity: 100,
+                });
+
+                if (stopped) { ac.remove({ name: id }); activeDrops.delete(id); break; }
+
+                // 下落 + 淡出并行
+                ac.moveTo({
+                    name:     id,
+                    x,
+                    y:        H - lifeDur * speed,
+                    duration: lifeDur,
+                    canskip:  false,
+                });
+
+                await ac.delay({ time: lifeDur - fadeOutDur > 0 ? lifeDur - fadeOutDur : 0 });
+
+                if (!stopped) {
+                    await ac.fadeTo({ name: id, opacity: 0, duration: fadeOutDur, canskip: false });
+                }
+
+                ac.remove({ name: id });
+                activeDrops.delete(id);
+
+                if (stopped) break;
+
+                // 等待下一次发射
+                const wait = interval + (Math.random() * 2 - 1) * intervalDev;
+                await ac.delay({ time: Math.max(wait, 100) });
+            }
+        };
+
+        for (let col = 0; col < columns; col++) {
+            runColumn(col);
+        }
+
+        const handle = {
+            stop: () => {
+                stopped = true;
+                const toFade = [...activeDrops];
+                activeDrops.clear();
+                toFade.forEach(id => ac.remove({ name: id, effect: 'fadeout', duration: fadeOutDur }));
             },
         };
 
