@@ -241,6 +241,7 @@ def convert(input_path, output_path):
     i = 0
     current_role = None   # current role config
     current_role_type = None  # 'protagonist', 'narrator', 'npc', 'name_only'
+    pending_dialog = False  # True if last line was a role header (expecting one content line)
 
     emit('// 东海市怪谈：这里没有雨 - 易次元对话脚本')
     emit('// 自动生成，请勿手动修改格式')
@@ -290,7 +291,7 @@ def convert(input_path, output_path):
 
             def handle_role(inner_str, inline_str):
                 """处理角色行，若有内联内容则直接输出对话，否则只切换当前角色状态"""
-                nonlocal current_role, current_role_type
+                nonlocal current_role, current_role_type, pending_dialog
 
                 # Check if protagonist config line
                 proto = parse_protagonist_line(inner_str)
@@ -312,6 +313,9 @@ def convert(input_path, output_path):
                     current_role_type = 'protagonist'
                     if inline_str:
                         dialog_protagonist(inner_str, inline_str)
+                        pending_dialog = False
+                    else:
+                        pending_dialog = True
                     return
 
                 # Narrator: clear all sprite slots
@@ -322,6 +326,7 @@ def convert(input_path, output_path):
                     current_role_type = 'narrator'
                     if inline_str:
                         dialog_narrator(inline_str)
+                    pending_dialog = False
                     return
 
                 # NPC with avatar
@@ -330,6 +335,9 @@ def convert(input_path, output_path):
                     current_role_type = 'npc'
                     if inline_str:
                         dialog_npc_with_avatar(inner_str, NPC_AVATARS[inner_str], inline_str)
+                        pending_dialog = False
+                    else:
+                        pending_dialog = True
                     return
 
                 # Name only
@@ -337,21 +345,31 @@ def convert(input_path, output_path):
                 current_role_type = 'name_only'
                 if inline_str:
                     dialog_name_only(inner_str, inline_str)
+                    pending_dialog = False
+                else:
+                    pending_dialog = True
 
             handle_role(inner, inline_content)
             continue
 
-        # Bare text line (no 【】): route by current role type
+        # Bare text line (no 【】):
+        # If pending_dialog=True, this is the content line for the current role (separated format).
+        # Otherwise it's narrator text → clear sprites.
         if not stripped.startswith('【'):
-            if current_role_type == 'protagonist':
-                role_name, emotion, position, res_id, config_str = current_role
-                dialog_protagonist(config_str, stripped)
-            elif current_role_type == 'npc':
-                dialog_npc_with_avatar(current_role, NPC_AVATARS[current_role], stripped)
-            elif current_role_type == 'name_only':
-                dialog_name_only(current_role, stripped)
+            if pending_dialog:
+                # This line is the content for the preceding role header
+                pending_dialog = False
+                if current_role_type == 'protagonist':
+                    role_name, emotion, position, res_id, config_str = current_role
+                    dialog_protagonist(config_str, stripped)
+                elif current_role_type == 'npc':
+                    dialog_npc_with_avatar(current_role, NPC_AVATARS[current_role], stripped)
+                elif current_role_type == 'name_only':
+                    dialog_name_only(current_role, stripped)
+                else:
+                    dialog_narrator(stripped)
             else:
-                # narrator or None: clear sprites and emit as narrator
+                # No pending role → narrator, clear sprites
                 for s in ('左', '中', '右'):
                     remove_slot_image(s)
                 current_role = None
