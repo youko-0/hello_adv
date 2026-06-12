@@ -125,19 +125,26 @@ def slot_image_id(slot):
     return _SLOT_ID_MAP[slot]
 
 
+_POSITIONS = {'左', '中', '右'}
+
 def parse_protagonist_line(inner):
     """
     Parse protagonist role line inner content.
     Returns (role, emotion, position) or None.
       【role|emotion|position】 → (role, emotion, position)
-      【role|position】        → (role, 正常, position)
+      【role|position】        → (role, 正常, position)   第二段是位置
+      【role|emotion】         → (role, emotion, 中)     第二段是表情
       【role】                 → (role, 正常, 中)
     """
     parts = [p.strip() for p in inner.split('|')]
     if len(parts) == 3 and parts[0] in PROTAGONIST_RESOURCES:
         return parts[0], parts[1], parts[2]
     if len(parts) == 2 and parts[0] in PROTAGONIST_RESOURCES:
-        return parts[0], '正常', parts[1]
+        second = parts[1]
+        if second in _POSITIONS:
+            return parts[0], '正常', second
+        else:
+            return parts[0], second, '中'
     if len(parts) == 1 and parts[0] in PROTAGONIST_RESOURCES:
         return parts[0], '正常', '中'
     return None
