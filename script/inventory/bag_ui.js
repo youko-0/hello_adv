@@ -48,11 +48,15 @@ const BagUI = {
         this._mode = mode === 'choose' ? 'choose' : 'view';
         this._onChoose = this._mode === 'choose' ? (onChoose || null) : null;
         this._selectedId = (typeof selectedId === 'string' && selectedId) ? selectedId : '';
+        console.log('[LOG] BagUI.open set:', 'this===BagUI?', this === BagUI,
+            'mode=', this._mode, 'selectedId=', this._selectedId, 'onChoose=', typeof this._onChoose);
         await ac.callUI({ name: 'callUI_bag', uiId: ResMap.ui_bag });
     },
 
     // 由 ui/ui_bag.js 调用：构建整个背包界面
     createBagUI: async function () {
+        console.log('[LOG] BagUI.createBagUI read:', 'mode=', this._mode,
+            'selectedId=', this._selectedId, 'onChoose=', typeof this._onChoose);
         // 主背景
         await ac.createImage({
             name:    this.name,
