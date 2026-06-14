@@ -17,7 +17,7 @@ await ac.sysDialogOn({
     hasBg: true,
     hasRoleAvatar: false,
 });
-await InventorySystem.gainItem('item_pendant')
+await InventoryUI.gainItem('item_pendant')
 
 await PlotSystem.showSpiritEyeOption()
 
@@ -41,7 +41,7 @@ await ac.sysDialogOn({
     hasRoleAvatar: false,
 });
 
-await InventorySystem.gainItem('item_armor')
+await InventoryUI.gainItem('item_armor')
 
 await PlotSystem.enterPlotMap()
 
@@ -62,7 +62,7 @@ await ac.sysDialogOn({
     hasBg: true,
     hasRoleAvatar: false,
 });
-await InventorySystem.gainItem('item_compass')
+await InventoryUI.gainItem('item_compass')
 
 await ac.sysDialogOn({
     content: `黑化哪吒庙剧情`,
@@ -91,7 +91,7 @@ await ac.sysDialogOn({
     hasBg: true,
     hasRoleAvatar: false,
 });
-await InventorySystem.gainItem('item_blessing')
+await InventoryUI.gainItem('item_blessing')
 
 await PlotSystem.enterPlotMap()
 

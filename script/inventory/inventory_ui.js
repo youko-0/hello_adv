@@ -24,9 +24,27 @@ const InventoryUI = {
         // 绑定事件
         ac.addEventListener({
             type: ac.EVENT_TYPES.onTouchEnded,
-            listener: InventorySystem.openBag,
+            listener: async function () {
+                await BagUI.open();
+            },
             target: 'global_btn_bag'
         });
+    },
+
+    /**
+     * 获得道具并播放提示效果, await InventoryUI.gainItem(itemId, itemNum, itemName)
+     * 数据由 InventorySystem.gainItem 处理，本方法负责表演与开背包
+     * @param {string} itemId   道具ID
+     * @param {number} itemNum  欲添加数量
+     * @param {string} itemName 场景中的控件名, 控件消失并播放拖尾特效
+     * @returns {number} 实际添加的数量 (0表示失败)
+     */
+    gainItem: async function (itemId, itemNum = 1, itemName = '') {
+        const addCount = InventorySystem.gainItem(itemId, itemNum);
+        if (addCount > 0) {
+            await InventoryUI.onGainItem(itemId, itemNum, itemName);
+        }
+        return addCount;
     },
 
     // 物品获得效果
@@ -59,10 +77,8 @@ const InventoryUI = {
         });
         console.log('[LOG] onGainItem', startPos, endPos);
         await UIEffect.playTrailEffect(startPos, endPos);
-        // 关闭对话框
-        await ac.sysDialogOff({});
         // 打开背包界面
-        await InventorySystem.openBag(itemId);
+        await BagUI.open({ selectedId: itemId });
 
     },
 

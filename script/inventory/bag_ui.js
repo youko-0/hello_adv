@@ -21,10 +21,6 @@ const BagUI = {
         width:  110,    // 裁切尺寸
         height: 112,
     },
-    itemIcon: {
-        width:  64,
-        height: 64,
-    },
     itemDetail: {
         x:        229,  // 详情区中心 x（对应 img_bag_detail_bg）
         width:    240,  // 文本框宽度
@@ -36,6 +32,24 @@ const BagUI = {
     },
 
     // ── 场景框架 ──────────────────────────────────────────────────
+
+    // ── 打开 / 关闭 ────────────────────────────────────────────────
+
+    /**
+     * 打开背包，通过 ac.callUI 打开真正的 UI 层（入口 ui/ui_bag.js）
+     * @param {Object}   [config]
+     * @param {string}   [config.mode='view']  'view' | 'choose'
+     *        choose 模式下 btn_view 变为 btn_use，点击使用后关闭背包并回调 onChoose
+     * @param {string}   [config.selectedId]   默认选中的道具 ID，不传则选中第一个
+     * @param {Function} [config.onChoose]     async (itemId) => {}，仅 choose 模式有效
+     */
+    open: async function (config = {}) {
+        const { mode = 'view', selectedId = null, onChoose = null } = config;
+        this._mode = mode === 'choose' ? 'choose' : 'view';
+        this._onChoose = this._mode === 'choose' ? (onChoose || null) : null;
+        this._selectedId = (typeof selectedId === 'string' && selectedId) ? selectedId : '';
+        await ac.callUI({ name: 'callUI_bag', uiId: ResMap.ui_bag });
+    },
 
     // 由 ui/ui_bag.js 调用：构建整个背包界面
     createBagUI: async function () {
@@ -86,6 +100,10 @@ const BagUI = {
 
         // 道具列表 + 初始选中详情
         const itemList = InventorySystem.getItemListByType(ItemType.KEY);
+        // 未指定默认选中第一个（须在 createItemList 前设好，选中态才能正确渲染）
+        if (!this._selectedId) {
+            this._selectedId = itemList[0] || '';
+        }
         await this.createItemList(itemList);
         if (this._selectedId) {
             await this.refreshItemDetail(this._selectedId);

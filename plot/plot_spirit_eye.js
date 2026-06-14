@@ -11,7 +11,7 @@ if (choice == 0) {
     await CommonUI.showCustomDialog({
         content: '获得道具灵视',
     })
-    await InventorySystem.gainItem('item_spirit_eye', 1);
+    await InventoryUI.gainItem('item_spirit_eye', 1);
 }
 else {
     await CommonUI.showCustomDialog({

@@ -4,7 +4,6 @@ console.log('[LOAD] inventory_system');
 // 默认数据结构
 const _inventoryDefault = function () {
     return {
-        selectedId: "",     // 当前选中的道具ID
         bag: {},      // 背包数据, {itemId: itemNum}
         history: {},    // 历史获得总量（用于判断 dropLimit）, {itemId: itemNum}
     };
@@ -201,58 +200,15 @@ const InventorySystem = createSystem(
         },
 
         /**
-         * 获得道具并播放提示效果, await InventorySystem.gainItem(itemId, itemNum, itemName)
+         * 获得道具（纯数据），await InventorySystem.gainItem(itemId, itemNum)
+         * 仅更新背包与历史数据，不涉及任何 UI 表演
+         * UI 表演请走 InventoryUI.gainItem
          * @param {string} itemId 道具ID
          * @param {number} itemNum 欲添加数量
-         * @param {string} itemName 场景中的控件名, 控件消失并播放拖尾特效
          * @returns {number} 实际添加的数量 (0表示失败)
          */
-        gainItem: async function (itemId, itemNum = 1, itemName='') {
-            let addCount = this.addItem(itemId, itemNum);
-            if (addCount > 0) {
-                await InventoryUI.onGainItem(itemId, itemNum, itemName);
-            }
-            return addCount;
-        },
-
-        /**
-        * 打开背包界面, await InventorySystem.openBag(itemId)
-        * 通过 ac.callUI 打开真正的 UI 层（入口 ui/ui_bag.js）
-        * @param {string} selectedId 默认选中的道具ID, 不传则默认选中第一个道具
-        */
-        openBag: async function (selectedId = null) {
-            let itemList = this.getItemListByType(ItemType.KEY);
-            if (typeof selectedId !== 'string' || !selectedId) {
-                selectedId = itemList[0];
-            }
-            BagUI._mode = 'view';
-            BagUI._onChoose = null;
-            BagUI._selectedId = selectedId;
-            await ac.callUI({
-                name: 'callUI_bag',
-                uiId: ResMap.ui_bag,
-            });
-        },
-
-        /**
-         * 以"选择模式"打开背包，btn_view 变为 btn_use
-         * 点击使用后关闭背包，将选中的道具 ID 回调给调用方
-         * 消耗道具与否完全由调用方在 onChoose 中决定
-         * @param {Object}   config
-         * @param {Function} config.onChoose       async (itemId) => {}
-         * @param {string}   [config.selectedId]   默认选中的道具 ID
-         */
-        openBagForChoose: async function (config = {}) {
-            const { onChoose, selectedId = null } = config;
-            let itemList = this.getItemListByType(ItemType.KEY);
-            const resolvedId = (typeof selectedId === 'string' && selectedId) ? selectedId : itemList[0];
-            BagUI._mode = 'choose';
-            BagUI._onChoose = onChoose || null;
-            BagUI._selectedId = resolvedId;
-            await ac.callUI({
-                name: 'callUI_bag',
-                uiId: ResMap.ui_bag,
-            });
+        gainItem: function (itemId, itemNum = 1) {
+            return this.addItem(itemId, itemNum);
         },
     }
 );

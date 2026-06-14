@@ -145,7 +145,7 @@ const ExploreSystem = createSystem(
             let itemConfig = InventorySystem.getItemConfig(itemId);
             if (itemConfig.type === ItemType.KEY) {
                 // 这里会等待拖尾特效、背包打开和背包关闭全部完成
-                await InventorySystem.gainItem(itemId, 1, `img_${itemId}`);
+                await InventoryUI.gainItem(itemId, 1, `img_${itemId}`);
             }
             if (itemConfig.onView) {
                 await itemConfig.onView()
