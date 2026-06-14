@@ -101,6 +101,8 @@ const HelloADVRes = {
     icon_item_blessing_locked: '$185357917',
     icon_item_visa: '$183720793',
     icon_item_visa_locked: '$185357920',
+    icon_item_motorcycle_key: '$183918601',
+    icon_item_motorcycle_key_locked: '$183918601',
     // 场景对象
     spr_item_family_photo: '$183946183',
     spr_item_motorcycle_key: '$183946184',
@@ -272,6 +274,8 @@ const DongHaiRes = {
     icon_item_blessing_locked: '$185360031',
     icon_item_visa: '$185360080',
     icon_item_visa_locked: '$185360028',
+    icon_item_motorcycle_key: '$185360065',
+    icon_item_motorcycle_key_locked: '$185360065',
     // 场景对象
     spr_item_family_photo: '$185360066',
     spr_item_motorcycle_key: '$185360065',

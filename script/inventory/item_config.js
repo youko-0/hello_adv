@@ -117,6 +117,8 @@ const ItemConfig = {
     item_motorcycle_key: {
         name: "车钥匙",
         type: ItemType.KEY,
+        icon: ResMap.icon_item_motorcycle_key,
+        iconLocked: ResMap.icon_item_motorcycle_key_locked,
         sprite: ResMap.spr_item_motorcycle_key,
         illust: ResMap.img_item_motorcycle_key,
         illustLocked: ResMap.img_item_motorcycle_key_locked,
