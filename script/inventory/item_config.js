@@ -36,11 +36,6 @@ const ItemConfig = {
         maxStack: 1,  // 最多持有一个
         dropLimit: 1,  // 只会掉落一次
         sortIndex: 1,
-        // // 使用效果
-        // effect: async function () {
-        //     // 返回 true 表示使用成功
-        //     return true;
-        // },
     },
 
     item_armor: {
@@ -106,7 +101,6 @@ const ItemConfig = {
                 hasRoleName: true,
                 hasBg: true,
                 hasRoleAvatar: false,
-                roleAvatarResId: '$1528927',
             });
             await ac.sysDialogOff({});
         }
@@ -122,10 +116,15 @@ const ItemConfig = {
 
     item_motorcycle_key: {
         name: "车钥匙",
-        type: ItemType.CLUE,
+        type: ItemType.KEY,
         sprite: ResMap.spr_item_motorcycle_key,
         illust: ResMap.img_item_motorcycle_key,
+        illustLocked: ResMap.img_item_motorcycle_key_locked,
         desc: "这是一辆摩托车的钥匙，有一点磨损，但是不知道摩托车去了哪里。家里没有人喜欢摩托车，这会是谁的车钥匙呢？",
+        descLocked: "感觉是很重要的东西，不小心弄丢了就完了。",
+        maxStack: 1,  // 最多持有一个
+        dropLimit: 1,  // 只会掉落一次
+        sortIndex: 6,
     },
 
     item_cookie_box: {

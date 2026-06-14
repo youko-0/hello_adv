@@ -224,8 +224,31 @@ const InventorySystem = createSystem(
             if (typeof selectedId !== 'string' || !selectedId) {
                 selectedId = itemList[0];
             }
-            await ac.sysDialogOff({});
+            BagUI._mode = 'view';
             BagUI._selectedId = selectedId;
+            await BagUI.createBagUI();
+            await BagUI.createItemList(itemList);
+            if (BagUI._selectedId) {
+                await BagUI.refreshItemDetail(BagUI._selectedId);
+            }
+            await BagUI.onBagOpen();
+        },
+
+        /**
+         * 以"选择模式"打开背包，btn_view 变为 btn_use
+         * 点击使用后关闭背包，将选中的道具 ID 回调给调用方
+         * 消耗道具与否完全由调用方在 onChoose 中决定
+         * @param {Object}   config
+         * @param {Function} config.onChoose       async (itemId) => {}
+         * @param {string}   [config.selectedId]   默认选中的道具 ID
+         */
+        openBagForChoose: async function (config = {}) {
+            const { onChoose, selectedId = null } = config;
+            let itemList = this.getItemListByType(ItemType.KEY);
+            const resolvedId = (typeof selectedId === 'string' && selectedId) ? selectedId : itemList[0];
+            BagUI._mode = 'choose';
+            BagUI._onChoose = onChoose || null;
+            BagUI._selectedId = resolvedId;
             await BagUI.createBagUI();
             await BagUI.createItemList(itemList);
             if (BagUI._selectedId) {

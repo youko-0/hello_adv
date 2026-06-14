@@ -6,6 +6,8 @@ const BagUI = {
     name: 'layer_bag_ui',
     _selectedId: '',
     _isOpen: false,
+    _mode: 'view',      // 'view' | 'choose'
+    _onChoose: null,    // async function(itemId) — 仅 mode='choose' 时有效
 
     horiCount: 3,       // 道具列（右侧标题占位，改为 3 列）
     svItem: {
@@ -294,21 +296,8 @@ const BagUI = {
             style:     'style_bag_detail_desc',
         });
 
-        if (itemCount <= 99999) {
-            await ac.createOption({
-                name:    'btn_view_item',
-                index:   2,
-                inlayer: this.name,
-                nResId:  ResMap.btn_item_view_normal,
-                sResId:  ResMap.btn_item_view_highlight,
-                content: '',
-                pos:     { x: cx, y: 144 },    // 居中
-                anchor:  { x: 50, y: 50 },
-                onTouchEnded: async function () {
-                    await InventoryUI.showItemDetail(itemId, historyCount <= 0);
-                },
-            });
-        } else {
+        if (this._mode === 'choose') {
+            const canUse = InventorySystem.getItemCount(itemId) > 0;
             await ac.createOption({
                 name:    'btn_use_item',
                 index:   2,
@@ -316,11 +305,37 @@ const BagUI = {
                 nResId:  ResMap.btn_item_use_normal,
                 sResId:  ResMap.btn_item_use_highlight,
                 content: '',
-                pos:     { x: 301, y: 144 },
+                pos:     { x: cx, y: 144 },
+                anchor:  { x: 50, y: 50 },
+                opacity: canUse ? 100 : 40,
+                onTouchEnded: async function () {
+                    if (!canUse) return;
+                    // 关闭背包
+                    await ac.remove({
+                        name:     BagUI.name,
+                        effect:   'fadeout',
+                        duration: 500,
+                        canskip:  false,
+                    });
+                    BagUI._isOpen = false;
+                    // 将选中的道具 ID 返回给调用方，消耗与否由调用方决定
+                    if (typeof BagUI._onChoose === 'function') {
+                        await BagUI._onChoose(itemId);
+                    }
+                },
+            });
+        } else {
+            await ac.createOption({
+                name:    'btn_view_item',
+                index:   2,
+                inlayer: this.name,
+                nResId:  ResMap.btn_item_view_normal,
+                sResId:  ResMap.btn_item_view_highlight,
+                content: '',
+                pos:     { x: cx, y: 144 },
                 anchor:  { x: 50, y: 50 },
                 onTouchEnded: async function () {
-                    await InventorySystem.useItem(itemId, 1);
-                    await BagUI._refreshItemBg(itemId);
+                    await InventoryUI.showItemDetail(itemId, historyCount <= 0);
                 },
             });
         }

@@ -70,7 +70,6 @@ const PlotSystem = {
         // }
     },
 
-    // 进入地图剧情, await PlotSystem.enterPlotMap()
     enterPlotMap: async function () {
         await ac.jump({
             plotID: ResMap.plot_map,
