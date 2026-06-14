@@ -1,7 +1,7 @@
 // 资源映射
 console.log('[LOAD] res_map');
 
-let RES_FLAG = 1;        // 用来切换资源
+let RES_FLAG = 0;        // 用来切换资源
 
 const HelloADVRes = {
     // 通用
@@ -152,8 +152,7 @@ const HelloADVRes = {
 
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: 'cawn43cd',
-    ui_forum: 'nw48gnat',
-    ui_post_detail: 'dbjp9oun',
+    ui_bag: 'cyxb488u',
 
     // 剧情唯一 ID
     plot_forum_next: 13977507,
@@ -324,8 +323,7 @@ const DongHaiRes = {
 
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: '5a63b4fc0a7041f38685971fcecfd962',
-    ui_forum: '097c0cbdd8d44985b1b2933760da7c88',
-    ui_post_detail: '94d2303586e64ea396122dd9fa964f77',
+    ui_bag: 'ehprab55',
 
     // 剧情唯一 ID
     plot_forum_next: 13969471,
