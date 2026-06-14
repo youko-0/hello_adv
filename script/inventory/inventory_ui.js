@@ -25,9 +25,9 @@ const InventoryUI = {
         ac.addEventListener({
             type: ac.EVENT_TYPES.onTouchEnded,
             listener: async function () {
-                // await BagUI.open();
-                const itemId = await BagUI.open({ mode: 'choose' });
-                console.log('[LOG] 背包按钮点击', itemId);
+                await BagUI.open();
+                // const itemId = await BagUI.open({ mode: 'choose' });
+                // console.log('[LOG] 背包按钮点击', itemId);
             },
             target: 'global_btn_bag'
         });
