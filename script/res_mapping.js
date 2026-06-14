@@ -1,15 +1,14 @@
 // 资源映射
 console.log('[LOAD] res_map');
 
-let RES_FLAG = 0;        // 用来切换资源
+let RES_FLAG = 1;        // 用来切换资源
 
 const HelloADVRes = {
     // 通用
     img_mask_black: '$183470049',
     img_mask_round: '$183502801',
     pic_mask_iris: '$191123170',
-    img_dialog_bg_no_head: '$184489241',
-    img_dialog_bg_with_head: '$192871721',
+    img_dialog_bg: '$192871721',
     btn_common_close_normal: '$183658478',
     btn_common_close_highlight: '$183658477',
     pic_common_bg_01: '$183658447',
@@ -181,8 +180,7 @@ const DongHaiRes = {
     img_mask_black: '$185360100',
     img_mask_round: '$185360099',
     pic_mask_iris: '$191126322',
-    img_dialog_bg_no_head: '$185360061',
-    img_dialog_bg_with_head: '$192810191',
+    img_dialog_bg: '$193020158',
     btn_common_close_normal: '$192810165',
     btn_common_close_highlight: '$192810164',
     pic_common_bg_01: '$185360024',

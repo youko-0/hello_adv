@@ -43,27 +43,20 @@ const CommonUI = {
     // 对话框
     dialog: {
         name: 'layer_dialog',
-        width: 960,
-        height: 120,
-        margin: { bottom: 24 }, // 底部留边
         bg: {
-            resId: ResMap.img_dialog_bg_no_head,
-            width: 1208,
-            height: 158,
+            resId: ResMap.img_dialog_bg,
         },
-        bgWithAvatar: {
-            resId: ResMap.img_dialog_bg_with_head,
-            width: 1208,
-            height: 158,
-        },
-        // 角色头像配置
-        roleAvatar: {
-            size: 64,
+        // 头像配置
+        avatar: {
+            x: 1100,
+            y: 0,
         },
         // 文本配置
         text: {
-            padding:          { top: 32, bottom: 10, left: 100, right: 80 },
-            paddingWithAvatar: { top: 32, bottom: 10, left: 120, right: 80 },
+            x:           170,
+            y:           36,
+            width:       860,
+            height:      80,
             typingSpeed: 0.03,  // 每个字符显示间隔（秒）
             fontSize:    24,    // 用于分页行高估算，需与 style_common_dialog 保持一致
         },
@@ -221,7 +214,6 @@ const CommonUI = {
      * @param {Object} config 配置项
      * @param {string}   config.content          要显示的文本内容
      * @param {string}   [config.roleAvatarResId] 角色头像资源ID，有值则显示头像
-     * @param {boolean}  [config.hasBg]           是否显示背景，默认 true
      * @param {Function} [config.onComplete]      对话完成回调
      * @param {number}   [config.closeType]       关闭逻辑：默认=等待点击后关闭，1=自动关闭，2=不关闭，3=等待点击后保留
      */
@@ -231,19 +223,16 @@ const CommonUI = {
             return;
         }
 
-        // 资源/尺寸配置完全来自 this.dialog，content 参数只包含内容相关字段
         this._dialogContext = {
-            content:       config.content,
+            content:         config.content,
             roleAvatarResId: config.roleAvatarResId || null,
-            hasBg:         config.hasBg !== false,
-            closeType:     config.closeType,
-            onComplete:    config.onComplete || null,
+            closeType:       config.closeType,
+            onComplete:      config.onComplete || null,
             state: {
-                currentPage:    0,
-                pages:          [],
+                currentPage:     0,
+                pages:           [],
                 waitingForClick: false,
             },
-            layout: {},
         };
 
         const onTouchDialog = async () => {
@@ -251,7 +240,6 @@ const CommonUI = {
         };
 
         console.log('[CustomDialog] 显示对话框:', config.content);
-        this._calculateTextLayout();
         await this._createDialogUI();
         ac.addEventListener({
             type:     ac.EVENT_TYPES.onTouchEnded,
@@ -312,16 +300,16 @@ const CommonUI = {
     },
 
     _createDialogUI: async function () {
-        const { layout, roleAvatarResId, hasBg } = this._dialogContext;
+        const { roleAvatarResId } = this._dialogContext;
         const D = this.dialog;
 
         await ac.createLayer({
             name:    D.name,
             index:   ZORDER.DIALOG,
             inlayer: 'window',
-            pos:     { x: layout.dialogX, y: layout.dialogY },
-            anchor:  { x: 50, y: 50 },
-            size:    { width: D.width, height: D.height },
+            pos:     { x: GameConfig.centerX, y: 0 },
+            anchor:  { x: 50, y: 0 },
+            size:    { width: GameConfig.width, height: GameConfig.height },
             clipMode: false,
         });
 
@@ -335,17 +323,14 @@ const CommonUI = {
             clipMode: false,
         });
 
-        if (hasBg) {
-            const bgConfig = roleAvatarResId ? D.bgWithAvatar : D.bg;
-            await ac.createImage({
-                name:    'img_dialog_bg',
-                index:   1,
-                inlayer: D.name,
-                resId:   bgConfig.resId,
-                pos:     { x: D.width / 2, y: D.height / 2 },
-                anchor:  { x: 50, y: 50 },
-            });
-        }
+        await ac.createImage({
+            name:    'img_dialog_bg',
+            index:   1,
+            inlayer: D.name,
+            resId:   D.bg.resId,
+            pos:     { x: GameConfig.centerX, y: 0 },
+            anchor:  { x: 50, y: 0 },
+        });
 
         if (roleAvatarResId) {
             await ac.createImage({
@@ -353,53 +338,35 @@ const CommonUI = {
                 index:   2,
                 inlayer: D.name,
                 resId:   roleAvatarResId,
-                pos:     { x: layout.avatarX, y: layout.avatarY },
-                anchor:  { x: 50, y: 50 },
+                pos:     { x: D.avatar.x, y: D.avatar.y },
+                anchor:  { x: 50, y: 0 },
             });
         }
     },
 
-    _calculateTextLayout: function () {
-        const D   = this.dialog;
-        const ctx = this._dialogContext;
-        const padding = ctx.roleAvatarResId ? D.text.paddingWithAvatar : D.text.padding;
-
-        ctx.layout = {
-            dialogX: (GameConfig.width - D.width) / 2 + D.width / 2,
-            dialogY: (D.margin.bottom || 0) + D.height / 2,
-            avatarX: D.roleAvatar.size / 2 + 20,
-            avatarY: D.height / 2,
-            textX:   padding.left,
-            textY:   D.height - padding.top,
-            textWidth:  D.width  - padding.left - padding.right,
-            textHeight: D.height - padding.top  - padding.bottom,
-        };
-    },
-
     _prepareDialogContent: async function () {
-        const D      = this.dialog;
-        const layout = this._dialogContext.layout;
-        const lineH  = D.text.fontSize * 1.5;
-        const maxLines = Math.floor(layout.textHeight / lineH);
+        const D = this.dialog;
+        const lineH    = D.text.fontSize * 1.5;
+        const maxLines = Math.floor(D.text.height / lineH);
 
         this._dialogContext.state.pages = Utils.paginateText(
             this._dialogContext.content,
             D.text.fontSize,
-            layout.textWidth,
+            D.text.width,
             maxLines
         );
     },
 
     _updateDialogText: async function (content) {
-        const layout = this._dialogContext.layout;
+        const D = this.dialog;
         await ac.createText({
             name:    'txt_dialog_content',
             index:   3,
-            inlayer: this.dialog.name,
+            inlayer: D.name,
             content: content,
-            pos:     { x: layout.textX, y: layout.textY },
-            anchor:  { x: 0, y: 100 },
-            size:    { width: layout.textWidth, height: layout.textHeight },
+            pos:     { x: D.text.x, y: D.text.y },
+            anchor:  { x: 0, y: 0 },
+            size:    { width: D.text.width, height: D.text.height },
             style:   'style_common_dialog',
             halign:  ac.HALIGN_TYPES.left,
             valign:  ac.VALIGN_TYPES.top,
