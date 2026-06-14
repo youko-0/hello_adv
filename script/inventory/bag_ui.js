@@ -4,9 +4,10 @@ console.log('[LOAD] bag_ui');
 
 const BagUI = {
     name: 'layer_bag_ui',
+    // 临时态存 ac.var，跨 ac.callUI 上下文传递（callUI 会重载全部脚本，实例字段无法跨界）
+    VAR_NAME: 'str_bag_ui_state',
     _selectedId: '',
     _mode: 'view',      // 'view' | 'choose'
-    _onChoose: null,    // async function(itemId) — 仅 mode='choose' 时有效
 
     horiCount: 3,       // 道具列（右侧标题占位，改为 3 列）
     svItem: {
@@ -35,28 +36,50 @@ const BagUI = {
 
     // ── 打开 / 关闭 ────────────────────────────────────────────────
 
+    // ── 跨上下文状态（ac.callUI 会重载全部脚本，实例字段无法跨界，须走 ac.var）──
+
+    /** 读取临时态 { mode, selectedId, chosenId } */
+    _loadState: function () {
+        const jsonStr = ac.var[this.VAR_NAME];
+        if (jsonStr && jsonStr.length > 0) {
+            try { return JSON.parse(jsonStr); } catch (e) {}
+        }
+        return { mode: 'view', selectedId: '', chosenId: '' };
+    },
+
+    /** 写入临时态（部分更新） */
+    _saveState: function (patch) {
+        const state = Object.assign(this._loadState(), patch);
+        ac.var[this.VAR_NAME] = JSON.stringify(state);
+        return state;
+    },
+
     /**
      * 打开背包，通过 ac.callUI 打开真正的 UI 层（入口 ui/ui_bag.js）
      * @param {Object}   [config]
      * @param {string}   [config.mode='view']  'view' | 'choose'
-     *        choose 模式下 btn_view 变为 btn_use，点击使用后关闭背包并回调 onChoose
+     *        choose 模式下 btn_view 变为 btn_use，点击使用后关闭背包
      * @param {string}   [config.selectedId]   默认选中的道具 ID，不传则选中第一个
-     * @param {Function} [config.onChoose]     async (itemId) => {}，仅 choose 模式有效
+     * @returns {Promise<string>} choose 模式返回选中的道具 ID（未选择返回 ''）；view 模式返回 ''
      */
     open: async function (config = {}) {
-        const { mode = 'view', selectedId = null, onChoose = null } = config;
-        this._mode = mode === 'choose' ? 'choose' : 'view';
-        this._onChoose = this._mode === 'choose' ? (onChoose || null) : null;
-        this._selectedId = (typeof selectedId === 'string' && selectedId) ? selectedId : '';
-        console.log('[LOG] BagUI.open set:', 'this===BagUI?', this === BagUI,
-            'mode=', this._mode, 'selectedId=', this._selectedId, 'onChoose=', typeof this._onChoose);
+        const { mode = 'view', selectedId = null } = config;
+        this._saveState({
+            mode:       mode === 'choose' ? 'choose' : 'view',
+            selectedId: (typeof selectedId === 'string' && selectedId) ? selectedId : '',
+            chosenId:   '',
+        });
         await ac.callUI({ name: 'callUI_bag', uiId: ResMap.ui_bag });
+        // callUI 返回后读取选择结果（由 btn_use 写入）
+        return this._loadState().chosenId || '';
     },
 
     // 由 ui/ui_bag.js 调用：构建整个背包界面
     createBagUI: async function () {
-        console.log('[LOG] BagUI.createBagUI read:', 'mode=', this._mode,
-            'selectedId=', this._selectedId, 'onChoose=', typeof this._onChoose);
+        const state = this._loadState();
+        this._mode = state.mode === 'choose' ? 'choose' : 'view';
+        this._selectedId = state.selectedId || '';
+        console.log('[LOG] BagUI.createBagUI:', 'mode=', this._mode, 'selectedId=', this._selectedId);
         // 主背景
         await ac.createImage({
             name:    this.name,
@@ -319,12 +342,10 @@ const BagUI = {
                 opacity: canUse ? 100 : 40,
                 onTouchEnded: async function () {
                     if (!canUse) return;
-                    // 关闭背包
+                    // 写入选择结果，供 open() 在 callUI 返回后读取
+                    BagUI._saveState({ chosenId: itemId });
+                    // 关闭背包，消耗与否由调用方决定
                     await BagUI.closeBagUI();
-                    // 将选中的道具 ID 返回给调用方，消耗与否由调用方决定
-                    if (typeof BagUI._onChoose === 'function') {
-                        await BagUI._onChoose(itemId);
-                    }
                 },
             });
         } else {
