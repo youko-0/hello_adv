@@ -142,22 +142,10 @@ const ExploreSystem = createSystem(
             console.log('[LOG] viewItem', sceneId, itemId);
             await InventoryUI.showItemDetail(itemId);
             let itemConfig = InventorySystem.getItemConfig(itemId);
-            // 如果有已查看资源，淡入已查看图并淡出原对象，等待动效完成
+            // 已查看资源：原对象淡出 + 已查看图淡入，返回新控件名
             let gainItemName = `img_${itemId}`;
             if (itemConfig.spriteInspected) {
-                const inspectedName = `img_${itemId}_inspected`;
-                await ac.createImage({
-                    name:    inspectedName,
-                    index:   1,
-                    inlayer: ExploreUI.viewName,
-                    resId:   itemConfig.spriteInspected,
-                    pos: await ac.getPos({ name: gainItemName }),
-                    anchor:  { x: 50, y: 50 },
-                    opacity: 0,
-                });
-                ac.show({ name: inspectedName, effect: 'fadein', duration: 400 });
-                await ac.remove({ name: gainItemName, effect: 'fadeout', duration: 400 });
-                gainItemName = inspectedName;
+                gainItemName = await ExploreUI.playInspectedTransition(itemId, itemConfig.spriteInspected);
             }
             // 如果是 KEY 类型，需要获得道具
             if (itemConfig.type === ItemType.KEY) {

@@ -176,6 +176,29 @@ const ExploreUI = {
     // ═══════════════════════════════════════════════════════════════
 
     /**
+     * 播放"已查看"过渡：原对象淡出，已查看图淡入到同位置
+     * @param {string} itemId          - 物品 ID（对应 `img_${itemId}` 控件）
+     * @param {string} spriteInspected - 已查看资源 resId
+     * @returns {Promise<string>} 新控件名（供后续 gainItem 拖尾使用）
+     */
+    playInspectedTransition: async function (itemId, spriteInspected) {
+        const originalName  = `img_${itemId}`;
+        const inspectedName = `img_${itemId}_inspected`;
+        await ac.createImage({
+            name:    inspectedName,
+            index:   1,
+            inlayer: this.viewName,
+            resId:   spriteInspected,
+            pos:     await ac.getPos({ name: originalName }),
+            anchor:  { x: 50, y: 50 },
+            opacity: 0,
+        });
+        ac.show({ name: inspectedName, effect: 'fadein', duration: 400 });
+        await ac.remove({ name: originalName, effect: 'fadeout', duration: 400 });
+        return inspectedName;
+    },
+
+    /**
      * 切换到目标 view（眨眼过渡）
      * @param {string} sceneId - 场景 ID
      * @param {string} viewId  - 目标 view ID
