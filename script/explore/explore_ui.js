@@ -153,7 +153,7 @@ const ExploreUI = {
         for (const [itemId, interact] of Object.entries(interacts)) {
             const itemConfig = ItemConfig[itemId];
             const isInspected = ExploreSystem.isInspected(itemId);
-            const nResId = (isInspected && itemConfig.inspected) ? itemConfig.inspected.sprite : itemConfig.sprite;
+            const nResId = (isInspected && itemConfig.spriteInspected) ? itemConfig.spriteInspected : itemConfig.sprite;
             const sResId = itemConfig.spriteHighlight || nResId;
             // 交互物体位置相对于 view 中心偏移
             const itemX = interact.x - GameConfig.centerX;

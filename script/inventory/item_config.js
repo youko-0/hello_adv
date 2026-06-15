@@ -42,7 +42,7 @@ const ItemConfig = {
         type: ItemType.KEY,
         icon:   ResMap.icon_item_pendant,
         illust: ResMap.img_item_pendant,
-        desc:   "李云祥出生时带来的一块"神玉"，陪伴他长大，仔细一看是鳞片的纹理，上面用古老的文字刻画着"云祥"二字。",
+        desc:   "李云祥出生时带来的一块\"神玉\"，陪伴他长大，仔细一看是鳞片的纹理，上面用古老的文字刻画着\"云祥\"二字。",
         locked: {
             icon:   ResMap.icon_item_pendant_locked,
             illust: ResMap.img_item_pendant_locked,
@@ -58,7 +58,7 @@ const ItemConfig = {
         type: ItemType.KEY,
         icon:   ResMap.icon_item_armor,
         illust: ResMap.img_item_armor,
-        desc:   "一副火红色的铠甲，胸口用繁体写着"云"字。生了情的圣人在爱欲与怜悯面前丢盔卸甲，将它与英雄梦一同束之高阁。",
+        desc:   "一副火红色的铠甲，胸口用繁体写着\"云\"字。生了情的圣人在爱欲与怜悯面前丢盔卸甲，将它与英雄梦一同束之高阁。",
         locked: {
             icon:   ResMap.icon_item_armor_locked,
             illust: ResMap.img_item_armor_locked,
@@ -159,13 +159,14 @@ const ItemConfig = {
         type: ItemType.CLUE,
         sprite: ResMap.spr_item_cookie_box,
         illust: ResMap.img_item_cookie_box,
-        desc:   "铁盒里面放着很多小纸条，不同的稚嫩笔迹写着充满童趣的愿望："我想当万众瞩目的歌星"、"我想挣很多钱让全家人住上大房子"、"我想当东海市的大英雄"……",
+        desc:   "铁盒里面放着很多小纸条，不同的稚嫩笔迹写着充满童趣的愿望：\"我想当万众瞩目的歌星\"、\"我想挣很多钱让全家人住上大房子\"、\"我想当东海市的大英雄\"……",
     },
 
     item_mural_nezhanaohai: {
         name: "哪吒闹海",
         type: ItemType.CLUE,
         sprite: ResMap.spr_item_mural_nezhanaohai,
+        spriteInspected: ResMap.spr_item_mural_nezhanaohai_active,
         desc:   "海浪翻滚，画中哪吒脚踏风火轮，手持火尖枪，与东海龙王三太子缠斗。",
     },
 
@@ -173,6 +174,7 @@ const ItemConfig = {
         name: "自刎归天",
         type: ItemType.CLUE,
         sprite: ResMap.spr_item_mural_ziwenguitian,
+        spriteInspected: ResMap.spr_item_mural_ziwenguitian_active,
         desc:   "哪吒立于陈塘关城楼之上，一手握剑横于颈前，面容平静。城下殷母仰面伸手，神色悲恸。",
     },
 
@@ -180,6 +182,7 @@ const ItemConfig = {
         name: "莲花托生",
         type: ItemType.CLUE,
         sprite: ResMap.spr_item_mural_lianhuatuosheng,
+        spriteInspected: ResMap.spr_item_mural_lianhuatuosheng_active,
         desc:   "翠色莲茎从水中生出，托起一朵盛开的红莲，莲心端坐一个唇红齿白的小儿。莲池周围仙鹤翔集，祥云缭绕。",
     },
 

@@ -144,7 +144,7 @@ const ExploreSystem = createSystem(
             const itemConfig = ItemConfig[itemId];
             // 已查看资源：原对象淡出 + 已查看图淡入，返回新控件名
             let gainItemName = `img_${itemId}`;
-            const inspectedSprite = itemConfig.inspected && itemConfig.inspected.sprite;
+            const inspectedSprite = itemConfig.spriteInspected;
             if (inspectedSprite) {
                 gainItemName = await ExploreUI.playInspectedTransition(itemId, inspectedSprite);
             }
