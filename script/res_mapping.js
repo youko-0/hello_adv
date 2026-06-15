@@ -1,7 +1,7 @@
 // 资源映射
 console.log('[LOAD] res_map');
 
-let RES_FLAG = 0;        // 用来切换资源
+let RES_FLAG = 1;        // 用来切换资源
 
 const HelloADVRes = {
     // 通用
@@ -284,11 +284,11 @@ const DongHaiRes = {
     spr_item_motorcycle_key: '$185360065',
     spr_item_cookie_box: '$185360067',
     spr_item_mural_nezhanaohai: '$185360063',
-    spr_item_mural_nezhanaohai_active: '',
+    spr_item_mural_nezhanaohai_active: '$193647753',
     spr_item_mural_ziwenguitian: '$185360062',
-    spr_item_mural_ziwenguitian_active: '',
+    spr_item_mural_ziwenguitian_active: '$193647754',
     spr_item_mural_lianhuatuosheng: '$185360064',
-    spr_item_mural_lianhuatuosheng_active: '',
+    spr_item_mural_lianhuatuosheng_active: '$193647751',
     spr_item_mural_jianzaoshenmiao: '$185360035',
     spr_item_mural_jianzaoshenmiao_active: '',
     spr_item_mural_zhuzaosuxiang: '$185360034',
