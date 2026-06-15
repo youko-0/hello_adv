@@ -141,14 +141,30 @@ const ExploreSystem = createSystem(
         viewItem: async function (sceneId, itemId) {
             console.log('[LOG] viewItem', sceneId, itemId);
             await InventoryUI.showItemDetail(itemId);
-            // 如果是 KEY 类型，需要获得道具
             let itemConfig = InventorySystem.getItemConfig(itemId);
+            // 如果有已查看资源，淡入已查看图并淡出原对象，等待动效完成
+            let gainItemName = `img_${itemId}`;
+            if (itemConfig.spriteInspected) {
+                const inspectedName = `img_${itemId}_inspected`;
+                await ac.createImage({
+                    name:    inspectedName,
+                    index:   1,
+                    inlayer: ExploreUI.viewName,
+                    resId:   itemConfig.spriteInspected,
+                    pos: await ac.getPos({ name: gainItemName }),
+                    anchor:  { x: 50, y: 50 },
+                    opacity: 0,
+                });
+                ac.show({ name: inspectedName, effect: 'fadein', duration: 400 });
+                await ac.remove({ name: gainItemName, effect: 'fadeout', duration: 400 });
+                gainItemName = inspectedName;
+            }
+            // 如果是 KEY 类型，需要获得道具
             if (itemConfig.type === ItemType.KEY) {
-                // 这里会等待拖尾特效、背包打开和背包关闭全部完成
-                await InventoryUI.gainItem(itemId, 1, `img_${itemId}`);
+                await InventoryUI.gainItem(itemId, 1, gainItemName);
             }
             if (itemConfig.onView) {
-                await itemConfig.onView()
+                await itemConfig.onView();
             }
             // 记录为已查看, while 里面会判断是否全部完成
             this.recordInspected(itemId);

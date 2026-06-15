@@ -160,7 +160,7 @@ const ExploreUI = {
                 index: 1,
                 inlayer: this.viewName,
                 nResId: itemConfig.sprite,
-                sResId: itemConfig.sprite,
+                sResId: itemConfig.spriteHighlight || itemConfig.sprite,
                 content: ``,
                 pos: { x: itemX, y: itemY },
                 anchor: { x: 50, y: 50 },
