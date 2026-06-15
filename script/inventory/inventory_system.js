@@ -14,10 +14,6 @@ const InventorySystem = createSystem(
     _inventoryDefault,    // 默认数据生成器
     {
 
-        getItemConfig: function (itemId) {
-            return ItemConfig[itemId];
-        },
-
         getItemCount: function (itemId) {
             return this.getData().bag[itemId] || 0;
         },

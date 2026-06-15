@@ -141,11 +141,12 @@ const ExploreSystem = createSystem(
         viewItem: async function (sceneId, itemId) {
             console.log('[LOG] viewItem', sceneId, itemId);
             await InventoryUI.showItemDetail(itemId);
-            let itemConfig = InventorySystem.getItemConfig(itemId);
+            const itemConfig = ItemConfig[itemId];
             // 已查看资源：原对象淡出 + 已查看图淡入，返回新控件名
             let gainItemName = `img_${itemId}`;
-            if (itemConfig.spriteInspected) {
-                gainItemName = await ExploreUI.playInspectedTransition(itemId, itemConfig.spriteInspected);
+            const inspectedSprite = itemConfig.inspected && itemConfig.inspected.sprite;
+            if (inspectedSprite) {
+                gainItemName = await ExploreUI.playInspectedTransition(itemId, inspectedSprite);
             }
             // 如果是 KEY 类型，需要获得道具
             if (itemConfig.type === ItemType.KEY) {

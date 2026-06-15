@@ -107,11 +107,17 @@ const HelloADVRes = {
     spr_item_motorcycle_key: '$183946184',
     spr_item_cookie_box: '$183946182',
     spr_item_mural_nezhanaohai: '$183946187',
+    spr_item_mural_nezhanaohai_active: '$183946187',
     spr_item_mural_ziwenguitian: '$183946188',
+    spr_item_mural_ziwenguitian_active: '$183946188',
     spr_item_mural_lianhuatuosheng: '$183946185',
+    spr_item_mural_lianhuatuosheng_active: '$183946185',
     spr_item_mural_jianzaoshenmiao: '$185263206',
+    spr_item_mural_jianzaoshenmiao_active: '$185263206',
     spr_item_mural_zhuzaosuxiang: '$185263210',
+    spr_item_mural_zhuzaosuxiang_active: '$185263210',
     spr_item_mural_lijingsb: '$185263420',
+    spr_item_mural_lijingsb_active: '$185263420',
     spr_item_letter: '$183722014',
     spr_item_jewelry_box: '$185220219',
     spr_item_newspaper: '$185220220',
@@ -190,7 +196,7 @@ const DongHaiRes = {
     img_selection_bg_normal: '$185360038',
     img_selection_bg_highlight: '$185360039',
     img_selection_bg_disabled: '$186021889',
-
+    
     // 论坛
     img_forum_topic_bg_normal: '$185360106',
     img_forum_topic_bg_highlight: '$185360105',
@@ -199,7 +205,7 @@ const DongHaiRes = {
     pic_desktop_bg: '$185360027',
     pic_browser_bg: '$185360026',
     btn_browser: '$185360107',
-
+    
     // UI - 背包
     btn_bag_normal: '$185360059',
     img_bag_title: '$185360088',
@@ -213,7 +219,7 @@ const DongHaiRes = {
     btn_item_view_highlight: '$185360092',
     btn_item_use_normal: '$185360093',
     btn_item_use_highlight: '$185360094',
-
+    
     // 地图
     pic_map_bg: '$185360025',
     pic_map_bg_full: '$185360015',
@@ -233,7 +239,7 @@ const DongHaiRes = {
     img_dexing_tower: '$185360055',
     img_dexing_tower_locked: '$185360053',
     img_dexing_tower_highlight: '$185360054',
-
+    
     // 探索
     btn_explore_view_normal: '$185360097',
     btn_explore_view_highlight: '$185360098',
@@ -252,7 +258,7 @@ const DongHaiRes = {
     pic_broken_nezha_temple_right_hall: '$185360018',
     pic_dragon_temple_main_hall: '$191532549',
     pic_dexing_tower_office: '$185360014',
-
+    
     // 头像
     icon_forum_head_01: '$185360104',
     icon_forum_head_02: '$185360103',
@@ -278,11 +284,17 @@ const DongHaiRes = {
     spr_item_motorcycle_key: '$185360065',
     spr_item_cookie_box: '$185360067',
     spr_item_mural_nezhanaohai: '$185360063',
+    spr_item_mural_nezhanaohai_active: '',
     spr_item_mural_ziwenguitian: '$185360062',
+    spr_item_mural_ziwenguitian_active: '',
     spr_item_mural_lianhuatuosheng: '$185360064',
+    spr_item_mural_lianhuatuosheng_active: '',
     spr_item_mural_jianzaoshenmiao: '$185360035',
+    spr_item_mural_jianzaoshenmiao_active: '',
     spr_item_mural_zhuzaosuxiang: '$185360034',
+    spr_item_mural_zhuzaosuxiang_active: '',
     spr_item_mural_lijingsb: '$185360033',
+    spr_item_mural_lijingsb_active: '',
     spr_item_letter: '$192656036',
     spr_item_jewelry_box: '$185360043',
     spr_item_newspaper: '$185360042',
@@ -307,7 +319,7 @@ const DongHaiRes = {
     img_item_letter: '$186184083',
     img_item_jewelry_box: '$186183778',
     img_item_newspaper: '$186183780',
-
+    
     // 占卜
     pic_divine_bg: '$192586943',
     img_divine_coin_yang: '$192586954',
@@ -317,14 +329,14 @@ const DongHaiRes = {
     btn_divine_normal: '$192586952',
     btn_divine_pressed: '$192586953',
     btn_divine_disabled: '$192586951',
-
+    
     // 粒子
     spr_particle_trail: '$185360040',
-
+    
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: '5a63b4fc0a7041f38685971fcecfd962',
     ui_bag: 'ehprab55',
-
+    
     // 剧情唯一 ID
     plot_forum_next: 13969471,
     plot_map: 13980661,
@@ -340,7 +352,7 @@ const DongHaiRes = {
     plot_dexing_tower_loop: 14084642,
     plot_map_next: 13970354,
     plot_bad_end_without_spirit_eye: 14053516,
-
+    
     // 音效
     audio_gain_item: '$64652470',
 };

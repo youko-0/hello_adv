@@ -87,7 +87,6 @@ const InventoryUI = {
     // 创建物品详情 UI, 大图 + 文字描述
     showItemDetail: async function (itemId, locked = false) {
         console.log('[LOG] showItemDetail', itemId, locked);
-        let itemConfig = InventorySystem.getItemConfig(itemId);
         // 背景层
         await ac.createLayer({
             name: this.itemDetail.name,
@@ -106,7 +105,7 @@ const InventoryUI = {
             target: this.itemDetail.name,
         });
         // 大图
-        const view   = getItemView(itemConfig, locked);
+        const view   = getItemView(ItemConfig[itemId], locked);
         const illust = view.illust;
         if (illust) {
             await ac.createImage({

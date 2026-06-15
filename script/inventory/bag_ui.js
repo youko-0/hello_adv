@@ -183,11 +183,10 @@ const BagUI = {
      * 创建静态部分：图标 / 数量文字（只建一次，选中变化不重建）
      */
     _createItemWidgets: async function (itemId, posX, posY) {
-        const itemConfig   = InventorySystem.getItemConfig(itemId);
         const historyCount = InventorySystem.getHistoryCount(itemId);
         const itemCount    = InventorySystem.getItemCount(itemId);
         const countOffset  = this.bg.height / 2 - 18;
-        const view         = getItemView(itemConfig, historyCount <= 0);
+        const view         = getItemView(ItemConfig[itemId], historyCount <= 0);
 
         await ac.createImage({
             name:    `bag_item_icon_${itemId}`,
@@ -277,11 +276,10 @@ const BagUI = {
 
     /** 刷新右侧详情面板（名称 / 描述 / 按钮）*/
     refreshItemDetail: async function (itemId) {
-        const itemConfig   = InventorySystem.getItemConfig(itemId);
         const historyCount = InventorySystem.getHistoryCount(itemId);
         const itemCount    = InventorySystem.getItemCount(itemId);
         const cx           = this.itemDetail.x;
-        const view         = getItemView(itemConfig, historyCount <= 0);
+        const view         = getItemView(ItemConfig[itemId], historyCount <= 0);
 
         const itemName = historyCount <= 0 ? '？？？' : view.name;
         await ac.createText({

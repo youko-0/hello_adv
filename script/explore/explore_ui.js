@@ -151,7 +151,10 @@ const ExploreUI = {
         // 创建交互物体
         let interacts = viewConfig.interact || {};
         for (const [itemId, interact] of Object.entries(interacts)) {
-            let itemConfig = InventorySystem.getItemConfig(itemId);
+            const itemConfig = ItemConfig[itemId];
+            const isInspected = ExploreSystem.isInspected(itemId);
+            const nResId = (isInspected && itemConfig.inspected) ? itemConfig.inspected.sprite : itemConfig.sprite;
+            const sResId = itemConfig.spriteHighlight || nResId;
             // 交互物体位置相对于 view 中心偏移
             const itemX = interact.x - GameConfig.centerX;
             const itemY = interact.y - GameConfig.centerY;
@@ -159,8 +162,8 @@ const ExploreUI = {
                 name: `img_${itemId}`,
                 index: 1,
                 inlayer: this.viewName,
-                nResId: itemConfig.sprite,
-                sResId: itemConfig.spriteHighlight || itemConfig.sprite,
+                nResId: nResId,
+                sResId: sResId,
                 content: ``,
                 pos: { x: itemX, y: itemY },
                 anchor: { x: 50, y: 50 },
