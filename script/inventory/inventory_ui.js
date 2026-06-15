@@ -18,8 +18,8 @@ const InventoryUI = {
             index: ZORDER.HUD,
             inlayer: 'window',
             resId: ResMap.btn_bag_normal,
-            pos: { x: GameConfig.width - 36, y: GameConfig.height - 186 },
-            anchor: { x: 100, y: 100 },
+            pos: { x: GameConfig.width - 64, y: GameConfig.height - 220 },
+            anchor: { x: 50, y: 50 },
         });
         // 绑定事件
         ac.addEventListener({
@@ -106,7 +106,8 @@ const InventoryUI = {
             target: this.itemDetail.name,
         });
         // 大图
-        const illust = locked? itemConfig.illustLocked: itemConfig.illust
+        const view   = getItemView(itemConfig, locked);
+        const illust = view.illust;
         if (illust) {
             await ac.createImage({
                 name: 'img_item_detail_bg',
@@ -128,8 +129,8 @@ const InventoryUI = {
                 anchor: { x: 50, y: 50 },
             });
         }
-        const itemDesc = locked? itemConfig.descLocked: itemConfig.desc
-        const itemIcon = locked? itemConfig.iconLocked: itemConfig.icon
+        const itemDesc = view.desc;
+        const itemIcon = view.icon;
         await CommonUI.showCustomDialog({
             content: itemDesc,
             // roleAvatarResId: itemIcon,   // 不显示小图标

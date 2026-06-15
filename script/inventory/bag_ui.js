@@ -187,13 +187,13 @@ const BagUI = {
         const historyCount = InventorySystem.getHistoryCount(itemId);
         const itemCount    = InventorySystem.getItemCount(itemId);
         const countOffset  = this.bg.height / 2 - 18;
+        const view         = getItemView(itemConfig, historyCount <= 0);
 
-        const itemIcon = historyCount <= 0 ? itemConfig.iconLocked : itemConfig.icon;
         await ac.createImage({
             name:    `bag_item_icon_${itemId}`,
             index:   2,
             inlayer: 'sv_items',
-            resId:   itemIcon,
+            resId:   view.icon,
             pos:     { x: posX, y: posY },
             anchor:  { x: 50, y: 50 },
         });
@@ -280,9 +280,10 @@ const BagUI = {
         const itemConfig   = InventorySystem.getItemConfig(itemId);
         const historyCount = InventorySystem.getHistoryCount(itemId);
         const itemCount    = InventorySystem.getItemCount(itemId);
-        const cx           = this.itemDetail.x;   // 详情区中心 x
+        const cx           = this.itemDetail.x;
+        const view         = getItemView(itemConfig, historyCount <= 0);
 
-        const itemName = historyCount <= 0 ? '？？？' : itemConfig.name;
+        const itemName = historyCount <= 0 ? '？？？' : view.name;
         await ac.createText({
             name:      'lbl_item_detail_name',
             index:     2,
@@ -297,7 +298,7 @@ const BagUI = {
             style:     'style_bag_detail_name',
         });
 
-        const itemDesc      = historyCount <= 0 ? itemConfig.descLocked : itemConfig.desc;
+        const itemDesc      = view.desc;
         // calcTextHeight 是近似估算，额外加一行高度防止最后一行被裁切
         const extraLine     = this.itemDetail.fontSize * 1.2;
         const contentHeight = Math.max(
