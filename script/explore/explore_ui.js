@@ -194,7 +194,7 @@ const ExploreUI = {
             resId: resInspected,
             pos:     await ac.getPos({ name: originalName }),
             anchor:  { x: 50, y: 50 },
-            opacity: 0,
+            visible: false,
         });
         ac.show({ name: inspectedName, effect: 'fadein', duration: 400 });
         await ac.remove({ name: originalName, effect: 'fadeout', duration: 400 });

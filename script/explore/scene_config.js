@@ -45,7 +45,7 @@ const SceneConfig = {
                     right: 'main_hall'
                 },
                 interact: {
-                    item_mural_nezhanaohai: { x: 907, y: 509 },
+                    item_mural_nezhanaohai: { x: 604, y: 406 },
                 }
             },
             // 后殿
@@ -58,7 +58,7 @@ const SceneConfig = {
                     // right: 'left_hall',
                 },
                 interact: {
-                    item_mural_ziwenguitian: { x: 893, y: 505 },
+                    item_mural_ziwenguitian: { x: 691, y: 410 },
                 }
             },
             // 右殿
@@ -70,7 +70,7 @@ const SceneConfig = {
                     // right: 'back_hall'
                 },
                 interact: {
-                    item_mural_lianhuatuosheng: { x: 852, y: 480 },
+                    item_mural_lianhuatuosheng: { x: 663, y: 400 },
                 }
             },
         },
