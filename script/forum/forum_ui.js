@@ -396,13 +396,13 @@ const ForumUI = {
             halign: ac.HALIGN_TYPES.right,
         });
 
-        // 楼主标识
-        if (reply.authorId === post.authorId) {
+        // 身份标识（楼主 / 管理员 等）
+        if (reply.tag) {
             await ac.createText({
                 name: `lbl_author_flag_${index}`,
                 index: 1,
                 inlayer: this.sv.name,
-                content: '[楼主]',
+                content: `[${reply.tag}]`,
                 pos: { x: this.page.width - 28, y: posY + contentHeight - 10 },
                 anchor: { x: 100, y: 100 },
                 size: { width: 100, height: this.reply.fontSize },

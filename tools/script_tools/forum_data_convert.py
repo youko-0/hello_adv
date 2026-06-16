@@ -187,7 +187,9 @@ def parse_forum_data():
             floor_index = int(reply_match.group(1))
             tag = reply_match.group(2) # 捕获到的身份标识，如 "(楼主)"
             content = reply_match.group(3).strip()
-            is_author = tag and "楼主" in tag
+            # 去掉全角/半角括号，得到纯文字标识，如 "楼主"、"管理员"
+            tag_text = re.sub(r'[（）()]', '', tag) if tag else None
+            is_author = tag_text == "楼主"
             
             # 逻辑：分配作者
             if floor_index == 1:
@@ -218,6 +220,8 @@ def parse_forum_data():
                 "content": content,
                 "timestamp": r_time,
             }
+            if tag_text:
+                reply_obj["tag"] = tag_text
             current_reply_list.append(reply_obj)
 
     # 循环结束后，保存最后一个帖子
