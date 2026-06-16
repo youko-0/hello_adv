@@ -22,6 +22,11 @@ const UserSystem = {
             name: "momo",
             icon: ResMap.icon_forum_head_01,
         },
+        "user_admin": {
+            id: "user_admin",
+            name: "抹茶眠眠冰",
+            icon: ResMap.icon_forum_head_05,
+        },
     },
 
     getUserInfo: function (uid) {

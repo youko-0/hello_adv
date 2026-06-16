@@ -6,9 +6,9 @@ import os
 import datetime
 
 # ================= 配置区域 =================
-INPUT_FILE = '../data.txt'
+INPUT_FILE = 'res/剧情/data.txt'
 # 目标 JS 文件名
-JS_TARGET_FILE = '../../script/forum/forum_data.js'
+JS_TARGET_FILE = 'script/forum/forum_data.js'
 
 # 起始帖子ID
 START_ID = 1001
@@ -201,6 +201,8 @@ def parse_forum_data():
                 # 楼主的回复，保持ID一致
                 if is_author:
                     r_author = current_post['authorId']
+                elif tag_text == "管理员":
+                    r_author = 'user_admin'
                 else:
                     r_author = 'user_momo'
                 # 时间递增 30s ~ 600s
