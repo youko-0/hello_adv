@@ -83,11 +83,17 @@ const HelloADVRes = {
     pic_dexing_tower_office: '$185220204',
 
     // 头像
+    icon_forum_head_00: '$183113921',
     icon_forum_head_01: '$183114062',
     icon_forum_head_02: '$183113921',
     icon_forum_head_03: '$183114062',
-    icon_forum_head_04: '$183113921',
-    icon_forum_head_05: '$183113921',
+    icon_forum_head_11: '$183113921',
+    icon_forum_head_12: '$183113921',
+    icon_forum_head_13: '$183113921',
+    icon_forum_head_14: '$183113921',
+    icon_forum_head_15: '$183113921',
+    icon_forum_head_16: '$183113921',
+    icon_forum_head_99: '$183113921',
     // 物品图标
     icon_item_spirit_eye: '$185428486',
     icon_item_spirit_eye_locked: '$185906593',
@@ -261,11 +267,17 @@ const DongHaiRes = {
     pic_dexing_tower_office: '$185360014',
     
     // 头像
+    icon_forum_head_00: '$193790046',
     icon_forum_head_01: '$185360104',
     icon_forum_head_02: '$185360103',
     icon_forum_head_03: '$193117402',
-    icon_forum_head_04: '$193117403',
-    icon_forum_head_05: '$193741307',
+    icon_forum_head_11: '$193790048',
+    icon_forum_head_12: '$193790049',
+    icon_forum_head_13: '$193790050',
+    icon_forum_head_14: '$193790052',
+    icon_forum_head_15: '$193790053',
+    icon_forum_head_16: '$193790054',
+    icon_forum_head_99: '$193790055',
     // 物品图标
     icon_item_spirit_eye: '$186018535',
     icon_item_spirit_eye_locked: '$186018536',
