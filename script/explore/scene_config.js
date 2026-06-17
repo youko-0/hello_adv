@@ -100,7 +100,7 @@ const SceneConfig = {
                     right: 'main_hall'
                 },
                 interact: {
-                    item_mural_jianzaoshenmiao: { x: 640, y: 360 },
+                    item_mural_jianzaoshenmiao: { x: 604, y: 407 },
                 }
             },
             // 后殿
@@ -112,7 +112,7 @@ const SceneConfig = {
                     right: 'left_hall',
                 },
                 interact: {
-                    item_mural_zhuzaosuxiang: { x: 640, y: 360 },
+                    item_mural_zhuzaosuxiang: { x: 691, y: 412 },
                 }
             },
             // 右殿
@@ -124,7 +124,7 @@ const SceneConfig = {
                     right: 'back_hall'
                 },
                 interact: {
-                    item_mural_lijingsb: { x: 640, y: 360 },
+                    item_mural_lijingsb: { x: 663, y: 400 },
                 }
             },
         },

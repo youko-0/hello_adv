@@ -110,10 +110,10 @@ def crop_transparent_pixels(input_path, output_path=None):
         return None
 
 
-def process_batch():
-    """批量处理input文件夹下的所有PNG文件"""
-    input_dir = "input"
-    output_dir = "output"
+def process_batch(input_dir="input", output_dir=None):
+    """批量处理指定文件夹下的所有PNG文件"""
+    if output_dir is None:
+        output_dir = os.path.join(os.path.dirname(input_dir) or ".", os.path.basename(input_dir) + "_cropped")
     
     # 检查input文件夹是否存在
     if not os.path.exists(input_dir):
@@ -124,9 +124,10 @@ def process_batch():
     # 创建output文件夹（如果不存在）
     os.makedirs(output_dir, exist_ok=True)
     
-    # 查找所有PNG文件
-    png_files = glob.glob(os.path.join(input_dir, "*.png"))
-    png_files.extend(glob.glob(os.path.join(input_dir, "*.PNG")))  # 包含大写扩展名
+    # 查找所有PNG文件（去重，避免大小写扩展名在 Windows 上重复匹配）
+    png_files = list({os.path.normcase(p): p for p in
+                      glob.glob(os.path.join(input_dir, "*.png")) +
+                      glob.glob(os.path.join(input_dir, "*.PNG"))}.values())
     
     if not png_files:
         print(f"在 {input_dir} 文件夹中没有找到PNG文件")
@@ -173,6 +174,19 @@ def process_batch():
         for result in results:
             coord_str = f"pos: {{ x: {result['center_x']}, y: {result['center_y']} }},"
             print(f"{result['filename']:<30} {coord_str}")
+        
+        # 写入汇总文件
+        summary_path = os.path.join(output_dir, "_summary.txt")
+        with open(summary_path, "w", encoding="utf-8") as f:
+            f.write(f"批量处理完成！\n")
+            f.write(f"成功处理: {success_count}/{len(png_files)} 个文件\n")
+            f.write(f"输出文件夹: {output_dir}\n\n")
+            f.write("文件名".ljust(40) + "中心点坐标\n")
+            f.write("-" * 70 + "\n")
+            for result in results:
+                coord_str = f"pos: {{ x: {result['center_x']}, y: {result['center_y']} }},"
+                f.write(f"{result['filename']:<40} {coord_str}\n")
+        print(f"\n汇总已保存到: {summary_path}")
 
 
 def process_single_file(input_path, output_path=None):
@@ -200,11 +214,11 @@ def process_single_file(input_path, output_path=None):
 def main():
     """主函数"""
     if len(sys.argv) == 1:
-        # 没有参数，执行批量处理
+        # 没有参数，执行批量处理（默认 input/ → output/）
         process_batch()
     elif len(sys.argv) >= 2:
-        # 有参数，处理单个文件
-        if sys.argv[1] in ['-h', '--help', 'help']:
+        arg = sys.argv[1]
+        if arg in ['-h', '--help', 'help']:
             print("透明像素裁切工具")
             print("\n使用方法:")
             print(f"  1. 批量处理: python {sys.argv[0]}")
@@ -217,9 +231,14 @@ def main():
             print(f"  python {sys.argv[0]} image.png out.png  # 指定输出文件名")
             return
         
-        input_path = sys.argv[1]
-        output_path = sys.argv[2] if len(sys.argv) > 2 else None
-        process_single_file(input_path, output_path)
+        if os.path.isdir(arg):
+            # 参数是文件夹，执行批量处理
+            output_dir = sys.argv[2] if len(sys.argv) > 2 else None
+            process_batch(arg, output_dir)
+        else:
+            input_path = arg
+            output_path = sys.argv[2] if len(sys.argv) > 2 else None
+            process_single_file(input_path, output_path)
 
 
 if __name__ == "__main__":
