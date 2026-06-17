@@ -130,17 +130,20 @@ const ExploreUI = {
 
     /**
      * 创建已查看物体（静态图片，不可点击）
-     * @param {string} itemId - 物品 ID
+     * @param {string} itemId           - 物品 ID
      * @param {{x: number, y: number}} pos - 相对于 view 中心的偏移坐标
+     * @param {boolean} [visible=true]  - 初始是否可见（过渡动画时传 false）
      */
-    createInspectedItem: async function (itemId, pos) {
+    createInspectedItem: async function (itemId, pos, visible = true) {
+        const itemConfig = ItemConfig[itemId];
         await ac.createImage({
-            name:    this.getItemControlName(itemId),
+            name:    `${this.getItemControlName(itemId)}_inspected`,
             index:   1,
             inlayer: this.viewName,
-            resId:   ItemConfig[itemId].spriteInspected,
+            resId:   itemConfig.spriteInspected || itemConfig.sprite,
             pos:     pos,
             anchor:  { x: 50, y: 50 },
+            visible: visible,
         });
     },
 
@@ -156,7 +159,7 @@ const ExploreUI = {
         const sResId = itemConfig.spriteHighlight || nResId;
         await ac.createOption({
             name:    this.getItemControlName(itemId),
-            index:   1,
+            index:   2,     // 按钮层级高于已查看物体, 用来做切换
             inlayer: this.viewName,
             nResId:  nResId,
             sResId:  sResId,
@@ -216,22 +219,18 @@ const ExploreUI = {
     // ═══════════════════════════════════════════════════════════════
 
     /**
-     * 播放"已查看"过渡：原控件淡出移除，已查看静态图在同位置淡入
-     * 若物品无 spriteInspected，则跳过过渡，直接返回原控件名
+     * 播放"已查看"过渡：原控件淡出，已查看静态控件（img_${itemId}_inspected）在同位置淡入
      * @param {string} itemId - 物品 ID
-     * @returns {Promise<string>} 查看后场景内有效控件名（供后续 gainItem 拖尾使用）
+     * @returns {Promise<string>} 已查看控件名（供后续 gainItem 拖尾使用）
      */
     playInspectedTransition: async function (itemId) {
-        const name = this.getItemControlName(itemId);
-        const inspectedSprite = ItemConfig[itemId].spriteInspected;
-        if (!inspectedSprite) {
-            return name;
-        }
-        const pos = await ac.getPos({ name: name });
-        await this.createInspectedItem(itemId, pos);
-        await ac.remove({ name, effect: 'fadeout', duration: 400 });
-        ac.show({ name, effect: 'fadein', duration: 400 });
-        return name;
+        const originalName  = this.getItemControlName(itemId);
+        const inspectedName = `${originalName}_inspected`;
+        const pos = await ac.getPos({ name: originalName });
+        await this.createInspectedItem(itemId, pos, false);
+        ac.show({ name: inspectedName, effect: 'fadein', duration: 500 });
+        await ac.remove({ name: originalName, effect: 'fadeout', duration: 500 });
+        return inspectedName;
     },
 
     /**
