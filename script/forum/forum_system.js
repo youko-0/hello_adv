@@ -26,7 +26,6 @@ const ForumSystem = createSystem(
         },
 
         savePostId: function (postId) {
-            if (!postId) return;
             let data = this.getData();
             // 只有变化时才保存，节省性能
             if (data.postId !== postId) {
@@ -133,6 +132,7 @@ const ForumSystem = createSystem(
         viewForum: async function () {
             console.log('[Forum] 查看论坛主页');
             this.savePostId('');
+            this.savePageIndex(1);
             await DesktopUI.showForumPage();
         },
 
