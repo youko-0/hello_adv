@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 import json
 import time
@@ -15,6 +16,9 @@ START_ID = 1001
 
 # 当前年份
 NOW_YEAR = 2034
+
+# 昵称用户 ID 起始编号（user_011, user_012, ...）
+NICKNAME_USER_START = 11
 # ===========================================
 
 
@@ -119,6 +123,7 @@ def parse_forum_data():
     try:
         with open(INPUT_FILE, 'r', encoding='utf-8') as f:
             lines = f.readlines()
+        print(f"从 {INPUT_FILE} 读取，共 {len(lines)} 行")
     except FileNotFoundError:
         print(f"错误：找不到文件 {INPUT_FILE}，请确保文件在当前目录下。")
         return
@@ -130,14 +135,18 @@ def parse_forum_data():
     current_reply_list = []
 
     post_id_counter = START_ID
-    author_id_counter = 1  # 每个帖子楼主依次为 user_001, user_002, ...
+    author_id_counter = 1       # 楼主 ID：user_001, user_002, ...
+
+    # 昵称→ID 全局映射（跨帖子，同昵称 = 同一人）
+    nickname_user_map = {}      # { nickname_str: authorId }
+    nickname_user_counter = NICKNAME_USER_START  # 从 11 开始
 
     # 正则表达式预编译
     # 匹配标题：[标题内容]
     re_topic = re.compile(r'^\[(.*?)\]\s*$')
     # 匹配回复：1L（楼主）：内容 或 30l: 内容
     # group(1): 楼层数字
-    # group(2): 身份标识，例如 "(楼主)" 或 None
+    # group(2): 括号内标识，如 "（楼主）"、"（omom）" 或 None
     # group(3): 回复内容
     re_reply = re.compile(r'^(\d+)[Ll]([（(].*?[）)])?\s*[:：]\s*(.*)')
 
@@ -149,20 +158,18 @@ def parse_forum_data():
         # 1. 检查是否是新帖子标题 [Topic]
         topic_match = re_topic.match(line)
         if topic_match:
-            # 如果当前有正在处理的帖子，先保存它
+            # 保存上一个帖子
             if current_post:
                 current_post['reply'] = current_reply_list
                 posts_map[str(current_post['id'])] = current_post
 
-            # 初始化新帖子
             topic_content = topic_match.group(1)
             p_id = str(post_id_counter)
             post_id_counter += 1
 
             topic_author = f"user_{author_id_counter:03d}"
             author_id_counter += 1
-            
-            # 时间控制变量
+
             # 设定脚本运行时间前 120 ~ 180 分钟的时间戳作为基准时间
             base_timestamp = static_timestamp - (random.randint(120, 180) * 60)
 
@@ -175,46 +182,47 @@ def parse_forum_data():
                 "authorId": topic_author,
                 "topic": topic_content,
                 "timestamp": base_timestamp,
-                "reply": [] # 稍后填充
+                "reply": []
             }
             current_reply_list = []
             print(f"正在解析帖子 ID: {p_id}, 标题: {topic_content}, 发帖时间：{base_timestamp}")
             continue
 
-        # 2. 检查是否是回复行 1L: Content
+        # 2. 检查是否是回复行
         reply_match = re_reply.match(line)
         if reply_match and current_post:
             floor_index = int(reply_match.group(1))
-            tag = reply_match.group(2) # 捕获到的身份标识，如 "(楼主)"
+            tag = reply_match.group(2)
             content = reply_match.group(3).strip()
-            # 去掉全角/半角括号，得到纯文字标识，如 "楼主"、"管理员"
+            # 去掉全角/半角括号，得到纯文字，如 "楼主"、"管理员"、"omom"
             tag_text = re.sub(r'[（）()]', '', tag) if tag else None
-            is_author = tag_text == "楼主"
-            
-            # 逻辑：分配作者
+
+            # 分配作者 ID
             if floor_index == 1:
-                # 1楼是楼主自己，保持ID一致
+                # 1楼固定为楼主
                 r_author = current_post['authorId']
-                # 1楼的时间就是发帖时间
                 current_timestamp = current_post['timestamp']
             else:
-                # 楼主的回复，保持ID一致
-                if is_author:
+                if tag_text == "楼主":
                     r_author = current_post['authorId']
                 elif tag_text == "管理员":
                     r_author = 'user_admin'
+                elif tag_text:
+                    # 用户昵称：全局映射，同昵称同 ID
+                    if tag_text not in nickname_user_map:
+                        nickname_user_map[tag_text] = f"user_{nickname_user_counter:03d}"
+                        nickname_user_counter += 1
+                        print(f"  新昵称用户: {tag_text} -> {nickname_user_map[tag_text]}")
+                    r_author = nickname_user_map[tag_text]
                 else:
                     r_author = 'user_momo'
-                # 时间递增 30s ~ 600s
-                add_seconds = random.randint(30, 600)
-                current_timestamp += add_seconds
+                current_timestamp += random.randint(30, 600)
 
             r_time = current_timestamp
 
             # 特殊处理: 1001 帖子 1~6 楼为2021年, 其余为 2022 年
-            if p_id == '1001':
-                if floor_index > 6:
-                    r_time = change_timestamp_year(r_time, 2022)
+            if p_id == '1001' and floor_index > 6:
+                r_time = change_timestamp_year(r_time, 2022)
 
             reply_obj = {
                 "index": floor_index,
@@ -222,16 +230,17 @@ def parse_forum_data():
                 "content": content,
                 "timestamp": r_time,
             }
-            if tag_text:
+            # 只为 楼主 / 管理员 写 tag 字段（用于 UI 展示标识）
+            if tag_text in ("楼主", "管理员"):
                 reply_obj["tag"] = tag_text
             current_reply_list.append(reply_obj)
 
-    # 循环结束后，保存最后一个帖子
+    # 保存最后一个帖子
     if current_post:
         current_post['reply'] = current_reply_list
         posts_map[str(current_post['id'])] = current_post
 
-    # 3. 直接更新 JS 文件
+    print(f"\n昵称用户映射: {nickname_user_map}")
     update_forum_data_js(posts_map, static_timestamp)
 
 if __name__ == '__main__':
