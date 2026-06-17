@@ -19,6 +19,15 @@ const ExploreUI = {
 
     viewName: 'layer_explore_view', // 固定 view 控件名，同一时刻只存在一个
 
+    /**
+     * 获取场景内交互物体的控件名
+     * @param {string} itemId - 物品 ID
+     * @returns {string}
+     */
+    getItemControlName: function (itemId) {
+        return `img_${itemId}`;
+    },
+
     // 导航按钮配置
     Nav: {
         up: {
@@ -120,6 +129,47 @@ const ExploreUI = {
     // ═══════════════════════════════════════════════════════════════
 
     /**
+     * 创建已查看物体（静态图片，不可点击）
+     * @param {string} itemId - 物品 ID
+     * @param {{x: number, y: number}} pos - 相对于 view 中心的偏移坐标
+     */
+    createInspectedItem: async function (itemId, pos) {
+        await ac.createImage({
+            name:    this.getItemControlName(itemId),
+            index:   1,
+            inlayer: this.viewName,
+            resId:   ItemConfig[itemId].spriteInspected,
+            pos:     pos,
+            anchor:  { x: 50, y: 50 },
+        });
+    },
+
+    /**
+     * 创建可交互物体（可点击按钮）
+     * @param {string} itemId  - 物品 ID
+     * @param {{x: number, y: number}} pos - 相对于 view 中心的偏移坐标
+     * @param {string} sceneId - 场景 ID（用于点击回调）
+     */
+    createInteractableItem: async function (itemId, pos, sceneId) {
+        const itemConfig = ItemConfig[itemId];
+        const nResId = itemConfig.sprite;
+        const sResId = itemConfig.spriteHighlight || nResId;
+        await ac.createOption({
+            name:    this.getItemControlName(itemId),
+            index:   1,
+            inlayer: this.viewName,
+            nResId:  nResId,
+            sResId:  sResId,
+            content: ``,
+            pos:     pos,
+            anchor:  { x: 50, y: 50 },
+            onTouchEnded: async function () {
+                await ExploreSystem.viewItem(sceneId, itemId);
+            },
+        });
+    },
+
+    /**
      * 创建 view（背景 + 交互物体），固定放置于屏幕中心
      * @param {string} sceneId - 场景 ID
      * @param {string} viewId  - 视图 ID
@@ -149,28 +199,15 @@ const ExploreUI = {
         });
 
         // 创建交互物体
-        let interacts = viewConfig.interact || {};
+        const interacts = viewConfig.interact || {};
         for (const [itemId, interact] of Object.entries(interacts)) {
-            const itemConfig = ItemConfig[itemId];
-            const isInspected = ExploreSystem.isInspected(itemId);
-            const nResId = (isInspected && itemConfig.spriteInspected) ? itemConfig.spriteInspected : itemConfig.sprite;
-            const sResId = itemConfig.spriteHighlight || nResId;
             // 交互物体位置相对于 view 中心偏移
-            const itemX = interact.x - GameConfig.centerX;
-            const itemY = interact.y - GameConfig.centerY;
-            await ac.createOption({
-                name: `img_${itemId}`,
-                index: 1,
-                inlayer: this.viewName,
-                nResId: nResId,
-                sResId: sResId,
-                content: ``,
-                pos: { x: itemX, y: itemY },
-                anchor: { x: 50, y: 50 },
-                onTouchEnded: async function () {
-                    await ExploreSystem.viewItem(sceneId, itemId);
-                },
-            });
+            const pos = { x: interact.x - GameConfig.centerX, y: interact.y - GameConfig.centerY };
+            if (ExploreSystem.isInspected(itemId)) {
+                await this.createInspectedItem(itemId, pos);
+            } else {
+                await this.createInteractableItem(itemId, pos, sceneId);
+            }
         }
     },
 
@@ -179,26 +216,22 @@ const ExploreUI = {
     // ═══════════════════════════════════════════════════════════════
 
     /**
-     * 播放"已查看"过渡：原对象淡出，已查看图淡入到同位置
-     * @param {string} itemId          - 物品 ID（对应 `img_${itemId}` 控件）
-     * @param {string} resInspected - 已查看资源 resId
-     * @returns {Promise<string>} 新控件名（供后续 gainItem 拖尾使用）
+     * 播放"已查看"过渡：原控件淡出移除，已查看静态图在同位置淡入
+     * 若物品无 spriteInspected，则跳过过渡，直接返回原控件名
+     * @param {string} itemId - 物品 ID
+     * @returns {Promise<string>} 查看后场景内有效控件名（供后续 gainItem 拖尾使用）
      */
-    playInspectedTransition: async function (itemId, resInspected) {
-        const originalName  = `img_${itemId}`;
-        const inspectedName = `img_${itemId}_inspected`;
-        await ac.createImage({
-            name:    inspectedName,
-            index:   1,
-            inlayer: this.viewName,
-            resId: resInspected,
-            pos:     await ac.getPos({ name: originalName }),
-            anchor:  { x: 50, y: 50 },
-            visible: false,
-        });
-        ac.show({ name: inspectedName, effect: 'fadein', duration: 400 });
-        await ac.remove({ name: originalName, effect: 'fadeout', duration: 400 });
-        return inspectedName;
+    playInspectedTransition: async function (itemId) {
+        const name = this.getItemControlName(itemId);
+        const inspectedSprite = ItemConfig[itemId].spriteInspected;
+        if (!inspectedSprite) {
+            return name;
+        }
+        const pos = await ac.getPos({ name: name });
+        await this.createInspectedItem(itemId, pos);
+        await ac.remove({ name, effect: 'fadeout', duration: 400 });
+        ac.show({ name, effect: 'fadein', duration: 400 });
+        return name;
     },
 
     /**

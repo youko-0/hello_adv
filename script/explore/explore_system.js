@@ -142,12 +142,8 @@ const ExploreSystem = createSystem(
             console.log('[LOG] viewItem', sceneId, itemId);
             await InventoryUI.showItemDetail(itemId);
             const itemConfig = ItemConfig[itemId];
-            // 已查看资源：原对象淡出 + 已查看图淡入，返回新控件名
-            let gainItemName = `img_${itemId}`;
-            const inspectedSprite = itemConfig.spriteInspected;
-            if (inspectedSprite) {
-                gainItemName = await ExploreUI.playInspectedTransition(itemId, inspectedSprite);
-            }
+            // 已查看过渡：原对象淡出 + 已查看图淡入（无 spriteInspected 则跳过），返回有效控件名
+            const gainItemName = await ExploreUI.playInspectedTransition(itemId);
             // 如果是 KEY 类型，需要获得道具
             if (itemConfig.type === ItemType.KEY) {
                 await InventoryUI.gainItem(itemId, 1, gainItemName);

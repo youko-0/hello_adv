@@ -7,7 +7,7 @@ import os
 import datetime
 
 # ================= 配置区域 =================
-INPUT_FILE = 'res/剧情/data.txt'
+INPUT_FILE = 'res/剧本/data.txt'
 # 目标 JS 文件名
 JS_TARGET_FILE = 'script/forum/forum_data.js'
 
