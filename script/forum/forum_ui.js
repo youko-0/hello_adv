@@ -4,7 +4,8 @@ console.log('[LOAD] forum_ui');
 const ForumUI = {
     page: {
         width: 1280,
-        height: 552,
+        height: 554,
+        paddingX: 24,               // 内容区左右边距
         bg: {
             width: 32,
             height: 32,
@@ -120,7 +121,7 @@ const ForumUI = {
             name: 'layer_forum_ui',
             index: ZORDER.OVERLAY,
             inlayer: 'window',
-            pos: { x: GameConfig.centerX, y: 60 },
+            pos: { x: GameConfig.centerX, y: 59 },
             anchor: { x: 50, y: 0 },
             size: { width: this.page.width, height: this.page.height },
             clipMode: true,
@@ -210,31 +211,33 @@ const ForumUI = {
     _createTopicItem: async function (post, index, posY) {
         let bgStyle = index % 2 === 0 ? this.topic.bgNormal : this.topic.bgAlt;
         let read = ForumSystem.isRead(post.id);
+        const px = this.page.paddingX;
+        const rowW = this.page.width - px * 2;
 
-        // 行底色
+        // 行底色（内缩 paddingX）
         await ac.createImage({
             name: `btn_topic_${post.id}`,
             index: 1,
             inlayer: this.sv.name,
             resId: bgStyle.resId,
-            pos: { x: 0, y: posY },
+            pos: { x: px, y: posY },
             anchor: { x: 0, y: 0 },
             scale: {
-                x: this.page.width * 100 / bgStyle.width,
+                x: rowW * 100 / bgStyle.width,
                 y: this.topic.height * 100 / bgStyle.height,
             },
         });
 
-        // 分隔线（行顶部）
+        // 分隔线
         await ac.createImage({
             name: `img_divider_topic_${post.id}`,
             index: 1,
             inlayer: this.sv.name,
             resId: this.topic.divider.resId,
-            pos: { x: 0, y: posY + this.topic.height },
+            pos: { x: px, y: posY + this.topic.height },
             anchor: { x: 0, y: 0 },
             scale: {
-                x: this.page.width * 100 / this.topic.divider.width,
+                x: rowW * 100 / this.topic.divider.width,
                 y: this.topic.dividerHeight * 100 / this.topic.divider.height,
             },
         });
@@ -245,7 +248,7 @@ const ForumUI = {
             index: 2,
             inlayer: this.sv.name,
             content: `【${post.reply.length}】`,
-            pos: { x: 60, y: posY + this.topic.height / 2 },
+            pos: { x: px + 36, y: posY + this.topic.height / 2 },
             anchor: { x: 50, y: 50 },
             size: { width: 80, height: this.topic.height },
             style: 'style_forum_topic',
@@ -258,9 +261,9 @@ const ForumUI = {
             index: 2,
             inlayer: this.sv.name,
             content: post.topic,
-            pos: { x: 110, y: posY + this.topic.height / 2 },
+            pos: { x: px + 86, y: posY + this.topic.height / 2 },
             anchor: { x: 0, y: 50 },
-            size: { width: 700, height: this.topic.height },
+            size: { width: rowW - 86 - 380, height: this.topic.height },
             style: read ? 'style_forum_topic_read' : 'style_forum_topic',
         });
 
@@ -270,7 +273,7 @@ const ForumUI = {
             index: 2,
             inlayer: this.sv.name,
             content: UserSystem.getUserName(post.authorId),
-            pos: { x: 920, y: posY + this.topic.height / 2 + 2 },
+            pos: { x: px + rowW - 360, y: posY + this.topic.height / 2 + 2 },
             anchor: { x: 0, y: 0 },
             size: { width: 160, height: this.topic.height },
             style: 'style_forum_author',
@@ -283,7 +286,7 @@ const ForumUI = {
             index: 2,
             inlayer: this.sv.name,
             content: Utils.formatRelativeTime(post.timestamp, ForumSystem.NOW_YEAR),
-            pos: { x: 920, y: posY + this.topic.height / 2 - 2 },
+            pos: { x: px + rowW - 360, y: posY + this.topic.height / 2 - 2 },
             anchor: { x: 0, y: 100 },
             size: { width: 160, height: this.topic.height },
             style: 'style_forum_time',
@@ -298,7 +301,7 @@ const ForumUI = {
                 index: 2,
                 inlayer: this.sv.name,
                 content: UserSystem.getUserName(lastReply.authorId),
-                pos: { x: 1100, y: posY + this.topic.height / 2 + 2 },
+                pos: { x: px + rowW - 180, y: posY + this.topic.height / 2 + 2 },
                 anchor: { x: 0, y: 0 },
                 size: { width: 160, height: this.topic.height },
                 style: 'style_forum_author',
@@ -309,7 +312,7 @@ const ForumUI = {
                 index: 2,
                 inlayer: this.sv.name,
                 content: Utils.formatRelativeTime(lastReply.timestamp, ForumSystem.NOW_YEAR),
-                pos: { x: 1100, y: posY + this.topic.height / 2 - 2 },
+                pos: { x: px + rowW - 180, y: posY + this.topic.height / 2 - 2 },
                 anchor: { x: 0, y: 100 },
                 size: { width: 160, height: this.topic.height },
                 style: 'style_forum_time',
@@ -378,6 +381,9 @@ const ForumUI = {
 
     _createReplyItem: async function (reply, index, posY, contentHeight) {
         let bgStyle = index % 2 === 0 ? this.topic.bgNormal : this.topic.bgAlt;
+        const px = this.page.paddingX;
+        const rowW = this.page.width - px * 2;
+        const fs = this.reply.fontSize;
 
         // 行底色
         await ac.createImage({
@@ -385,47 +391,47 @@ const ForumUI = {
             index: 1,
             inlayer: this.sv.name,
             resId: bgStyle.resId,
-            pos: { x: 0, y: posY },
+            pos: { x: px, y: posY },
             anchor: { x: 0, y: 0 },
             scale: {
-                x: this.page.width * 100 / bgStyle.width,
+                x: rowW * 100 / bgStyle.width,
                 y: contentHeight * 100 / bgStyle.height,
             },
         });
 
-        // 分隔线（行底部）
+        // 分隔线
         await ac.createImage({
             name: `img_divider_reply_${index}`,
             index: 1,
             inlayer: this.sv.name,
             resId: this.topic.divider.resId,
-            pos: { x: 0, y: posY + contentHeight },
+            pos: { x: px, y: posY + contentHeight },
             anchor: { x: 0, y: 0 },
             scale: {
-                x: this.page.width * 100 / this.topic.divider.width,
+                x: rowW * 100 / this.topic.divider.width,
                 y: this.topic.dividerHeight * 100 / this.topic.divider.height,
             },
         });
 
-        // 头像
+        // 头像（行中央偏上，y 更大 = 视觉更高）
         await ac.createImage({
             name: `img_avatar_${index}`,
             index: 2,
             inlayer: this.sv.name,
             resId: UserSystem.getUserIcon(reply.authorId),
-            pos: { x: 80, y: posY + contentHeight / 2 },
+            pos: { x: px + 64, y: posY + contentHeight / 2 + 12 },
             anchor: { x: 50, y: 50 },
         });
 
-        // 用户名
+        // 用户名（头像下方，y 更小 = 视觉更低）
         await ac.createText({
             name: `lbl_username_${index}`,
             index: 2,
             inlayer: this.sv.name,
             content: UserSystem.getUserName(reply.authorId),
-            pos: { x: 80, y: posY + contentHeight / 2 + 36 },
-            anchor: { x: 50, y: 0 },
-            size: { width: 160, height: this.reply.fontSize },
+            pos: { x: px + 64, y: posY + contentHeight / 2 - 24 },
+            anchor: { x: 50, y: 100 },
+            size: { width: 160, height: fs },
             style: 'style_post_author',
             halign: ac.HALIGN_TYPES.middle,
         });
@@ -436,49 +442,49 @@ const ForumUI = {
             index: 2,
             inlayer: this.sv.name,
             content: reply.content,
-            pos: { x: 180, y: posY + contentHeight - this.reply.padding },
+            pos: { x: px + 150, y: posY + contentHeight - this.reply.padding },
             anchor: { x: 0, y: 100 },
             size: { width: this.reply.width, height: contentHeight - this.reply.padding * 2 },
             style: 'style_post_content',
             valign: ac.VALIGN_TYPES.top,
         });
 
-        // 楼层
+        // 楼层（右下角，时间上方一行）
         await ac.createText({
             name: `lbl_index_${index}`,
             index: 2,
             inlayer: this.sv.name,
             content: `${reply.index}楼`,
-            pos: { x: this.page.width - 150, y: posY + 12 },
-            anchor: { x: 0, y: 0 },
-            size: { width: 60, height: this.reply.fontSize },
+            pos: { x: px + rowW - 16, y: posY + 14 + fs + 6 },
+            anchor: { x: 100, y: 0 },
+            size: { width: 80, height: fs },
             style: 'style_post_time',
-            halign: ac.HALIGN_TYPES.left,
+            halign: ac.HALIGN_TYPES.right,
         });
 
-        // 时间
+        // 时间（右下角，楼层下方）
         await ac.createText({
             name: `lbl_reply_time_${index}`,
             index: 2,
             inlayer: this.sv.name,
             content: Utils.formatRelativeTime(reply.timestamp, ForumSystem.NOW_YEAR),
-            pos: { x: this.page.width - 28, y: posY + 12 },
+            pos: { x: px + rowW - 16, y: posY + 14 },
             anchor: { x: 100, y: 0 },
-            size: { width: 200, height: this.reply.fontSize },
+            size: { width: 200, height: fs },
             style: 'style_post_time',
             halign: ac.HALIGN_TYPES.right,
         });
 
-        // 身份标识（楼主 / 管理员 等）
+        // 身份标识（右上角）
         if (reply.tag) {
             await ac.createText({
                 name: `lbl_author_flag_${index}`,
                 index: 2,
                 inlayer: this.sv.name,
                 content: `[${reply.tag}]`,
-                pos: { x: this.page.width - 28, y: posY + contentHeight - 12 },
+                pos: { x: px + rowW - 16, y: posY + contentHeight - 14 },
                 anchor: { x: 100, y: 100 },
-                size: { width: 100, height: this.reply.fontSize },
+                size: { width: 100, height: fs },
                 style: 'style_post_tag',
                 halign: ac.HALIGN_TYPES.right,
                 valign: ac.VALIGN_TYPES.top,
@@ -492,6 +498,8 @@ const ForumUI = {
         const btnW = this.pagination.btnWidth;
         const btnH = this.pagination.btnHeight;
         const btnGap = this.pagination.btnGap;
+        const px = this.page.paddingX;
+        const rowW = this.page.width - px * 2;
 
         // 分页栏底色
         await ac.createImage({
@@ -499,10 +507,10 @@ const ForumUI = {
             index: 1,
             inlayer: this.sv.name,
             resId: this.pagination.bg.resId,
-            pos: { x: 0, y: 0 },
+            pos: { x: px, y: 0 },
             anchor: { x: 0, y: 0 },
             scale: {
-                x: this.page.width * 100 / this.pagination.bg.width,
+                x: rowW * 100 / this.pagination.bg.width,
                 y: paginationH * 100 / this.pagination.bg.height,
             },
         });
@@ -513,19 +521,18 @@ const ForumUI = {
             index: 1,
             inlayer: this.sv.name,
             resId: this.topic.divider.resId,
-            pos: { x: 0, y: paginationH },
+            pos: { x: px, y: paginationH },
             anchor: { x: 0, y: 100 },
             scale: {
-                x: this.page.width * 100 / this.topic.divider.width,
+                x: rowW * 100 / this.topic.divider.width,
                 y: separatorH * 100 / this.topic.divider.height,
             },
         });
 
         for (let i = 1; i <= pageCount; i++) {
-            let x = 28 + (i - 1) * (btnW + btnGap);
+            let x = px + 16 + (i - 1) * (btnW + btnGap);
             let isCurrent = i === currentPage;
 
-            // 按钮底图
             await ac.createImage({
                 name: `img_page_btn_${i}`,
                 index: 1,
@@ -536,7 +543,6 @@ const ForumUI = {
                 scale: { x: btnW * 100 / 32, y: btnH * 100 / 32 },
             });
 
-            // 按钮文字
             await ac.createText({
                 name: `btn_page_${i}`,
                 index: 2,

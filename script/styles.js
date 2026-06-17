@@ -82,14 +82,14 @@ ac.createStyle({
     name: 'style_forum_topic',
     font: '微软雅黑',
     bold: false, italic: false,
-    fontSize: 24, color: '#d4935a',   // 未读帖子标题（橙色）
+    fontSize: 24, color: '#c5c5c5',   // 未读帖子标题（默认灰色）
 });
 
 ac.createStyle({
     name: 'style_forum_topic_read',
     font: '微软雅黑',
     bold: false, italic: false,
-    fontSize: 24, color: '#c5c5c5',   // 已读帖子标题（灰色）
+    fontSize: 24, color: '#d4935a',   // 已读帖子标题（橙色高亮）
 });
 
 ac.createStyle({
@@ -125,7 +125,7 @@ ac.createStyle({
     name: 'style_post_author',
     font: '微软雅黑',
     bold: false, italic: false,
-    fontSize: 20, color: '#aaaaaa',   // 回复区用户名
+    fontSize: 18, color: '#aaaaaa',   // 回复区用户名
 });
 
 ac.createStyle({
