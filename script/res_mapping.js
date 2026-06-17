@@ -21,8 +21,14 @@ const HelloADVRes = {
     img_selection_bg_disabled: '$186021901',
 
     // 论坛
-    img_forum_topic_bg_normal: '$183003987',
-    img_forum_topic_bg_highlight: '$183071397',
+    img_forum_header_bg: '$193795904',
+    img_forum_content_bg: '$193795901',
+    img_forum_row_normal: '$193795914',
+    img_forum_row_alt: '$193795911',
+    img_forum_divider: '$193795903',
+    img_forum_pagination_bg: '$193795909',
+    img_forum_page_btn: '$193795906',
+    img_forum_page_btn_active: '$193795908',
     btn_web_close_normal: '$183130998',
     btn_web_close_highlight: '$183130996',
     pic_desktop_bg: '$182982547',
@@ -205,8 +211,14 @@ const DongHaiRes = {
     img_selection_bg_disabled: '$186021889',
     
     // 论坛
-    img_forum_topic_bg_normal: '$185360106',
-    img_forum_topic_bg_highlight: '$185360105',
+    img_forum_header_bg: '$193795904',
+    img_forum_content_bg: '$193795901',
+    img_forum_row_normal: '$193795914',
+    img_forum_row_alt: '$193795911',
+    img_forum_divider: '$193795903',
+    img_forum_pagination_bg: '$193795909',
+    img_forum_page_btn: '$193795906',
+    img_forum_page_btn_active: '$193795908',
     btn_web_close_normal: '$185360101',
     btn_web_close_highlight: '$185360102',
     pic_desktop_bg: '$185360027',
