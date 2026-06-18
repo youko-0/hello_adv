@@ -19,6 +19,13 @@ ac.createStyle({
 });
 
 ac.createStyle({
+    name: 'style_common_dialog_red',
+    font: '思源宋体',
+    bold: false, italic: false,
+    fontSize: 24, color: '#bd1725',
+});
+
+ac.createStyle({
     name: 'style_common_option',
     font: '思源宋体',
     bold: false, italic: false,

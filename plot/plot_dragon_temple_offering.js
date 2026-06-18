@@ -1,10 +1,16 @@
-// 龙三太子神像上贡剧情
+// 龙三太子神像上供剧情
 console.log('[LOAD] plot_dragon_temple_offering');
 
+await ac.sysDialogOn({
+    content: '是否要为龙三太子的神像上供？\n<tag style=style_common_dialog_red>（重要提示：无论上供道具是否正确，都会从背包里扣除该道具，请谨慎选择。）</tag>',
+    hasRoleName: false,
+    hasBg: true,
+    hasRoleAvatar: false,
+});
 const choiceIndex = await CommonUI.showCustomOptionGroup({
     options: [
-        { content: '不上贡' },
-        { content: '上贡' },
+        { content: '不上供。' },
+        { content: '上供。' },
     ],
 });
 
@@ -12,18 +18,24 @@ let itemId = '';
 if (choiceIndex === 1) {
     itemId = await BagUI.open({ mode: 'choose' });
     console.log('[LOG] 选择物品', itemId);
+    // 如果选择了物品，消耗道具
+    if (itemId) {
+        await InventorySystem.useItem(itemId);
+        await CommonUI.showCustomDialog({ content: '一阵烟雾飘过，供品不见了。' });
+    }
 }
 
 switch (itemId) {
     case 'item_spirit_eye':
         await ac.sysDialogOn({
             roleName: '？？',
-            content: '是李云祥赐予你的技能？那你就好好收着吧。',
+            content: '这是李云祥赐予你的技能？怎么不好好收着？',
             hasRoleName: true,
             hasBg: true,
             hasRoleAvatar: false,
         });
         break;
+
 
     case 'item_pendant':
         await ac.sysDialogOn({
@@ -66,70 +78,6 @@ switch (itemId) {
         break;
 
     case 'item_motorcycle_key':
-        await ac.sysDialogOn({
-            roleName: '？？',
-            content: '（开心地哼歌）哼哼，李云祥那家伙居然敢不给本少爷红莲，还不是叫我拿到了~',
-            hasRoleName: true,
-            hasBg: true,
-            hasRoleAvatar: false,
-        });
-        await ac.sysDialogOn({
-            roleName: '我',
-            content: '唔……我好像见过你。',
-            hasRoleName: true,
-            hasBg: true,
-            hasRoleAvatar: false,
-        });
-        await ac.sysDialogOn({
-            roleName: '我',
-            content: '你该不会是那个……',
-            hasRoleName: true,
-            hasBg: true,
-            hasRoleAvatar: false,
-        });
-        await ac.sysDialogOn({
-            roleName: '？？',
-            content: '好没新意的杀猪盘套路。',
-            hasRoleName: true,
-            hasBg: true,
-            hasRoleAvatar: false,
-        });
-        await ac.sysDialogOn({
-            roleName: '我',
-            content: '（怒）才不是杀猪盘！',
-            hasRoleName: true,
-            hasBg: true,
-            hasRoleAvatar: false,
-        });
-        await ac.sysDialogOn({
-            roleName: '？？',
-            content: '咦？仔细一看，你确实让我有点眼熟……',
-            hasRoleName: true,
-            hasBg: true,
-            hasRoleAvatar: false,
-        });
-        await ac.sysDialogOn({
-            roleName: '？？',
-            content: '看在你诚心诚意向我献上红莲钥匙的份上，本太子就大慈大悲地赏你一件礼物吧。',
-            hasRoleName: true,
-            hasBg: true,
-            hasRoleAvatar: false,
-        });
-        await ac.sysDialogOn({
-            roleName: '我',
-            content: '（立刻跪下，伸出双手）谢谢丙丙大王，大王万岁万岁万万岁。',
-            hasRoleName: true,
-            hasBg: true,
-            hasRoleAvatar: false,
-        });
-        await ac.sysDialogOn({
-            roleName: '？？',
-            content: '（嫌弃）居然咒我短命。',
-            hasRoleName: true,
-            hasBg: true,
-            hasRoleAvatar: false,
-        });
-        await InventoryUI.gainItem('item_blessing')
         break;
 
     default:
@@ -142,6 +90,105 @@ switch (itemId) {
             hasRoleAvatar: false,
         });
         break;
+}
+
+// 上供了正确道具（车钥匙/红莲）
+if (itemId === 'item_motorcycle_key') {
+    await ac.sysDialogOn({
+        roleName: '？？',
+        content: '（开心地哼歌）哼哼，李云祥那家伙居然敢不给本少爷红莲，还不是叫我拿到了~',
+        hasRoleName: true,
+        hasBg: true,
+        hasRoleAvatar: false,
+    });
+    await ac.sysDialogOn({
+        roleName: '我',
+        content: '唔……我好像见过你。',
+        hasRoleName: true,
+        hasBg: true,
+        hasRoleAvatar: false,
+    });
+    await ac.sysDialogOn({
+        roleName: '？？',
+        content: '好没新意的杀猪盘套路。',
+        hasRoleName: true,
+        hasBg: true,
+        hasRoleAvatar: false,
+    });
+    await ac.sysDialogOn({
+        roleName: '我',
+        content: '（怒）才不是杀猪盘！',
+        hasRoleName: true,
+        hasBg: true,
+        hasRoleAvatar: false,
+    });
+    await ac.sysDialogOn({
+        roleName: '？？',
+        content: '咦？仔细一看，你确实让我有点眼熟……',
+        hasRoleName: true,
+        hasBg: true,
+        hasRoleAvatar: false,
+    });
+    await ac.sysDialogOn({
+        roleName: '？？',
+        content: '看在你诚心诚意向我献上红莲钥匙的份上，本太子就大慈大悲地赏你一件礼物吧。',
+        hasRoleName: true,
+        hasBg: true,
+        hasRoleAvatar: false,
+    });
+    await ac.sysDialogOn({
+        roleName: '我',
+        content: '（立刻跪下，伸出双手）谢谢丙丙大王，大王万岁万岁万万岁。',
+        hasRoleName: true,
+        hasBg: true,
+        hasRoleAvatar: false,
+    });
+    await ac.sysDialogOn({
+        roleName: '？？',
+        content: '（嫌弃）大胆凡人，居然咒我短命。',
+        hasRoleName: true,
+        hasBg: true,
+        hasRoleAvatar: false,
+    });
+    await InventoryUI.gainItem('item_blessing');
+}
+
+// 上供了非正确道具，小舅妈不领情
+if (itemId && itemId !== 'item_motorcycle_key') {
+    await ac.sysDialogOn({
+        roleName: '我',
+        content: '不需要的话倒是还给我啊！',
+        hasRoleName: true,
+        hasBg: true,
+        hasRoleAvatar: false,
+    });
+    await ac.sysDialogOn({
+        roleName: '我',
+        content: '……',
+        hasRoleName: true,
+        hasBg: true,
+        hasRoleAvatar: false,
+    });
+    await ac.sysDialogOn({
+        roleName: '我',
+        content: '你真的是我小舅妈吗！大人怎么可以抢孩子的东西！',
+        hasRoleName: true,
+        hasBg: true,
+        hasRoleAvatar: false,
+    });
+    await ac.sysDialogOn({
+        content: '小舅妈已经下线了。',
+        hasRoleName: false,
+        hasBg: true,
+        hasRoleAvatar: false,
+    });
+    await ac.sysDialogOn({
+        roleName: '我',
+        content: '呜呜呜！',
+        hasRoleName: true,
+        hasBg: true,
+        hasRoleAvatar: false,
+    });
 }
 
 await ac.sysDialogOff({});
