@@ -89,68 +89,8 @@ switch (itemId) {
             hasBg: true,
             hasRoleAvatar: false,
         });
-        break;
-}
-
-// 上供了正确道具（车钥匙/红莲）
-if (itemId === 'item_motorcycle_key') {
-    await ac.sysDialogOn({
-        roleName: '？？',
-        content: '（开心地哼歌）哼哼，李云祥那家伙居然敢不给本少爷红莲，还不是叫我拿到了~',
-        hasRoleName: true,
-        hasBg: true,
-        hasRoleAvatar: false,
-    });
-    await ac.sysDialogOn({
-        roleName: '我',
-        content: '唔……我好像见过你。',
-        hasRoleName: true,
-        hasBg: true,
-        hasRoleAvatar: false,
-    });
-    await ac.sysDialogOn({
-        roleName: '？？',
-        content: '好没新意的杀猪盘套路。',
-        hasRoleName: true,
-        hasBg: true,
-        hasRoleAvatar: false,
-    });
-    await ac.sysDialogOn({
-        roleName: '我',
-        content: '（怒）才不是杀猪盘！',
-        hasRoleName: true,
-        hasBg: true,
-        hasRoleAvatar: false,
-    });
-    await ac.sysDialogOn({
-        roleName: '？？',
-        content: '咦？仔细一看，你确实让我有点眼熟……',
-        hasRoleName: true,
-        hasBg: true,
-        hasRoleAvatar: false,
-    });
-    await ac.sysDialogOn({
-        roleName: '？？',
-        content: '看在你诚心诚意向我献上红莲钥匙的份上，本太子就大慈大悲地赏你一件礼物吧。',
-        hasRoleName: true,
-        hasBg: true,
-        hasRoleAvatar: false,
-    });
-    await ac.sysDialogOn({
-        roleName: '我',
-        content: '（立刻跪下，伸出双手）谢谢丙丙大王，大王万岁万岁万万岁。',
-        hasRoleName: true,
-        hasBg: true,
-        hasRoleAvatar: false,
-    });
-    await ac.sysDialogOn({
-        roleName: '？？',
-        content: '（嫌弃）大胆凡人，居然咒我短命。',
-        hasRoleName: true,
-        hasBg: true,
-        hasRoleAvatar: false,
-    });
-    await InventoryUI.gainItem('item_blessing');
+        // 提前打断回到地图
+        await PlotSystem.enterPlotMap()
 }
 
 // 上供了非正确道具，小舅妈不领情
@@ -189,6 +129,108 @@ if (itemId && itemId !== 'item_motorcycle_key') {
         hasBg: true,
         hasRoleAvatar: false,
     });
+
+    // 提前打断回到地图
+    await PlotSystem.enterPlotMap()
 }
 
-await ac.sysDialogOff({});
+// 上供了正确道具（车钥匙/红莲）
+await ac.sysDialogOn({
+    roleName: '？？',
+    content: '（开心地哼歌）哼哼，李云祥那家伙居然敢不给本少爷红莲，还不是叫我拿到了~',
+    hasRoleName: true,
+    hasBg: true,
+    hasRoleAvatar: false,
+});
+await ac.sysDialogOn({
+    roleName: '我',
+    content: '唔……我好像见过你。',
+    hasRoleName: true,
+    hasBg: true,
+    hasRoleAvatar: false,
+});
+await ac.sysDialogOn({
+    roleName: '？？',
+    content: '好没新意的杀猪盘套路。',
+    hasRoleName: true,
+    hasBg: true,
+    hasRoleAvatar: false,
+});
+await ac.sysDialogOn({
+    roleName: '我',
+    content: '（怒）才不是杀猪盘！',
+    hasRoleName: true,
+    hasBg: true,
+    hasRoleAvatar: false,
+});
+await ac.sysDialogOn({
+    roleName: '？？',
+    content: '咦？仔细一看，你确实让我有点眼熟……',
+    hasRoleName: true,
+    hasBg: true,
+    hasRoleAvatar: false,
+});
+await ac.sysDialogOn({
+    roleName: '？？',
+    content: '看在你诚心诚意向我献上红莲钥匙的份上，本太子就大慈大悲地赏你一件礼物吧。',
+    hasRoleName: true,
+    hasBg: true,
+    hasRoleAvatar: false,
+});
+await ac.sysDialogOn({
+    roleName: '我',
+    content: '（立刻跪下，伸出双手）谢谢丙丙大王，大王万岁万岁万万岁。',
+    hasRoleName: true,
+    hasBg: true,
+    hasRoleAvatar: false,
+});
+await ac.sysDialogOn({
+    roleName: '？？',
+    content: '（嫌弃）大胆凡人，居然咒我短命。',
+    hasRoleName: true,
+    hasBg: true,
+    hasRoleAvatar: false,
+});
+await InventoryUI.gainItem('item_blessing');
+
+await ac.sysDialogOn({
+    roleName: `角色名`,
+    content: `我冲出大殿，感动涕零地握住刚才那个少女的手。`,
+    id: 10436456,
+    hasRoleName: false,
+    hasBg: true,
+    hasRoleAvatar: false,
+    roleAvatarResId: '$1528927',
+});
+
+await ac.sysDialogOn({
+    roleName: `我`,
+    content: `你家产，不，我家产是真的！！！`,
+    id: 10436456,
+    hasRoleName: true,
+    hasBg: true,
+    hasRoleAvatar: false,
+    roleAvatarResId: '$1528927',
+});
+
+await ac.sysDialogOn({
+    roleName: `少女`,
+    content: `啊？`,
+    id: 10436456,
+    hasRoleName: true,
+    hasBg: true,
+    hasRoleAvatar: false,
+    roleAvatarResId: '$1528927',
+});
+
+await ac.sysDialogOn({
+    roleName: `我`,
+    content: `（激动）全体东海人必须、立刻给我磕这对cp！`,
+    id: 10436456,
+    hasRoleName: true,
+    hasBg: true,
+    hasRoleAvatar: false,
+    roleAvatarResId: '$1528927',
+});
+
+await PlotSystem.enterPlotMap()
