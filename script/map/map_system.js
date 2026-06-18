@@ -22,8 +22,10 @@ const MapSystem = createSystem(
                 pos: { x: 874, y: 389 },
                 plot: ResMap.plot_undercity,
                 plotLoop: ResMap.plot_undercity_loop,
-                // 关键道具
-                inventory: ['item_pendant'],
+                inventory: [
+                    { id: 'item_motorcycle_key' },
+                    { id: 'item_pendant' },
+                ],
             },
             area2: {
                 name: "赛车场",
@@ -33,7 +35,9 @@ const MapSystem = createSystem(
                 pos: { x: 766, y: 197 },
                 plot: ResMap.plot_circuit,
                 plotLoop: ResMap.plot_circuit_loop,
-                inventory: ['item_armor'],
+                inventory: [
+                    { id: 'item_armor' },
+                ],
             },
             area3: {
                 name: "哪吒庙",
@@ -43,7 +47,9 @@ const MapSystem = createSystem(
                 pos: { x: 629, y: 602 },
                 plot: ResMap.plot_nezha_temple,
                 plotLoop: ResMap.plot_nezha_temple_loop,
-                inventory: ['item_compass'],
+                inventory: [
+                    { id: 'item_compass' },
+                ],
             },
             area4: {
                 name: "龙王庙",
@@ -53,7 +59,9 @@ const MapSystem = createSystem(
                 pos: { x: 514, y: 431 },
                 plot: ResMap.plot_dragon_temple,
                 plotLoop: ResMap.plot_dragon_temple_loop,
-                inventory: ['item_blessing'],
+                inventory: [
+                    { id: 'item_blessing', plotPending: ResMap.plot_dragon_temple_offering },
+                ],
             },
             area5: {
                 name: "德兴大厦",
@@ -63,7 +71,9 @@ const MapSystem = createSystem(
                 pos: { x: 1098, y: 294 },
                 plot: ResMap.plot_dexing_tower,
                 plotLoop: ResMap.plot_dexing_tower_loop,
-                inventory: ['item_visa'],
+                inventory: [
+                    { id: 'item_visa' },
+                ],
             }
         },
 
@@ -132,7 +142,7 @@ const MapSystem = createSystem(
             const inventory = this.getAreaConfig(areaId).inventory;
             for (let item of inventory) {
                 // 这里判断历史获得数量, 因为道具可能被使用
-                if (InventorySystem.getHistoryCount(item) <= 0) {
+                if (InventorySystem.getHistoryCount(item.id) <= 0) {
                     return false;
                 }
             }
@@ -158,11 +168,35 @@ const MapSystem = createSystem(
             });
         },
 
+        /**
+         * 返回该区域 inventory 里第一个还没获得的关键道具条目, 全部获得返回 null
+         * @param {string} areaId
+         */
+        getMissingItem: function (areaId) {
+            const inventory = this.getAreaConfig(areaId).inventory || [];
+            for (let item of inventory) {
+                if (InventorySystem.getHistoryCount(item.id) <= 0) {
+                    return item;
+                }
+            }
+            return null;
+        },
+
         // 前往区域
         onGotoArea: async function (areaId) {
             const areaConfig = this.getAreaConfig(areaId);
-            let flag = this.isCleared(areaId);
-            let plotId = flag ? areaConfig.plotLoop : areaConfig.plot;
+            let plotId;
+            if (this.isCleared(areaId)) {
+                // 已探索完成
+                plotId = areaConfig.plotLoop;
+            } else if (this.isVisited(areaId)) {
+                // 已访问但未完成, 按缺失道具定位剧情
+                const missing = this.getMissingItem(areaId);
+                plotId = (missing && missing.plotPending) || areaConfig.plot;
+            } else {
+                // 首次进入
+                plotId = areaConfig.plot;
+            }
             // 保存当前访问区域
             this.saveAreaId(areaId);
             await ac.jump({
