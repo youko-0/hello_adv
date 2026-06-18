@@ -58,7 +58,7 @@ const BagUI = {
      * 打开背包，通过 ac.callUI 打开真正的 UI 层（入口 ui/ui_bag.js）
      * @param {Object}   [config]
      * @param {string}   [config.mode='view']  'view' | 'choose'
-     *        choose 模式下 btn_view 变为 btn_use，点击使用后关闭背包
+     *        choose 模式下 btn_view 变为 btn_choose，点击使用后关闭背包
      * @param {string}   [config.selectedId]   默认选中的道具 ID，不传则选中第一个
      * @returns {Promise<string>} choose 模式返回选中的道具 ID（未选择返回 ''）；view 模式返回 ''
      */
@@ -70,7 +70,7 @@ const BagUI = {
             chosenId:   '',
         });
         await ac.callUI({ name: 'callUI_bag', uiId: ResMap.ui_bag });
-        // callUI 返回后读取选择结果（由 btn_use 写入）
+        // callUI 返回后读取选择结果（由 btn_choose 写入）
         return this._loadState().chosenId || '';
     },
 
@@ -330,23 +330,28 @@ const BagUI = {
         if (this._mode === 'choose') {
             const canUse = InventorySystem.getItemCount(itemId) > 0;
             await ac.createOption({
-                name:    'btn_use_item',
+                name:    'btn_choose_item',
                 index:   2,
                 inlayer: this.name,
-                nResId:  ResMap.btn_item_use_normal,
-                sResId:  ResMap.btn_item_use_highlight,
+                nResId: ResMap.btn_item_choose_normal,
+                sResId: ResMap.btn_item_choose_highlight,
                 content: '',
                 pos:     { x: cx, y: 144 },
                 anchor:  { x: 50, y: 50 },
-                opacity: canUse ? 100 : 40,
                 onTouchEnded: async function () {
-                    if (!canUse) return;
+                    if (!canUse) {
+                        await CommonUI.showCustomDialog({ content: `【${itemName}】数量不足` });
+                        return;
+                    }
                     // 写入选择结果，供 open() 在 callUI 返回后读取
                     BagUI._saveState({ chosenId: itemId });
                     // 关闭背包，消耗与否由调用方决定
                     await BagUI.closeBagUI();
                 },
             });
+            if (!canUse) {
+                await ac.changeMaskTo({ name: 'btn_choose_item', r: 0, g: 0, b: 0, opacity: 60 });
+            }
         } else {
             await ac.createOption({
                 name:    'btn_view_item',

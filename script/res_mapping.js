@@ -46,8 +46,8 @@ const HelloADVRes = {
     img_bag_detail_bg: '$183685565',
     btn_item_view_normal: '$183658485',
     btn_item_view_highlight: '$183658484',
-    btn_item_use_normal: '$183658483',
-    btn_item_use_highlight: '$183658482',
+    btn_item_choose_normal: '$183658483',
+    btn_item_choose_highlight: '$183658482',
 
     // 地图
     pic_map_bg: '$183497324',
@@ -236,8 +236,8 @@ const DongHaiRes = {
     img_bag_detail_bg: '$185360087',
     btn_item_view_normal: '$185360091',
     btn_item_view_highlight: '$185360092',
-    btn_item_use_normal: '$185360093',
-    btn_item_use_highlight: '$185360094',
+    btn_item_choose_normal: '$185360093',
+    btn_item_choose_highlight: '$185360094',
     
     // 地图
     pic_map_bg: '$185360025',
