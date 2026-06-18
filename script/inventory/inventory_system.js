@@ -162,36 +162,26 @@ const InventorySystem = createSystem(
             const config = ItemConfig[itemId];
             if (!config) return false;
 
-            // 1. 检查数量
-            if (this.getItemCount(itemId) < itemNum) {
-                await CommonUI.showAlert("物品数量不足！");
-                return false;
-            }
-
-            // 2. 检查类型 (只有消耗品和关键道具可主动使用)
-            // 假设 ItemType 是全局枚举
+            // 1. 检查类型 (只有消耗品和关键道具可主动使用)
             if (config.type !== ItemType.CONSUMABLE && config.type !== ItemType.KEY) {
-                console.log(`[Inventory] ${config.name} 不可直接使用`);
+                await CommonUI.showCustomDialog({ content: `${config.name} 不可使用` });
                 return false;
             }
 
-            // 3. 执行效果
-            // 先执行效果，成功后再扣除物品
-            let success = true;
-            if (typeof config.effect === 'function') {
-                console.log(`[Inventory] 正在使用 ${config.name}...`);
-                success = await config.effect();
-            }
-
-            if (!success) {
-                await CommonUI.showAlert(`${config.name} 使用无效`);
+            // 2. 检查数量
+            if (this.getItemCount(itemId) < itemNum) {
+                await CommonUI.showCustomDialog({ content: `${config.name} 数量不足` });
                 return false;
-            }
+            }            
 
-            // 4. 扣除物品
+            // 3. 扣除物品
             this.removeItem(itemId, itemNum);
 
-            await CommonUI.showAlert(`使用了 ${itemNum} 个 ${config.name}`);
+            // 4. 执行效果
+            if (typeof config.effect === 'function') {
+                console.log(`[Inventory] 正在使用 ${config.name}...`);
+                await config.effect();
+            }
             return true;
         },
 

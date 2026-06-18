@@ -7,7 +7,6 @@ const ZORDER = {
     OVERLAY: 10,   // 全屏覆盖场景（论坛桌面、浏览器等）
     UI:      20,   // 普通面板（背包面板、占卜等）
     DIALOG:  50,   // 对话框
-    POPUP:   100,  // 模态弹窗
     EFFECT:  500,  // 特效与全屏转场（粒子、眨眼遮罩）
 }
 
@@ -15,30 +14,6 @@ const CommonUI = {
     // 黑条
     toast: {
         name: 'layer_toast',
-    },
-    // 弹窗
-    alert: {
-        name: 'layer_alert',
-        width: 600,
-        height: 400,
-        mask: {
-            resId: ResMap.img_mask_black,
-            width: 32,
-            height: 32,
-        },
-        bg: {
-            resId: ResMap.img_forum_topic_bg_normal,
-            width: 32,
-            height: 32,
-        },
-        style: {
-            name: 'style_common_alert',
-            font: '思源宋体',
-            bold: false,
-            italic: false,
-            fontSize: 24,
-            color: '#d1d3df',
-        },
     },
     // 对话框
     dialog: {
@@ -101,112 +76,6 @@ const CommonUI = {
     // 通用点击拦截函数
     onTouchMask: async function (params) {
         console.log('[LOG] onTouchMask', this, params);
-    },
-
-    /**
-     * 弹窗
-     * @param {Object} config 配置项
-     * @param {string} config.onConfirm 确认回调函数
-     */
-    showAlert: async function (content, config) {
-        async function onClickBtnConfirm() {
-            ac.remove({
-                name: CommonUI.alert.name,
-                effect: 'normal',
-                duration: 0,
-                canskip: false,
-            });
-
-            // 如果传了回调函数，就执行它
-            if (config.onConfirm) await config.onConfirm();
-        }
-
-        // 容器
-        await ac.createLayer({
-            name: this.alert.name,
-            index: ZORDER.POPUP,
-            inlayer: 'window',
-            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
-            size: { width: this.alert.width, height: this.alert.height },
-            anchor: { x: 50, y: 50 },
-            clipMode: false,
-        });
-
-        await ac.createImage({
-            name: "layer_alert_mask",
-            index: 0,
-            inlayer: this.alert.name,
-            resId: this.alert.mask.resId,
-            pos: { x: this.alert.width / 2, y: this.alert.height / 2 },
-            anchor: { x: 50, y: 50 },
-            scale: {
-                x: GameConfig.width * 100 / this.alert.mask.width,
-                y: GameConfig.height * 100 / this.alert.mask.height,
-            },
-            opacity: 60,
-        });
-
-        await ac.createImage({
-            name: "img_alert_bg",
-            index: 1,
-            inlayer: this.alert.name,
-            resId: this.alert.bg.resId,
-            pos: {
-                x: this.alert.width / 2,
-                y: this.alert.height / 2
-            },
-            anchor: { x: 50, y: 50 },
-            scale: {
-                x: this.alert.width * 100 / this.alert.bg.width,
-                y: this.alert.height * 100 / this.alert.bg.height,
-            },
-            opacity: 100,
-        });
-
-        await ac.createText({
-            name: "txt_alert_content",
-            index: 2,
-            inlayer: this.alert.name,
-            content: content,
-            pos: {
-                x: this.alert.width / 2,
-                y: this.alert.height / 2 + 60
-            },
-            anchor: { x: 50, y: 50 },
-            size: { width: this.alert.width - 80, height: this.alert.height - 100 },
-            style: this.alert.style.name,
-            valign: ac.VALIGN_TYPES.center,
-            halign: ac.HALIGN_TYPES.middle,
-        });
-
-        await ac.createText({
-            name: "btn_alert_confirm",
-            index: 2,
-            inlayer: this.alert.name,
-            content: "确定",
-            pos: {
-                x: this.alert.width / 2,
-                y: this.alert.height / 2 - 60
-            },
-            anchor: { x: 50, y: 50 },
-            size: { width: 100, height: 60 },
-            style: this.alert.style.name,
-            halign: ac.HALIGN_TYPES.middle,
-        });
-
-        // 拦截点击
-        ac.addEventListener({
-            type: ac.EVENT_TYPES.onTouchBegan,
-            listener: this.onTouchMask,
-            target: "layer_alert_mask",
-        });
-
-        // 确定按钮
-        ac.addEventListener({
-            type: ac.EVENT_TYPES.onTouchEnded,
-            listener: onClickBtnConfirm,
-            target: "btn_alert_confirm",
-        });
     },
 
     /**
