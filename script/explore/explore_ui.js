@@ -156,7 +156,7 @@ const ExploreUI = {
     createInteractableItem: async function (itemId, pos, sceneId) {
         const itemConfig = ItemConfig[itemId];
         const nResId = itemConfig.sprite;
-        const sResId = itemConfig.spriteHighlight || nResId;
+        const sResId = itemConfig.spriteHighlighted || nResId;
         await ac.createOption({
             name:    this.getItemControlName(itemId),
             index:   2,     // 按钮层级高于已查看物体, 用来做切换
