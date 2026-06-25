@@ -39,35 +39,39 @@ const PlotSystem = {
     },
 
     /**
-     * 灵视道具专属判断接口：显示回溯选项，拥有灵视继续剧情，否则执行失败剧情
-     * @param {Function} successBranch 拥有灵视时的剧情回调（继续剧情）
+     * 灵视道具专属判断接口：显示回溯选项，点击后检查是否拥有灵视，有则继续剧情，否则提示并跳转失败剧情
+     * @param {number} [failPlot] 失败剧情ID（数字），不传则默认取 ResMap.plot_bad_end_without_spirit_eye
      */
-    showSpiritEyeOption: async function () {
+    showSpiritEyeOption: async function (failPlot) {
         await ac.sysDialogOff({});
         await CommonUI.showCustomDialog({
             content: '是否进入回溯？',
             closeType: 2,
-        })
-        let flag = await this.showItemCheckOption({
-            itemId: 'item_spirit_eye',
-            optionText1: '进入回溯',
-            callback1: null,    // 然后会走后续剧情
-            optionText2: '不进入回溯',
-            callback2: async () => {
-                await ac.jump({
-                    plotID: ResMap.plot_bad_end_without_spirit_eye,
-                    transition: ac.SCENE_TRANSITION_TYPES.fade,
-                    duration: 1000,
-                });
-            },
         });
-        await CommonUI.closeCustomDialog();
-        // if (flag == 0) {
-        //     // 走后续剧情
-        // }
-        // else {
-        //     // 跳去失败剧情
-        // }
+        await CommonUI.showCustomOptionGroup({
+            options: [
+                {
+                    content: '进入回溯',
+                    callback: null,
+                    enabled: true,
+                },
+            ],
+        });
+        const hasItem = InventorySystem.getItemCount('item_spirit_eye') > 0;
+        console.log(`[Plot] 检查道具 item_spirit_eye, 是否拥有: ${hasItem}`);
+        if (!hasItem) {
+            await CommonUI.showCustomDialog({
+                content: '缺少关键道具【灵视】，回溯失败',
+                // closeType: 2,
+            });
+            await ac.jump({
+                plotID: failPlot || ResMap.plot_bad_end_without_spirit_eye,
+                transition: ac.SCENE_TRANSITION_TYPES.fade,
+                duration: 1000,
+            });
+        } else {
+            await CommonUI.closeCustomDialog();
+        }
     },
 
     enterPlotMap: async function () {
