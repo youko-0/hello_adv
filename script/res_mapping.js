@@ -22,6 +22,9 @@ const HelloADVRes = {
 
     // 论坛
     img_forum_header_bg: '$193795904',
+    img_forum_banner_0: '',
+    img_forum_banner_1: '',
+    img_forum_banner_2: '',
     img_forum_content_bg: '$193795901',
     img_forum_row_normal: '$193795914',
     img_forum_row_alt: '$193795911',
@@ -226,6 +229,9 @@ const DongHaiRes = {
     img_forum_pagination_bg: '$193795909',
     img_forum_page_btn: '$193795906',
     img_forum_page_btn_active: '$193795908',
+    img_forum_banner_0: '$194640339',
+    img_forum_banner_1: '$194640340',
+    img_forum_banner_2: '$194641831',
     btn_web_close_normal: '$185360101',
     btn_web_close_highlight: '$185360102',
     pic_desktop_bg: '$185360027',

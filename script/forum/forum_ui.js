@@ -24,6 +24,16 @@ const ForumUI = {
             height: 32,
             resId: ResMap.img_forum_header_bg,
         },
+        // Banner 轮播配置
+        banners: [
+            ResMap.img_forum_banner_0,
+            ResMap.img_forum_banner_1,
+            ResMap.img_forum_banner_2,
+        ],
+        bannerImgWidth: 1200,   // 源图片宽度
+        bannerImgHeight: 160,   // 源图片高度
+        bannerInterval: 3000,   // 轮播间隔（ms）
+        bannerSlide: 500,       // 滑动动画时长（ms）
     },
     // 内容区统一底板
     contentBg: {
@@ -153,19 +163,8 @@ const ForumUI = {
             verticalScroll: true,
         });
 
-        // 版头
-        await ac.createImage({
-            name: 'img_header_bg',
-            index: 0,
-            inlayer: this.sv.name,
-            resId: this.header.bg.resId,
-            pos: { x: 0, y: pageHeight },
-            anchor: { x: 0, y: 100 },
-            scale: {
-                x: this.header.width * 100 / this.header.bg.width,
-                y: this.header.height * 100 / this.header.bg.height,
-            },
-        });
+        // 版头（由 _createHeader 负责，固定不随 scrollview 滚动）
+        // scrollview 内不再单独铺 header_bg
 
         // 内容区统一底板（版头下方到底部）
         const contentTop = pageHeight - this.header.height;
@@ -182,6 +181,99 @@ const ForumUI = {
                 y: contentHeight * 100 / this.contentBg.height,
             },
         });
+
+        // 版头（含 banner 轮播，放在 scrollview 内顶部位置）
+        await this._createHeader(pageHeight);
+    },
+
+    // ── 版头 & Banner 轮播 ─────────────────────────────────────────
+
+    /**
+     * 在 scrollview 顶部创建 layer_forum_header，内含背景 + 三张滑动 banner
+     * @param {number} pageHeight scrollview 内容总高度（用于定位顶部）
+     */
+    _createHeader: async function (pageHeight) {
+        const h = this.header;
+        const layerW = h.width;
+        const layerH = h.height;
+
+        // 拉伸铺满 header 层（宽高各自适配，不留边距）
+        const scaleX = Math.round(layerW * 100 / h.bannerImgWidth);
+        const scaleY = Math.round(layerH * 100 / h.bannerImgHeight);
+
+        // header 层：在 scrollview 内，y-up 坐标顶部，裁切超出部分
+        await ac.createLayer({
+            name: 'layer_forum_header',
+            index: 1,
+            inlayer: this.sv.name,
+            pos: { x: 0, y: pageHeight },
+            anchor: { x: 0, y: 100 },
+            size: { width: layerW, height: layerH },
+            clipMode: true,
+        });
+
+        // header 背景（兜底色，banner 下方）
+        await ac.createImage({
+            name: 'img_header_bg',
+            index: 0,
+            inlayer: 'layer_forum_header',
+            resId: h.bg.resId,
+            pos: { x: 0, y: 0 },
+            anchor: { x: 0, y: 0 },
+            scale: {
+                x: layerW * 100 / h.bg.width,
+                y: layerH * 100 / h.bg.height,
+            },
+        });
+
+        // 三张 banner 水平排列，间距 = layerW（被 clipMode 裁切，只露出 x=0 的那张）
+        for (let i = 0; i < h.banners.length; i++) {
+            await ac.createImage({
+                name: `img_banner_${i}`,
+                index: 1,
+                inlayer: 'layer_forum_header',
+                resId: h.banners[i],
+                pos: { x: i * layerW, y: 0 },
+                anchor: { x: 0, y: 0 },
+                scale: { x: scaleX, y: scaleY },
+            });
+        }
+
+        // 启动轮播（不阻塞后续渲染）
+        this._runBannerLoop(0, layerW);
+    },
+
+    /**
+     * banner 左右滑动轮播（递归）
+     * @param {number} current  当前显示的 banner 下标
+     * @param {number} layerW   header 层宽度（滑动步长）
+     */
+    _runBannerLoop: async function (current, layerW) {
+        await ac.delay({ time: this.header.bannerInterval });
+        const total = this.header.banners.length;
+        const next  = (current + 1) % total;
+        const slide = this.header.bannerSlide;
+
+        try {
+            // 将 next banner 瞬移到右侧就位
+            ac.moveTo({ name: `img_banner_${next}`, x: layerW, y: 0, duration: 0 });
+            await ac.delay({ time: 32 }); // 确保就位后再开始滑动
+
+            // 同时：current 向左滑出，next 从右滑入
+            ac.moveTo({ name: `img_banner_${current}`, x: -layerW, y: 0, duration: slide, ease: 'easeCubicInOut' });
+            ac.moveTo({ name: `img_banner_${next}`,    x: 0,       y: 0, duration: slide, ease: 'easeCubicInOut' });
+
+            // 等动画播完
+            await ac.delay({ time: slide });
+
+            // 已出场的 banner 移回右侧待机
+            ac.moveTo({ name: `img_banner_${current}`, x: layerW, y: 0, duration: 0 });
+        } catch (e) {
+            // layer 已销毁（页面切换），终止轮播
+            return;
+        }
+
+        this._runBannerLoop(next, layerW);
     },
 
     // ── 论坛主页 ──────────────────────────────────────────────────
