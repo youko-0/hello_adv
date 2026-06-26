@@ -13,9 +13,9 @@ const SceneConfig = {
                 id: 'living_room',
                 bg: ResMap.pic_residence_living_room, // 背景图
                 interact: {
-                    item_family_photo: { x: 693, y: 556 },
-                    item_motorcycle_key: { x: 374, y: 315 },
-                    item_cookie_box: { x: 916, y: 341 },
+                    item_family_photo: { x: 693, y: 554 },
+                    item_motorcycle_key: { x: 374, y: 316 },
+                    item_cookie_box: { x: 914, y: 343 },
                 }
             }
         }
@@ -154,8 +154,8 @@ const SceneConfig = {
                 id: 'office',
                 bg: ResMap.pic_dexing_tower_office, // 背景图
                 interact: {
-                    item_jewelry_box: { x: 909, y: 443 },
-                    item_newspaper: { x: 676, y: 215 },
+                    item_jewelry_box: { x: 911, y: 446 },
+                    item_newspaper: { x: 672, y: 215 },
                     item_visa: { x: 1000, y: 287 },
                 }
             }
