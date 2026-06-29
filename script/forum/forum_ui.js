@@ -15,6 +15,7 @@ const ForumUI = {
     sv: {
         name: 'sv_page',
     },
+    _bannerEpoch: 0,    // 轮播代次，页面重建时自增，旧 loop 自动退出
     header: {
         width: 1280,
         height: 120,
@@ -63,7 +64,13 @@ const ForumUI = {
     post: {
         PAGE_SIZE: 10,
         title: {
-            height: 42,
+            height: 56,
+            paddingX: 24,           // 标题文字左右内边距
+            bg: {
+                resId: ResMap.img_forum_header_bg,
+                width: 32,
+                height: 32,
+            },
         },
     },
     reply: {
@@ -240,16 +247,21 @@ const ForumUI = {
         }
 
         // 启动轮播（不阻塞后续渲染）
-        this._runBannerLoop(0, layerW);
+        // 自增代次：让上一个页面遗留的轮播 loop 自动退出，避免双份 banner
+        this._bannerEpoch++;
+        this._runBannerLoop(0, layerW, this._bannerEpoch);
     },
 
     /**
      * banner 左右滑动轮播（递归）
      * @param {number} current  当前显示的 banner 下标
      * @param {number} layerW   header 层宽度（滑动步长）
+     * @param {number} epoch    本轮代次，与当前代次不符则退出
      */
-    _runBannerLoop: async function (current, layerW) {
+    _runBannerLoop: async function (current, layerW, epoch) {
         await ac.delay({ time: this.header.bannerInterval });
+        // 页面已被重建，旧 loop 退出
+        if (epoch !== this._bannerEpoch) return;
         const total = this.header.banners.length;
         const next  = (current + 1) % total;
         const slide = this.header.bannerSlide;
@@ -258,6 +270,7 @@ const ForumUI = {
             // 将 next banner 瞬移到右侧就位
             ac.moveTo({ name: `img_banner_${next}`, x: layerW, y: 0, duration: 0 });
             await ac.delay({ time: 32 }); // 确保就位后再开始滑动
+            if (epoch !== this._bannerEpoch) return;
 
             // 同时：current 向左滑出，next 从右滑入
             ac.moveTo({ name: `img_banner_${current}`, x: -layerW, y: 0, duration: slide, ease: 'easeCubicInOut' });
@@ -265,6 +278,7 @@ const ForumUI = {
 
             // 等动画播完
             await ac.delay({ time: slide });
+            if (epoch !== this._bannerEpoch) return;
 
             // 已出场的 banner 移回右侧待机
             ac.moveTo({ name: `img_banner_${current}`, x: layerW, y: 0, duration: 0 });
@@ -273,7 +287,7 @@ const ForumUI = {
             return;
         }
 
-        this._runBannerLoop(next, layerW);
+        this._runBannerLoop(next, layerW, epoch);
     },
 
     // ── 论坛主页 ──────────────────────────────────────────────────
@@ -445,17 +459,7 @@ const ForumUI = {
         let startY = pageHeight - this.header.height - this.header.marginBottom;
 
         if (isFirstPage) {
-            await ac.createText({
-                name: 'lbl_topic_title',
-                index: 2,
-                inlayer: this.sv.name,
-                content: post.topic,
-                pos: { x: 28, y: startY + 6 },
-                anchor: { x: 0, y: 100 },
-                size: { width: this.page.width - 56, height: this.post.title.height },
-                style: 'style_post_title',
-                valign: ac.VALIGN_TYPES.top,
-            });
+            await this._createTitleBar(post, startY);
             startY -= this.post.title.height;
         }
 
@@ -469,6 +473,60 @@ const ForumUI = {
 
         let pageCount = ForumSystem.calcPostPageCount(post);
         await this._createPagination(pageCount, pageIndex);
+    },
+
+    /**
+     * 帖子标题栏（独立底板 + 上下分隔线，分隔 banner 与回复）
+     * @param {object} post   帖子数据
+     * @param {number} topY   标题栏顶边 y（y-up，版头下方）
+     */
+    _createTitleBar: async function (post, topY) {
+        const px = this.page.paddingX;
+        const rowW = this.page.width - px * 2;
+        const t = this.post.title;
+        const barBottom = topY - t.height;
+
+        // 标题栏底板
+        await ac.createImage({
+            name: 'img_title_bar_bg',
+            index: 1,
+            inlayer: this.sv.name,
+            resId: t.bg.resId,
+            pos: { x: px, y: barBottom },
+            anchor: { x: 0, y: 0 },
+            scale: {
+                x: rowW * 100 / t.bg.width,
+                y: t.height * 100 / t.bg.height,
+            },
+        });
+
+        // 顶部分隔线（紧贴 banner 下方）
+        await ac.createImage({
+            name: 'img_title_bar_divider_top',
+            index: 1,
+            inlayer: this.sv.name,
+            resId: this.topic.divider.resId,
+            pos: { x: px, y: topY },
+            anchor: { x: 0, y: 100 },
+            scale: {
+                x: rowW * 100 / this.topic.divider.width,
+                y: this.topic.dividerHeight * 100 / this.topic.divider.height,
+            },
+        });
+
+        // 标题文字（左对齐，垂直居中）
+        await ac.createText({
+            name: 'lbl_topic_title',
+            index: 2,
+            inlayer: this.sv.name,
+            content: post.topic,
+            pos: { x: px + t.paddingX, y: barBottom + t.height / 2 },
+            anchor: { x: 0, y: 50 },
+            size: { width: rowW - t.paddingX * 2, height: t.height },
+            style: 'style_post_title',
+            halign: ac.HALIGN_TYPES.left,
+            valign: ac.VALIGN_TYPES.center,
+        });
     },
 
     _createReplyItem: async function (reply, index, posY, contentHeight) {

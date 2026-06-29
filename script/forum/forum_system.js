@@ -15,7 +15,7 @@ const ForumSystem = createSystem(
     _forumDefault,    // 默认数据生成器
     {
         HOST: "donghaiguaitan.topic.com/",      // 域名
-        NAME: "东海论坛",
+        NAME: "东海市论坛",                   // 系统名称
         PAGE_SIZE: 10,                          // 分页大小
         NOW_YEAR: 2034,                         // 当前年份
         NEXT_PLOT: ResMap.plot_forum_next,      // 下一个剧情
