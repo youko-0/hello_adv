@@ -74,6 +74,51 @@ const PlotSystem = {
         }
     },
 
+    /**
+     * 全选项遍历接口：展示多个选项，每次点击后中插对应子剧情，回来后已选项压黑，直到全部选完
+     * @param {Object} config
+     * @param {Array<Object>} config.options 选项列表
+     * @param {string}   config.options[].content  选项文本
+     * @param {number}   config.options[].plotID   点击后 display 的子剧情 ID
+     * @param {Function} [config.options[].onVisited] 子剧情结束后回调（可选）
+     * @param {number}   [config.transition]  切换效果，默认 fade
+     * @param {number}   [config.duration=1000] 切换时长（ms）
+     */
+    showAllOptionsExplore: async function (config) {
+        const {
+            options,
+            transition = ac.SCENE_TRANSITION_TYPES.fade,
+            duration = 1000,
+        } = config;
+
+        const visited = new Array(options.length).fill(false);
+
+        while (visited.some(v => !v)) {
+            const currentOptions = options.map((opt, i) => ({
+                content: opt.content,
+                enabled: !visited[i],
+                callback: null,
+            }));
+
+            const chosen = await CommonUI.showCustomOptionGroup({ options: currentOptions });
+
+            if (chosen < 0) break;
+
+            visited[chosen] = true;
+            console.log(`[Plot] showAllOptionsExplore: 选择第 ${chosen} 项, plotID=${options[chosen].plotID}`);
+
+            await ac.display({
+                plotID: options[chosen].plotID,
+                transition,
+                duration,
+            });
+
+            if (options[chosen].onVisited) {
+                await options[chosen].onVisited();
+            }
+        }
+    },
+
     enterPlotMap: async function () {
         await ac.jump({
             plotID: ResMap.plot_map,
@@ -122,5 +167,27 @@ const PlotSystem = {
 
         // 5. 提示"点击硬币"→ 硬币淡入 → 等待六轮完成 + 结果展示
         await DivineSystem.runDivine();
+    },
+
+    /**
+     * 章节标题画面：全屏显示图片，淡入 → 停留 1s → 放大并淡出
+     * @param {string} resId 图片资源ID
+     */
+    playChapterTitle: async function (resId) {
+        const NAME = '__chapter_title__';
+        await ac.createImage({
+            name: NAME,
+            resId: resId,
+            index: ZORDER.EFFECT,
+            inlayer: 'window',
+            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
+            anchor: { x: 50, y: 50 },
+            visible: false,
+        });
+        await ac.show({ name: NAME, effect: 'fadein', duration: 800 });
+        await ac.delay({ time: 1000 });
+        ac.scaleTo({ name: NAME, x: 120, y: 120, duration: 1800, ease: ac.EASE_TYPES.easeExponentialOut });
+        await ac.fadeTo({ name: NAME, opacity: 0, duration: 2000 });
+        await ac.remove({ name: NAME });
     },
 };
