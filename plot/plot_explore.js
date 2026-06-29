@@ -110,3 +110,13 @@ await ExploreSystem.enterScene('dexing_tower');
 await PlotSystem.enterPlotMap()
 
 // ---------------- 德兴大厦 ----------------
+
+await PlotSystem.showAllOptionsExplore({
+    options: [
+        { content: '六月十二日在修车厂偶遇敖丙', plotID: 14739241 },
+        { content: '六月二十日和敖丙去游乐场“大战一场”', plotID: 14739244 },
+        { content: '七月三日和敖丙一起参加南山摩托锦标赛', plotID: 14739246 },
+    ],
+    transition: ac.SCENE_TRANSITION_TYPES.fade,
+    duration: 1000,
+});
