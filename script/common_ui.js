@@ -197,8 +197,8 @@ const CommonUI = {
             index:   1,
             inlayer: D.name,
             resId:   D.bg.resId,
-            pos:     { x: GameConfig.centerX, y: 0 },
-            anchor:  { x: 50, y: 0 },
+            pos:     { x: 28, y: -2 },      // 和默认对话框保持一致
+            anchor:  { x: 0, y: 0 },
         });
 
         if (roleAvatarResId) {
