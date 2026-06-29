@@ -141,15 +141,18 @@ const ExploreSystem = createSystem(
         viewItem: async function (sceneId, itemId) {
             console.log('[LOG] viewItem', sceneId, itemId);
             await InventoryUI.showItemDetail(itemId);
+            // 读取场景级中插剧情并执行（替代原 ItemConfig.onView）
+            const sceneConfig = SceneConfig[sceneId];
+            const onView = sceneConfig.onView && sceneConfig.onView[itemId];
+            if (onView) {
+                await onView();
+            }
             const itemConfig = ItemConfig[itemId];
             // 已查看过渡：原对象淡出 + 已查看图淡入（无 spriteInspected 则跳过），返回有效控件名
             const gainItemName = await ExploreUI.playInspectedTransition(itemId);
             // 如果是 KEY 类型，需要获得道具
             if (itemConfig.type === ItemType.KEY) {
                 await InventoryUI.gainItem(itemId, 1, gainItemName);
-            }
-            if (itemConfig.onView) {
-                await itemConfig.onView();
             }
             // 记录为已查看, while 里面会判断是否全部完成
             this.recordInspected(itemId);

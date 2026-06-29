@@ -148,6 +148,20 @@ const SceneConfig = {
     // 德兴大厦
     dexing_tower: {
         defaultViewId: 'office',
+        // 场景级中插剧情：查看某物品时触发的剧情
+        onView: {
+            item_visa: async () => {
+                await ac.sysDialogOn({
+                    roleName: `我`,
+                    content: `（羡慕）可恶啊，是一生下来爱和钱都有了的家伙……`,
+                    id: 9455091,
+                    hasRoleName: true,
+                    hasBg: true,
+                    hasRoleAvatar: false,
+                });
+                await ac.sysDialogOff({});
+            },
+        },
         views: {
             // 办公室
             office: {

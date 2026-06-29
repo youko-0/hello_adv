@@ -118,17 +118,6 @@ const ItemConfig = {
         maxStack:  1,
         dropLimit: 1,
         sortIndex: 5,
-        onView: async () => {
-            await ac.sysDialogOn({
-                roleName: `我`,
-                content: `（羡慕）可恶啊，是一生下来爱和钱都有了的家伙……`,
-                id: 9455091,
-                hasRoleName: true,
-                hasBg: true,
-                hasRoleAvatar: false,
-            });
-            await ac.sysDialogOff({});
-        }
     },
 
     item_family_photo: {
