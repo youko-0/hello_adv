@@ -135,9 +135,14 @@ const MapUI = {
         await CommonUI.showCustomOptionGroup({
             options: [{
                 content: '前往下一章',
-                callback: MapSystem.onAllAreaVisited,
+                // callback: MapSystem.onAllAreaVisited,
+                callback: async () => {
+                    await CommonUI.showCustomDialog({
+                        content: '后续剧情，敬请期待(温馨提示：请在此处存档)',
+                    });
+                },
             }, {
-                content: '继续探索',
+                content: '留在此处继续探索',
                 callback: async () => {
                     await CommonUI.closeCustomDialog();
                     // 显示跳过按钮
