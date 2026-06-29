@@ -24,6 +24,15 @@ const SceneConfig = {
     // 哪吒庙
     nezha_temple: {
         defaultViewId: 'main_hall',
+        onView: {
+            item_mural_nezhanaohai: async () => {
+                await ac.display({
+                    plotID: 14730023,
+                    transition: ac.SCENE_TRANSITION_TYPES.fade,
+                    duration: 1000,
+                });
+            },
+        },
         views: {
             // 主殿
             main_hall: {
