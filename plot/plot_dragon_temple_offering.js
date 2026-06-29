@@ -1,6 +1,10 @@
 // 龙三太子神像上供剧情
 console.log('[LOAD] plot_dragon_temple_offering');
 
+await InventoryUI.gainItem('item_motorcycle_key');
+await InventoryUI.gainItem('item_pendant');
+
+
 await ac.sysDialogOn({
     content: '是否要为龙三太子的神像上供？\n<tag style=style_common_dialog_red>（重要提示：无论上供道具是否正确，都会从背包里扣除该道具，请谨慎选择。）</tag>',
     hasRoleName: false,
@@ -13,6 +17,8 @@ const choiceIndex = await CommonUI.showCustomOptionGroup({
         { content: '上供。' },
     ],
 });
+
+await ac.sysDialogOff({});
 
 let itemId = '';
 if (choiceIndex === 1) {
