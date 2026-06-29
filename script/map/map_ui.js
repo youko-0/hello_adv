@@ -140,6 +140,12 @@ const MapUI = {
                     await CommonUI.showCustomDialog({
                         content: '后续剧情，敬请期待(温馨提示：请在此处存档)',
                     });
+                    // 显示跳过按钮
+                    await ac.show({
+                        name: 'btn_skip',
+                        effect: 'normal',
+                        duration: 0,
+                    })
                 },
             }, {
                 content: '留在此处继续探索',

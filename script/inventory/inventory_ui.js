@@ -126,7 +126,16 @@ const InventoryUI = {
                 resId: illust,
                 pos: { x: GameConfig.centerX, y: GameConfig.centerY + 80 },
                 anchor: { x: 50, y: 50 },
+                visible: !locked,
             });
+
+            if (locked) {
+                // 压黑
+                await ac.changeMaskTo({ name: 'img_item_info_pic', r: 0, g: 0, b: 0, opacity: 100 });
+                // 再显示
+                await ac.show({ name: 'img_item_info_pic' });
+            }
+
         }
         const itemDesc = view.desc;
         const itemIcon = view.icon;
@@ -136,9 +145,10 @@ const InventoryUI = {
         });
         await ac.remove({
             name: this.itemDetail.name,
-            effect: 'fadeout',
-            duration: 500,
-            canskip: false,
+            // 用了 mask 之后这里不能淡出, 会穿帮
+            // effect: 'fadeout',
+            // duration: 500,
+            // canskip: false,
         })
     },
 }
