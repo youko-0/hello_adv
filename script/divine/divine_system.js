@@ -60,6 +60,11 @@ const DivineSystem = {
         await ac.sysDialogOn({ content: '点击硬币进行占卜' });
         await ac.sysDialogOff({});
 
+        // 对话框关闭后再创建蒙层并绑定硬币点击，避免蒙层拦截对话框触摸
+        await DivineUI._setupMask();
+        DivineUI._bindCoinTap();
+        // DivineUI._bindCoinSwipe();
+
         // 等待全流程结束
         while (!this._done) {
             await ac.delay({ time: 200 });

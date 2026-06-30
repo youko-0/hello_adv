@@ -245,6 +245,7 @@ const CommonUI = {
         await ac.createOptionGroup({
             name: this.optionGroup.name,
             defaultComposition: false,
+            index: ZORDER.DIALOG,
             inlayer: 'window',
             anchor: { x: 50, y: 50 },
             optionGroup: config.options.map((opt, i) => {

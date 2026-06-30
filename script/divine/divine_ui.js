@@ -206,12 +206,7 @@ const DivineUI = {
         }
         this._state.coinFace = [1, 1, 1];
 
-        // 创建全程蒙层（尚未创建时建立）
-        await this._setupMask();
-
-        // ── 切换交互方式（注释掉其中一个）──
-        this._bindCoinTap();
-        // this._bindCoinSwipe();
+        // 蒙层与交互绑定延迟到提示对话关闭后创建，避免拦截对话框触摸
     },
 
     /**

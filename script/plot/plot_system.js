@@ -147,12 +147,11 @@ const PlotSystem = {
 
         await ac.sysDialogOff({});
 
-        // 1. 创建占卜场景（背景），不含硬币
-        await DivineSystem.prepareDivine({ coinResults, hexagram });
-
-        // 2. 提问对话框
+        // 1. 提问对话框（先于占卜场景，避免全屏背景拦截触摸）
         await ac.sysDialogOn({ content: prompt });
-        await ac.sysDialogOff({});
+
+        // 2. 创建占卜场景（背景），不含硬币
+        await DivineSystem.prepareDivine({ coinResults, hexagram });
 
         // 3. 单选项
         await CommonUI.showCustomOptionGroup({
@@ -160,6 +159,7 @@ const PlotSystem = {
                 { content: question, callback: null, enabled: true },
             ],
         });
+        await ac.sysDialogOff({});
 
         // 4. 提示"点击硬币"→ 硬币淡入 → 等待六轮完成 + 结果展示
         await DivineSystem.runDivine();
