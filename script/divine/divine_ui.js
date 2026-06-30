@@ -133,7 +133,7 @@ const DivineUI = {
         console.log('[LOG] createDivineUI');
 
         await ac.createLayer({
-            name: this.layer.scene, index: ZORDER.UI, inlayer: 'window',
+            name: this.layer.scene, index: ZORDER.SCENE, inlayer: 'window',
         });
 
         // 初始化运行时爻线起始 Y

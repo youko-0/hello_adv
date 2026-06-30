@@ -146,12 +146,12 @@ const PlotSystem = {
         } = config;
 
         await ac.sysDialogOff({});
-
-        // 1. 提问对话框（先于占卜场景，避免全屏背景拦截触摸）
-        await ac.sysDialogOn({ content: prompt });
-
-        // 2. 创建占卜场景（背景），不含硬币
+        
+        // 1. 创建占卜场景（背景），不含硬币
         await DivineSystem.prepareDivine({ coinResults, hexagram });
+
+        // 2. 提问对话框
+        await ac.sysDialogOn({ content: prompt });
 
         // 3. 单选项
         await CommonUI.showCustomOptionGroup({
