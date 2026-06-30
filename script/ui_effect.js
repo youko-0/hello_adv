@@ -370,62 +370,61 @@ const UIEffect = {
         let dropIndex = 0;
         const activeDrops = new Set();
 
-        // 单区域循环：每次随机间隔发射一颗
-        const runColumn = async (col) => {
-            // 首次发射错开，避免所有区域同时出发
-            await ac.delay({ time: col * (interval / columns) + Math.random() * intervalDev });
+        // 单颗雨滴的生命周期（fire-and-forget，不阻塞发射节奏）
+        const spawnDrop = async (col) => {
+            const id    = 'falling_drop_' + (dropIndex++);
+            const resId = resIds[Math.floor(Math.random() * resIds.length)];
+            const scale = scaleBase + (Math.random() * 2 - 1) * scaleDev;
 
-            while (!stopped) {
-                const id    = 'falling_drop_' + (dropIndex++);
-                const resId = resIds[Math.floor(Math.random() * resIds.length)];
-                const scale = scaleBase + (Math.random() * 2 - 1) * scaleDev;
+            const x = col * colWidth + Math.random() * colWidth;
+            const lifeFraction = lifeMin + Math.random() * (lifeMax - lifeMin);
+            const lifeDur = (H * lifeFraction) / speed;
 
-                // 区域内随机 X
-                const x = col * colWidth + Math.random() * colWidth;
+            activeDrops.add(id);
 
-                // 随机存活时长：图片能落多远由随机比例决定
-                const lifeFraction = lifeMin + Math.random() * (lifeMax - lifeMin);
-                const lifeDur = (H * lifeFraction) / speed;
+            await ac.createImage({
+                name:    id,
+                resId:   resId,
+                index:   index,
+                inlayer: inlayer,
+                pos:     { x, y: H },
+                anchor:  { x: 50, y: 0 },
+                scale:   { x: scale, y: scale },
+                opacity: 100,
+            });
 
-                activeDrops.add(id);
+            if (stopped) { ac.remove({ name: id }); activeDrops.delete(id); return; }
 
-                await ac.createImage({
-                    name:    id,
-                    resId:   resId,
-                    index:   index,
-                    inlayer: inlayer,
-                    pos:     { x, y: H },
-                    anchor:  { x: 50, y: 0 },
-                    scale:   { x: scale, y: scale },
-                    opacity: 100,
-                });
+            // 下落 + 淡出并行（不阻塞发射节奏）
+            ac.moveTo({
+                name:     id,
+                x,
+                y:        H - lifeDur * speed,
+                duration: lifeDur,
+                canskip:  false,
+            });
 
-                if (stopped) { ac.remove({ name: id }); activeDrops.delete(id); break; }
+            await ac.delay({ time: lifeDur - fadeOutDur > 0 ? lifeDur - fadeOutDur : 0 });
 
-                // 下落 + 淡出并行
-                ac.moveTo({
-                    name:     id,
-                    x,
-                    y:        H - lifeDur * speed,
-                    duration: lifeDur,
-                    canskip:  false,
-                });
-
-                await ac.delay({ time: lifeDur - fadeOutDur > 0 ? lifeDur - fadeOutDur : 0 });
-
-                if (!stopped) {
-                    await ac.fadeTo({ name: id, opacity: 0, duration: fadeOutDur, canskip: false });
-                }
-
-                ac.remove({ name: id });
-                activeDrops.delete(id);
-
-                if (stopped) break;
-
-                // 等待下一次发射
-                const wait = interval + (Math.random() * 2 - 1) * intervalDev;
-                await ac.delay({ time: Math.max(wait, 100) });
+            if (!stopped) {
+                await ac.fadeTo({ name: id, opacity: 0, duration: fadeOutDur, canskip: false });
             }
+
+            ac.remove({ name: id });
+            activeDrops.delete(id);
+        };
+
+        // 单区域发射节奏：每隔 interval 发一颗，不等前一颗落地
+        const runColumn = async (col) => {
+            await ac.delay({ time: col * (interval / columns) + Math.random() * intervalDev });
+            if (stopped) return;
+
+            spawnDrop(col);
+
+            const wait = interval + (Math.random() * 2 - 1) * intervalDev;
+            await ac.delay({ time: Math.max(wait, 100) });
+
+            if (!stopped) runColumn(col);
         };
 
         for (let col = 0; col < columns; col++) {
