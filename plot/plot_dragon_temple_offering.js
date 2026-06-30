@@ -27,7 +27,12 @@ if (choiceIndex === 1) {
     // 如果选择了物品，消耗道具
     if (itemId) {
         await InventorySystem.useItem(itemId);
-        await CommonUI.showCustomDialog({ content: '一阵烟雾飘过，供品不见了。' });
+        await ac.sysDialogOn({
+            content: '一阵烟雾飘过，供品不见了。',
+            hasRoleName: false,
+            hasBg: true,
+            hasRoleAvatar: false,
+        });
     }
 }
 

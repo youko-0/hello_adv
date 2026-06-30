@@ -128,18 +128,19 @@ const MapUI = {
         // 显示选项组
         let flag = MapSystem.isClearedAll();
         let content = flag ? '全部区域探索完成, 是否前往下一章？' : '还有区域未探索完成, 是否仍然前往下一章？';
-        await CommonUI.showCustomDialog({
+        await ac.sysDialogOn({
             content: content,
-            closeType: 2,
         });
+        await ac.sysDialogOff({});
         await CommonUI.showCustomOptionGroup({
             options: [{
                 content: '前往下一章',
                 // callback: MapSystem.onAllAreaVisited,
                 callback: async () => {
-                    await CommonUI.showCustomDialog({
+                    await ac.sysDialogOn({
                         content: '后续剧情，敬请期待(温馨提示：请在此处存档)',
                     });
+                    await ac.sysDialogOff({});
                     // 显示跳过按钮
                     await ac.show({
                         name: 'btn_skip',
@@ -150,7 +151,6 @@ const MapUI = {
             }, {
                 content: '留在此处继续探索',
                 callback: async () => {
-                    await CommonUI.closeCustomDialog();
                     // 显示跳过按钮
                     await ac.show({
                         name: 'btn_skip',

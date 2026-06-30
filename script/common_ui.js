@@ -42,37 +42,6 @@ const CommonUI = {
     },
 
 
-    // 找不到易次元的直接判断的接口，用 getPos 迂回一下
-    isWidgetExist: async function (name) {
-        let v = await ac.getPos({
-            name: name,
-        })
-        console.log('[LOG] isWidgetExist', name, v.x);
-        return v.x != null;
-    },
-
-    /**
-     * 等待指定UI控件关闭（消失）
-     * @param {string} widgetName 要等待关闭的控件名称
-     * @param {number} checkInterval 检查间隔时间（毫秒），默认500ms
-     */
-    waitForUIClosed: async function (widgetName, checkInterval = 500) {
-        console.log(`[CommonUI] 开始等待 UI 关闭: ${widgetName}`);
-
-        // 先检查一次是否存在，如果不存在就直接返回
-        if (!(await this.isWidgetExist(widgetName))) {
-            console.log(`[CommonUI] UI 不存在，无需等待: ${widgetName}`);
-            return;
-        }
-
-        // 循环检查直到UI关闭
-        while (await this.isWidgetExist(widgetName)) {
-            await ac.delay({ time: checkInterval });
-        }
-
-        console.log(`[CommonUI] UI 已关闭: ${widgetName}`);
-    },
-
     // 通用点击拦截函数
     onTouchMask: async function (params) {
         console.log('[LOG] onTouchMask', this, params);
@@ -105,7 +74,9 @@ const CommonUI = {
         };
 
         const onTouchDialog = async () => {
-            this._dialogContext.state.waitingForClick = false;
+            if (this._dialogContext) {
+                this._dialogContext.state.waitingForClick = false;
+            }
         };
 
         console.log('[CustomDialog] 显示对话框:', config.content);
@@ -261,89 +232,47 @@ const CommonUI = {
     },
 
     /**
-     * 在系统的选项基础上实现的自定义选项, 支持 enabled 属性
-     * @param {Object} config 配置项, 包含常规 ac.createOption 的配置项
-     * @param {boolean} config.enabled 是否可用, 默认 true
-     * @param {string} config.dResId 禁用资源ID
-     * @param {string} config.dStyle 禁用文本样式
-     */
-    createOption: async function (config) {
-        // ?? 空值合并运算符
-        const enabled = config.enabled ?? true;
-        console.log('enabledenabled', enabled);
-        if (!enabled) {
-            config.onTouchBegan = null
-            config.onTouchEnded = null
-            config.nResId = config.dResId
-            config.sResId = config.dResId
-            config.style = config.dStyle
-        }
-        console.log('[CustomOption] 创建自定义选项:', config);
-        await ac.createOption(config);
-    },
-
-    /**
      * 自定义选项组, 会返回选项索引
+     * 内部使用引擎原生 ac.createOptionGroup, 支持存读档
      * @param {Object} config 配置项
      * @param {list} config.options [option, option]
      * @param {Object} option {content, callback, enabled=true}
-     * @return {number} 选项索引, 从 0 开始
+     * @return {number} 选项索引, 从 0 开始; 读档快进时返回 -1, 分支应放在 callback 内而非依赖返回值
      */
     showCustomOptionGroup: async function (config) {
         console.log('[CustomOptionGroup] 显示自定义选项组:', config);
         let flag = -1;
-        // 全屏层级
-        await ac.createLayer({
+        await ac.createOptionGroup({
             name: this.optionGroup.name,
-            index: ZORDER.DIALOG,
+            defaultComposition: false,
             inlayer: 'window',
-            pos: { x: GameConfig.centerX, y: GameConfig.centerY },
-            size: { width: GameConfig.width, height: GameConfig.height },
             anchor: { x: 50, y: 50 },
-            clipMode: false,
-        })
-
-        for (let i = 0; i < config.options.length; i++) {
-            let option = config.options[i];
-            option.name = 'option_' + i;
-            option.inlayer = this.optionGroup.name;
-            option.pos = { x: GameConfig.centerX, y: 480 - i * 120 };
-            option.anchor = { x: 50, y: 50 };
-            option.style  = 'style_common_option';
-            option.dStyle = 'style_common_option_disabled';
-            option.nResId = ResMap.img_selection_bg_normal;
-            option.sResId = ResMap.img_selection_bg_highlight;
-            option.dResId = ResMap.img_selection_bg_disabled;
-            // 点击事件添加关闭逻辑
-            option.onTouchEnded = async () => {
-                flag = i;
-                await CommonUI.closeCustomOptionGroup();
-                if (option.callback) {
-                    await option.callback();
-                }
-            }
-            await this.createOption(option);
-        }
-
-        await CommonUI.waitForUIClosed(this.optionGroup.name);
+            optionGroup: config.options.map((opt, i) => {
+                const enabled = opt.enabled ?? true;
+                return {
+                    textContent: opt.content,
+                    nResId: enabled ? ResMap.img_selection_bg_normal : ResMap.img_selection_bg_disabled,
+                    sResId: enabled ? ResMap.img_selection_bg_highlight : ResMap.img_selection_bg_disabled,
+                    textStyle: enabled ? 'style_common_option' : 'style_common_option_disabled',
+                    x: GameConfig.centerX,
+                    y: 480 - i * 120,
+                    clickFunc: enabled ? async () => {
+                        flag = i;
+                        if (opt.callback) {
+                            await opt.callback();
+                        }
+                    } : null,
+                };
+            }),
+        });
         return flag;
-    },
-
-    // 关闭自定义选项组
-    closeCustomOptionGroup: async function () {
-        console.log('[CustomOptionGroup] 关闭自定义选项组');
-        await ac.remove({
-            name: CommonUI.optionGroup.name,
-            effect: 'normal',
-            duration: 0,
-        })
     },
 
     // 脚本载入时的初始化函数
     onLoad: async function () {
         console.log('[LOG] [CommonUI] onLoad');
 
-        await ac.delay({ time: 10 });
+        await ac.delay({ time: 1 });
         await this.onLoadDelay();
 
     },

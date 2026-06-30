@@ -57,7 +57,8 @@ const DivineSystem = {
         await ac.show({ name: DivineUI.coin.front(1), effect: 'fadein', duration: 500, canskip: false });
 
         // 提示对话（元素已全部显示后弹出）
-        await CommonUI.showCustomDialog({ content: '点击硬币进行占卜' });
+        await ac.sysDialogOn({ content: '点击硬币进行占卜' });
+        await ac.sysDialogOff({});
 
         // 等待全流程结束
         while (!this._done) {

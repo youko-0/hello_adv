@@ -80,9 +80,10 @@ const ExploreSystem = createSystem(
          * @param {string} sceneId - 场景 ID
          */
         onInspectedAll: async function (sceneId) {
-            await CommonUI.showCustomDialog({
+            await ac.sysDialogOn({
                 content: '场景里似乎没有什么可探索的了。',
             });
+            await ac.sysDialogOff({});
             // 跳去下一个剧情(用于独立剧情跳转)
             let nextPlot = SceneConfig[sceneId].nextPlot;
             if (nextPlot) {
