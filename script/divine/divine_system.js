@@ -66,9 +66,7 @@ const DivineSystem = {
         // DivineUI._bindCoinSwipe();
 
         // 等待全流程结束
-        while (!this._done) {
-            await ac.delay({ time: 200 });
-        }
+        await new Promise(resolve => { this._doneResolve = resolve; });
     },
 
     calcYaoType: function (coins) {
@@ -111,6 +109,10 @@ const DivineSystem = {
             await DivineUI.closeDivineUI();
             this._done = true;
             this.busy  = false;
+            if (this._doneResolve) {
+                this._doneResolve();
+                this._doneResolve = null;
+            }
         }
     },
 };

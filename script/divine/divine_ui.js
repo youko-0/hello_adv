@@ -521,7 +521,11 @@ const DivineUI = {
                         await DivineSystem.onClickDivineButton();
                     }
                 } else if (self._state.maskMode === 'click') {
-                    self._state.waitingForClick = false;
+                    if (self._clickResolve) {
+                        const resolve = self._clickResolve;
+                        self._clickResolve = null;
+                        resolve();
+                    }
                 }
             },
             target:   self.layer.mask,
@@ -532,9 +536,6 @@ const DivineUI = {
 
     _waitForClick: async function () {
         this._state.maskMode = 'click';
-        this._state.waitingForClick = true;
-        while (this._state.waitingForClick) {
-            await ac.delay({ time: 100 });
-        }
+        await new Promise(resolve => { this._clickResolve = resolve; });
     },
 };
