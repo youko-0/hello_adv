@@ -16,8 +16,8 @@ await ac.createImage({
     inlayer: 'window',
     resId: '$193064575',
     pos: {
-        x: 690,
-        y: 225,
+        x: 680,
+        y: 118,
     },
     anchor: {
         x: 40,
@@ -59,25 +59,23 @@ await ac.sysDialogOn({
     roleAvatarResId: '$1528927',
 });
 
-// 旋转和淡出并行（fire-and-forget）
-ac.rotateBy({ name: 'img_fish', angle1: -180, duration: 3000, canskip: false });
 // ── 淡入→等待→淡出 轨道（并行，不 await）──
 (async () => {
-    //     await ac.fadeTo({ name: 'img_fish', opacity: 100, duration: 300, canskip: false });
     await ac.delay({ time: 2500 });
-    //     await ac.fadeTo({ name: 'img_fish', opacity: 0, duration: 300, canskip: false });
     ac.remove({ name: 'img_fish', effect: 'fadeout', duration: 1000, canskip: false});
-
 })();
 
-// 弧线移动（await）
+// 弧线移动 + 同步旋转（await）
 UIEffect.playArcFlyEffect({
     name: 'img_fish',
-    to: { x: 656, y: 422 },
+    to: { x: 620, y: 360 },
     arcDir: -1,
+    arcBulge: 0.65,
+    arcPosT: 0.8,
+    spinAngle: -180,
     duration: 2500,
     steps: 12,
-    debug: true
+    debug: false,
 });
 
 await ac.delay({ time: 500 });

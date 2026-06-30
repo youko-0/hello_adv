@@ -257,12 +257,12 @@ const CommonUI = {
                     textStyle: enabled ? 'style_common_option' : 'style_common_option_disabled',
                     x: GameConfig.centerX,
                     y: 480 - i * 120,
-                    clickFunc: enabled ? async () => {
+                    clickFunc: async () => {
                         flag = i;
-                        if (opt.callback) {
+                        if (enabled && opt.callback) {
                             await opt.callback();
                         }
-                    } : null,
+                    },
                 };
             }),
         });

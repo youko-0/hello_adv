@@ -61,12 +61,9 @@ const UIEffect = {
     // ─── 弧线飞行特效 ─────────────────────────────────────────────────────────
 
     /**
-     * 已存在的控件沿二次贝塞尔弧线从起点飞到终点。
-     * 仅负责移动轨迹，旋转 / 淡入淡出 / 移除由调用方并行处理。
-     *
-     * 弧线方向由 arcDir 决定：
-     *   arcDir =  1 → 弧线向左弯
-     *   arcDir = -1 → 弧线向右弯
+     * 已存在的控件沿二次贝塞尔弧线从起点飞到终点，可选同步自转。
+     * 移动和旋转按相同步数分段，抖动对齐。
+     * 淡入淡出 / 移除由调用方并行处理。
      *
      * @param {Object} config
      * @param {string}  config.name        控件名（已存在，起点由 ac.getPos 读取）
@@ -74,6 +71,7 @@ const UIEffect = {
      * @param {number}  [config.arcDir]    弧线方向：1=向左弯，-1=向右弯，默认 1
      * @param {number}  [config.arcBulge]  弧线弯曲幅度（0~1，相对于起终点距离），默认 0.3
      * @param {number}  [config.arcPosT]   控制点在路径上的位置（0=靠近起点，1=靠近终点），默认 0.5
+     * @param {number}  [config.spinAngle] 自转总角度，负=逆时针，正=顺时针，默认 0（不旋转）
      * @param {number}  [config.duration]  总时长（毫秒），默认 1500
      * @param {number}  [config.steps]     分段数，默认 12
      * @param {boolean} [config.debug]     是否绘制路径辅助线，默认 false
@@ -82,12 +80,13 @@ const UIEffect = {
         const {
             name,
             to,
-            arcDir   = 1,
-            arcBulge = 0.3,
-            arcPosT  = 0.5,
-            duration = 1500,
-            steps    = 12,
-            debug    = false,
+            arcDir    = 1,
+            arcBulge  = 0.3,
+            arcPosT   = 0.5,
+            spinAngle = 0,
+            duration  = 1500,
+            steps     = 12,
+            debug     = false,
         } = config;
 
         const from = await ac.getPos({ name });
@@ -137,13 +136,40 @@ const UIEffect = {
 
         const stepDur = duration / steps;
 
-        for (let i = 0; i < steps; i++) {
-            const t  = (i + 1) / steps;
+        // 预算各段端点和弦长，用于按比例分配旋转角度
+        const points = [{ x: sx, y: sy }];
+        for (let i = 1; i <= steps; i++) {
+            const t  = i / steps;
             const t1 = 1 - t;
+            points.push({
+                x: t1 * t1 * sx + 2 * t1 * t * mx + t * t * ex,
+                y: t1 * t1 * sy + 2 * t1 * t * my + t * t * ey,
+            });
+        }
+        const chords = [];
+        let totalLen = 0;
+        for (let i = 0; i < steps; i++) {
+            const cdx = points[i + 1].x - points[i].x;
+            const cdy = points[i + 1].y - points[i].y;
+            const len = Math.sqrt(cdx * cdx + cdy * cdy);
+            chords.push(len);
+            totalLen += len;
+        }
+
+        for (let i = 0; i < steps; i++) {
+            if (spinAngle !== 0) {
+                const stepRotate = totalLen > 0 ? spinAngle * (chords[i] / totalLen) : spinAngle / steps;
+                ac.rotateBy({
+                    name:     name,
+                    angle1:   stepRotate,
+                    duration: stepDur,
+                    canskip:  false,
+                });
+            }
             await ac.moveTo({
                 name:     name,
-                x:        t1 * t1 * sx + 2 * t1 * t * mx + t * t * ex,
-                y:        t1 * t1 * sy + 2 * t1 * t * my + t * t * ey,
+                x:        points[i + 1].x,
+                y:        points[i + 1].y,
                 duration: stepDur,
                 canskip:  false,
             });
