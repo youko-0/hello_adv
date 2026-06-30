@@ -61,39 +61,33 @@ const UIEffect = {
     // ─── 弧线飞行特效 ─────────────────────────────────────────────────────────
 
     /**
-     * 已存在的控件沿弧线从起点飞到终点，均匀自转并淡出，动画结束后移除控件。
-     * 调用方负责提前创建好控件并将其放置到起点位置。
+     * 已存在的控件沿二次贝塞尔弧线从起点飞到终点。
+     * 仅负责移动轨迹，旋转 / 淡入淡出 / 移除由调用方并行处理。
      *
      * 弧线方向由 arcDir 决定：
      *   arcDir =  1 → 弧线向左弯
      *   arcDir = -1 → 弧线向右弯
      *
-     * spinAngle 负数为逆时针，正数为顺时针，默认 -360（逆时针一圈）。
-     *
      * @param {Object} config
-     * @param {string}  config.name        控件名（已存在，起点位置由 ac.getPos 自动读取）
+     * @param {string}  config.name        控件名（已存在，起点由 ac.getPos 读取）
      * @param {{ x: number, y: number }} config.to  终点（ac 坐标）
      * @param {number}  [config.arcDir]    弧线方向：1=向左弯，-1=向右弯，默认 1
      * @param {number}  [config.arcBulge]  弧线弯曲幅度（0~1，相对于起终点距离），默认 0.3
      * @param {number}  [config.arcPosT]   控制点在路径上的位置（0=靠近起点，1=靠近终点），默认 0.5
-     * @param {number}  [config.spinAngle]    自转总角度，负=逆时针，正=顺时针，默认 -360
-     * @param {number}  [config.fadeFromStep] 从第几段开始淡出（1~steps），-1 不淡出，默认 1
-     * @param {number}  [config.duration]     总时长（毫秒），默认 1500
-     * @param {number}  [config.steps]        分段数，默认 12
-     * @param {boolean} [config.debug]        是否绘制路径辅助线，默认 false
+     * @param {number}  [config.duration]  总时长（毫秒），默认 1500
+     * @param {number}  [config.steps]     分段数，默认 12
+     * @param {boolean} [config.debug]     是否绘制路径辅助线，默认 false
      */
     playArcFlyEffect: async function (config) {
         const {
             name,
             to,
-            arcDir       = 1,
-            arcBulge     = 0.3,
-            arcPosT      = 0.5,
-            spinAngle    = -360,
-            fadeFromStep = 1,
-            duration     = 1500,
-            steps        = 12,
-            debug        = false,
+            arcDir   = 1,
+            arcBulge = 0.3,
+            arcPosT  = 0.5,
+            duration = 1500,
+            steps    = 12,
+            debug    = false,
         } = config;
 
         const from = await ac.getPos({ name });
@@ -120,10 +114,9 @@ const UIEffect = {
                 pos:     { x: 0, y: 0 },
             });
 
-            const debugSteps = config.steps; // 辅助线细分段数，越高越平滑
             let prevX = sx, prevY = sy;
-            for (let i = 1; i <= debugSteps; i++) {
-                const t  = i / debugSteps;
+            for (let i = 1; i <= steps; i++) {
+                const t  = i / steps;
                 const t1 = 1 - t;
                 const bx = t1 * t1 * sx + 2 * t1 * t * mx + t * t * ex;
                 const by = t1 * t1 * sy + 2 * t1 * t * my + t * t * ey;
@@ -138,64 +131,23 @@ const UIEffect = {
                 prevY = by;
             }
 
-            // 画控制点标记（起点→控制点→终点 的辅助虚线）
             await ac.drawSegment({ name: debugName, from: { x: sx, y: sy }, to: { x: mx, y: my }, width: 1, color: '#ff8800' });
             await ac.drawSegment({ name: debugName, from: { x: mx, y: my }, to: { x: ex, y: ey }, width: 1, color: '#ff8800' });
         }
-        // ────────────────────────────────────────────────────────────────────
 
         const stepDur = duration / steps;
 
-        // 预算各段端点和弦长，用于按比例分配旋转角度
-        const points = [{ x: sx, y: sy }];
-        for (let i = 1; i <= steps; i++) {
-            const t  = i / steps;
+        for (let i = 0; i < steps; i++) {
+            const t  = (i + 1) / steps;
             const t1 = 1 - t;
-            points.push({
-                x: t1 * t1 * sx + 2 * t1 * t * mx + t * t * ex,
-                y: t1 * t1 * sy + 2 * t1 * t * my + t * t * ey,
-            });
-        }
-        const chords = [];
-        let totalLen = 0;
-        for (let i = 0; i < steps; i++) {
-            const cdx = points[i + 1].x - points[i].x;
-            const cdy = points[i + 1].y - points[i].y;
-            const len = Math.sqrt(cdx * cdx + cdy * cdy);
-            chords.push(len);
-            totalLen += len;
-        }
-
-        // 串行：逐段 moveTo + 按弦长比例 rotateBy
-        for (let i = 0; i < steps; i++) {
-            const stepRotate = totalLen > 0 ? spinAngle * (chords[i] / totalLen) : spinAngle / steps;
-
-            // 到达 fadeFromStep 段时启动淡出（并行，不 await）
-            if (fadeFromStep !== -1 && i + 1 === fadeFromStep) {
-                ac.fadeTo({
-                    name:     name,
-                    opacity:  0,
-                    duration: (steps - fadeFromStep + 1) * stepDur,
-                    canskip:  false,
-                });
-            }
-
-            ac.rotateBy({
-                name:     name,
-                angle1:   stepRotate,
-                duration: stepDur,
-                canskip:  false,
-            });
             await ac.moveTo({
                 name:     name,
-                x:        points[i + 1].x,
-                y:        points[i + 1].y,
+                x:        t1 * t1 * sx + 2 * t1 * t * mx + t * t * ex,
+                y:        t1 * t1 * sy + 2 * t1 * t * my + t * t * ey,
                 duration: stepDur,
                 canskip:  false,
             });
         }
-
-        await ac.remove({ name: name });
     },
 
     // ─── 分区下落特效 ────────────────────────────────────────────────────────
