@@ -191,3 +191,67 @@ ac.createStyle({
     bold: true, italic: false,
     fontSize: 30, color: '#efefe3',
 });
+
+// ── Gallery UI ────────────────────────────────────────────────────
+ac.createStyle({
+    name: 'style_gallery_title',
+    font: '思源宋体',
+    bold: true, italic: false,
+    fontSize: 32, color: '#ebebf0',
+});
+
+ac.createStyle({
+    name: 'style_gallery_tab',
+    font: '思源宋体',
+    bold: false, italic: false,
+    fontSize: 24, color: '#b1b1ba',
+});
+
+ac.createStyle({
+    name: 'style_gallery_tab_active',
+    font: '思源宋体',
+    bold: true, italic: false,
+    fontSize: 26, color: '#f5e6a3',
+});
+
+ac.createStyle({
+    name: 'style_gallery_section',
+    font: '思源宋体',
+    bold: true, italic: false,
+    fontSize: 26, color: '#d4935a',
+});
+
+ac.createStyle({
+    name: 'style_gallery_subgroup',
+    font: '思源宋体',
+    bold: false, italic: false,
+    fontSize: 22, color: '#9fb4c9',
+});
+
+ac.createStyle({
+    name: 'style_gallery_lock',
+    font: '思源宋体',
+    bold: true, italic: false,
+    fontSize: 26, color: '#63656d',
+});
+
+ac.createStyle({
+    name: 'style_gallery_text_cell',
+    font: '思源宋体',
+    bold: false, italic: false,
+    fontSize: 22, color: '#ebebf0',
+});
+
+ac.createStyle({
+    name: 'style_gallery_detail_name',
+    font: '思源宋体',
+    bold: true, italic: false,
+    fontSize: 30, color: '#f5e6a3',
+});
+
+ac.createStyle({
+    name: 'style_gallery_detail_desc',
+    font: '思源宋体',
+    bold: false, italic: false,
+    fontSize: 22, color: '#b1b1ba',
+});

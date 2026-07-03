@@ -282,6 +282,8 @@ const CommonUI = {
         console.log('[LOG] [CommonUI] onLoadDelay');
         // 创建全局背包按钮, 靠层级控制显示
         InventoryUI.createBtnBag();
+        // // 创建全局图鉴按钮（如不需要常驻入口，注释此行）
+        // GalleryUI.createBtnGallery();
     }
 
 }

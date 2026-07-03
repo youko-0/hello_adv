@@ -174,6 +174,63 @@ const HelloADVRes = {
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: 'cawn43cd',
     ui_bag: 'cyxb488u',
+    ui_gallery: '',  // TODO: 填入易次元后台创建的图鉴 UI ID
+
+    // ── 图鉴（鉴赏/人物/剧情）所有图片资源占位，填入实际 resId ──
+    // 通用框
+    img_gallery_title:       '',  // 图鉴主标题图
+    btn_gallery_tab_normal:  '',  // 分类标签按钮 普通
+    btn_gallery_tab_active:  '',  // 分类标签按钮 选中
+    img_gallery_text_card:   '',  // 剧情条目文字卡片底图（可空，走通用底图）
+    img_gallery_section_bg:  '',  // 子分类小标题底图（可空）
+    // 鉴赏 - CG（16:9）
+    pic_gallery_cg_lingzhu_yu_long_1: '',
+    pic_gallery_cg_zhaoyun_musan_1:   '',
+    pic_gallery_cg_yunbing_chujian_1: '',
+    pic_gallery_cg_yunbing_chujian_2: '',
+    pic_gallery_cg_aobing_zijin_1:    '',
+    pic_gallery_cg_aobing_zijin_2:    '',
+    // 鉴赏 - 特殊场景
+    pic_gallery_scene_nezha_temple:      '',
+    pic_gallery_scene_nezha_temple_dark: '',
+    pic_gallery_scene_dragon_temple:     '',
+    pic_gallery_scene_dragon_palace:     '',
+    // 人物 - 立绘
+    pic_gallery_portrait_lingzhuzi:   '',
+    pic_gallery_portrait_xiaolongshen:'',
+    pic_gallery_portrait_liyunxiang:  '',
+    pic_gallery_portrait_aobing:      '',
+    // 人物 - 头像
+    icon_gallery_avatar_shaonian_kasha:  '',
+    icon_gallery_avatar_kasha:           '',
+    icon_gallery_avatar_qingnian_lijinxiang: '',
+    icon_gallery_avatar_lijinxiang:      '',
+    icon_gallery_avatar_laoli:           '',
+    icon_gallery_avatar_aoguang:         '',
+    icon_gallery_avatar_ligen:           '',
+    icon_gallery_avatar_yunv:            '',
+    icon_gallery_avatar_mianjuren:       '',
+    icon_gallery_avatar_aolie:           '',
+    icon_gallery_avatar_diyong_furen:    '',
+    // 剧情收集 - 回忆/结局/番外（可选配图，留空走文字卡片）
+    pic_gallery_memory_lingzhu_yu_long:  '',
+    pic_gallery_memory_zhaoyun_musan:    '',
+    pic_gallery_memory_nezha_naohai:     '',
+    pic_gallery_memory_longshen_quqin:   '',
+    pic_gallery_memory_yunbing_chujian:  '',
+    pic_gallery_memory_three_dates:      '',
+    pic_gallery_memory_lijing_tanhua:    '',
+    pic_gallery_memory_aolie_laifang:    '',
+    pic_gallery_memory_longzhu_beihui:   '',
+    pic_gallery_memory_aobing_zijin:     '',
+    pic_gallery_ending_true:             '',
+    pic_gallery_ending_fake:             '',
+    pic_gallery_ending_dream:            '',
+    pic_gallery_ending_fail1:            '',
+    pic_gallery_ending_fail2:            '',
+    pic_gallery_side1:                   '',
+    pic_gallery_side2:                   '',
+    pic_gallery_side3:                   '',
 
     // 剧情唯一 ID
     plot_forum_next: 13977507,
@@ -367,6 +424,57 @@ const DongHaiRes = {
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: '5a63b4fc0a7041f38685971fcecfd962',
     ui_bag: 'ehprab55',
+    ui_gallery: '',  // TODO: 填入易次元后台创建的图鉴 UI ID（与 HelloADVRes.ui_gallery 可填同一 ID）
+
+    // ── 图鉴（鉴赏/人物/剧情）所有图片资源占位，填入实际 resId ──
+    img_gallery_title:       '',
+    btn_gallery_tab_normal:  '',
+    btn_gallery_tab_active:  '',
+    img_gallery_text_card:   '',
+    img_gallery_section_bg:  '',
+    pic_gallery_cg_lingzhu_yu_long_1: '',
+    pic_gallery_cg_zhaoyun_musan_1:   '',
+    pic_gallery_cg_yunbing_chujian_1: '',
+    pic_gallery_cg_yunbing_chujian_2: '',
+    pic_gallery_cg_aobing_zijin_1:    '',
+    pic_gallery_cg_aobing_zijin_2:    '',
+    pic_gallery_scene_nezha_temple:      '',
+    pic_gallery_scene_nezha_temple_dark: '',
+    pic_gallery_scene_dragon_temple:     '',
+    pic_gallery_scene_dragon_palace:     '',
+    pic_gallery_portrait_lingzhuzi:   '',
+    pic_gallery_portrait_xiaolongshen:'',
+    pic_gallery_portrait_liyunxiang:  '',
+    pic_gallery_portrait_aobing:      '',
+    icon_gallery_avatar_shaonian_kasha:  '',
+    icon_gallery_avatar_kasha:           '',
+    icon_gallery_avatar_qingnian_lijinxiang: '',
+    icon_gallery_avatar_lijinxiang:      '',
+    icon_gallery_avatar_laoli:           '',
+    icon_gallery_avatar_aoguang:         '',
+    icon_gallery_avatar_ligen:           '',
+    icon_gallery_avatar_yunv:            '',
+    icon_gallery_avatar_mianjuren:       '',
+    icon_gallery_avatar_aolie:           '',
+    icon_gallery_avatar_diyong_furen:    '',
+    pic_gallery_memory_lingzhu_yu_long:  '',
+    pic_gallery_memory_zhaoyun_musan:    '',
+    pic_gallery_memory_nezha_naohai:     '',
+    pic_gallery_memory_longshen_quqin:   '',
+    pic_gallery_memory_yunbing_chujian:  '',
+    pic_gallery_memory_three_dates:      '',
+    pic_gallery_memory_lijing_tanhua:    '',
+    pic_gallery_memory_aolie_laifang:    '',
+    pic_gallery_memory_longzhu_beihui:   '',
+    pic_gallery_memory_aobing_zijin:     '',
+    pic_gallery_ending_true:             '',
+    pic_gallery_ending_fake:             '',
+    pic_gallery_ending_dream:            '',
+    pic_gallery_ending_fail1:            '',
+    pic_gallery_ending_fail2:            '',
+    pic_gallery_side1:                   '',
+    pic_gallery_side2:                   '',
+    pic_gallery_side3:                   '',
     
     // 剧情唯一 ID
     plot_forum_next: 13969471,
