@@ -5,16 +5,15 @@ console.log('[LOAD] gallery_ui');
 const GalleryUI = {
     name: 'layer_gallery_entry',
 
-    // ── 布局（1280×720，引擎 y=0 在底部）──
+    // ── 布局（1280×720，引擎 y=0 在底部，坐标来自 crop_transparent.py 实测）──
     layout: {
-        bg:    { x: 640,  y: 360 },
-        title: { x: 555,  y: 350 },                          // 中央"图鉴/Gallery"标题竖卡片
-        close: { x: 1037, y: 68  },                           // 右下关闭 ※
-        // 3 个功能竖条按钮（依设计稿）
+        bg:    { x: 640, y: 360 },
+        title: { x: 640, y: 272 },                           // 中央"图鉴/Gallery"标题竖卡片
+        close: { x: 1037, y: 68 },                            // 右下关闭 ※
         entries: [
-            { cat: GalleryCategory.APPRECIATION, x: 857, y: 432 },  // 鉴赏（右侧）
-            { cat: GalleryCategory.STORY,        x: 393, y: 428 },  // 剧情收集（中左）
-            { cat: GalleryCategory.CHARACTER,    x: 200, y: 425 },  // 人物收集（最左）
+            { cat: GalleryCategory.APPRECIATION, x: 857, y: 430 },  // 鉴赏
+            { cat: GalleryCategory.STORY,        x: 422, y: 373 },  // 剧情收集
+            { cat: GalleryCategory.CHARACTER,    x: 242, y: 400 },  // 人物收集
         ],
     },
 

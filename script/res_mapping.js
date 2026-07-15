@@ -181,9 +181,9 @@ const HelloADVRes = {
 
     // ── 图鉴 UI 资源占位（填入实际 resId）──────────────────────
     // 通用
-    pic_gallery_bg: '',                   // 全屏山水背景（入口页 + 子页共用）
+    pic_gallery_bg: '$196771710',                   // 全屏山水背景（入口页 + 子页共用）
     // 入口页
-    img_gallery_title_card: '',           // 中央"图鉴/Gallery"标题竖卡片
+    img_gallery_title_card: '$196771709',           // 中央"图鉴/Gallery"标题竖卡片
     btn_gallery_entry_apprec_n: '', // "鉴赏"竖条 常态（含文字）
     btn_gallery_entry_apprec_s: '', // "鉴赏"竖条 选中态
     btn_gallery_entry_character_n: '',    // "人物收集"竖条 常态
@@ -447,14 +447,14 @@ const DongHaiRes = {
     ui_gallery_story:        'pyj-xptl',
 
     // ── 图鉴 UI 资源占位（填入实际 resId）──────────────────────
-    pic_gallery_bg: '$185360023',
-    img_gallery_title_card: '',
-    btn_gallery_entry_apprec_n: '',
-    btn_gallery_entry_apprec_s: '',
-    btn_gallery_entry_character_n: '',
-    btn_gallery_entry_character_s: '',
-    btn_gallery_entry_story_n: '',
-    btn_gallery_entry_story_s: '',
+    pic_gallery_bg: '$196771710',
+    img_gallery_title_card: '$196771709',
+    btn_gallery_entry_apprec_n: '$196771702',
+    btn_gallery_entry_apprec_s: '$196771704',
+    btn_gallery_entry_character_n: '$196771705',
+    btn_gallery_entry_character_s: '$196771706',
+    btn_gallery_entry_story_n: '$196771707',
+    btn_gallery_entry_story_s: '$196771708',
     img_gallery_subtitle_apprec: '',
     img_gallery_subtitle_char: '',
     img_gallery_sub_title_story: '',
