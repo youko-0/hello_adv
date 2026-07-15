@@ -7,43 +7,47 @@ console.log('[LOAD] gallery_sub_character');
 const GallerySubCharacter = {
     name: 'layer_gallery_character',
 
-    _portraits:      [],   // portrait entryId 列表（按 sortIndex）
-    _selectedIdx:    -1,   // 当前展开帧索引，-1=无
-    _portraitPage:   0,    // 展开时当前立绘索引
+    _portraits:      [],
+    _selectedIdx:    -1,
+    _portraitPage:   0,
 
-    // ── 布局（1280×720，引擎 y=0 在底部）──
+    // ── 布局 ─────────────────────────────────────────────────────
+    // 竖框几何（1280×720，引擎 y=0 在底部）：
+    //   FRAME_H=508 → 顶 +254 / 底 -254（相对框中心）
+    //   立绘区 高430，顶对齐 → center y_off = +254 - 215 = +39
+    //   名字区 高78，底对齐  → center y_off = -254 + 39 = -215
+    // clip layer 使用 anchor(50,50)，子元素坐标以 clip 中心为原点(0,0)
     layout: {
         bg:       { x: 640,  y: 360 },
         subtitle: { x: 885,  y: 375 },
         close:    { x: 1037, y: 68  },
 
-        FRAME_W: 142,
-        FRAME_H: 508,
-        // 框内各元素相对于"框中心"的 y 偏移
-        // 框高 508 → 顶 +254 / 底 -254
-        // 名字区 高 78，底部对齐：中心 y_off = -254+39 = -215
-        // 立绘区 高 430，顶部对齐：中心 y_off = 254-215 = +39
-        PORTRAIT_Y_OFF:   39,
-        LOCK_Y_OFF:       39,
-        NAME_CN_Y_OFF:  -200,
-        NAME_EN_Y_OFF:  -228,
+        FRAME_W:      142,
+        FRAME_H:      508,
+        PORTRAIT_H:   430,   // clip 区高度
+        NAME_H:        78,
+        CLIP_Y_OFF:    39,   // clip 中心相对框中心 y 偏移
 
-        frameY: 400,
-        frameXs: [101, 258, 415, 572],   // 4 框初始世界坐标中心 x
+        NAME_CN_Y_OFF: -200,
+        NAME_EN_Y_OFF: -228,
 
-        expandedX: 91,                    // 展开态：选中帧目标 x
+        frameY:  400,
+        frameXs: [101, 258, 415, 572],
 
-        expandPortrait: { x: 560, y: 370, scale: 55 },  // 大立绘
+        expandedX: 91,
 
-        prevBtn: { x: 460, y: 85 },      // 切换按钮
+        expandPortrait: { x: 560, y: 370, scale: 55 },
+        prevBtn: { x: 460, y: 85 },
         nextBtn: { x: 570, y: 85 },
 
         ANIM_DUR: 350,
+
+        PORTRAIT_SCALE: 18,  // TODO: 按实际立绘尺寸调整
     },
 
     _saveState: function (patch) { return GalleryUI._saveState(patch); },
 
-    // ── 进入子页 ──────────────────────────────────────────────
+    // ── 进入 ─────────────────────────────────────────────────────
     enter: async function (cat, sub, selectedEntry) {
         this._selectedIdx  = -1;
         this._portraitPage = 0;
@@ -66,10 +70,10 @@ const GallerySubCharacter = {
         });
 
         // 子页标题
-        if (ResMap.img_gallery_subtitle_char) {
+        if (ResMap.img_gallery_por_subtitle) {
             await ac.createImage({
                 name: 'img_character_subtitle', index: 1, inlayer: this.name,
-                resId: ResMap.img_gallery_subtitle_char,
+                resId: ResMap.img_gallery_por_subtitle,
                 pos: { x: L.subtitle.x, y: L.subtitle.y }, anchor: { x: 50, y: 50 },
             });
         } else {
@@ -83,7 +87,7 @@ const GallerySubCharacter = {
             });
         }
 
-        // 关闭按钮（展开态→折叠，非展开态→关闭 UI）
+        // 关闭按钮（展开态→折叠；非展开态→关闭 UI）
         await ac.createOption({
             name: 'btn_character_close', index: 5, inlayer: this.name,
             nResId: ResMap.btn_common_close_normal,
@@ -99,13 +103,12 @@ const GallerySubCharacter = {
             },
         });
 
-        // 立绘竖框
         for (let i = 0; i < this._portraits.length; i++) {
             await this._createFrame(i, this._portraits[i]);
         }
     },
 
-    // ── 单帧创建 ─────────────────────────────────────────────
+    // ── 帧创建 ───────────────────────────────────────────────────
     _createFrame: async function (i, entryId) {
         const L        = this.layout;
         const entry    = GalleryConfig[entryId];
@@ -114,18 +117,21 @@ const GallerySubCharacter = {
         const fx = L.frameXs[i];
         const fy = L.frameY;
 
-        // 立绘图（z=1，在竖框底图后方）
-        const portraitRes = unlocked && view.resId
-            ? view.resId
-            : (ResMap.img_gallery_locked_portrait || ResMap.img_mask_black);
-        await ac.createImage({
-            name: `char_portrait_${i}`, index: 1, inlayer: this.name,
-            resId: portraitRes,
-            pos: { x: fx, y: fy + L.PORTRAIT_Y_OFF }, anchor: { x: 50, y: 50 },
-            scale: 18,   // TODO: 填入真实立绘资源后按尺寸调整
-        });
+        if (!unlocked) {
+            // ── 未解锁：整体一张图（底板+锁图标+文字） ──────────
+            await ac.createImage({
+                name: `char_locked_frame_${i}`, index: 2, inlayer: this.name,
+                resId: ResMap.img_gallery_por_locked || ResMap.img_mask_black,
+                pos: { x: fx, y: fy }, anchor: { x: 50, y: 50 },
+                onTouchEnded: (function (idx) {
+                    return async function () { await GallerySubCharacter.onFrameClick(idx); };
+                })(i),
+            });
+            return;
+        }
 
-        // 竖框底图（z=2，边框不透明覆盖立绘溢出部分，视觉裁切）
+        // ── 已解锁 ───────────────────────────────────────────────
+        // 1. 竖框底板（实心，z=2，在 clip 后面）
         await ac.createImage({
             name: `char_frame_bg_${i}`, index: 2, inlayer: this.name,
             resId: ResMap.img_gallery_portrait_frame || ResMap.img_mask_black,
@@ -135,18 +141,28 @@ const GallerySubCharacter = {
             })(i),
         });
 
-        // 锁图标（仅未解锁）
-        if (!unlocked) {
-            await ac.createImage({
-                name: `char_lock_${i}`, index: 3, inlayer: this.name,
-                resId: ResMap.img_gallery_lock_icon || ResMap.img_mask_round,
-                pos: { x: fx, y: fy + L.LOCK_Y_OFF }, anchor: { x: 50, y: 50 },
-            });
-        }
+        // 2. 立绘 clip layer（z=3，覆盖底板立绘区，clipMode 裁切）
+        //    位置 = 框中心 + CLIP_Y_OFF，anchor(50,50)
+        //    子元素坐标以 clip 中心为原点(0,0)
+        await ac.createLayer({
+            name: `char_clip_${i}`, index: 3, inlayer: this.name,
+            pos: { x: fx, y: fy + L.CLIP_Y_OFF },
+            size: { width: L.FRAME_W, height: L.PORTRAIT_H },
+            anchor: { x: 50, y: 50 },
+            clipMode: true,
+        });
 
-        // 中文名
+        // 3. 立绘图（在 clip 内，中心对齐）
+        await ac.createImage({
+            name: `char_portrait_${i}`, index: 0, inlayer: `char_clip_${i}`,
+            resId: view.resId || ResMap.img_mask_black,
+            pos: { x: 0, y: 0 }, anchor: { x: 50, y: 50 },
+            scale: L.PORTRAIT_SCALE,
+        });
+
+        // 4. 中文名
         await ac.createText({
-            name: `char_name_cn_${i}`, index: 3, inlayer: this.name,
+            name: `char_name_cn_${i}`, index: 4, inlayer: this.name,
             content: view.name || '',
             pos: { x: fx, y: fy + L.NAME_CN_Y_OFF },
             size: { width: L.FRAME_W - 10, height: 30 }, anchor: { x: 50, y: 50 },
@@ -154,9 +170,9 @@ const GallerySubCharacter = {
             halign: ac.HALIGN_TYPES.middle, valign: ac.VALIGN_TYPES.center,
         });
 
-        // 英文名
+        // 5. 英文名
         await ac.createText({
-            name: `char_name_en_${i}`, index: 3, inlayer: this.name,
+            name: `char_name_en_${i}`, index: 4, inlayer: this.name,
             content: entry.nameEn || '',
             pos: { x: fx, y: fy + L.NAME_EN_Y_OFF },
             size: { width: L.FRAME_W - 10, height: 22 }, anchor: { x: 50, y: 50 },
@@ -165,7 +181,7 @@ const GallerySubCharacter = {
         });
     },
 
-    // ── 帧点击 ───────────────────────────────────────────────
+    // ── 点击 ─────────────────────────────────────────────────────
     onFrameClick: async function (i) {
         if (this._selectedIdx === i) return;
         if (this._selectedIdx >= 0) {
@@ -174,41 +190,51 @@ const GallerySubCharacter = {
         await this._expandFrame(i);
     },
 
-    // ── 展开帧 ───────────────────────────────────────────────
+    // ── 展开 ─────────────────────────────────────────────────────
     _expandFrame: async function (i) {
         const L = this.layout;
         this._selectedIdx  = i;
         this._portraitPage = 0;
 
-        // 其他帧淡出（并行）
         for (let j = 0; j < this._portraits.length; j++) {
             if (j === i) continue;
-            ac.fadeTo({ name: `char_portrait_${j}`,  opacity: 0, duration: L.ANIM_DUR });
-            ac.fadeTo({ name: `char_frame_bg_${j}`,  opacity: 0, duration: L.ANIM_DUR });
-            ac.fadeTo({ name: `char_name_cn_${j}`,   opacity: 0, duration: L.ANIM_DUR });
-            ac.fadeTo({ name: `char_name_en_${j}`,   opacity: 0, duration: L.ANIM_DUR });
-            ac.fadeTo({ name: `char_lock_${j}`,      opacity: 0, duration: L.ANIM_DUR });
+            this._fadeFrame(j, 0, L.ANIM_DUR);
         }
-
-        // 选中帧滑到左侧
         this._moveFrame(i, L.expandedX, L.ANIM_DUR);
 
         await ac.delay({ time: L.ANIM_DUR + 50 });
         await this._showExpandedPortrait(i);
     },
 
-    // 移动帧所有元素（并行，非 await）
+    // ── 移动帧（并行，非 await）──────────────────────────────────
     _moveFrame: function (i, newX, duration) {
         const L  = this.layout;
         const fy = L.frameY;
-        ac.moveTo({ name: `char_portrait_${i}`,  x: newX, y: fy + L.PORTRAIT_Y_OFF, duration });
-        ac.moveTo({ name: `char_frame_bg_${i}`,  x: newX, y: fy,                     duration });
-        ac.moveTo({ name: `char_name_cn_${i}`,   x: newX, y: fy + L.NAME_CN_Y_OFF,   duration });
-        ac.moveTo({ name: `char_name_en_${i}`,   x: newX, y: fy + L.NAME_EN_Y_OFF,   duration });
-        ac.moveTo({ name: `char_lock_${i}`,      x: newX, y: fy + L.LOCK_Y_OFF,      duration });
+        const unlocked = GallerySystem.isUnlocked(this._portraits[i]);
+        if (!unlocked) {
+            ac.moveTo({ name: `char_locked_frame_${i}`, x: newX, y: fy, duration });
+            return;
+        }
+        ac.moveTo({ name: `char_frame_bg_${i}`, x: newX, y: fy,                     duration });
+        ac.moveTo({ name: `char_clip_${i}`,     x: newX, y: fy + L.CLIP_Y_OFF,      duration });
+        ac.moveTo({ name: `char_name_cn_${i}`,  x: newX, y: fy + L.NAME_CN_Y_OFF,   duration });
+        ac.moveTo({ name: `char_name_en_${i}`,  x: newX, y: fy + L.NAME_EN_Y_OFF,   duration });
     },
 
-    // ── 显示大立绘 ──────────────────────────────────────────
+    // ── 淡入/淡出帧（并行，非 await）────────────────────────────
+    _fadeFrame: function (i, opacity, duration) {
+        const unlocked = GallerySystem.isUnlocked(this._portraits[i]);
+        if (!unlocked) {
+            ac.fadeTo({ name: `char_locked_frame_${i}`, opacity, duration });
+            return;
+        }
+        ac.fadeTo({ name: `char_frame_bg_${i}`, opacity, duration });
+        ac.fadeTo({ name: `char_clip_${i}`,     opacity, duration });
+        ac.fadeTo({ name: `char_name_cn_${i}`,  opacity, duration });
+        ac.fadeTo({ name: `char_name_en_${i}`,  opacity, duration });
+    },
+
+    // ── 展开态：右侧大立绘 ───────────────────────────────────────
     _showExpandedPortrait: async function (i) {
         const L    = this.layout;
         const list = this._getPortraitList(this._portraits[i]);
@@ -221,7 +247,6 @@ const GallerySubCharacter = {
             anchor: { x: 50, y: 50 }, scale: L.expandPortrait.scale,
         });
 
-        // 多张立绘才显示切换按钮
         if (list.length > 1) {
             await ac.createOption({
                 name: 'btn_portrait_prev', index: 4, inlayer: this.name,
@@ -250,7 +275,7 @@ const GallerySubCharacter = {
         return ids.length > 0 ? ids : (entry.resId ? [entry.resId] : []);
     },
 
-    // ── 切换立绘 ────────────────────────────────────────────
+    // ── 切换立绘 ─────────────────────────────────────────────────
     onPrevPortrait: async function () {
         const i = this._selectedIdx;
         if (i < 0) return;
@@ -280,7 +305,7 @@ const GallerySubCharacter = {
         });
     },
 
-    // ── 折叠（关闭展开态）────────────────────────────────────
+    // ── 折叠 ─────────────────────────────────────────────────────
     _collapseFrame: async function () {
         const i = this._selectedIdx;
         if (i < 0) return;
@@ -290,17 +315,10 @@ const GallerySubCharacter = {
         await ac.remove({ name: 'btn_portrait_prev' });
         await ac.remove({ name: 'btn_portrait_next' });
 
-        // 选中帧滑回原位
         this._moveFrame(i, L.frameXs[i], L.ANIM_DUR);
 
-        // 其他帧淡入
         for (let j = 0; j < this._portraits.length; j++) {
-            if (j === i) continue;
-            ac.fadeTo({ name: `char_portrait_${j}`,  opacity: 100, duration: L.ANIM_DUR });
-            ac.fadeTo({ name: `char_frame_bg_${j}`,  opacity: 100, duration: L.ANIM_DUR });
-            ac.fadeTo({ name: `char_name_cn_${j}`,   opacity: 100, duration: L.ANIM_DUR });
-            ac.fadeTo({ name: `char_name_en_${j}`,   opacity: 100, duration: L.ANIM_DUR });
-            ac.fadeTo({ name: `char_lock_${j}`,      opacity: 100, duration: L.ANIM_DUR });
+            if (j !== i) this._fadeFrame(j, 100, L.ANIM_DUR);
         }
 
         await ac.delay({ time: L.ANIM_DUR + 50 });
