@@ -7,34 +7,31 @@ const GalleryUI = {
 
     // ── 布局（1280×720，引擎 y=0 在底部）──
     layout: {
-        bg:    { x: 640, y: 360 },
-        title: { x: 555, y: 368 },                         // 中央"图鉴/Gallery"卡片
-        close: { x: 1143, y: 62 },                          // 右下关闭 ※
-        // 3 个功能竖条按钮
+        bg:    { x: 640,  y: 360 },
+        title: { x: 555,  y: 350 },                          // 中央"图鉴/Gallery"标题竖卡片
+        close: { x: 1037, y: 68  },                           // 右下关闭 ※
+        // 3 个功能竖条按钮（依设计稿）
         entries: [
-            { cat: GalleryCategory.APPRECIATION, x: 893, y: 400 },  // 鉴赏（右侧）
-            { cat: GalleryCategory.STORY,        x: 428, y: 390 },  // 剧情收集（中左）
-            { cat: GalleryCategory.CHARACTER,    x: 165, y: 390 },  // 人物收集（最左）
+            { cat: GalleryCategory.APPRECIATION, x: 857, y: 432 },  // 鉴赏（右侧）
+            { cat: GalleryCategory.STORY,        x: 393, y: 428 },  // 剧情收集（中左）
+            { cat: GalleryCategory.CHARACTER,    x: 200, y: 425 },  // 人物收集（最左）
         ],
     },
 
     // 各功能对应资源（常态 / 选中态）
-    _entryRes: function (cat) {
-        const map = {
-            [GalleryCategory.APPRECIATION]: {
-                n: ResMap.btn_gallery_entry_appreciation_n,
-                s: ResMap.btn_gallery_entry_appreciation_s,
-            },
-            [GalleryCategory.CHARACTER]: {
-                n: ResMap.btn_gallery_entry_character_n,
-                s: ResMap.btn_gallery_entry_character_s,
-            },
-            [GalleryCategory.STORY]: {
-                n: ResMap.btn_gallery_entry_story_n,
-                s: ResMap.btn_gallery_entry_story_s,
-            },
-        };
-        return map[cat] || { n: '', s: '' };
+    _entryRes: {
+        [GalleryCategory.APPRECIATION]: {
+            n: ResMap.btn_gallery_entry_apprec_n,
+            s: ResMap.btn_gallery_entry_apprec_s,
+        },
+        [GalleryCategory.CHARACTER]: {
+            n: ResMap.btn_gallery_entry_character_n,
+            s: ResMap.btn_gallery_entry_character_s,
+        },
+        [GalleryCategory.STORY]: {
+            n: ResMap.btn_gallery_entry_story_n,
+            s: ResMap.btn_gallery_entry_story_s,
+        },
     },
 
     // 子页 uiId 映射
@@ -92,8 +89,8 @@ const GalleryUI = {
         // 右下关闭按钮
         await ac.createOption({
             name: 'btn_gallery_entry_close', index: 2, inlayer: this.name,
-            nResId: ResMap.btn_gallery_close_n || ResMap.btn_common_close_normal,
-            sResId: ResMap.btn_gallery_close_s || ResMap.btn_common_close_highlight,
+            nResId: ResMap.btn_common_close_normal,
+            sResId: ResMap.btn_common_close_highlight,
             content: '',
             pos: { x: L.close.x, y: L.close.y }, anchor: { x: 50, y: 50 },
             onTouchEnded: async function () {
@@ -103,13 +100,12 @@ const GalleryUI = {
     },
 
     _createEntryBtn: async function (cat, x, y) {
-        const r = this._entryRes(cat);
-        // 资源缺省时用选项底图临时替代
-        const nRes = r.n || ResMap.img_selection_bg_normal;
-        const sRes = r.s || ResMap.img_selection_bg_highlight;
+        const r = this._entryRes[cat] || {};
         await ac.createOption({
             name: 'btn_gallery_entry_' + cat, index: 2, inlayer: this.name,
-            nResId: nRes, sResId: sRes, content: '',
+            nResId: r.n || ResMap.img_selection_bg_normal,
+            sResId: r.s || ResMap.img_selection_bg_highlight,
+            content: '',
             pos: { x: x, y: y }, anchor: { x: 50, y: 50 },
             onTouchEnded: (function (c) {
                 return async function () { await GalleryUI.onEntrySelect(c); };

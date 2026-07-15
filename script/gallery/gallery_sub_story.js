@@ -94,8 +94,8 @@ const GallerySubStory = {
 
         await ac.createOption({
             name: 'btn_story_close', index: 2, inlayer: this.name,
-            nResId: ResMap.btn_gallery_close_n || ResMap.btn_common_close_normal,
-            sResId: ResMap.btn_gallery_close_s || ResMap.btn_common_close_highlight,
+            nResId: ResMap.btn_common_close_normal,
+            sResId: ResMap.btn_common_close_highlight,
             content: '',
             pos: { x: L.close.x, y: L.close.y }, anchor: { x: 50, y: 50 },
             onTouchEnded: async function () { await ac.removeCurrentUI({}); },

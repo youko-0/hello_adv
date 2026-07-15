@@ -44,10 +44,10 @@ const GallerySubCharacter = {
             pos: { x: L.bg.x, y: L.bg.y }, anchor: { x: 50, y: 50 },
         });
 
-        if (ResMap.img_gallery_sub_title_character) {
+        if (ResMap.img_gallery_subtitle_char) {
             await ac.createImage({
                 name: 'img_character_title', index: 1, inlayer: this.name,
-                resId: ResMap.img_gallery_sub_title_character,
+                resId: ResMap.img_gallery_subtitle_char,
                 pos: { x: L.title.x, y: L.title.y }, anchor: { x: 50, y: 50 },
             });
         } else {
@@ -95,8 +95,8 @@ const GallerySubCharacter = {
 
         await ac.createOption({
             name: 'btn_character_close', index: 2, inlayer: this.name,
-            nResId: ResMap.btn_gallery_close_n || ResMap.btn_common_close_normal,
-            sResId: ResMap.btn_gallery_close_s || ResMap.btn_common_close_highlight,
+            nResId: ResMap.btn_common_close_normal,
+            sResId: ResMap.btn_common_close_highlight,
             content: '',
             pos: { x: L.close.x, y: L.close.y }, anchor: { x: 50, y: 50 },
             onTouchEnded: async function () { await ac.removeCurrentUI({}); },

@@ -201,6 +201,13 @@ ac.createStyle({
 });
 
 ac.createStyle({
+    name: 'style_gallery_strip_label',   // 入口竖条按钮叠字
+    font: '思源宋体',
+    bold: false, italic: false,
+    fontSize: 26, color: '#e8e4d8',
+});
+
+ac.createStyle({
     name: 'style_gallery_tab',
     font: '思源宋体',
     bold: false, italic: false,

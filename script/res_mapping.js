@@ -174,27 +174,24 @@ const HelloADVRes = {
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: 'cawn43cd',
     ui_bag: 'cyxb488u',
-    ui_gallery:              '',  // TODO 图鉴入口页 callUI ID
-    ui_gallery_appreciation: '',  // TODO 鉴赏子页 callUI ID
-    ui_gallery_character:    '',  // TODO 人物收集子页 callUI ID
-    ui_gallery_story:        '',  // TODO 剧情收集子页 callUI ID
+    ui_gallery:              'uw1mfrmn',  // TODO 图鉴入口页 callUI ID
+    ui_gallery_appreciation: '2aisbj7b',  // TODO 鉴赏子页 callUI ID
+    ui_gallery_character:    'w32mck6w',  // TODO 人物收集子页 callUI ID
+    ui_gallery_story:        'pyj-xptl',  // TODO 剧情收集子页 callUI ID
 
     // ── 图鉴 UI 资源占位（填入实际 resId）──────────────────────
     // 通用
     pic_gallery_bg: '',                   // 全屏山水背景（入口页 + 子页共用）
-    btn_gallery_close_n: '',              // 右下角关闭按钮 常态（※形）
-    btn_gallery_close_s: '',              // 右下角关闭按钮 选中态
     // 入口页
     img_gallery_title_card: '',           // 中央"图鉴/Gallery"标题竖卡片
-    btn_gallery_entry_appreciation_n: '', // "鉴赏"竖条 常态
-    btn_gallery_entry_appreciation_s: '', // "鉴赏"竖条 选中态
+    btn_gallery_entry_apprec_n: '', // "鉴赏"竖条 常态（含文字）
+    btn_gallery_entry_apprec_s: '', // "鉴赏"竖条 选中态
     btn_gallery_entry_character_n: '',    // "人物收集"竖条 常态
     btn_gallery_entry_character_s: '',    // "人物收集"竖条 选中态
     btn_gallery_entry_story_n: '',        // "剧情收集"竖条 常态
     btn_gallery_entry_story_s: '',        // "剧情收集"竖条 选中态
-    // 子页通用
-    img_gallery_sub_title_appreciation: '', // 子页右侧"鉴赏"竖排标题卡片
-    img_gallery_sub_title_character: '',    // 子页右侧"人物收集"竖排标题卡片
+    img_gallery_subtitle_apprec: '', // 子页右侧"鉴赏"竖排标题卡片
+    img_gallery_subtitle_char: '',    // 子页右侧"人物收集"竖排标题卡片
     img_gallery_sub_title_story: '',        // 子页右侧"剧情收集"竖排标题卡片
     btn_gallery_prev_n: '',               // "上一页"竖排按钮 常态
     btn_gallery_prev_s: '',               // "上一页"竖排按钮 选中态
@@ -203,26 +200,26 @@ const HelloADVRes = {
     img_gallery_card_locked: '',          // 未解锁卡片底图（暗色纹理）
     img_gallery_name_bar: '',             // 卡片名称条底图
     // 鉴赏 - CG（16:9）
-    pic_gallery_cg_lingzhu_yu_long_1: '',
+    pic_gallery_cg_lingzhu_long_1: '',
     pic_gallery_cg_zhaoyun_musan_1:   '',
-    pic_gallery_cg_yunbing_chujian_1: '',
-    pic_gallery_cg_yunbing_chujian_2: '',
+    pic_gallery_cg_yunbing_chuji_1: '',
+    pic_gallery_cg_yunbing_chuji_2: '',
     pic_gallery_cg_aobing_zijin_1:    '',
     pic_gallery_cg_aobing_zijin_2:    '',
     // 鉴赏 - 特殊场景
     pic_gallery_scene_nezha_temple:      '',
-    pic_gallery_scene_nezha_temple_dark: '',
-    pic_gallery_scene_dragon_temple:     '',
-    pic_gallery_scene_dragon_palace:     '',
+    pic_gallery_scene_nezha_dark: '',
+    pic_gallery_scene_dragon_tmpl:     '',
+    pic_gallery_scene_dragon_pal:     '',
     // 人物 - 立绘
     pic_gallery_portrait_lingzhuzi:    '',
-    pic_gallery_portrait_xiaolongshen: '',
-    pic_gallery_portrait_liyunxiang:   '',
+    pic_gallery_portrait_xlongshen: '',
+    pic_gallery_portrait_liyunxian:   '',
     pic_gallery_portrait_aobing:       '',
     // 人物 - 头像
-    icon_gallery_avatar_shaonian_kasha:      '',
+    icon_gallery_avatar_shn_kasha:      '',
     icon_gallery_avatar_kasha:               '',
-    icon_gallery_avatar_qingnian_lijinxiang: '',
+    icon_gallery_avatar_qn_lijinxi: '',
     icon_gallery_avatar_lijinxiang:          '',
     icon_gallery_avatar_laoli:               '',
     icon_gallery_avatar_aoguang:             '',
@@ -230,18 +227,18 @@ const HelloADVRes = {
     icon_gallery_avatar_yunv:                '',
     icon_gallery_avatar_mianjuren:           '',
     icon_gallery_avatar_aolie:               '',
-    icon_gallery_avatar_diyong_furen:        '',
+    icon_gallery_avatar_diyong_fu:        '',
     // 剧情 - 回忆
-    pic_gallery_memory_lingzhu_yu_long: '',
-    pic_gallery_memory_zhaoyun_musan:   '',
-    pic_gallery_memory_nezha_naohai:    '',
-    pic_gallery_memory_longshen_quqin:  '',
-    pic_gallery_memory_yunbing_chujian: '',
-    pic_gallery_memory_three_dates:     '',
-    pic_gallery_memory_lijing_tanhua:   '',
-    pic_gallery_memory_aolie_laifang:   '',
-    pic_gallery_memory_longzhu_beihui:  '',
-    pic_gallery_memory_aobing_zijin:    '',
+    pic_gallery_mem_lingzhu_long: '',
+    pic_gallery_mem_zhaoyun_musan:   '',
+    pic_gallery_mem_nezha_naohai:    '',
+    pic_gallery_mem_longshen_quqin:  '',
+    pic_gallery_mem_yunbing_chuji: '',
+    pic_gallery_mem_three_dates:     '',
+    pic_gallery_mem_lijing_tanhua:   '',
+    pic_gallery_mem_aolie_laifang:   '',
+    pic_gallery_mem_longzhu_beihui:  '',
+    pic_gallery_mem_aobing_zijin:    '',
     // 剧情 - 结局 / 番外
     pic_gallery_ending_true:  '',
     pic_gallery_ending_fake:  '',
@@ -444,24 +441,22 @@ const DongHaiRes = {
     // UI 唯一 ID, 需要搜索 @KEEP @PRELOAD 在入口 UI 配置预加载
     ui_desktop: '5a63b4fc0a7041f38685971fcecfd962',
     ui_bag: 'ehprab55',
-    ui_gallery:              '',
-    ui_gallery_appreciation: '',
-    ui_gallery_character:    '',
-    ui_gallery_story:        '',
+    ui_gallery:              'uw1mfrmn',
+    ui_gallery_appreciation: '2aisbj7b',
+    ui_gallery_character:    'w32mck6w',
+    ui_gallery_story:        'pyj-xptl',
 
     // ── 图鉴 UI 资源占位（填入实际 resId）──────────────────────
-    pic_gallery_bg: '',
-    btn_gallery_close_n: '',
-    btn_gallery_close_s: '',
+    pic_gallery_bg: '$185360023',
     img_gallery_title_card: '',
-    btn_gallery_entry_appreciation_n: '',
-    btn_gallery_entry_appreciation_s: '',
+    btn_gallery_entry_apprec_n: '',
+    btn_gallery_entry_apprec_s: '',
     btn_gallery_entry_character_n: '',
     btn_gallery_entry_character_s: '',
     btn_gallery_entry_story_n: '',
     btn_gallery_entry_story_s: '',
-    img_gallery_sub_title_appreciation: '',
-    img_gallery_sub_title_character: '',
+    img_gallery_subtitle_apprec: '',
+    img_gallery_subtitle_char: '',
     img_gallery_sub_title_story: '',
     btn_gallery_prev_n: '',
     btn_gallery_prev_s: '',
@@ -469,23 +464,23 @@ const DongHaiRes = {
     btn_gallery_next_s: '',
     img_gallery_card_locked: '',
     img_gallery_name_bar: '',
-    pic_gallery_cg_lingzhu_yu_long_1: '',
+    pic_gallery_cg_lingzhu_long_1: '',
     pic_gallery_cg_zhaoyun_musan_1:   '',
-    pic_gallery_cg_yunbing_chujian_1: '',
-    pic_gallery_cg_yunbing_chujian_2: '',
+    pic_gallery_cg_yunbing_chuji_1: '',
+    pic_gallery_cg_yunbing_chuji_2: '',
     pic_gallery_cg_aobing_zijin_1:    '',
     pic_gallery_cg_aobing_zijin_2:    '',
     pic_gallery_scene_nezha_temple:      '',
-    pic_gallery_scene_nezha_temple_dark: '',
-    pic_gallery_scene_dragon_temple:     '',
-    pic_gallery_scene_dragon_palace:     '',
+    pic_gallery_scene_nezha_dark: '',
+    pic_gallery_scene_dragon_tmpl:     '',
+    pic_gallery_scene_dragon_pal:     '',
     pic_gallery_portrait_lingzhuzi:    '',
-    pic_gallery_portrait_xiaolongshen: '',
-    pic_gallery_portrait_liyunxiang:   '',
+    pic_gallery_portrait_xlongshen: '',
+    pic_gallery_portrait_liyunxian:   '',
     pic_gallery_portrait_aobing:       '',
-    icon_gallery_avatar_shaonian_kasha:      '',
+    icon_gallery_avatar_shn_kasha:      '',
     icon_gallery_avatar_kasha:               '',
-    icon_gallery_avatar_qingnian_lijinxiang: '',
+    icon_gallery_avatar_qn_lijinxi: '',
     icon_gallery_avatar_lijinxiang:          '',
     icon_gallery_avatar_laoli:               '',
     icon_gallery_avatar_aoguang:             '',
@@ -493,17 +488,17 @@ const DongHaiRes = {
     icon_gallery_avatar_yunv:                '',
     icon_gallery_avatar_mianjuren:           '',
     icon_gallery_avatar_aolie:               '',
-    icon_gallery_avatar_diyong_furen:        '',
-    pic_gallery_memory_lingzhu_yu_long: '',
-    pic_gallery_memory_zhaoyun_musan:   '',
-    pic_gallery_memory_nezha_naohai:    '',
-    pic_gallery_memory_longshen_quqin:  '',
-    pic_gallery_memory_yunbing_chujian: '',
-    pic_gallery_memory_three_dates:     '',
-    pic_gallery_memory_lijing_tanhua:   '',
-    pic_gallery_memory_aolie_laifang:   '',
-    pic_gallery_memory_longzhu_beihui:  '',
-    pic_gallery_memory_aobing_zijin:    '',
+    icon_gallery_avatar_diyong_fu:        '',
+    pic_gallery_mem_lingzhu_long: '',
+    pic_gallery_mem_zhaoyun_musan:   '',
+    pic_gallery_mem_nezha_naohai:    '',
+    pic_gallery_mem_longshen_quqin:  '',
+    pic_gallery_mem_yunbing_chuji: '',
+    pic_gallery_mem_three_dates:     '',
+    pic_gallery_mem_lijing_tanhua:   '',
+    pic_gallery_mem_aolie_laifang:   '',
+    pic_gallery_mem_longzhu_beihui:  '',
+    pic_gallery_mem_aobing_zijin:    '',
     pic_gallery_ending_true:  '',
     pic_gallery_ending_fake:  '',
     pic_gallery_ending_dream: '',
