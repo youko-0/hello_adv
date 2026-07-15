@@ -192,6 +192,12 @@ const HelloADVRes = {
     btn_gallery_entry_story_s: '',        // "剧情收集"竖条 选中态
     img_gallery_subtitle_apprec: '', // 子页右侧"鉴赏"竖排标题卡片
     img_gallery_subtitle_char: '',    // 子页右侧"人物收集"竖排标题卡片
+    // 人物收集子页 - 立绘
+    img_gallery_portrait_frame: '',   // 立绘竖框底图（含圆角边框，中央透明）
+    img_gallery_locked_portrait: '',  // 未解锁统一立绘占位图
+    img_gallery_lock_icon: '',        // 锁图标
+    btn_gallery_portrait_switch_n: '', // 切换立绘圆形按钮 常态
+    btn_gallery_portrait_switch_s: '', // 切换立绘圆形按钮 选中态
     img_gallery_sub_title_story: '',        // 子页右侧"剧情收集"竖排标题卡片
     btn_gallery_prev_n: '',               // "上一页"竖排按钮 常态
     btn_gallery_prev_s: '',               // "上一页"竖排按钮 选中态
@@ -211,11 +217,40 @@ const HelloADVRes = {
     pic_gallery_scene_nezha_dark: '',
     pic_gallery_scene_dragon_tmpl:     '',
     pic_gallery_scene_dragon_pal:     '',
-    // 人物 - 立绘
-    pic_gallery_portrait_lingzhuzi:    '',
-    pic_gallery_portrait_xlongshen: '',
-    pic_gallery_portrait_liyunxian:   '',
-    pic_gallery_portrait_aobing:       '',
+    // 人物 - 立绘（主图=正常态，用于竖框）
+    pic_gallery_portrait_lingzhuzi:    '$194467902',
+    pic_gallery_portrait_xlongshen:    '$194554242',
+    pic_gallery_portrait_liyunxian:    '$192973458',
+    pic_gallery_portrait_aobing:       '$193056862',
+    // 立绘变体 — 灵珠子 (lzz)
+    pic_gallery_por_lzz_normal: '$194467902',
+    pic_gallery_por_lzz_happy:  '$194467895',
+    pic_gallery_por_lzz_shy:    '$194467893',
+    pic_gallery_por_lzz_doubt:  '$194467899',
+    pic_gallery_por_lzz_angry:  '$194467897',
+    pic_gallery_por_lzz_sad:    '$194467891',
+    // 立绘变体 — 小龙神 (xls)
+    pic_gallery_por_xls_normal: '$194554242',
+    pic_gallery_por_xls_happy:  '$194554223',
+    pic_gallery_por_xls_shy:    '$194554222',
+    pic_gallery_por_xls_doubt:  '$194554240',
+    pic_gallery_por_xls_angry:  '$194554224',
+    pic_gallery_por_xls_sad:    '$194554220',
+    // 立绘变体 — 李云祥 (lyx)
+    pic_gallery_por_lyx_normal: '$192973458',
+    pic_gallery_por_lyx_happy:  '$192973453',
+    pic_gallery_por_lyx_shy:    '$192973452',
+    pic_gallery_por_lyx_doubt:  '$192973456',
+    pic_gallery_por_lyx_angry:  '$192973454',
+    pic_gallery_por_lyx_sad:    '$192973221',
+    // 立绘变体 — 敖丙 (ab)
+    pic_gallery_por_ab_normal:  '$193056862',
+    pic_gallery_por_ab_happy:   '$193056858',
+    pic_gallery_por_ab_shy:     '$193056857',
+    pic_gallery_por_ab_doubt:   '$193056860',
+    pic_gallery_por_ab_angry:   '$193056859',
+    pic_gallery_por_ab_sad:     '$193056854',
+    pic_gallery_por_ab_joy:     '$193056855',
     // 人物 - 头像
     icon_gallery_avatar_shn_kasha:      '',
     icon_gallery_avatar_kasha:               '',
@@ -457,6 +492,11 @@ const DongHaiRes = {
     btn_gallery_entry_story_s: '$196771708',
     img_gallery_subtitle_apprec: '',
     img_gallery_subtitle_char: '',
+    img_gallery_portrait_frame: '',
+    img_gallery_locked_portrait: '',
+    img_gallery_lock_icon: '',
+    btn_gallery_portrait_switch_n: '',
+    btn_gallery_portrait_switch_s: '',
     img_gallery_sub_title_story: '',
     btn_gallery_prev_n: '',
     btn_gallery_prev_s: '',
@@ -474,10 +514,35 @@ const DongHaiRes = {
     pic_gallery_scene_nezha_dark: '',
     pic_gallery_scene_dragon_tmpl:     '',
     pic_gallery_scene_dragon_pal:     '',
-    pic_gallery_portrait_lingzhuzi:    '',
-    pic_gallery_portrait_xlongshen: '',
-    pic_gallery_portrait_liyunxian:   '',
-    pic_gallery_portrait_aobing:       '',
+    pic_gallery_portrait_lingzhuzi:    '$194467902',
+    pic_gallery_portrait_xlongshen:    '$194554242',
+    pic_gallery_portrait_liyunxian:    '$192973458',
+    pic_gallery_portrait_aobing:       '$193056862',
+    pic_gallery_por_lzz_normal: '$194467902',
+    pic_gallery_por_lzz_happy:  '$194467895',
+    pic_gallery_por_lzz_shy:    '$194467893',
+    pic_gallery_por_lzz_doubt:  '$194467899',
+    pic_gallery_por_lzz_angry:  '$194467897',
+    pic_gallery_por_lzz_sad:    '$194467891',
+    pic_gallery_por_xls_normal: '$194554242',
+    pic_gallery_por_xls_happy:  '$194554223',
+    pic_gallery_por_xls_shy:    '$194554222',
+    pic_gallery_por_xls_doubt:  '$194554240',
+    pic_gallery_por_xls_angry:  '$194554224',
+    pic_gallery_por_xls_sad:    '$194554220',
+    pic_gallery_por_lyx_normal: '$192973458',
+    pic_gallery_por_lyx_happy:  '$192973453',
+    pic_gallery_por_lyx_shy:    '$192973452',
+    pic_gallery_por_lyx_doubt:  '$192973456',
+    pic_gallery_por_lyx_angry:  '$192973454',
+    pic_gallery_por_lyx_sad:    '$192973221',
+    pic_gallery_por_ab_normal:  '$193056862',
+    pic_gallery_por_ab_happy:   '$193056858',
+    pic_gallery_por_ab_shy:     '$193056857',
+    pic_gallery_por_ab_doubt:   '$193056860',
+    pic_gallery_por_ab_angry:   '$193056859',
+    pic_gallery_por_ab_sad:     '$193056854',
+    pic_gallery_por_ab_joy:     '$193056855',
     icon_gallery_avatar_shn_kasha:      '',
     icon_gallery_avatar_kasha:               '',
     icon_gallery_avatar_qn_lijinxi: '',
