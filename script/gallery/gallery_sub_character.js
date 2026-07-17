@@ -183,6 +183,11 @@ const GallerySubCharacter = {
 
     // ── 点击 ─────────────────────────────────────────────────────
     onFrameClick: async function (i) {
+        // 锁定角色：弹提示，不展开
+        if (!GallerySystem.isUnlocked(this._portraits[i])) {
+            await CommonUI.showCustomDialog({ content: '尚未收集' });
+            return;
+        }
         if (this._selectedIdx === i) return;
         if (this._selectedIdx >= 0) {
             await this._collapseFrame();
@@ -268,9 +273,7 @@ const GallerySubCharacter = {
     },
 
     _getPortraitList: function (entryId) {
-        const entry    = GalleryConfig[entryId];
-        const unlocked = GallerySystem.isUnlocked(entryId);
-        if (!unlocked) return [ResMap.img_gallery_locked_portrait || ResMap.img_mask_black];
+        const entry = GalleryConfig[entryId];
         const ids = (entry.portraitResIds || []).filter(r => !!r);
         return ids.length > 0 ? ids : (entry.resId ? [entry.resId] : []);
     },

@@ -193,9 +193,8 @@ const HelloADVRes = {
     img_gallery_subtitle_apprec: '', // 子页右侧"鉴赏"竖排标题卡片
     img_gallery_por_subtitle: '',    // 子页右侧"人物收集"竖排标题卡片
     // 人物收集子页 - 立绘
-    img_gallery_portrait_frame: '',   // 立绘竖框底板（实心圆角矩形）
-    img_gallery_por_locked: '',     // 未解锁整体图（底板+锁图标+文字）
-    img_gallery_locked_portrait: '',  // 未解锁立绘占位图（展开态右侧大图用）
+    img_gallery_portrait_frame: '',   // 立绘竖框底板（已解锁，实心圆角矩形）
+    img_gallery_por_locked: '',       // 未解锁整体竖框图（底板+锁图标+文字）
     btn_gallery_portrait_switch_n: '', // 切换立绘圆形按钮 常态
     btn_gallery_portrait_switch_s: '', // 切换立绘圆形按钮 选中态
     img_gallery_sub_title_story: '',        // 子页右侧"剧情收集"竖排标题卡片
@@ -494,7 +493,6 @@ const DongHaiRes = {
     img_gallery_por_subtitle: '',
     img_gallery_portrait_frame: '',
     img_gallery_por_locked: '',
-    img_gallery_locked_portrait: '',
     btn_gallery_portrait_switch_n: '',
     btn_gallery_portrait_switch_s: '',
     img_gallery_sub_title_story: '',
