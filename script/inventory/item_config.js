@@ -104,7 +104,7 @@ const ItemConfig = {
         spriteHighlighted: ResMap.spr_item_visa_active,
         spriteInspected: ResMap.spr_item_visa_active,
         illust: ResMap.img_item_visa,
-        desc:   "传说中能让飞机掉头的梅山银行信用卡。面向全球顶级富豪、政要及社会名流发卡，持卡人可享受无额度上限、生活出行各方面的顶级服务。可是对敖丙来说，daddy的爱比黑卡更有含金量，daddy也会为他做这些，并且不会因为他很优秀才爱他。",
+        desc:   "传说中能让飞机掉头的梅山银行信用卡。面向全球顶级富豪、政要及社会名流发卡，持卡人可享受无额度上限、生活出行各方面的顶级服务。可是对敖丙来说， daddy的爱比黑卡更有含金量，daddy也会为他做这些，并且不会因为他很优秀才爱他。",
         locked: {
             icon:   ResMap.icon_item_visa_locked,
             desc:   "什么东西黑黑的，硬硬的，有了它就会有很多钱？",

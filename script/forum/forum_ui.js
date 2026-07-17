@@ -108,10 +108,11 @@ const ForumUI = {
 
     calcReplyListHeight: function (replyList) {
         let totalHeight = 0;
+        // 实测微软雅黑单行渲染高约 fontSize*1.67，用 1.8 覆盖真实行高并留余量
+        const lineSpacing = 1.8;
         for (let i = 0; i < replyList.length; i++) {
             let reply = replyList[i];
-            let contentHeight = Utils.calcTextHeight(reply.content, this.reply.fontSize, this.reply.width);
-            console.log('contentHeight', contentHeight, reply.content);
+            let contentHeight = Utils.calcTextHeight(reply.content, this.reply.fontSize, this.reply.width, lineSpacing);
             contentHeight = Math.max(contentHeight, this.reply.height);
             contentHeight += this.reply.padding * 2;
             reply.height = contentHeight;

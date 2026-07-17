@@ -297,10 +297,8 @@ const BagUI = {
         });
 
         const itemDesc      = view.desc;
-        // calcTextHeight 是近似估算，额外加一行高度防止最后一行被裁切
-        const extraLine     = this.itemDetail.fontSize * 1.2;
         const contentHeight = Math.max(
-            Utils.calcTextHeight(itemDesc, this.itemDetail.fontSize, this.itemDetail.width, 1.2) + extraLine,
+            Utils.calcTextHeight(itemDesc, this.itemDetail.fontSize, this.itemDetail.width, 1.3),
             this.svDetail.height
         );
         await ac.createScrollView({

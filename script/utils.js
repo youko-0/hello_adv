@@ -123,7 +123,7 @@ const Utils = {
     },
 
     // 计算文本高度(自动换行)
-    calcTextHeight: function (content, fontSize = 28, containerWidth = 580, spacing=1.5) {
+    calcTextHeight: function (content, fontSize = 28, containerWidth = 580, spacing=1.2) {
         if (!content) return 0;
 
         const singleLineHeight = fontSize * spacing;
@@ -137,12 +137,19 @@ const Utils = {
                 return;
             }
 
+            // 逐字符模拟换行：字符放不下就折到下一行，行尾留白不会被压缩
+            let linesInPara = 1;
             let currentLineWidth = 0;
-            currentLineWidth += this.calcTextWidth(para, fontSize);
-
-            // 向上取整
-            let linesInPara = Math.ceil(currentLineWidth / containerWidth);
-            totalLines += Math.max(1, linesInPara);
+            for (let i = 0; i < para.length; i++) {
+                let charWidth = this.measureCharWidth(para[i], fontSize);
+                if (currentLineWidth + charWidth > containerWidth) {
+                    linesInPara += 1;
+                    currentLineWidth = charWidth;
+                } else {
+                    currentLineWidth += charWidth;
+                }
+            }
+            totalLines += linesInPara;
         });
 
         console.log(`calcTextHeight: totalLines: ${totalLines}, singleLineHeight: ${singleLineHeight}`);
