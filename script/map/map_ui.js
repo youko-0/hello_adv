@@ -13,9 +13,9 @@ const MapUI = {
             name: this.map.name,
             index: ZORDER.SCENE,       // 把全局按钮露出来
             inlayer: 'window',
-            pos: { x: 0, y: 0 },
-            anchor: { x: 0, y: 0 },
-            size: { width: GameConfig.width, height: GameConfig.height },
+            pos:    { x: GameConfig.centerX, y: GameConfig.centerY },
+            anchor: { x: 50, y: 50 },
+            size:   { width: GameConfig.width, height: GameConfig.height },
             clipMode: false,
         });
 
@@ -34,9 +34,9 @@ const MapUI = {
             name: 'layer_map_area',
             index: 5,
             inlayer: this.map.name,
-            pos: { x: 0, y: 0 },
-            anchor: { x: 0, y: 0 },
-            size: { width: GameConfig.width, height: GameConfig.height },
+            pos:    { x: GameConfig.centerX, y: GameConfig.centerY },
+            anchor: { x: 50, y: 50 },
+            size:   { width: GameConfig.width, height: GameConfig.height },
             clipMode: false,
         });
 

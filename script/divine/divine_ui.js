@@ -134,6 +134,10 @@ const DivineUI = {
 
         await ac.createLayer({
             name: this.layer.scene, index: ZORDER.SCENE, inlayer: 'window',
+            pos:    { x: GameConfig.centerX, y: GameConfig.centerY },
+            anchor: { x: 50, y: 50 },
+            size:   { width: GameConfig.width, height: GameConfig.height },
+            clipMode: false,
         });
 
         // 初始化运行时爻线起始 Y

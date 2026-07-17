@@ -73,6 +73,10 @@ const ExploreUI = {
             name: this.sceneRoot.name,
             index: ZORDER.SCENE,
             inlayer: 'window',
+            pos:    { x: GameConfig.centerX, y: GameConfig.centerY },
+            anchor: { x: 50, y: 50 },
+            size:   { width: GameConfig.width, height: GameConfig.height },
+            clipMode: false,
         });
 
         // 创建 view_root（原点容器）

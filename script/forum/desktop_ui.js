@@ -12,8 +12,8 @@ const DesktopUI = {
             name: 'layer_desktop',
             index: ZORDER.OVERLAY,
             inlayer: 'window',
-            pos: { x: 0, y: 0 },
-            anchor: { x: 0, y: 0 },
+            pos:    { x: GameConfig.centerX, y: GameConfig.centerY },
+            anchor: { x: 50, y: 50 },
             size: { width: GameConfig.width, height: GameConfig.height },
             clipMode: true,
         });

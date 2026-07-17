@@ -92,9 +92,9 @@ const InventoryUI = {
             name: this.itemDetail.name,
             index: ZORDER.UI + 1,
             inlayer: 'window',
-            pos: { x: 0, y: 0 },
-            size: { width: GameConfig.width, height: GameConfig.height },
-            anchor: { x: 0, y: 0 },
+            pos:    { x: GameConfig.centerX, y: GameConfig.centerY },
+            anchor: { x: 50, y: 50 },
+            size:   { width: GameConfig.width, height: GameConfig.height },
             clipMode: false,
         })
 
