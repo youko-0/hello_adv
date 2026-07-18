@@ -337,12 +337,12 @@ const GalleryConfig = {
         desc: '地涌夫人。',
         locked: { desc: '尚未解锁' },
     },
-    avatar_baimao_shu: {
-        name: '白毛鼠', type: GalleryType.IMAGE,
+    avatar_xiaolong: {
+        name: '小龙', type: GalleryType.IMAGE,
         category: GalleryCategory.CHARACTER, sub: GallerySub.AVATAR,
         aspect: '1:1', sortIndex: 11,
-        resId: ResMap.icon_gallery_avatar_baimao_shu,
-        desc: '白毛鼠。',
+        resId: ResMap.icon_gallery_avatar_xiaolong,
+        desc: '小龙。',
         locked: { desc: '尚未解锁' },
     },
 

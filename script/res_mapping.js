@@ -263,7 +263,7 @@ const HelloADVRes = {
     icon_gallery_avatar_mianjuren:           '',
     icon_gallery_avatar_aolie:               '',
     icon_gallery_avatar_diyong_fu:        '',
-    icon_gallery_avatar_baimao_shu:       '',
+    icon_gallery_avatar_xiaolong:         '',
     // 剧情 - 回忆
     pic_gallery_mem_lingzhu_long: '',
     pic_gallery_mem_zhaoyun_musan:   '',
@@ -555,7 +555,7 @@ const DongHaiRes = {
     icon_gallery_avatar_mianjuren:           '',
     icon_gallery_avatar_aolie:               '',
     icon_gallery_avatar_diyong_fu:        '',
-    icon_gallery_avatar_baimao_shu:       '',
+    icon_gallery_avatar_xiaolong:         '',
     pic_gallery_mem_lingzhu_long: '',
     pic_gallery_mem_zhaoyun_musan:   '',
     pic_gallery_mem_nezha_naohai:    '',

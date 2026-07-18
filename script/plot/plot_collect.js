@@ -35,7 +35,7 @@ const PlotCollect = {
     avatar_mianjuren:          () => GallerySystem.unlock('avatar_mianjuren'),          // 面具人
     avatar_aolie:              () => GallerySystem.unlock('avatar_aolie'),              // 敖烈
     avatar_diyong_furen:       () => GallerySystem.unlock('avatar_diyong_furen'),       // 地涌夫人
-    avatar_baimao_shu:         () => GallerySystem.unlock('avatar_baimao_shu'),         // 白毛鼠
+    avatar_xiaolong:           () => GallerySystem.unlock('avatar_xiaolong'),           // 小龙
 
     // ════════ 剧情 - 回忆 ════════
     // 第一世
