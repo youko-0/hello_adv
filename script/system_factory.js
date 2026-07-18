@@ -2,15 +2,18 @@
 
 /**
  * 系统构造工厂
- * @param {string} varName - 存入 ac.var 的变量名
+ * @param {string} varName - 存入 ac.var / ac.cVar 的变量名
  * @param {Function} defaultDataFactory - 返回默认数据的函数（防止引用污染）
  * @param {Object} customMethods - 该系统特有的方法
+ * @param {boolean} [persistent=false] - 是否使用永久变量（ac.cVar，跨存档持久；默认 false 用普通变量 ac.var）
  */
-const createSystem = function (varName, defaultDataFactory, customMethods) {
+const createSystem = function (varName, defaultDataFactory, customMethods, persistent = false) {
+    const storage = persistent ? ac.cVar : ac.var;
     // 基础系统对象
     const baseSystem = {
         _cache: null, // 闭包内也是安全的，但在对象属性里更直观
         VAR_NAME: varName,
+        PERSISTENT: persistent,
 
         /**
          * 获取数据（懒加载核心）
@@ -18,7 +21,7 @@ const createSystem = function (varName, defaultDataFactory, customMethods) {
         getData: function () {
             if (this._cache == null) {
                 // 1. 读取
-                let jsonStr = ac.var[this.VAR_NAME];
+                let jsonStr = storage[this.VAR_NAME];
                 let data = null;
 
                 // 2. 解析
@@ -60,7 +63,7 @@ const createSystem = function (varName, defaultDataFactory, customMethods) {
             }
 
             let jsonStr = JSON.stringify(this._cache);
-            ac.var[this.VAR_NAME] = jsonStr;
+            storage[this.VAR_NAME] = jsonStr;
             console.log(`【${this.VAR_NAME}】已保存: ${jsonStr}`);
         },
 

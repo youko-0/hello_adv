@@ -10,5 +10,5 @@ console.log('[LOAD] plot_entry');
 
 await ac.callUI({
   name: 'callUI_desktop',
-  uiId: ResMap.ui_desktop
+  uiId: '5a63b4fc0a7041f38685971fcecfd962'
 });

@@ -53,14 +53,14 @@ const PlotCollect = {
     memory_aobing_zijin:    () => GallerySystem.unlock('memory_aobing_zijin'),    // 敖丙自尽
 
     // ════════ 剧情 - 结局 ════════
-    ending_true:  () => GallerySystem.unlock('ending_true'),  // 真结局 · 一念成魔
-    ending_fake:  () => GallerySystem.unlock('ending_fake'),  // 假结局 · 诛仙斩龙
-    ending_dream: () => GallerySystem.unlock('ending_dream'), // 梦结局 · 人间正好
-    ending_fail1: () => GallerySystem.unlock('ending_fail1'), // 失败结局 1 · 不改旧时
-    ending_fail2: () => GallerySystem.unlock('ending_fail2'), // 失败结局 2 · 鬼面桃花
+    ending_yinian_chengmo:    () => GallerySystem.unlock('ending_yinian_chengmo'),    // 真结局 · 一念成魔
+    ending_zhuxian_zhanlong:  () => GallerySystem.unlock('ending_zhuxian_zhanlong'),  // 假结局 · 诛仙斩龙
+    ending_renjian_zhenghao:  () => GallerySystem.unlock('ending_renjian_zhenghao'),  // 梦结局 · 人间正好
+    ending_bugai_jiushi:      () => GallerySystem.unlock('ending_bugai_jiushi'),      // 失败结局 1 · 不改旧时
+    ending_guimian_taohua:    () => GallerySystem.unlock('ending_guimian_taohua'),    // 失败结局 2 · 鬼面桃花
 
     // ════════ 剧情 - 番外 ════════
-    side1: () => GallerySystem.unlock('side1'), // 番外 1 · "我"的来历
-    side2: () => GallerySystem.unlock('side2'), // 番外 2 · 圣人无情
-    side3: () => GallerySystem.unlock('side3'), // 番外 3 · 龙泪化海
+    side_wo_de_laili:   () => GallerySystem.unlock('side_wo_de_laili'),     // 番外 1 · "我"的来历
+    side_shengren_wuqing: () => GallerySystem.unlock('side_shengren_wuqing'), // 番外 2 · 圣人无情
+    side_longlei_huahai:  () => GallerySystem.unlock('side_longlei_huahai'),  // 番外 3 · 龙泪化海
 };

@@ -432,67 +432,67 @@ const GalleryConfig = {
     },
 
     // ════════ 剧情 - 结局 / 番外 ════════
-    ending_true: {
+    ending_yinian_chengmo: {
         name: '真结局 · 一念成魔', type: GalleryType.TEXT,
         category: GalleryCategory.STORY, sub: GallerySub.ENDING,
         endingGroup: 'ending', sortIndex: 0,
-        resId: ResMap.pic_gallery_ending_true,
+        resId: ResMap.pic_gallery_ending_yinian_chengmo,
         desc: '一念成魔，万劫不复。',
         locked: { desc: '尚未解锁' },
     },
-    ending_fake: {
+    ending_zhuxian_zhanlong: {
         name: '假结局 · 诛仙斩龙', type: GalleryType.TEXT,
         category: GalleryCategory.STORY, sub: GallerySub.ENDING,
         endingGroup: 'ending', sortIndex: 1,
-        resId: ResMap.pic_gallery_ending_fake,
+        resId: ResMap.pic_gallery_ending_zhuxian_zhanlong,
         desc: '诛仙斩龙，斩断因果。',
         locked: { desc: '尚未解锁' },
     },
-    ending_dream: {
+    ending_renjian_zhenghao: {
         name: '梦结局 · 人间正好', type: GalleryType.TEXT,
         category: GalleryCategory.STORY, sub: GallerySub.ENDING,
         endingGroup: 'ending', sortIndex: 2,
-        resId: ResMap.pic_gallery_ending_dream,
+        resId: ResMap.pic_gallery_ending_renjian_zhenghao,
         desc: '人间正好，大梦一场。',
         locked: { desc: '尚未解锁' },
     },
-    ending_fail1: {
+    ending_bugai_jiushi: {
         name: '失败结局 1 · 不改旧时', type: GalleryType.TEXT,
         category: GalleryCategory.STORY, sub: GallerySub.ENDING,
         endingGroup: 'ending', sortIndex: 3,
-        resId: ResMap.pic_gallery_ending_fail1,
+        resId: ResMap.pic_gallery_ending_bugai_jiushi,
         desc: '不改旧时，重蹈覆辙。',
         locked: { desc: '尚未解锁' },
     },
-    ending_fail2: {
+    ending_guimian_taohua: {
         name: '失败结局 2 · 鬼面桃花', type: GalleryType.TEXT,
         category: GalleryCategory.STORY, sub: GallerySub.ENDING,
         endingGroup: 'ending', sortIndex: 4,
-        resId: ResMap.pic_gallery_ending_fail2,
+        resId: ResMap.pic_gallery_ending_guimian_taohua,
         desc: '鬼面桃花，镜花水月。',
         locked: { desc: '尚未解锁' },
     },
-    side1: {
+    side_wo_de_laili: {
         name: '番外 1 · "我"的来历', type: GalleryType.TEXT,
         category: GalleryCategory.STORY, sub: GallerySub.ENDING,
         endingGroup: 'side', sortIndex: 5,
-        resId: ResMap.pic_gallery_side1,
+        resId: ResMap.pic_gallery_side_wo_de_laili,
         desc: '"我"的来历。',
         locked: { desc: '尚未解锁' },
     },
-    side2: {
+    side_shengren_wuqing: {
         name: '番外 2 · 圣人无情', type: GalleryType.TEXT,
         category: GalleryCategory.STORY, sub: GallerySub.ENDING,
         endingGroup: 'side', sortIndex: 6,
-        resId: ResMap.pic_gallery_side2,
+        resId: ResMap.pic_gallery_side_shengren_wuqing,
         desc: '圣人无情。',
         locked: { desc: '尚未解锁' },
     },
-    side3: {
+    side_longlei_huahai: {
         name: '番外 3 · 龙泪化海', type: GalleryType.TEXT,
         category: GalleryCategory.STORY, sub: GallerySub.ENDING,
         endingGroup: 'side', sortIndex: 7,
-        resId: ResMap.pic_gallery_side3,
+        resId: ResMap.pic_gallery_side_longlei_huahai,
         desc: '龙泪化海。',
         locked: { desc: '尚未解锁' },
     },

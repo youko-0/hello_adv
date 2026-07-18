@@ -8,7 +8,7 @@ const _galleryDefault = function () {
 };
 
 const GallerySystem = createSystem(
-    'str_gallery_data',
+    'cstr_gallery_data', // 永久变量，编辑器需声明为字符串类型，初始值填 ''
     _galleryDefault,
     {
         // ── 查询 ───────────────────────────────────────────────────
@@ -61,5 +61,6 @@ const GallerySystem = createSystem(
         },
 
         /** 重置（调试用，由 createSystem 提供 reset，这里补一个语义别名） */
-    }
+    },
+    true   // 使用永久变量 ac.cVar，图鉴解锁跨存档持久
 );
