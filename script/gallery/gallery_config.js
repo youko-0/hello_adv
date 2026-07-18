@@ -134,6 +134,14 @@ const GalleryConfig = {
         desc: '敖丙自尽。',
         locked: { desc: '尚未解锁' },
     },
+    cg_aobing_zijin_3: {
+        name: '敖丙自尽 3', type: GalleryType.IMAGE,
+        category: GalleryCategory.APPRECIATION, sub: GallerySub.CG,
+        aspect: '16:9', sortIndex: 6,
+        resId: ResMap.pic_gallery_cg_aobing_zijin_3,
+        desc: '敖丙自尽。',
+        locked: { desc: '尚未解锁' },
+    },
 
     // ════════ 鉴赏 - 特殊场景 ════════
     scene_nezha_temple: {
@@ -327,6 +335,14 @@ const GalleryConfig = {
         aspect: '1:1', sortIndex: 10,
         resId: ResMap.icon_gallery_avatar_diyong_fu,
         desc: '地涌夫人。',
+        locked: { desc: '尚未解锁' },
+    },
+    avatar_baimao_shu: {
+        name: '白毛鼠', type: GalleryType.IMAGE,
+        category: GalleryCategory.CHARACTER, sub: GallerySub.AVATAR,
+        aspect: '1:1', sortIndex: 11,
+        resId: ResMap.icon_gallery_avatar_baimao_shu,
+        desc: '白毛鼠。',
         locked: { desc: '尚未解锁' },
     },
 

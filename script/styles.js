@@ -187,8 +187,8 @@ ac.createStyle({
 
 ac.createStyle({
     name: 'style_divine_yao_text',
-    font: '方正书宋',
-    bold: true, italic: false,
+    font: '民国行楷超大字库',
+    bold: false, italic: false,
     fontSize: 30, color: '#efefe3',
 });
 

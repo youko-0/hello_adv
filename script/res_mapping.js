@@ -211,6 +211,7 @@ const HelloADVRes = {
     pic_gallery_cg_yunbing_chuji_2: '',
     pic_gallery_cg_aobing_zijin_1:    '',
     pic_gallery_cg_aobing_zijin_2:    '',
+    pic_gallery_cg_aobing_zijin_3:    '',
     // 鉴赏 - 特殊场景
     pic_gallery_scene_nezha_temple:      '',
     pic_gallery_scene_nezha_dark: '',
@@ -262,6 +263,7 @@ const HelloADVRes = {
     icon_gallery_avatar_mianjuren:           '',
     icon_gallery_avatar_aolie:               '',
     icon_gallery_avatar_diyong_fu:        '',
+    icon_gallery_avatar_baimao_shu:       '',
     // 剧情 - 回忆
     pic_gallery_mem_lingzhu_long: '',
     pic_gallery_mem_zhaoyun_musan:   '',
@@ -508,6 +510,7 @@ const DongHaiRes = {
     pic_gallery_cg_yunbing_chuji_2: '',
     pic_gallery_cg_aobing_zijin_1:    '',
     pic_gallery_cg_aobing_zijin_2:    '',
+    pic_gallery_cg_aobing_zijin_3:    '',
     pic_gallery_scene_nezha_temple:      '',
     pic_gallery_scene_nezha_dark: '',
     pic_gallery_scene_dragon_tmpl:     '',
@@ -552,6 +555,7 @@ const DongHaiRes = {
     icon_gallery_avatar_mianjuren:           '',
     icon_gallery_avatar_aolie:               '',
     icon_gallery_avatar_diyong_fu:        '',
+    icon_gallery_avatar_baimao_shu:       '',
     pic_gallery_mem_lingzhu_long: '',
     pic_gallery_mem_zhaoyun_musan:   '',
     pic_gallery_mem_nezha_naohai:    '',
