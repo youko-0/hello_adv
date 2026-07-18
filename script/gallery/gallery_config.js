@@ -499,6 +499,67 @@ const GalleryConfig = {
 };
 
 /**
+ * 图鉴条目位序清单（append-only，禁止重排/删除）
+ * 用于永久变量位图压缩：每个 entryId 固定占用一个 bit 位。
+ * 新增条目时：1) 在 GalleryConfig 添加；2) 在此数组【末尾追加】entryId。
+ * 删除条目时：保留占位（不可复用），否则旧存档位序错位。
+ */
+const GALLERY_ENTRY_ORDER = [
+    // 鉴赏 - CG
+    'cg_lingzhu_yu_long_1',
+    'cg_zhaoyun_musan_1',
+    'cg_yunbing_chujian_1',
+    'cg_yunbing_chujian_2',
+    'cg_aobing_zijin_1',
+    'cg_aobing_zijin_2',
+    'cg_aobing_zijin_3',
+    // 鉴赏 - 特殊场景
+    'scene_nezha_temple',
+    'scene_nezha_temple_dark',
+    'scene_dragon_temple',
+    'scene_dragon_palace',
+    // 人物 - 立绘
+    'portrait_lingzhuzi',
+    'portrait_xiaolongshen',
+    'portrait_liyunxiang',
+    'portrait_aobing',
+    // 人物 - 头像
+    'avatar_shaonian_kasha',
+    'avatar_kasha',
+    'avatar_qingnian_lijinxiang',
+    'avatar_lijinxiang',
+    'avatar_laoli',
+    'avatar_aoguang',
+    'avatar_ligen',
+    'avatar_yunv',
+    'avatar_mianjuren',
+    'avatar_aolie',
+    'avatar_diyong_furen',
+    'avatar_xiaolong',
+    // 剧情 - 回忆
+    'memory_lingzhu_yu_long',
+    'memory_zhaoyun_musan',
+    'memory_nezha_naohai',
+    'memory_longshen_quqin',
+    'memory_yunbing_chujian',
+    'memory_three_dates',
+    'memory_lijing_tanhua',
+    'memory_aolie_laifang',
+    'memory_longzhu_beihui',
+    'memory_aobing_zijin',
+    // 剧情 - 结局
+    'ending_yinian_chengmo',
+    'ending_zhuxian_zhanlong',
+    'ending_renjian_zhenghao',
+    'ending_bugai_jiushi',
+    'ending_guimian_taohua',
+    // 剧情 - 番外
+    'side_wo_de_laili',
+    'side_shengren_wuqing',
+    'side_longlei_huahai',
+];
+
+/**
  * 取某分类下、按子分类分组的条目列表
  * @param {string} category
  * @returns {Object} { subKey: [entryId, ...] } 按 sortIndex 升序
